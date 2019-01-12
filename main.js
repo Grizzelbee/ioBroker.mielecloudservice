@@ -1,19 +1,19 @@
 /**
  *
- * template adapter
+ * mieleathome adapter
  *
  *
  *  file io-package.json comments:
  *
  *  {
  *      "common": {
- *          "name":         "template",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
+ *          "name":         "mieleathome",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
  *          "version":      "0.0.0",                    // use "Semantic Versioning"! see http://semver.org/
- *          "title":        "Node.js template Adapter",  // Adapter title shown in User Interfaces
+ *          "title":        "Node.js mieleathome Adapter",  // Adapter title shown in User Interfaces
  *          "authors":  [                               // Array of authord
- *              "name <mail@template.com>"
+ *              "name <mail@mieleathome.com>"
  *          ]
- *          "desc":         "template adapter",          // Adapter description shown in User Interfaces. Can be a language object {de:"...",ru:"..."} or a string
+ *          "desc":         "mieleathome adapter",          // Adapter description shown in User Interfaces. Can be a language object {de:"...",ru:"..."} or a string
  *          "platform":     "Javascript/Node.js",       // possible values "javascript", "javascript/Node.js" - more coming
  *          "mode":         "daemon",                   // possible values "daemon", "schedule", "subscribe"
  *          "materialize":  true,                       // support of admin3
@@ -92,7 +92,7 @@ function startAdapter(options) {
         ready: () => main()
     });
     // you have to call the adapter function and pass a options object
-    // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.template.0
+    // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.mieleathome.0
 	adapter = new utils.Adapter(options);
 
 	return adapter;
@@ -111,7 +111,7 @@ function main() {
      *
      *      For every state in the system there has to be also an object of type state
      *
-     *      Here a simple template for a boolean variable named "testVariable"
+     *      Here a simple mieleathome for a boolean variable named "testVariable"
      *
      *      Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
      *
@@ -127,7 +127,7 @@ function main() {
         native: {}
     });
 
-    // in this template all states changes inside the adapters namespace are subscribed
+    // in this mieleathome all states changes inside the adapters namespace are subscribed
     adapter.subscribeStates('*');
 
 

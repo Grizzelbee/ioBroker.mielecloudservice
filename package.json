@@ -1,28 +1,28 @@
 {
-  "name": "iobroker.template",
+  "name": "iobroker.mieleathome",
   "version": "0.7.0",
-  "description": "ioBroker template Adapter",
+  "description": "mieleathome",
   "author": {
-    "name": "@@Author@@",
-    "email": "@@email@@"
+    "name": "Helmut Horras",
+    "email": "helmut.horras@iesy.net"
   },
   "contributors": [
     {
-      "name": "@@Author@@",
-      "email": "@@email@@"
+      "name": "Helmut Horras",
+      "email": "helmut.horras@iesy.net"
     }
   ],
-  "homepage": "https://github.com/ioBroker/ioBroker.template",
+  "homepage": "https://github.com/ioBroker/ioBroker.mieleathome",
   "license": "MIT",
   "keywords": [
     "ioBroker",
-    "template",
+    "mieleathome",
     "Smart Home",
     "home automation"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ioBroker/ioBroker.template"
+    "url": "https://github.com/ioBroker/ioBroker.mieleathome"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^1.0.3"
@@ -37,7 +37,7 @@
     "test": "node node_modules/mocha/bin/mocha --exit"
   },
   "bugs": {
-    "url": "https://github.com/ioBroker/ioBroker.template/issues"
+    "url": "https://github.com/ioBroker/ioBroker.mieleathome/issues"
   },
   "readmeFilename": "README.md"
 }

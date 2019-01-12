@@ -1,6 +1,6 @@
 {
     "common": {
-        "name": "template",
+        "name": "mieleathome",
         "version": "0.7.0",
         "news": {
             "0.7.0": {
@@ -41,9 +41,9 @@
                 "nl": "Eerste release"
             }
         },
-		"title": "Javascript/Node.js based template",
+		"title": "Javascript/Node.js based mieleathome",
         "titleLang": {
-            "en": "Javascript/Node.js based template",
+            "en": "Javascript/Node.js based mieleathome",
             "de": "Javascript / Node.js basierte Vorlagenadapter",
             "ru": "Адаптер шаблонов на основе Javascript / Node.js",
             "pt": "Adaptador de modelo baseado em Javascript / Node.js",
@@ -53,17 +53,17 @@
             "es": "Adaptador de plantilla basado en JavaScript / Node.js"
         },
         "desc": {
-            "en": "ioBroker template",
-            "de": "ioBroker Template",
-            "ru": "ioBroker Template как образец",
+            "en": "ioBroker mieleathome",
+            "de": "ioBroker Mieleathome",
+            "ru": "ioBroker Mieleathome как образец",
             "pt": "Modelo de adaptador para o ioBroker",
             "fr": "ioBroker adaptateur modèle",
-            "nl": "ioBroker Template",
+            "nl": "ioBroker Mieleathome",
             "it": "Adattatore modello ioBroker",
             "es": "Adaptador de plantilla ioBroker"
         },
         "authors": [
-            "@@Author@@ <@@email@@>"
+            "Helmut Horras <helmut.horras@iesy.net>"
         ],
         "docs": {
             "en": "docs/en/admin.md",
@@ -78,12 +78,12 @@
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "compact": true,
-        "icon": "template.png",
+        "icon": "mieleathome.png",
         "materialize": true,
         "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.template/master/admin/template.png",
-        "keywords": ["template", "vis", "GUI", "graphical", "scada"],
-        "readme": "https://github.com/ioBroker/ioBroker.template/blob/master/README.md",
+        "extIcon": "https://raw.githubusercontent.com/ioBroker/ioBroker.mieleathome/master/admin/mieleathome.png",
+        "keywords": ["mieleathome", "vis", "GUI", "graphical", "scada"],
+        "readme": "https://github.com/ioBroker/ioBroker.mieleathome/blob/master/README.md",
         "loglevel": "info",
         "type": "general",
         "license": "MIT",
