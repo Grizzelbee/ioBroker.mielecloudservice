@@ -2,82 +2,39 @@
 # ioBroker.mieleathome
 =================
 
-This adapter is a mieleathome for the creation of an ioBroker adapter. You do not need it unless you plan on developing your own adapter.
+This adapter is a Miele@Home for Miele API. 
 
-It includes both code running within iobroker and as vis widget. If you only plan to create a vis widget then you should use the [iobroker.vis-mieleathome](https://github.com/ioBroker/ioBroker.vis-mieleathome) instead.
 
 ## Steps 
-1. download and unpack this packet from github ```https://github.com/ioBroker/ioBroker.mieleathome/archive/master.zip```
-  or clone git repository ```git clone --depth=1 https://github.com/ioBroker/ioBroker.mieleathome.git```
+To install, excecute the following command 
+in /opt/iobroker/node_modules:
 
-2. download required npm packets. Write in ioBroker.mieleathome directory:
+1. npm install https://github.com/hash99/ioBroker.mieleathome.git
 
-  ```npm install```
-  
-3. set name of this mieleathome. Call
-  
-  ```gulp rename --name mynewname --email email@mail.com --author "Author Name"```
-  
-  *mynewname* must be **lower** case and with no spaces.
+2. create an account for Miele@Home 
 
-  If gulp is not available, install gulp globally:
-  
-  ```npm install -g gulp-cli```
- 
-4. rename directory from *ioBroker.mieleathome* (can be *ioBroker.mieleathome-master*) to *iobroker.mynewname*
+3. Add the Miele-Device to the App
 
-5. to use this mieleathome you should copy it into *.../iobroker/node_modules* directory and then create an instance for it with iobroker.admin
+4. Get client_secret and client_id from Miele-developer Team via Mail: developer@miele.com.
 
-6. create your adapter:
+3. Fill in the client_secret and client_id received from Miele-developer Team and acoount-id and password.
 
-  * you might want to start with main.js (code running within iobroker) and admin/index.html (the adapter settings page).
-
-  * [Adapter-Development-Documentation](https://github.com/ioBroker/ioBroker/wiki/Adapter-Development-Documentation),
-  
-  * [Installation, setup and first steps with an ioBroker Development Environment](https://github.com/ioBroker/ioBroker/wiki/Installation,-setup-and-first-steps-with-an-ioBroker-Development-Environment)
-  
-  * [Write and debug vis widgets](https://github.com/ioBroker/ioBroker/wiki/How-to-debug-vis-and-to-write-own-widget-set)
-  
-  * files under the www folders are made available under http://&lt;iobrokerIP&gt;:8082/&lt;adapter-name&gt;/
-    * for this to work the iobroker.vis adapter has to be installed
-    * delete this folder if you do not plan to export any files this way
-    * call ```iobroker upload <adapter-name>``` after you change files in the www folder to get the new files uploaded to vis
-  * the widget folder contains an example of a vis widget
-    * you might want to start with *widget/<adapter-name>.html* and *widget/js/<adapter-name>.js*
-    * call ```iobroker visdebug <adapter-name>``` to enable debugging and upload widget to "vis". (This works only from V0.7.15 of js-controller)
-    * If you do not plan to export any widget then delete the whole widget folder and remove the ```"restartAdapters": ["vis"]``` statement from *io-package.json*
-    * After admin/index.html is changed you must execute ```iobroker upload mynewname``` to see changes in admin console. The same is valid for any files in *admin* and *www* directory  
-
-7. change version: edit package.json and then call ```grunt p``` in your adapter directory.
-  
-8. share it with the community
 
 ## Requirements
-* your github repository must have name "ioBroker.<adaptername>". **B** is capital in "ioBroker", but in the package.json the *name* must be low case, because npm does not allow upper case letters.
-* *title* in io-package.json (common) is simple short name of adapter in english. *titleLang* is object that consist short names in many languages. *Lang* ist not german Länge, but english LANGuages.
-* Do not use in the title the words "ioBroker" or "Adapter". It is clear anyway, that it is adapter for ioBroker.   
+
+Miele@Home Account
+Client_secret
+Client_id
 
 ## Changelog
 
-### 0.7.0 (2019.01.08)
-* (jogibear998) compact mode and fixes
-
-### 0.6.0 (2017.01.02)
-* (bluefox) Support of admin3
-
-### 0.5.0
-* (vegetto) include vis widget
-
-### 0.4.0
-* (bluefox) fix errors with grunt
-
-### 0.2.0
-* (bluefox) initial release
+### 0.0.1
+* (hash99) initial release
 
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2018 Helmut Horras <helmut.horras@iesy.net>
+Copyright (c) 2019 Helmut Horras <helmut.horras@iesy.net>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
