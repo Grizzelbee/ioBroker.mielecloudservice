@@ -47,8 +47,7 @@
             "pt": "docs/pt/admin.md"
         },
         "platform": "Javascript/Node.js",
-        "mode": "schedule",
-        "schedule": "*/5 * * * *",
+        "mode": "daemon",
         "compact": true,
         "icon": "mieleathome.png",
         "materialize": true,
