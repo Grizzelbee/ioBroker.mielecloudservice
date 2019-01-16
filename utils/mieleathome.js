@@ -59,7 +59,7 @@ class mieleathome {
 /*                var Username = getState('javascript.0.Miele.Authorization.Username').val;
                 var Password = getState('javascript.0.Miele.Authorization.Password').val;
 
-                RefreshToken(Username,Password,Application.Token,Application.refresh_token,function(err,access_token,refresh_token){
+                RefreshToken(Username,Password,Token,Application.refresh_token,function(err,access_token,refresh_token){
                              if(!err){
                              Application.Token=access_token;
                              Application.refresh_token=refresh_token;

@@ -42,16 +42,9 @@ const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 // read the adapter name from package.json
 const adapterName = require('./package.json').name.split('.').pop();
 
-/*Variable declaration, since ES6 there are let to declare variables. Let has a more clearer definition where 
-it is available then var.The variable is available inside a block and it's childs, but not outside. 
-You can define the same variable name inside a child without produce a conflict with the variable of the parent block.*/
-let variable = 1234;
-
 const mieleathome = require('./utils/mieleathome');
 
-
-
-// create adapter instance wich will be used for communication with controller
+    // create adapter instance wich will be used for communication with controller
 let adapter;
 function startAdapter(options) {
 	options = options || {};
@@ -87,8 +80,7 @@ function startAdapter(options) {
             if (typeof obj === 'object' && obj.message) {
                 if (obj.command === 'send') {
                     // e.g. send email or pushover or whatever
-                    console.log('send command');
-        
+                    console.log('send command');        
                     // Send response in callback if required
                     if (obj.callback) adapter.sendTo(obj.from, obj.command, 'Message received', obj.callback);
                 }
@@ -113,30 +105,16 @@ function GetDevices(data,Pfad){
         var Type=typeof data[ObjName];
         switch(Type){
             case 'object':
-                adapter.log.info('ist Objekt '+ObjName+ ' ' + New_Pfad);
+//                adapter.log.info('ist Objekt '+ObjName+ ' ' + New_Pfad);
                 adapter.setObject(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: ObjName }, native: {} });
-                adapter.setObject(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: ObjName }, native: {} });
-                    //console.log(ObjName)
+                     //console.log(ObjName)
                 GetDevices(data[ObjName],New_Pfad);
                 break;
             case 'boolean':
-                adapter.log.info('ist boolean '+ObjName+ ' ' + New_Pfad);
-                adapter.setObject(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: ObjName }, native: {} });
-                adapter.setState(New_Pfad,data[ObjName],true);
-                break;
             case 'string':
-                adapter.log.info('ist string '+ObjName+ ' ' + New_Pfad);
-                adapter.setObject(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: ObjName }, native: {} });
-                adapter.setState(New_Pfad,data[ObjName],true);
-                break;
             case 'number':
-                adapter.log.info('ist number '+ObjName+ ' ' + New_Pfad);
-                adapter.setObject(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: ObjName }, native: {} });
-                adapter.setState(New_Pfad,data[ObjName],true);
-                break;
             case 'none':
-                adapter.log.info('ist none '+ObjName+ ' ' + New_Pfad);
-
+//                adapter.log.info('ist none '+ObjName+ ' ' + New_Pfad);
                 if (!adapter.getObject(New_Pfad)){
                     adapter.setObject(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: ObjName }, native: {} });
                    adapter.setState(New_Pfad,data[ObjName],true)
@@ -145,9 +123,8 @@ function GetDevices(data,Pfad){
                     //console.log(ObjName)
                 break;
             default:
-                adapter.log.info('ist '+Type+ ' '+ObjName+ ' ' + New_Pfad);
+//                adapter.log.info('ist '+Type+ ' '+ObjName+ ' ' + New_Pfad);
                 adapter.setObject(New_Pfad,    {type:Type,   common: {   role: ObjName }, native: {} });
-
                 if (Array.isArray(data[ObjName])===true){
                     adapter.log.info('ist Array'+ObjName);
                     for (i = 0; i < data[ObjName].length; i++) {
@@ -238,8 +215,8 @@ function main() {
                                 adapter.setState('Authorization.Token',access_token,true);
                                 adapter.setState('Authorization.Refresh_Token',refresh_token,true);
                    adapter.log.info("Send GET Devices");
-                   miele.SendRequest('v1/devices/','GET','',function(err,data){
-                                     console.log(err);
+                   miele.SendRequest('v1/devices/','GET',access_token,'',function(err,data){
+                                     adapter.log.info(err);
                                      if(!err){GetDevices(data,'Devices')}
                                      });
 
@@ -253,17 +230,15 @@ function main() {
     miele.SendRequest('v1/devices/','GET',access_token,'',function(err,data){
     //            adapter.log.info(err);
     //                  adapter.log.info(data);
-                      if(!err){adapter.log.info(data);GetDevices(data,'Devices')}
+                      if(!err){/*adapter.log.info(data);*/GetDevices(data,'Devices')}
     });
     };
                      });
 
     miele.log("Test exports");
-
     
         // in this mieleathome all states changes inside the adapters namespace are subscribed
     adapter.subscribeStates('*');
-
 
 }
 
