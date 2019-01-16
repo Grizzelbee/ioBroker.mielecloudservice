@@ -46,6 +46,15 @@ const mieleathome = require('./utils/mieleathome');
 
     // create adapter instance wich will be used for communication with controller
 let adapter;
+
+function getSetting(id,callback) {
+    adapter.getState (id,function(err,obj) {
+                      if (err) adapter.log.error ('getSetting: ' + err);
+                      callback(obj.val);
+    }
+};
+
+
 function startAdapter(options) {
 	options = options || {};
 	Object.assign(options, {
@@ -202,9 +211,13 @@ function main() {
                      if (!err) {adapter.log.info("Tokenwert" + state.val);
                             var  access_token = state.val ;
                      };
-    
-    adapter.log.info('Authorization.Access_Token:' + access_token);
-    
+
+ var refresh_token ;
+ getSetting('Authorization.Refresh_Token',function (wert){refresh_token=wert});
+
+  adapter.log.info('Authorization.Access_Token:' + access_token);
+  adapter.log.info('Authorization.Refresh_Token:' + refresh_token);
+
     if ( !access_token || 0 === access_token.length) {
     miele.GetToken(adapter.config.Miele_pwd,adapter.config.Miele_account,adapter.config.Client_ID,
                    adapter.config.Client_secret,
