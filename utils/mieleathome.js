@@ -33,6 +33,30 @@ class mieleathome {
         
     }
     
+    RefreshToken(Username,Password,Token,Refresh_Token,callback){
+        var options = {
+        url: 'https://api.mcs3.miele.com/thirdparty/token/',
+        method: 'POST',
+        form: {grant_type:'refresh_token',code:Application.Token,password:Password,username:Username,client_id:Application.Client_ID,client_secret:Application.Client_Secret,refresh_token:Application.refresh_token,vg:'de-DE'},
+        headers: {accept: 'application/json'}
+        };
+        
+        request(options, function (error, response, body){
+                if (response.statusCode==200){
+                P=JSON.parse(body);
+                return callback(false,P.access_token,P.refresh_token);
+                }
+                else{
+                console.error(response.statusCode+' Fehler bei Refresh Token !');
+                return callback(true,null,null);
+                }
+                });
+        
+    }//End of Function RefreshToken
+
+    
+    
+    
     SendRequest (Username,Password,Refresh_Token,Endpoint,Method,Token,Send_Body,callback){
         
         var options = {
