@@ -44,16 +44,21 @@ const adapterName = require('./package.json').name.split('.').pop();
 
 const mieleathome = require('./utils/mieleathome');
 
+const schedule = require('node-schedule');
+
     // create adapter instance wich will be used for communication with controller
 let adapter;
 
-function getSetting(id,callback) {
+/*
+ function getSetting(id,callback) {
     adapter.getState (id,function(err,obj) {
                       if (err) adapter.log.error ('getSetting: ' + err);
-                      callback(obj.val);
-    }
+                      callback(obj.val)}
+    )
 };
 
+function getVal(obj) {return adapter.getState (obj, function(val) {return obj.val})};
+*/
 
 function startAdapter(options) {
 	options = options || {};
@@ -155,6 +160,7 @@ function main() {
     adapter.log.info('config Client_secret: '    + adapter.config.Client_secret);
     adapter.log.info('config Miele_account: ' + adapter.config.Miele_account);
 
+
     adapter.setObject('Authorization', {
                       type: 'channel',
                       common: {
@@ -211,13 +217,12 @@ function main() {
                      if (!err) {adapter.log.info("Tokenwert" + state.val);
                             var  access_token = state.val ;
                      };
-
- var refresh_token ;
- getSetting('Authorization.Refresh_Token',function (wert){refresh_token=wert});
-
+                     adapter.getState('Authorization.Refresh_Token', function (err, state) {
+                                      if (!err) {adapter.log.info("Refresh_Tokenwert" + state.val);
+                                      var  rrefresh_token = state.val ;
+                                      };
   adapter.log.info('Authorization.Access_Token:' + access_token);
-  adapter.log.info('Authorization.Refresh_Token:' + refresh_token);
-
+  adapter.log.info('Authorization.Refresh_Token:' + rrefresh_token);
     if ( !access_token || 0 === access_token.length) {
     miele.GetToken(adapter.config.Miele_pwd,adapter.config.Miele_account,adapter.config.Client_ID,
                    adapter.config.Client_secret,
@@ -228,28 +233,34 @@ function main() {
                                 adapter.setState('Authorization.Token',access_token,true);
                                 adapter.setState('Authorization.Refresh_Token',refresh_token,true);
                    adapter.log.info("Send GET Devices");
-                   miele.SendRequest('v1/devices/','GET',access_token,'',function(err,data){
+                   miele.SendRequest(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,'v1/devices/','GET',access_token,'',function(err,data,atoken,rtoken){
                                      adapter.log.info(err);
                                      if(!err){GetDevices(data,'Devices')}
                                      });
-
                                 }
                                 else{adapter.setState('Authorization.Authorized',false,true)}
-                                
                                 });
     }
     else {
         adapter.log.info("Devices lesen");
-    miele.SendRequest('v1/devices/','GET',access_token,'',function(err,data){
+    miele.SendRequest(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,'v1/devices/','GET',access_token,'',function(err,data,atoken,rtoken){
     //            adapter.log.info(err);
     //                  adapter.log.info(data);
                       if(!err){/*adapter.log.info(data);*/GetDevices(data,'Devices')}
     });
     };
-                     });
+                                      //Schedule einplanen
+                                      var j = schedule.scheduleJob('*/10 * * * *', function(){
+                                                                   miele.SendRequest(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,'v1/devices/','GET',access_token,'',function(err,data,atoken,rtoken){
+                                                                                     if(!err){GetDevices(data,'Devices')}
+                                                                                     });
+                                                                   });
 
+                                      
+                                      });
+});
     miele.log("Test exports");
-    
+ 
         // in this mieleathome all states changes inside the adapters namespace are subscribed
     adapter.subscribeStates('*');
 

@@ -33,7 +33,7 @@ class mieleathome {
         
     }
     
-    SendRequest (Endpoint,Method,Token,Send_Body,callback){
+    SendRequest (Username,Password,Refresh_Token,Endpoint,Method,Token,Send_Body,callback){
         
         var options = {
         url: BaseURL+Endpoint,
@@ -56,24 +56,19 @@ class mieleathome {
                 return callback(true,null);
                 case 401: //Unauthorized
                 
-/*                var Username = getState('javascript.0.Miele.Authorization.Username').val;
-                var Password = getState('javascript.0.Miele.Authorization.Password').val;
+
 
                 RefreshToken(Username,Password,Token,Application.refresh_token,function(err,access_token,refresh_token){
                              if(!err){
-                             Application.Token=access_token;
-                             Application.refresh_token=refresh_token;
-                             setState('javascript.0.Miele.Authorization.Token',access_token);
-                             setState('javascript.0.Miele.Authorization.RefreshToken',refresh_token);
-                             console.log('Token erneuert !');
-                             SendRequest(Endpoint,Method,Send_Body,function(err,data){
+
+                             SendRequest(Username,Password,refresh_token,Endpoint,Method,Send_Body,function(err,data){
                                          if(!err){return callback(false,data)}
-                                         else{return callback(true,null)}
+                                         else{return callback(true,null,access_token,refresh_token)}
                                          });
                              }
-                             else{return callback(true,null);}
+                             else{return callback(true,null,null,null);}
                              });
- */
+ 
                 break;
                 default:
                 return callback(true,null);
