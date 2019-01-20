@@ -82,10 +82,10 @@ class mieleathome {
                 
 
 
-                RefreshToken(Username,Password,Token,Application.refresh_token,function(err,access_token,refresh_token){
+                this.RefreshToken(Username,Password,Token,Refresh_Token,function(err,access_token,refresh_token){
                              if(!err){
 
-                             SendRequest(Username,Password,refresh_token,Endpoint,Method,Send_Body,function(err,data){
+                             SendRequest(Username,Password,Refresh_Token,Endpoint,Method,acsess_token,Send_Body,function(err,data){
                                          if(!err){return callback(false,data)}
                                          else{return callback(true,null,access_token,refresh_token)}
                                          });
@@ -99,6 +99,29 @@ class mieleathome {
                 }
                 });
     }
+    GetDevices(Username,Password,Refresh_Token,Access_Token,callback){
+                this.SendRequest(Username,Password,Refresh_Token,'v1/devices/','GET',Access_Token,'',function(err,data,atoken,rtoken){
+                                          if(!err){return callback(err,data,atoken,rtoken)}
+                                          });
+               }
+    SetLightEnable(Username,Password,Refresh_Token,Access_Token,deviceID,parm,callback){
+        var path = 'v1/devices/' + deviceID;
+        var body = '{"light":1}';
+        this.SendRequest(Username,Password,Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
+                          if(!err){return callback(err,data,atoken,rtoken)}
+                          });
+
+    }
+    SetLightDisable(Username,Password,Refresh_Token,Access_Token,deviceID,parm,callback){
+        var path = 'v1/devices/' + deviceID;
+        var body = '{"light":2}';
+        this.SendRequest(Username,Password,Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
+                         if(!err){return callback(err,data,atoken,rtoken)}
+                         });
+        
+    }
+
+    
     }
 
 module.exports = mieleathome;
