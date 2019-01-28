@@ -5,10 +5,10 @@ var BaseURL = 'https://api.mcs3.miele.com/';
 
 class mieleathome {
     
- /*   var Username;
-    var Password;
-    var ClientID;
-    var Client_Secret; */
+    /*   var Username;
+     var Password;
+     var ClientID;
+     var Client_Secret; */
     
     constructor(Username, Password, Client_ID,Client_Secret) {
         
@@ -67,7 +67,7 @@ class mieleathome {
                 });
         
     }//End of Function RefreshToken
-
+    
     
     
     
@@ -94,40 +94,40 @@ class mieleathome {
                 return callback(true,null);
                 case 401: //Unauthorized
                 
-
-
+                
+                
                 this.RefreshToken(Username,Password,Token,Refresh_Token,function(err,access_token,refresh_token){
-                             if(!err){
-
-                             SendRequest(Username,Password,Refresh_Token,Endpoint,Method,acsess_token,Send_Body,function(err,data){
-                                         if(!err){return callback(false,data)}
-                                         else{return callback(true,null,access_token,refresh_token)}
-                                         });
-                             }
-                             else{return callback(true,null,null,null);}
-                             });
- 
+                                  if(!err){
+                                  
+                                  SendRequest(Username,Password,Refresh_Token,Endpoint,Method,acsess_token,Send_Body,function(err,data){
+                                              if(!err){return callback(false,data)}
+                                              else{return callback(true,null,access_token,refresh_token)}
+                                              });
+                                  }
+                                  else{return callback(true,null,null,null);}
+                                  });
+                
                 break;
                 default:
                 return callback(true,null);
                 }
                 });
     }
-
-
-
+    
+    
+    
     GetDevices(Username,Password,Refresh_Token,Access_Token,callback){
-                this.SendRequest(Username,Password,Refresh_Token,'v1/devices/','GET',Access_Token,'',function(err,data,atoken,rtoken){
-                                          if(!err){return callback(err,data,atoken,rtoken)}
-                                          });
-               }
+        this.SendRequest(Username,Password,Refresh_Token,'v1/devices/','GET',Access_Token,'',function(err,data,atoken,rtoken){
+                         if(!err){return callback(err,data,atoken,rtoken)}
+                         });
+    }
     SetLightEnable(Username,Password,Refresh_Token,Access_Token,deviceID,parm,callback){
         var path = 'v1/devices/' + deviceID;
         var body = '{"light":1}';
         this.SendRequest(Username,Password,Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
-                          if(!err){return callback(err,data,atoken,rtoken)}
-                          });
-
+                         if(!err){return callback(err,data,atoken,rtoken)}
+                         });
+        
     }
     SetLightDisable(Username,Password,Refresh_Token,Access_Token,deviceID,parm,callback){
         var path = 'v1/devices/' + deviceID;
@@ -137,7 +137,7 @@ class mieleathome {
                          });
         
     }
-//****************************************************************************************
+        //****************************************************************************************
     NGetToken(callback) {
         var options = {
         url: 'https://api.mcs3.miele.com/thirdparty/token/',
@@ -161,7 +161,7 @@ class mieleathome {
                 )
         
     }
-
+    
     NRefreshToken(Token,Refresh_Token,callback){
         var options = {
         url: 'https://api.mcs3.miele.com/thirdparty/token/',
@@ -182,10 +182,10 @@ class mieleathome {
                 });
         
     }//End of Function RefreshToken
-
     
     
-
+    
+    
     NSendRequest(Refresh_Token,Endpoint,Method,Token,Send_Body,callback){
         
         var options = {
@@ -197,7 +197,7 @@ class mieleathome {
         
         request(options,function (error, response, body){
                 console.log(response.statusCode);
-                console.log(body);
+                // console.log(body);
                 switch (response.statusCode){
                 case 200: // OK
                 return callback(false,JSON.parse(body));
@@ -212,15 +212,15 @@ class mieleathome {
                 
                 
                 this.NRefreshToken(Token,Refresh_Token,function(err,access_token,refresh_token){
-                                  if(!err){
-                                  
-                                  NSendRequest(Refresh_Token,Endpoint,Method,acsess_token,Send_Body,function(err,data){
-                                              if(!err){return callback(false,data)}
-                                              else{return callback(true,null,access_token,refresh_token)}
-                                              });
-                                  }
-                                  else{return callback(true,null,null,null);}
-                                  });
+                                   if(!err){
+                                   
+                                   NSendRequest(Refresh_Token,Endpoint,Method,acsess_token,Send_Body,function(err,data){
+                                                if(!err){return callback(false,data)}
+                                                else{return callback(true,null,access_token,refresh_token)}
+                                                });
+                                   }
+                                   else{return callback(true,null,null,null);}
+                                   });
                 
                 break;
                 default:
@@ -230,8 +230,8 @@ class mieleathome {
     }
     NGetDevices(Refresh_Token,Access_Token,callback){
         this.NSendRequest(Refresh_Token,'v1/devices/','GET',Access_Token,'',function(err,data,atoken,rtoken){
-                         if(!err){return callback(err,data,atoken,rtoken)}
-                         });
+                          if(!err){return callback(err,data,atoken,rtoken)}
+                          });
     }
     NGetDeviceState(Refresh_Token,Access_Token,deviceID,callback){
         var path = 'v1/devices/' + deviceID + '/state';
@@ -239,25 +239,45 @@ class mieleathome {
                           if(!err){return callback(err,data,atoken,rtoken)}
                           });
     }
+    NGetDeviceStatus(Refresh_Token,Access_Token,deviceID,callback){
+        this.NGetDeviceState(Refresh_Token,Access_Token,deviceID,function(err,data,atoken,rtoken){
+                             if(!err){var st = JSON.stringify(data.status.value_raw);return callback(err,st,atoken,rtoken) } else
+                             {return callback(err,'',atoken,rtoken)};
+                             });
+    }
 
     NSetLightEnable(Refresh_Token,Access_Token,deviceID,parm,callback){
         var path = 'v1/devices/' + deviceID;
         var body = '{"light":1}';
-        this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
-                         if(!err){return callback(err,data,atoken,rtoken)}
-                         });
+        var status;
+        this.NGetDeviceStatus(Refresh_Token,Access_Token,deviceID,function(err,data,atoken,rtoken){
+                              if(!err){status = data}});
+        if (status == 5){
+            this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
+                              if(!err){return callback(err,data,atoken,rtoken)}
+                              });
+        }
+        else
+            {return callback('Status ne 5')
+            }
     }
     NSetLightDisable(Refresh_Token,Access_Token,deviceID,parm,callback){
         var path = 'v1/devices/' + deviceID;
         var body = '{"light":2}';
-        this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
-                         if(!err){return callback(err,data,atoken,rtoken)}
-                         });
+        var status;
+        this.NGetDeviceStatus(Refresh_Token,Access_Token,deviceID,function(err,data,atoken,rtoken){
+                              if(!err){status = data}});
+        if (status === 5){console.log('status erfüllt');
+            this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
+                              if(!err){return callback(err,data,atoken,rtoken)}
+                              });
+        }
+        else
+            {return callback('Status ne 5')
+            }
         
     }
-
-    
-    }
+}
 
 module.exports = mieleathome;
 
