@@ -8,7 +8,7 @@
  *  {
  *      "common": {
  *          "name":         "mieleathome",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
- *          "version":      "0.0.0",                    // use "Semantic Versioning"! see http://semver.org/
+ *          "version":      "0.0.2",                    // use "Semantic Versioning"! see http://semver.org/
  *          "title":        "Node.js mieleathome Adapter",  // Adapter title shown in User Interfaces
  *          "authors":  [                               // Array of authord
  *              "name <hash99@iesy.net>"
@@ -219,9 +219,9 @@ function main() {
                       });
     
     
-//    var miele = new mieleathome;
+        //    var miele = new mieleathome;
     var miele = new mieleathome(adapter.config.Miele_account, adapter.config.Miele_pwd, adapter.config.Client_ID,adapter.config.Client_secret);
-
+    
     adapter.getState('Authorization.Token', function (err, state) {
                      if (!err) {adapter.log.info("Tokenwert" + state.val);
                      var  access_token = state.val ;
@@ -233,28 +233,28 @@ function main() {
                                       adapter.log.info('Authorization.Access_Token:' + access_token);
                                       adapter.log.info('Authorization.Refresh_Token:' + rrefresh_token);
                                       if ( !access_token || 0 === access_token.length) {
-//                                      miele.GetToken(adapter.config.Miele_pwd,adapter.config.Miele_account,adapter.config.Client_ID,
-//                                                     adapter.config.Client_secret,
+                                      //                                      miele.GetToken(adapter.config.Miele_pwd,adapter.config.Miele_account,adapter.config.Client_ID,
+                                      //                                                     adapter.config.Client_secret,
                                       miele.NGetToken(function(err,access_token,refresh_token){
-                                                     
-                                                     if(!err){
-                                                     adapter.setState('Authorization.Authorized',true,true);
-                                                     adapter.setState('Authorization.Token',access_token,true);
-                                                     adapter.setState('Authorization.Refresh_Token',refresh_token,true);
-                                                     adapter.log.info("Send GET Devices");
-                                                     /*miele.SendRequest(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,'v1/devices/','GET',access_token,'',function(err,data,atoken,rtoken){
-                                                      adapter.log.info(err);
-                                                      if(!err){GetDevices(data,'Devices')}
-                                                      });*/
-//                                                     miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-//                                                                      access_token,function(err,data,atoken,rtoken){
-                                                                      miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                                      adapter.log.info(err);
-                                                                      if(!err){GetDevices(data,'Devices')}
-                                                                      });
-                                                     }
-                                                     else{adapter.setState('Authorization.Authorized',false,true)}
-                                                     });
+                                                      
+                                                      if(!err){
+                                                      adapter.setState('Authorization.Authorized',true,true);
+                                                      adapter.setState('Authorization.Token',access_token,true);
+                                                      adapter.setState('Authorization.Refresh_Token',refresh_token,true);
+                                                      adapter.log.info("Send GET Devices");
+                                                      /*miele.SendRequest(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,'v1/devices/','GET',access_token,'',function(err,data,atoken,rtoken){
+                                                       adapter.log.info(err);
+                                                       if(!err){GetDevices(data,'Devices')}
+                                                       });*/
+                                                      //                                                     miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
+                                                      //                                                                      access_token,function(err,data,atoken,rtoken){
+                                                      miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
+                                                                        adapter.log.info(err);
+                                                                        if(!err){GetDevices(data,'Devices')}
+                                                                        });
+                                                      }
+                                                      else{adapter.setState('Authorization.Authorized',false,true)}
+                                                      });
                                       }
                                       else {
                                       adapter.log.info("Devices lesen");
@@ -263,12 +263,12 @@ function main() {
                                       //                                                        //                  adapter.log.info(data);
                                       //                                                        if(!err){/*adapter.log.info(data);*/GetDevices(data,'Devices')}
                                       //                                                        });
-//                                      miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-//                                                       access_token,function(err,data,atoken,rtoken){
-                                                       miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                       adapter.log.info(err);
-                                                       if(!err){GetDevices(data,'Devices')}
-                                                       });
+                                      //                                      miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
+                                      //                                                       access_token,function(err,data,atoken,rtoken){
+                                      miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
+                                                        adapter.log.info(err);
+                                                        if(!err){GetDevices(data,'Devices')}
+                                                        });
                                       
                                       };
                                       //Schedule einplanen
@@ -277,12 +277,12 @@ function main() {
                                                                    //                                                                                     if(!err){GetDevices(data,'Devices')}
                                                                    //                                                                                     });
                                                                    //                                                                   });
-//                                                                   miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-//                                                                                    access_token,function(err,data,atoken,rtoken){
-                                                                                    miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                                                    adapter.log.info(err);
-                                                                                    if(!err){GetDevices(data,'Devices')}
-                                                                                    });
+                                                                   //                                                                   miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
+                                                                   //                                                                                    access_token,function(err,data,atoken,rtoken){
+                                                                   miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
+                                                                                     adapter.log.info(err);
+                                                                                     if(!err){GetDevices(data,'Devices')}
+                                                                                     });
                                                                    });
                                       });
                      });
@@ -303,9 +303,9 @@ if (module && module.parent) {
 }
 
 adapter.on('stateChange', (id, state) => {
-//           var miele = new mieleathome;
+           //           var miele = new mieleathome;
            var miele = new mieleathome(adapter.config.Miele_account, adapter.config.Miele_pwd, adapter.config.Client_ID,adapter.config.Client_secret);
-
+           
            //           adapter.log.info(id + ' ' + state.ack );
            if (!id || !state || state.ack) {
            //  return;
@@ -331,16 +331,20 @@ adapter.on('stateChange', (id, state) => {
                                              switch (id)
                                              {
                                              case 'LightOn':
-//                                             miele.SetLightEnable(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-//                                                                                  access_token,devices,function(err,data,atoken,rtoken){
-                                                                  miele.NSetLightEnable(rrefresh_token, access_token,devices,function(err,data,atoken,rtoken){
-                                                                                  if(err){adapter.log.info(err);}
-                                                                                  if(!err){adapter.log.info(devices + 'LightOn Set')}
-                                                                                  });
+                                             //                                             miele.SetLightEnable(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
+                                             //                                                                                  access_token,devices,function(err,data,atoken,rtoken){
+                                             miele.NSetLightEnable(rrefresh_token, access_token,devices,function(err,data,atoken,rtoken){
+                                                                   if(err){adapter.log.info(err);}
+                                                                   if(!err){adapter.log.info(devices + 'LightOn Set')}
+                                                                   });
                                              adapter.log.debug('LightOn');
                                              //   receiver.power(state.val);
                                              break;
                                              case 'LightOff':
+                                             miele.NSetLightDisable(rrefresh_token, access_token,devices,function(err,data,atoken,rtoken){
+                                                                    if(err){adapter.log.info(err);}
+                                                                    if(!err){adapter.log.info(devices + 'LightOn Set')}
+                                                                    });
                                              adapter.log.debug('LightOff');
                                              //   receiver.power(state.val);
                                              break;
@@ -350,12 +354,12 @@ adapter.on('stateChange', (id, state) => {
                                              switch (id)
                                              {
                                              case 'GetDevices':
-//                                             miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-//                                                                                 access_token,function(err,data,atoken,rtoken){
-                                                              miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                                                 adapter.log.info(err);
-                                                                                 if(!err){GetDevices(data,'Devices')}
-                                                                                 });
+                                             //                                             miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
+                                             //                                                                                 access_token,function(err,data,atoken,rtoken){
+                                             miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
+                                                               adapter.log.info(err);
+                                                               if(!err){GetDevices(data,'Devices')}
+                                                               });
                                              break;
                                              }
                                              }

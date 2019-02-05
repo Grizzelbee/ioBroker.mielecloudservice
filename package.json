@@ -1,15 +1,15 @@
 {
   "name": "iobroker.mieleathome",
-  "version": "0.7.0",
+  "version": "0.0.2",
   "description": "mieleathome",
   "author": {
     "name": "Helmut Horras",
-    "email": "helmut.horras@iesy.net"
+    "email": "hash99@iesy.net"
   },
   "contributors": [
     {
       "name": "Helmut Horras",
-      "email": "helmut.horras@iesy.net"
+      "email": "hash99@iesy.net"
     }
   ],
   "homepage": "https://github.com/ioBroker/ioBroker.mieleathome",
@@ -22,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ioBroker/ioBroker.mieleathome"
+    "url": "https://github.com/ioBroker/ioBroker.mieleathome.git"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^1.0.3"

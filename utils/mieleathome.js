@@ -1,6 +1,6 @@
 
 var request = require("request");
-
+var req_sync = require('sync-request');
 var BaseURL = 'https://api.mcs3.miele.com/';
 
 class mieleathome {
@@ -183,15 +183,12 @@ class mieleathome {
         
     }//End of Function RefreshToken
     
-    
-    
-    
     NSendRequest(Refresh_Token,Endpoint,Method,Token,Send_Body,callback){
         
         var options = {
         url: BaseURL+Endpoint,
         method: Method,
-        headers: {Authorization: 'Bearer '+Token},
+        headers: {Authorization: 'Bearer '+Token, accept: 'application/json', Content-Type: 'application/json'},
         form:Send_Body
         };
         
@@ -200,31 +197,30 @@ class mieleathome {
                 // console.log(body);
                 switch (response.statusCode){
                 case 200: // OK
-                return callback(false,JSON.parse(body));
+                //if (!body){return callback(false,JSON.parse(body),null,null);} else {callback(false,null,null,null)};
+                {return callback(false,JSON.parse(body),null,null)};
+                break;
                 case 202: //Accepted, processing has not been completed.
                 break;
                 case 204: // OK, No Content
-                return callback(false,null);
+                return callback(false,null,null,null);
+                break;
                 case 400: //Bad Request, message body will contain more information
-                return callback(true,null);
+                return callback(true,null,null,null);
+                break;
                 case 401: //Unauthorized
-                
-                
-                
                 this.NRefreshToken(Token,Refresh_Token,function(err,access_token,refresh_token){
                                    if(!err){
-                                   
-                                   NSendRequest(Refresh_Token,Endpoint,Method,acsess_token,Send_Body,function(err,data){
-                                                if(!err){return callback(false,data)}
-                                                else{return callback(true,null,access_token,refresh_token)}
-                                                });
+                                   this.NSendRequest(Refresh_Token,Endpoint,Method,acsess_token,Send_Body,function(err,data){
+                                                     if(!err){return callback(false,data,access_token,refresh_token)}
+                                                     else{return callback(true,null,access_token,refresh_token)}
+                                                     });
                                    }
                                    else{return callback(true,null,null,null);}
                                    });
-                
                 break;
                 default:
-                return callback(true,null);
+                return callback(true,null,null,null);
                 }
                 });
     }
@@ -236,48 +232,63 @@ class mieleathome {
     NGetDeviceState(Refresh_Token,Access_Token,deviceID,callback){
         var path = 'v1/devices/' + deviceID + '/state';
         this.NSendRequest(Refresh_Token,path,'GET',Access_Token,'',function(err,data,atoken,rtoken){
-                          if(!err){return callback(err,data,atoken,rtoken)}
+                          if(!err){console.log('data'+JSON.stringify(data));return callback(err,data,atoken,rtoken)}
                           });
     }
     NGetDeviceStatus(Refresh_Token,Access_Token,deviceID,callback){
         this.NGetDeviceState(Refresh_Token,Access_Token,deviceID,function(err,data,atoken,rtoken){
                              if(!err){var st = JSON.stringify(data.status.value_raw);return callback(err,st,atoken,rtoken) } else
-                             {return callback(err,'',atoken,rtoken)};
+                             {return callback(err,st,atoken,rtoken)};
                              });
     }
-
-    NSetLightEnable(Refresh_Token,Access_Token,deviceID,parm,callback){
-        var path = 'v1/devices/' + deviceID;
+    NGetDeviceStatusValue(Access_Token,Method,Path,deviceID){
+        var res = req_sync(Method, BaseURL+Path+deviceID+'/state', {headers: { "Authorization": "Bearer "+Access_Token,
+                           "accept": 'application/json' }, timeout: 60000} );
+        if (res.statusCode === 200) {
+            return JSON.parse(res.getBody('utf-8')).status.value_raw;
+        } else {console.log(res.statusCode);
+            return undefined;
+        }
+    }
+    
+    NSetLightEnable(Refresh_Token,Access_Token,deviceID,callback){
+        var path = 'v1/devices/' + deviceID + '/actions';
         var body = '{"light":1}';
         var status;
         this.NGetDeviceStatus(Refresh_Token,Access_Token,deviceID,function(err,data,atoken,rtoken){
-                              if(!err){status = data}});
-        if (status == 5){
-            this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
-                              if(!err){return callback(err,data,atoken,rtoken)}
-                              });
-        }
-        else
-            {return callback('Status ne 5')
-            }
+                              if(!err){status = data;
+                              if (status === "5"){ console.log('Body:'+body); console.log('Path:'+path);
+                              this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
+                                                if(!err){return callback(err,data,atoken,rtoken)}
+                                                });
+                              }
+                              else
+                              {return callback('Status ne 5')
+                              }
+                              }});
     }
-    NSetLightDisable(Refresh_Token,Access_Token,deviceID,parm,callback){
-        var path = 'v1/devices/' + deviceID;
-        var body = '{"light":2}';
-        var status;
-        this.NGetDeviceStatus(Refresh_Token,Access_Token,deviceID,function(err,data,atoken,rtoken){
-                              if(!err){status = data}});
-        if (status === 5){console.log('status erfüllt');
+    NSetLightDisable(Refresh_Token,Access_Token,deviceID,callback){
+        var path = 'v1/devices/' + deviceID + '/actions';
+        var body = {'light':2};
+        var status = this.NGetDeviceStatusValue(Access_Token,'GET','v1/devices/',deviceID);
+        console.log('Status-Value'+ status);
+        if (status == "5"){
+            console.log('status erfüllt');
+            console.log('Body:'+body);
+            console.log('Path:'+path);
+            console.log('rtoken'+Refresh_Token);
+            console.log('atoken'+Access_Token);
             this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
                               if(!err){return callback(err,data,atoken,rtoken)}
                               });
         }
         else
-            {return callback('Status ne 5')
+            {return callback('Status ne 5',null, null, null)
             }
         
     }
 }
 
 module.exports = mieleathome;
+
 
