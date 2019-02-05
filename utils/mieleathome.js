@@ -188,7 +188,7 @@ class mieleathome {
         var options = {
         url: BaseURL+Endpoint,
         method: Method,
-        headers: {Authorization: 'Bearer '+Token, accept: 'application/json', Content-Type: 'application/json'},
+        headers: {Authorization: 'Bearer '+Token, accept: 'application/json'},// Content-Type: 'application/json'},
         form:Send_Body
         };
         
