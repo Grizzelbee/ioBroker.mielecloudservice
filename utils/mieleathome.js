@@ -184,13 +184,25 @@ class mieleathome {
     }//End of Function RefreshToken
     
     NSendRequest(Refresh_Token,Endpoint,Method,Token,Send_Body,callback){
-        
-        var options = {
-        url: BaseURL+Endpoint,
-        method: Method,
-        headers: {Authorization: 'Bearer '+Token, accept: 'application/json'},// Content-Type: 'application/json'},
-        form:Send_Body
-        };
+        var options;
+        if (Method == 'GET')
+            {
+            options = {
+            url: BaseURL+Endpoint,
+            method: Method,
+            headers: {Authorization: 'Bearer '+Token, accept: 'application/json'},// Content-Type: 'application/json'},
+            form:Send_Body
+            }
+            }
+        else
+            {
+            options = {
+            url: BaseURL+Endpoint,
+            method: Method,
+            headers: {Authorization: 'Bearer '+Token, accept: '*/*', 'content-type': 'application/json'},
+            form:Send_Body
+            }
+            }
         
         request(options,function (error, response, body){
                 console.log(response.statusCode);
