@@ -199,14 +199,15 @@ class mieleathome {
             options = {
             url: BaseURL+Endpoint,
             method: Method,
-            headers: {Authorization: 'Bearer '+Token, accept: '*/*', 'content-type': 'application/json'},
+            json: true, 
+	    headers: {Authorization: 'Bearer '+Token, accept: 'application/json',  'Content-Type': 'application/json;charset=UTF-8'},
             form:Send_Body
             }
             }
-        
+    console.log(options);    
         request(options,function (error, response, body){
                 console.log(response.statusCode);
-                // console.log(body);
+                 console.log(body);
                 switch (response.statusCode){
                 case 200: // OK
                 //if (!body){return callback(false,JSON.parse(body),null,null);} else {callback(false,null,null,null)};
@@ -265,7 +266,7 @@ class mieleathome {
     
     NSetLightEnable(Refresh_Token,Access_Token,deviceID,callback){
         var path = 'v1/devices/' + deviceID + '/actions';
-        var body = '{"light":1}';
+        var body = JSON.stringify({light:1});
         var status;
         this.NGetDeviceStatus(Refresh_Token,Access_Token,deviceID,function(err,data,atoken,rtoken){
                               if(!err){status = data;
@@ -281,10 +282,10 @@ class mieleathome {
     }
     NSetLightDisable(Refresh_Token,Access_Token,deviceID,callback){
         var path = 'v1/devices/' + deviceID + '/actions';
-        var body = {'light':2};
+        var body = JSON.stringify({light:2});
         var status = this.NGetDeviceStatusValue(Access_Token,'GET','v1/devices/',deviceID);
         console.log('Status-Value'+ status);
-        if (status == "5"){
+        if (status == "7"){
             console.log('status erfüllt');
             console.log('Body:'+body);
             console.log('Path:'+path);
