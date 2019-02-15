@@ -200,11 +200,11 @@ class mieleathome {
             url: BaseURL+Endpoint,
             method: Method,
             json: true, 
-	    headers: {Authorization: 'Bearer '+Token, accept: 'application/json',  'Content-Type': 'application/json;charset=UTF-8'},
-            form:Send_Body
+	    headers: {Authorization: 'Bearer '+Token, accept: '*/*'}, //,  'Content-Type': 'application/json;charset=UTF-8'},
+            body:Send_Body
             }
             }
-    console.log(options);    
+//    console.log(options);    
         request(options,function (error, response, body){
                 console.log(response.statusCode);
                  console.log(body);
@@ -266,8 +266,8 @@ class mieleathome {
     
     NSetLightEnable(Refresh_Token,Access_Token,deviceID,callback){
         var path = 'v1/devices/' + deviceID + '/actions';
-        var body = JSON.stringify({light:1});
-        var status;
+        var body = {"light":1};
+        var status = this.NGetDeviceStatusValue(Access_Token,'GET','v1/devices/',deviceID);
         this.NGetDeviceStatus(Refresh_Token,Access_Token,deviceID,function(err,data,atoken,rtoken){
                               if(!err){status = data;
                               if (status === "5"){ console.log('Body:'+body); console.log('Path:'+path);
@@ -282,15 +282,15 @@ class mieleathome {
     }
     NSetLightDisable(Refresh_Token,Access_Token,deviceID,callback){
         var path = 'v1/devices/' + deviceID + '/actions';
-        var body = JSON.stringify({light:2});
+        var body = {"light":2};
         var status = this.NGetDeviceStatusValue(Access_Token,'GET','v1/devices/',deviceID);
-        console.log('Status-Value'+ status);
-        if (status == "7"){
-            console.log('status erfüllt');
+        //console.log('Status-Value'+ status);
+        if (status == "5"){
+        /*    console.log('status erfüllt');
             console.log('Body:'+body);
             console.log('Path:'+path);
             console.log('rtoken'+Refresh_Token);
-            console.log('atoken'+Access_Token);
+            console.log('atoken'+Access_Token); */
             this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
                               if(!err){return callback(err,data,atoken,rtoken)}
                               });
