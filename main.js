@@ -218,8 +218,9 @@ function main() {
                       native: {}
                       });
     
-    
-        //    var miele = new mieleathome;
+    if (adapter.config.Miele_account && adapter.config.Miele_pwd && adapter.config.Client_ID && adapter.config.Client_secret )
+        {
+            //    var miele = new mieleathome;
     var miele = new mieleathome(adapter.config.Miele_account, adapter.config.Miele_pwd, adapter.config.Client_ID,adapter.config.Client_secret);
     
     adapter.getState('Authorization.Token', function (err, state) {
@@ -290,7 +291,7 @@ function main() {
     
         // in this mieleathome all states changes inside the adapters namespace are subscribed
     adapter.subscribeStates('*');
-    
+        }
 }//Ende Functin main
 
 
