@@ -3,7 +3,7 @@
 
     version: "0.5.0"
 
-    Copyright 10.2015-2016 Helmut Horras<helmut.horras@iesy.net>
+    Copyright 10.2015-2016 hash99<hash99@iesy.net>
 
 */
 "use strict";

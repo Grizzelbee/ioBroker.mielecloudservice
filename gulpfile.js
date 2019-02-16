@@ -373,8 +373,8 @@ gulp.task('updatePackages', function (done) {
 
 gulp.task('rename', function ()  {
     var newname;
-    var author = 'Helmut Horras';
-    var email  = 'helmut.horras@iesy.net';
+    var author = 'hash99';
+    var email  = 'hash99@iesy.net';
     for (var a = 0; a < process.argv.length; a++) {
         if (process.argv[a] === '--name') {
             newname = process.argv[a + 1]
@@ -425,7 +425,7 @@ gulp.task('rename', function ()  {
             replacement: newname ? (newname[0].toUpperCase() + newname.substring(1)) : 'Mieleathome'
         },
         {
-            match: /Helmut Horras/g,
+            match: /hash99/g,
             replacement: author
         },
         {
