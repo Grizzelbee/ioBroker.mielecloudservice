@@ -56,7 +56,7 @@
         "keywords": ["mieleathome", "vis", "GUI", "graphical", "scada"],
         "readme": "https://github.com/hash99/ioBroker.mieleathome/blob/master/README.md",
         "loglevel": "info",
-        "type": "general",
+        "type": "household",
         "license": "MIT",
         "messagebox": false,
         "restartAdapters": ["vis"]
