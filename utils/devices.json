@@ -1,0 +1,28 @@
+{
+"devices": [
+{
+"processAction": "START",
+"type": [1,2,7,24],
+"condition": "(fullRemoteControl==true) && (status==4)",
+"requestbody": "{\"processAction\":1}"	
+},
+{
+"processAction": "STOP",
+"type": [	1,2,7,12,13,17,18,24,31,45,67],
+"condition": "((status==4)||(status==5)||(status==6))",
+"requestbody": "{\"processAction\":2}"	
+},
+{
+"processAction": "PAUSE",
+"type": "*",
+"condition": "",
+"requestbody": "{\"processAction\":3}"	
+},
+{
+"processAction": "DEVICENAME",
+"type": "*",
+"condition": "",
+"requestbody": "{\"deviceName\":devicename}"	
+}
+]
+}
