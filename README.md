@@ -31,6 +31,13 @@ Client_id
 ### 0.0.1
 * (hash99) initial release
 
+### 0.0.3
+* (hash99) adapter conform
+
+
+## Next Steps
+Device Integration rdevcie type related Button-Creation
+
 ## License
 The MIT License (MIT)
 
