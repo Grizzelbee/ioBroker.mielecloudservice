@@ -300,6 +300,26 @@ class mieleathome {
             }
         
     }
+    NSetStart(Refresh_Token,Access_Token,deviceID,callback){
+        var path = 'v1/devices/' + deviceID + '/actions';
+        var body = {"processAction":1};
+        var status = this.NGetDeviceStatusValue(Access_Token,'GET','v1/devices/',deviceID);
+        //console.log('Status-Value'+ status);
+        if (status == "4"){
+        /*    console.log('status erfüllt');
+            console.log('Body:'+body);
+            console.log('Path:'+path);
+            console.log('rtoken'+Refresh_Token);
+            console.log('atoken'+Access_Token); */
+            this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
+                              if(!err){return callback(err,data,atoken,rtoken)}
+                              });
+        }
+        else
+            {return callback('Status ne 5',null, null, null)
+            }
+        
+    }
 }
 
 module.exports = mieleathome;

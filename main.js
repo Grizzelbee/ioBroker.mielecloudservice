@@ -48,7 +48,7 @@ const schedule = require('node-schedule');
 
     // create adapter instance wich will be used for communication with controller
 let adapter;
-
+var miele;
 /*
  function getSetting(id,callback) {
  adapter.getState (id,function(err,obj) {
@@ -112,22 +112,22 @@ function startAdapter(options) {
 function GetDevices(data,Pfad){
     for (var ObjName in data) {
         var New_Pfad=Pfad+'.'+ObjName;
-            //        adapter.setObject(New_Pfad,    {type:Type,       role: ObjName},native: {});
+            //        adapter.setObjectNotExists(New_Pfad,    {type:Type,       role: 'state'},native: {});
         var Type=typeof data[ObjName];
             //   adapter.log.info(ObjName + ' ' + Pfad + ' ' + Type);
         switch(Type){
             case 'object':
                     //                adapter.log.info('ist Objekt '+ObjName+ ' ' + New_Pfad);
                 if (!adapter.getObject(New_Pfad)){
-                    adapter.setObject(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: ObjName }, native: {} });
+                    adapter.setObjectNotExists(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: 'state'}, native: {} });
                 };
                     // adapter.log.info(ObjName + ' ' + Pfad + ' ' + New_Pfad + ' ' + Type);
                 if (New_Pfad.split('.')[0] === 'Devices' && !New_Pfad.split('.')[2]) {
-                    adapter.setObject(New_Pfad + '.LightOn', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
-                    adapter.setObject(New_Pfad + '.LightOff', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
+                    adapter.setObjectNotExists(New_Pfad + '.LightOn', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
+                    adapter.setObjectNotExists(New_Pfad + '.LightOff', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
                 };
                 if (Pfad === 'Devices') {
-                    adapter.setObject(Pfad + '.GetDevices', { type: 'state', common: { name: 'GetDevices',type: 'boolean',role: 'button' },native: {}});
+                    adapter.setObjectNotExists(Pfad + '.GetDevices', { type: 'state', common: { name: 'GetDevices',type: 'boolean',role: 'button' },native: {}});
                 };
                     //console.log(ObjName)
                 GetDevices(data[ObjName],New_Pfad);
@@ -138,7 +138,7 @@ function GetDevices(data,Pfad){
             case 'none':
                     //                adapter.log.info('ist none '+ObjName+ ' ' + New_Pfad);
                 if (!adapter.getObject(New_Pfad)){
-                    adapter.setObject(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: ObjName }, native: {} });
+                    adapter.setObjectNotExists(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: 'state' }, native: {} });
                     adapter.setState(New_Pfad,data[ObjName],true)
                 }
                 else{adapter.setState(New_Pfad,data[ObjName],true)}
@@ -146,7 +146,7 @@ function GetDevices(data,Pfad){
                 break;
             default:
                     //                adapter.log.info('ist '+Type+ ' '+ObjName+ ' ' + New_Pfad);
-                adapter.setObject(New_Pfad,    {type:Type,   common: {   role: ObjName }, native: {} });
+                adapter.setObjectNotExists(New_Pfad,    {type:Type,   common: {   role: 'state' }, native: {} });
                 if (Array.isArray(data[ObjName])===true){
                         //    adapter.log.info('ist Array'+ObjName);
                     for (i = 0; i < data[ObjName].length; i++) {
@@ -169,17 +169,17 @@ function main() {
     adapter.log.info('config Miele_account: ' + adapter.config.Miele_account);
     
     
-    adapter.setObject('Authorization', {
+    adapter.setObjectNotExists('Authorization', {
                       type: 'channel',
                       common: {
                       name: 'Authorization',
                       type: 'text',
-                      role: 'authorization'
+                      role: 'value'
                       },
                       native: {}
                       });
     
-    adapter.setObject('Authorization.Authorized', {
+    adapter.setObjectNotExists('Authorization.Authorized', {
                       type: 'state',
                       common: {
                       name: 'Authorized',
@@ -189,7 +189,7 @@ function main() {
                       native: {}
                       });
     
-    adapter.setObject('Authorization.Token', {
+    adapter.setObjectNotExists('Authorization.Token', {
                       type: 'state',
                       common: {
                       name: 'Token',
@@ -199,7 +199,7 @@ function main() {
                       native: {}
                       });
     
-    adapter.setObject('Authorization.Refresh_Token', {
+    adapter.setObjectNotExists('Authorization.Refresh_Token', {
                       type: 'state',
                       common: {
                       name: 'Refresh_Token',
@@ -208,7 +208,7 @@ function main() {
                       },
                       native: {}
                       });
-    adapter.setObject('Devices', {
+    adapter.setObjectNotExists('Devices', {
                       type: 'state',
                       common: {
                       name: 'Devices',
@@ -221,7 +221,7 @@ function main() {
     if (adapter.config.Miele_account && adapter.config.Miele_pwd && adapter.config.Client_ID && adapter.config.Client_secret )
         {
             //    var miele = new mieleathome;
-    var miele = new mieleathome(adapter.config.Miele_account, adapter.config.Miele_pwd, adapter.config.Client_ID,adapter.config.Client_secret);
+    miele = new mieleathome(adapter.config.Miele_account, adapter.config.Miele_pwd, adapter.config.Client_ID,adapter.config.Client_secret);
     
     adapter.getState('Authorization.Token', function (err, state) {
                      if (!err) {adapter.log.info("Tokenwert" + state.val);
@@ -273,7 +273,8 @@ function main() {
                                       
                                       };
                                       //Schedule einplanen
-                                      var j = schedule.scheduleJob('*/10 * * * *', function(){
+                                   //   var j = schedule.scheduleJob('*/10 * * * *', function(){
+                                      setTimeout(function(){
                                                                    //                                                                   miele.SendRequest(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,'v1/devices/','GET',access_token,'',function(err,data,atoken,rtoken){
                                                                    //                                                                                     if(!err){GetDevices(data,'Devices')}
                                                                    //                                                                                     });
@@ -284,7 +285,7 @@ function main() {
                                                                                      adapter.log.info(err);
                                                                                      if(!err){GetDevices(data,'Devices')}
                                                                                      });
-                                                                   });
+                                                                   },360000);
                                       });
                      });
     miele.log("Test exports");
@@ -305,7 +306,7 @@ if (module && module.parent) {
 
 adapter.on('stateChange', (id, state) => {
            //           var miele = new mieleathome;
-           var miele = new mieleathome(adapter.config.Miele_account, adapter.config.Miele_pwd, adapter.config.Client_ID,adapter.config.Client_secret);
+           //var miele = new mieleathome(adapter.config.Miele_account, adapter.config.Miele_pwd, adapter.config.Client_ID,adapter.config.Client_secret);
            
            //           adapter.log.info(id + ' ' + state.ack );
            if (!id || !state || state.ack) {
