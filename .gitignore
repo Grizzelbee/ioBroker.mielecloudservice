@@ -1,5 +1,6 @@
 .git
 .idea
+._
 node_modules
 nbproject
 admin/i18n/flat.txt
