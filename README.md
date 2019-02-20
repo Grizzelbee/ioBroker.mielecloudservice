@@ -41,7 +41,7 @@ Device Integration rdevcie type related Button-Creation
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2019 Helmut Horras <helmut.horras@iesy.net>
+Copyright (c) 2019 Hash99 <hash99@iesy.net>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
