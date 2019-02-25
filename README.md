@@ -34,6 +34,10 @@ Client_id
 ### 0.0.3
 * (hash99) adapter conform
 
+### 0.0.4
+* (hash99) add devices configuration
+
+
 
 ## Next Steps
 Device Integration rdevcie type related Button-Creation

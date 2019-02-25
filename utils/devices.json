@@ -1,28 +1,64 @@
 {
-"devices": [
-{
-"processAction": "START",
-"type": [1,2,7,24],
-"condition": "(fullRemoteControl==true) && (status==4)",
-"requestbody": "{\"processAction\":1}"	
-},
-{
-"processAction": "STOP",
-"type": [	1,2,7,12,13,17,18,24,31,45,67],
-"condition": "((status==4)||(status==5)||(status==6))",
-"requestbody": "{\"processAction\":2}"	
-},
-{
-"processAction": "PAUSE",
-"type": "*",
-"condition": "",
-"requestbody": "{\"processAction\":3}"	
-},
-{
-"processAction": "DEVICENAME",
-"type": "*",
-"condition": "",
-"requestbody": "{\"deviceName\":devicename}"	
-}
-]
+  "devices": [
+    {
+      "type": [1,2,7,24],
+      "condition": "(fullRemoteControl==true) && (status==4)",
+      "processAction": "START",
+      "requestbody": "{\"processAction\":1}"
+    },
+    {
+      "type": [1,2,7,12,13,17,18,24,31,45,67],
+      "condition": "((status==4)||(status==5)||(status==6))",
+      "processAction": "STOP",
+      "requestbody": "{\"processAction\":2}"
+    },
+    {
+      "type": "*",
+      "condition": "true",
+      "processAction": "PAUSE",
+      "requestbody": "{\"processAction\":3}"
+    },
+    {
+      "type": [20,21,68],
+      "condition": "(status==5)",
+      "processAction": "START_SUPERFREEZING",
+      "requestbody": "{\"processAction\":4}"
+    },
+    {
+      "type": [20,21,68],
+      "condition": "(status==13)||(status==146)",
+      "processAction": "STOP_SUPERFREEZING",
+      "requestbody": "{\"processAction\":5}"
+    },
+    {
+      "type": [20,21,68],
+      "condition": "(status==5)",
+      "processAction": "START_SUPERCOOLING",
+      "requestbody": "{\"processAction\":6}"
+    },
+    {
+      "type": [20,21,68],
+      "condition": "(status==13)||(status==146)",
+      "processAction": "STOP_SUPERCOOLING",
+      "requestbody": "{\"processAction\":7}"
+    },
+    {
+      "type": [17,18,32,33,34,68],
+      "condition": "(status==5)",
+      "processAction": "LIGHT_ENABLE",
+      "requestbody": "{\"light\":1}"
+    },
+    {
+      "type": [17,18,32,33,34,68],
+      "condition": "(status==5)",
+      "processAction": "LIGHT_DISABLE",
+      "requestbody": "{\"light\":2}"
+    },
+    {
+      "type": "*",
+      "condition": "",
+      "processAction": "DEVICENAME",
+      "requestbody": "{\"deviceName\":devicename}"
+    }
+  ]
 }

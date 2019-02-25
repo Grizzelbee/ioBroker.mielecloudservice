@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "mieleathome",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "news": {
             "0.0.3": {
                 "en": "initial adapter",
@@ -34,7 +34,7 @@
             "es": "Adaptador de plantilla ioBroker"
         },
         "authors": [
-            "Helmut Horras <hash99@iesy.net>"
+            "hash99 <hash99@iesy.net>"
         ],
         "platform": "Javascript/Node.js",
         "mode": "daemon",

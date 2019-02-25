@@ -2,6 +2,8 @@
 var request = require("request");
 var req_sync = require('sync-request');
 var BaseURL = 'https://api.mcs3.miele.com/';
+var  mieledevice = require('./devices.js');
+
 
 class mieleathome {
     
@@ -17,12 +19,13 @@ class mieleathome {
         this.Password = Password;
         this.Client_ID = Client_ID;
         this.Client_Secret = Client_Secret;
+        this.device = new mieledevice();
     }
     
     log (msg) {
         console.log(msg);
     }
-    
+/*
     GetToken (Password,Username,Client_ID,Client_Secret,callback) {
         var options = {
         url: 'https://api.mcs3.miele.com/thirdparty/token/',
@@ -137,6 +140,7 @@ class mieleathome {
                          });
         
     }
+ */
         //****************************************************************************************
     NGetToken(callback) {
         var options = {
@@ -263,6 +267,15 @@ class mieleathome {
             return undefined;
         }
     }
+    NGetDevicefRCValue(Access_Token,Method,Path,deviceID){
+        var res = req_sync(Method, BaseURL+Path+deviceID+'/state', {headers: { "Authorization": "Bearer "+Access_Token,
+                           "accept": 'application/json' }, timeout: 60000} );
+        if (res.statusCode === 200) {
+            return JSON.parse(res.getBody('utf-8')).remoteEnable.fullRemoteControl;
+        } else {console.log(res.statusCode);
+            return undefined;
+        }
+    }
     
     NSetLightEnable(Refresh_Token,Access_Token,deviceID,callback){
         var path = 'v1/devices/' + deviceID + '/actions';
@@ -300,25 +313,25 @@ class mieleathome {
             }
         
     }
-    NSetStart(Refresh_Token,Access_Token,deviceID,callback){
+    NSetProcessAction(Refresh_Token,Access_Token,processAction,deviceID,Type,callback){
+    var status = this.NGetDeviceStatusValue(Access_Token,'GET','v1/devices/',deviceID);
+    var fullRemoteControl = this.NGetDevicefRCValue(Access_Token,'GET','v1/devices/',deviceID);
+    var dfunctions = this.device.readDevice(parseFloat(Type));
+    for ( var i = 0; i<dfunctions.length; i++)
+    {
+    //adapter.log.info('Function:' + Pfad + dfunctions[i][0] + dfunctions[i][1] + dfunctions[i][2]);
+    if (dfunctions[i][0] == processAction) {
+       if (dfunctions[i][1]) {
         var path = 'v1/devices/' + deviceID + '/actions';
-        var body = {"processAction":1};
-        var status = this.NGetDeviceStatusValue(Access_Token,'GET','v1/devices/',deviceID);
-        //console.log('Status-Value'+ status);
-        if (status == "4"){
-        /*    console.log('status erfüllt');
-            console.log('Body:'+body);
-            console.log('Path:'+path);
-            console.log('rtoken'+Refresh_Token);
-            console.log('atoken'+Access_Token); */
-            this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
+        var body = {"light":2};
+          this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
                               if(!err){return callback(err,data,atoken,rtoken)}
                               });
-        }
-        else
-            {return callback('Status ne 5',null, null, null)
-            }
-        
+       
+       }
+    } 
+    }     
+     
     }
 }
 

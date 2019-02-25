@@ -8,7 +8,7 @@
  *  {
  *      "common": {
  *          "name":         "mieleathome",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
- *          "version":      "0.0.2",                    // use "Semantic Versioning"! see http://semver.org/
+ *          "version":      "0.0.4",                    // use "Semantic Versioning"! see http://semver.org/
  *          "title":        "Node.js mieleathome Adapter",  // Adapter title shown in User Interfaces
  *          "authors":  [                               // Array of authord
  *              "name <hash99@iesy.net>"
@@ -36,221 +36,235 @@
 
 
 
-    // you have to require the utils module and call adapter function
+  // you have to require the utils module and call adapter function
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 
-    // read the adapter name from package.json
+  // read the adapter name from package.json
 const adapterName = require('./package.json').name.split('.').pop();
 
 const mieleathome = require('./utils/mieleathome');
+const mieledevice = require('./utils/devices.js');
 
 const schedule = require('node-schedule');
 
-    // create adapter instance wich will be used for communication with controller
+  // create adapter instance wich will be used for communication with controller
 let adapter;
+
 var miele;
-/*
- function getSetting(id,callback) {
- adapter.getState (id,function(err,obj) {
- if (err) adapter.log.error ('getSetting: ' + err);
- callback(obj.val)}
- )
- };
- 
- function getVal(obj) {return adapter.getState (obj, function(val) {return obj.val})};
- */
+var device = new mieledevice();
 
 function startAdapter(options) {
-    options = options || {};
-    Object.assign(options, {
-                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
-                  name: adapterName,
-                  // is called when adapter shuts down - callback has to be called under any circumstances!
-                  unload: function (callback) {
-                  try {
-                  adapter.log.info('cleaned everything up...');
-                  callback();
-                  } catch (e) {
-                  callback();
-                  }
-                  },
-                  // is called if a subscribed object changes
-                  objectChange: function (id, obj) {
-                  // Warning, obj can be null if it was deleted
-                  adapter.log.info('objectChange ' + id + ' ' + JSON.stringify(obj));
-                  },
-                  // is called if a subscribed state changes
-                  //                  stateChange: function (id, state) {
-                  // Warning, state can be null if it was deleted
-                  // you can use the ack flag to detect if it is status (true) or command (false)
-                  //                  if (state && !state.ack) {
-                  //                  adapter.log.info('ack is not set!');
-                  //                  }
-                  //                  },
-                  // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
-                  message: function (obj) {
-                  if (typeof obj === 'object' && obj.message) {
-                  if (obj.command === 'send') {
-                  // e.g. send email or pushover or whatever
-                  console.log('send command');
-                  // Send response in callback if required
-                  if (obj.callback) adapter.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-                  }
-                  }
-                  },
-                  // is called when databases are connected and adapter received configuration.
-                  // start here!
-                  ready: () => main()
-                  });
-        // you have to call the adapter function and pass a options object
-        // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.mieleathome.0
-    adapter = new utils.Adapter(options);
-    
-    return adapter;
+  options = options || {};
+  Object.assign(options, {
+                // name has to be set and has to be equal to adapters folder name and main file name excluding extension
+                name: adapterName,
+                // is called when adapter shuts down - callback has to be called under any circumstances!
+                unload: function (callback) {
+                try {
+                adapter.log.info('cleaned everything up...');
+                callback();
+                } catch (e) {
+                callback();
+                }
+                },
+                // is called if a subscribed object changes
+                objectChange: function (id, obj) {
+                // Warning, obj can be null if it was deleted
+                adapter.log.info('objectChange ' + id + ' ' + JSON.stringify(obj));
+                },
+                // is called if a subscribed state changes
+                //                  stateChange: function (id, state) {
+                // Warning, state can be null if it was deleted
+                // you can use the ack flag to detect if it is status (true) or command (false)
+                //                  if (state && !state.ack) {
+                //                  adapter.log.info('ack is not set!');
+                //                  }
+                //                  },
+                // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
+                message: function (obj) {
+                if (typeof obj === 'object' && obj.message) {
+                if (obj.command === 'send') {
+                // e.g. send email or pushover or whatever
+                console.log('send command');
+                // Send response in callback if required
+                if (obj.callback) adapter.sendTo(obj.from, obj.command, 'Message received', obj.callback);
+                }
+                }
+                },
+                // is called when databases are connected and adapter received configuration.
+                // start here!
+                ready: () => main()
+                });
+    // you have to call the adapter function and pass a options object
+    // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.mieleathome.0
+  adapter = new utils.Adapter(options);
+  
+  return adapter;
 };
 
 function GetDevices(data,Pfad){
-    for (var ObjName in data) {
-        var New_Pfad=Pfad+'.'+ObjName;
-            //        adapter.setObjectNotExists(New_Pfad,    {type:Type,       role: 'state'},native: {});
-        var Type=typeof data[ObjName];
-            //   adapter.log.info(ObjName + ' ' + Pfad + ' ' + Type);
-        switch(Type){
-            case 'object':
-                    //                adapter.log.info('ist Objekt '+ObjName+ ' ' + New_Pfad);
-                if (!adapter.getObject(New_Pfad)){
-                    adapter.setObjectNotExists(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: 'state'}, native: {} });
-                };
-                    // adapter.log.info(ObjName + ' ' + Pfad + ' ' + New_Pfad + ' ' + Type);
-                if (New_Pfad.split('.')[0] === 'Devices' && !New_Pfad.split('.')[2]) {
-                    adapter.setObjectNotExists(New_Pfad + '.LightOn', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
-                    adapter.setObjectNotExists(New_Pfad + '.LightOff', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
-                };
-                if (Pfad === 'Devices') {
-                    adapter.setObjectNotExists(Pfad + '.GetDevices', { type: 'state', common: { name: 'GetDevices',type: 'boolean',role: 'button' },native: {}});
-                };
-                    //console.log(ObjName)
-                GetDevices(data[ObjName],New_Pfad);
-                break;
-            case 'boolean':
-            case 'string':
-            case 'number':
-            case 'none':
-                    //                adapter.log.info('ist none '+ObjName+ ' ' + New_Pfad);
-                if (!adapter.getObject(New_Pfad)){
-                    adapter.setObjectNotExists(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: 'state' }, native: {} });
-                    adapter.setState(New_Pfad,data[ObjName],true)
-                }
-                else{adapter.setState(New_Pfad,data[ObjName],true)}
-                    //console.log(ObjName)
-                break;
-            default:
-                    //                adapter.log.info('ist '+Type+ ' '+ObjName+ ' ' + New_Pfad);
-                adapter.setObjectNotExists(New_Pfad,    {type:Type,   common: {   role: 'state' }, native: {} });
-                if (Array.isArray(data[ObjName])===true){
-                        //    adapter.log.info('ist Array'+ObjName);
-                    for (i = 0; i < data[ObjName].length; i++) {
-                        GetDevices(data[ObjName[i]]);
-                    }
-                }
-                else{adapter.log.info('is nix')}
-                break;
+  var deviceType;
+  for (var ObjName in data) {
+    var New_Pfad=Pfad+'.'+ObjName;
+    var Type=typeof data[ObjName];
+    adapter.log.debug('Function GetDevices: ' + ObjName + ' ' + Pfad + ' ' + Type);
+    switch(Type){
+      case 'object':
+          adapter.log.debug('Ist Objekt '+ObjName+ ' ' + New_Pfad);
+        if (!adapter.getObject(New_Pfad)){
+          adapter.setObjectNotExists(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: 'state'}, native: {} });
+        };
+           adapter.log.debug(ObjName + ' ' + Pfad + ' ' + New_Pfad + ' ' + Type);
+        if (New_Pfad.split('.')[0] === 'Devices' && !New_Pfad.split('.')[2]) {
+            //    createExtendObject(New_Pfad + '.LightOn', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
+            //    createExtendObject(New_Pfad + '.LightOff', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
+          addDevicefunction(New_Pfad,deviceType,data);
+        };
+        if (Pfad === 'Devices') {
+          createExtendObject(Pfad + '.GetDevices', { type: 'state', common: { name: 'GetDevices',type: 'boolean',role: 'button' },native: {}});
+        };
+        GetDevices(data[ObjName],New_Pfad);
+        break;
+      case 'boolean':
+      case 'string':
+      case 'number':
+      case 'none':
+          adapter.log.debug('Ist none ' + ObjName + ' ' + New_Pfad + ' ' + data[ObjName]);
+        if (String(New_Pfad).includes('state\.status\.value_raw')) {adapter.log.debug('DeviceType:' + New_Pfad + data[ObjName]);deviceType = data[ObjName];};
+        if (!adapter.getObject(New_Pfad)){
+          createExtendObject(New_Pfad,    {type: 'state',   common: { name: ObjName, type: Type,  role: 'state' }, native: {} });
+          adapter.setState(New_Pfad,data[ObjName],true)
         }
+        else{adapter.setState(New_Pfad,data[ObjName],true)}
+        break;
+      default:
+         adapter.log.debug('Ist '+Type+ ' '+ObjName+ ' ' + New_Pfad);
+        createExtendObject(New_Pfad,    {type:Type,   common: {   role: 'state' }, native: {} });
+        if (Array.isArray(data[ObjName])===true){
+              adapter.log.debug('Ist Array'+ObjName);
+          for (i = 0; i < data[ObjName].length; i++) {
+            GetDevices(data[ObjName[i]]);
+          }
+        }
+        else{adapter.log.debug('Ist nix')}
+        break;
     }
+  }
 }//End of Function
 
 
+function createExtendObject(id, objData, callback) {
+  adapter.getObject(id, function (err, oldObj) {
+                    if (!err && oldObj) {
+                    adapter.extendObject(id, objData, callback);
+                    } else {
+                    adapter.setObjectNotExists(id, objData, callback);
+                    }
+                    });
+}
+
+function addDevicefunction(Pfad,Type,data) {
+  var datajsonS = JSON.stringify(data);
+  var datajson = JSON.parse(datajsonS);
+  var devarray = Pfad.split('.');
+  var dev = devarray[devarray.length -1];
+  var Type = datajson[dev].state.status.value_raw;
+  adapter.log.debug('Function addDevicefunction: Dfunctions Call ' + Pfad + ' for Type ' + Type + ' ' + JSON.stringify(data));
+  var dfunctions = device.readDevice(parseFloat(Type));
+  for ( var i = 0; i<dfunctions.length; i++)
+    {
+    adapter.log.debug('Function:' + Pfad + dfunctions[i][0] + dfunctions[i][1] + dfunctions[i][2]);
+    createExtendObject(Pfad + '.' + dfunctions[i][0], { type: 'state', common: { name: dfunctions[i][0],type: 'boolean',role: 'button' },native: {}});
+    }
+  
+}
+
+
 function main() {
-    
-        // The adapters config (in the instance object everything under the attribute "native") is accessible via
-        // adapter.config:
-    adapter.log.info('config Client_ID: '    + adapter.config.Client_ID);
-    adapter.log.info('config Client_secret: '    + adapter.config.Client_secret);
-    adapter.log.info('config Miele_account: ' + adapter.config.Miele_account);
-    
-    
-    adapter.setObjectNotExists('Authorization', {
-                      type: 'channel',
-                      common: {
-                      name: 'Authorization',
-                      type: 'text',
-                      role: 'value'
-                      },
-                      native: {}
-                      });
-    
-    adapter.setObjectNotExists('Authorization.Authorized', {
-                      type: 'state',
-                      common: {
-                      name: 'Authorized',
-                      type: 'boolean',
-                      role: 'indicator'
-                      },
-                      native: {}
-                      });
-    
-    adapter.setObjectNotExists('Authorization.Token', {
-                      type: 'state',
-                      common: {
-                      name: 'Token',
-                      type: 'text',
-                      role: 'indicator'
-                      },
-                      native: {}
-                      });
-    
-    adapter.setObjectNotExists('Authorization.Refresh_Token', {
-                      type: 'state',
-                      common: {
-                      name: 'Refresh_Token',
-                      type: 'text',
-                      role: 'indicator'
-                      },
-                      native: {}
-                      });
-    adapter.setObjectNotExists('Devices', {
-                      type: 'state',
-                      common: {
-                      name: 'Devices',
-                      type: 'text',
-                      role: 'devices'
-                      },
-                      native: {}
-                      });
-    
-    if (adapter.config.Miele_account && adapter.config.Miele_pwd && adapter.config.Client_ID && adapter.config.Client_secret )
-        {
-            //    var miele = new mieleathome;
+  
+    // The adapters config (in the instance object everything under the attribute "native") is accessible via
+    // adapter.config:
+  adapter.log.info('config Client_ID: '    + adapter.config.Client_ID);
+  adapter.log.info('config Client_secret: '    + adapter.config.Client_secret);
+  adapter.log.info('config Miele_account: ' + adapter.config.Miele_account);
+  
+  
+  createExtendObject('Devices', {
+                     type: 'channel',
+                     common: {
+                     name: 'Devices',
+                     type: 'text',
+                     role: 'value'
+                     },
+                     native: {}
+                     });
+  createExtendObject('Authorization',{
+                     type: 'channel',
+                     common: {
+                     name: 'Authorization',
+                     type: 'text',
+                     role: 'value'
+                     },
+                     native: {}
+                     });
+  
+  createExtendObject('Authorization.Authorized', {
+                     type: 'state',
+                     common: {
+                     name: 'Authorized',
+                     type: 'boolean',
+                     role: 'value'
+                     },
+                     native: {}
+                     });
+  
+  createExtendObject('Authorization.Token', {
+                     type: 'state',
+                     common: {
+                     name: 'Token',
+                     type: 'text',
+                     role: 'value'
+                     },
+                     native: {}
+                     });
+  
+  createExtendObject('Authorization.Refresh_Token', {
+                     type: 'state',
+                     common: {
+                     name: 'Refresh_Token',
+                     type: 'text',
+                     role: 'value'
+                     },
+                     native: {}
+                     });
+  
+  if (adapter.config.Miele_account && adapter.config.Miele_pwd && adapter.config.Client_ID && adapter.config.Client_secret )
+    {
+
     miele = new mieleathome(adapter.config.Miele_account, adapter.config.Miele_pwd, adapter.config.Client_ID,adapter.config.Client_secret);
     
     adapter.getState('Authorization.Token', function (err, state) {
-                     if (!err) {adapter.log.info("Tokenwert" + state.val);
+                     if (!err && state !== null      ) {
                      var  access_token = state.val ;
-                     };
+                     }
+                     ;
                      adapter.getState('Authorization.Refresh_Token', function (err, state) {
-                                      if (!err) {adapter.log.info("Refresh_Tokenwert" + state.val);
+                                      if (!err && state !== null      ) {
                                       var  rrefresh_token = state.val ;
                                       };
                                       adapter.log.info('Authorization.Access_Token:' + access_token);
                                       adapter.log.info('Authorization.Refresh_Token:' + rrefresh_token);
                                       if ( !access_token || 0 === access_token.length) {
-                                      //                                      miele.GetToken(adapter.config.Miele_pwd,adapter.config.Miele_account,adapter.config.Client_ID,
-                                      //                                                     adapter.config.Client_secret,
-                                      miele.NGetToken(function(err,access_token,refresh_token){
+                                      miele.NGetToken(
+                                                      function(err,access_token,rrefresh_token){
                                                       
                                                       if(!err){
                                                       adapter.setState('Authorization.Authorized',true,true);
                                                       adapter.setState('Authorization.Token',access_token,true);
-                                                      adapter.setState('Authorization.Refresh_Token',refresh_token,true);
-                                                      adapter.log.info("Send GET Devices");
-                                                      /*miele.SendRequest(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,'v1/devices/','GET',access_token,'',function(err,data,atoken,rtoken){
-                                                       adapter.log.info(err);
-                                                       if(!err){GetDevices(data,'Devices')}
-                                                       });*/
-                                                      //                                                     miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-                                                      //                                                                      access_token,function(err,data,atoken,rtoken){
+                                                      adapter.setState('Authorization.Refresh_Token',rrefresh_token,true);
+                                                      adapter.log.debug("Send GET Devices");
                                                       miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                                        adapter.log.info(err);
+                                                                        adapter.log.debug('NGetDevices Error: ' + err);
                                                                         if(!err){GetDevices(data,'Devices')}
                                                                         });
                                                       }
@@ -258,108 +272,95 @@ function main() {
                                                       });
                                       }
                                       else {
-                                      adapter.log.info("Devices lesen");
-                                      //                                    miele.SendRequest(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,'v1/devices/','GET',access_token,'',function(err,data,atoken,rtoken){
-                                      //                                                        //            adapter.log.info(err);
-                                      //                                                        //                  adapter.log.info(data);
-                                      //                                                        if(!err){/*adapter.log.info(data);*/GetDevices(data,'Devices')}
-                                      //                                                        });
-                                      //                                      miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-                                      //                                                       access_token,function(err,data,atoken,rtoken){
+                                      adapter.log.debug("Send GET Devices");
                                       miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                        adapter.log.info(err);
+                                                        adapter.log.debug('NGetDevices Error: ' + err);
                                                         if(!err){GetDevices(data,'Devices')}
                                                         });
                                       
                                       };
-                                      //Schedule einplanen
-                                   //   var j = schedule.scheduleJob('*/10 * * * *', function(){
                                       setTimeout(function(){
-                                                                   //                                                                   miele.SendRequest(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,'v1/devices/','GET',access_token,'',function(err,data,atoken,rtoken){
-                                                                   //                                                                                     if(!err){GetDevices(data,'Devices')}
-                                                                   //                                                                                     });
-                                                                   //                                                                   });
-                                                                   //                                                                   miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-                                                                   //                                                                                    access_token,function(err,data,atoken,rtoken){
-                                                                   miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                                                     adapter.log.info(err);
-                                                                                     if(!err){GetDevices(data,'Devices')}
-                                                                                     });
-                                                                   },360000);
+                                                 miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
+                                                                   adapter.log.debug('NGetDevices Error: ' + err);
+                                                                   if(!err){GetDevices(data,'Devices')}
+                                                                   });
+                                                 },360000);
                                       });
                      });
     miele.log("Test exports");
     
-        // in this mieleathome all states changes inside the adapters namespace are subscribed
+      // in this mieleathome all states changes inside the adapters namespace are subscribed
     adapter.subscribeStates('*');
-        }
+    }
 }//Ende Functin main
 
 
-    // If started as allInOne/compact mode => return function to create instance
+  // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {
-    module.exports = startAdapter;
+  module.exports = startAdapter;
 } else {
-        // or start the instance directly
-    startAdapter();
+    // or start the instance directly
+  startAdapter();
 }
 
 adapter.on('stateChange', (id, state) => {
-           //           var miele = new mieleathome;
-           //var miele = new mieleathome(adapter.config.Miele_account, adapter.config.Miele_pwd, adapter.config.Client_ID,adapter.config.Client_secret);
-           
-           //           adapter.log.info(id + ' ' + state.ack );
            if (!id || !state || state.ack) {
            //  return;
            }
            const devices = id.split('.')[3];
-           //           adapter.log.info('stateChange ' + devices + id + ' ' + JSON.stringify(state));
+           adapter.log.debug('Function dapter.on: stateChange ' + devices + id + ' ' + JSON.stringify(state));
            adapter.getState('Authorization.Token', function (err, state) {
-                            if (!err) {//adapter.log.info("Tokenwert" + state.val);
+                            if (!err) {adapter.log.debug("Tokenwert" + state.val);
                             var  access_token = state.val ;
                             };
                             adapter.getState('Authorization.Refresh_Token', function (err, state) {
-                                             if (!err) {//adapter.log.info("Refresh_Tokenwert" + state.val);
+                                             if (!err) {adapter.log.debug("Refresh_Tokenwert" + state.val);
                                              var  rrefresh_token = state.val ;
                                              };
-                                             //adapter.log.info('Authorization.Access_Token:' + access_token);
-                                             // adapter.log.info('Authorization.Refresh_Token:' + rrefresh_token);
                                              if ( !access_token || 0 === access_token.length) {}
                                              else {
-                                             //adapter.log.info('Devices:' + devices);
-                                             if (!devices === "GetDevices") {
+                                             adapter.log.debug('Devices: ' + devices);
+                                             if (devices !== "GetDevices") {
                                              id = id.split('.')[4];
-                                             //adapter.log.info('id' + id + 'Value');
+                                             adapter.log.debug('id' + id + 'Value');
                                              switch (id)
                                              {
                                              case 'LightOn':
-                                             //                                             miele.SetLightEnable(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-                                             //                                                                                  access_token,devices,function(err,data,atoken,rtoken){
                                              miele.NSetLightEnable(rrefresh_token, access_token,devices,function(err,data,atoken,rtoken){
-                                                                   if(err){adapter.log.info(err);}
-                                                                   if(!err){adapter.log.info(devices + 'LightOn Set')}
+                                                                   if(err){adapter.log.error('NSetLightEnable: ' + err);}
+                                                                   if(!err){adapter.log.debug(devices + 'LightOn Set')}
                                                                    });
                                              adapter.log.debug('LightOn');
-                                             //   receiver.power(state.val);
                                              break;
                                              case 'LightOff':
                                              miele.NSetLightDisable(rrefresh_token, access_token,devices,function(err,data,atoken,rtoken){
-                                                                    if(err){adapter.log.info(err);}
-                                                                    if(!err){adapter.log.info(devices + 'LightOn Set')}
+                                                                    if(err){adapter.log.error('NSetLightDisable: ' + err);}
+                                                                    if(!err){adapter.log.dbug(devices + 'LightOn Set')}
                                                                     });
                                              adapter.log.debug('LightOff');
-                                             //   receiver.power(state.val);
                                              break;
+                                             default:
+                                             adapter.getState('Devices.' + devices + '.ident.type.value_raw', function (err, state) {
+                                                              if (!err) {adapter.log.debug('Device-typ:' + state.val);
+                                                              var pAction = device.readProcessAction(parseFloat(state.val));
+                                                              adapter.log.debug(pAction.toString());
+                                                              adapter.log.debug('Info about change: ' + id);
+                                                              if (pAction.includes(id)) {
+                                                              adapter.log.debug('Button:' + id);
+                                                              miele.NSetProcessAction(rrefresh_token,access_token,id,devices,state.val,function(err,data,atoken,rtoken){
+                                                                                      if(err){adapter.log.error(err)}
+                                                                                      if(!err){adapter.log.debug(devices + id)}
+                                                                                      });
+                                                              }
+                                                              }})
                                              }
                                              } else {
                                              id = id.split('.')[3];
                                              switch (id)
                                              {
                                              case 'GetDevices':
-                                             //                                             miele.GetDevices(adapter.config.Miele_account,adapter.config.Miele_pwd,rrefresh_token,
-                                             //                                                                                 access_token,function(err,data,atoken,rtoken){
                                              miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                               adapter.log.info(err);
+                                                               adapter.log.error(err);
                                                                if(!err){GetDevices(data,'Devices')}
                                                                });
                                              break;
