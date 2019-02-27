@@ -323,7 +323,7 @@ class mieleathome {
     if (dfunctions[i][0] == processAction) {
        if (dfunctions[i][1]) {
         var path = 'v1/devices/' + deviceID + '/actions';
-        var body = {"light":2};
+        var body = dfunctions[i][2];
           this.NSendRequest(Refresh_Token,path,'PUT',Access_Token,body,function(err,data,atoken,rtoken){
                               if(!err){return callback(err,data,atoken,rtoken)}
                               });

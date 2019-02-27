@@ -346,9 +346,9 @@ adapter.on('stateChange', (id, state) => {
                                                               adapter.log.debug(pAction.toString());
                                                               adapter.log.debug('Info about change: ' + id);
                                                               if (pAction.includes(id)) {
-                                                              adapter.log.debug('Button:' + id);
+                                                              adapter.log.info('Button:' + id);
                                                               miele.NSetProcessAction(rrefresh_token,access_token,id,devices,state.val,function(err,data,atoken,rtoken){
-                                                                                      if(err){adapter.log.error(err)}
+                                                                                      if(err){adapter.log.error('Function NSetProcessAction:' + err + ' ' + id)}
                                                                                       if(!err){adapter.log.debug(devices + id)}
                                                                                       });
                                                               }
@@ -360,7 +360,7 @@ adapter.on('stateChange', (id, state) => {
                                              {
                                              case 'GetDevices':
                                              miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                               adapter.log.error(err);
+                                                               if(err){adapter.log.error('Function NGetDevices:' + err + ' ' + id)}
                                                                if(!err){GetDevices(data,'Devices')}
                                                                });
                                              break;
