@@ -25,8 +25,6 @@
     "url": "https://github.com/hash99/ioBroker.mieleathome.git"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^1.0.3",
-    "iobroker.js-controller": "^1.5.7",
     "sync-request": "^5.0.0"
   },
   "devDependencies": {
