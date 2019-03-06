@@ -273,18 +273,23 @@ function main() {
                                       }
                                       else {
                                       adapter.log.debug("Send GET Devices");
-                                      miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
+                                      setTimeout(function(){
+					miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
                                                         adapter.log.debug('NGetDevices Error: ' + err);
                                                         if(!err){GetDevices(data,'Devices')}
                                                         });
                                       
-                                      };
+                                      },8000);
+				      };
+                                      var j = schedule.scheduleJob('*/10 * * * *', function(){
                                       setTimeout(function(){
-                                                 miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
-                                                                   adapter.log.debug('NGetDevices Error: ' + err);
-                                                                   if(!err){GetDevices(data,'Devices')}
-                                                                   });
-                                                 },360000);
+					miele.NGetDevices(rrefresh_token, access_token,function(err,data,atoken,rtoken){
+                                                        adapter.log.debug('NGetDevices Error: ' + err);
+                                                        if(!err){GetDevices(data,'Devices')}
+                                                        });
+                                      
+                                      },8000);
+                                      });
                                       });
                      });
     miele.log("Test exports");

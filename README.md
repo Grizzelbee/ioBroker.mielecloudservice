@@ -9,7 +9,7 @@ This adapter is a Miele@Home for Miele API.
 To install, excecute the following command 
 in /opt/iobroker/node_modules:
 
-1. npm install https://github.com/hash99/ioBroker.mieleathome.git
+1. Install via Admin: https://github.com/hash99/ioBroker.mieleathome.git
 
 2. create an account for Miele@Home 
 

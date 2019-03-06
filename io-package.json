@@ -48,7 +48,8 @@
         "loglevel": "info",
         "type": "household",
         "license": "MIT",
-        "messagebox": false
+        "messagebox": true,
+        "subscribe": "messagebox"
     },
     "native": {
         "Client_secret": "",
