@@ -1,2 +1,0 @@
-#!/usr/bin/env node
-require('/home/pi/source/hash-mieleathome/ioBroker.mieleathome/node_modules/iobroker.js-controller/lib/setup').execute();
