@@ -1,6 +1,6 @@
 ![Logo](admin/mieleathome.png)
 # ioBroker.mieleathome
-=================
+![Number of Installations](http://iobroker.live/badges/mieleathome-installed.svg) ![Number of Installations](http://iobroker.live/badges/mieleathome-stable.svg) =================
 
 This adapter is a Miele@Home for Miele API. 
 
