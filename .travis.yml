@@ -26,6 +26,7 @@ before_script:
   - 'if [[ $NPMVERSION == 5 ]]; then npm install -g npm; fi'
   - npm -v
   - npm install request
+  - npm install node-schedule
 script:
   - npm run test:package
   - npm run test:unit
