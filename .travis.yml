@@ -1,4 +1,5 @@
-nux
+os:
+  - linux
   - osx
   - windows
 
