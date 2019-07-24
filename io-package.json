@@ -50,7 +50,7 @@
         "icon": "mieleathome.png",
         "materialize": true,
         "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/hash99/ioBroker.mieleathome/master/admin/mieleathome.png",
+        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mieleathome/master/admin/mieleathome.png",
         "keywords": [
             "mieleathome",
             "vis",
