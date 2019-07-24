@@ -58,7 +58,7 @@
             "graphical",
             "scada"
         ],
-        "readme": "https://github.com/hash99/ioBroker.mieleathome/blob/master/README.md",
+        "readme": "https://github.com/Grizzelbee/ioBroker.mieleathome/blob/master/README.md",
         "loglevel": "info",
         "type": "household",
         "license": "MIT",
