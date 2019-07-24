@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "mieleathome",
-        "version": "0.0.4",
+        "version": "0.0.5",
         "news": {
             "0.0.3": {
                 "en": "initial adapter",
@@ -9,10 +9,14 @@
                 "ru": "Первоначальный адаптер",
                 "pt": "Versão inicial",
                 "fr": "Version initiale",
-                "nl": "Eerste release"
+                "nl": "Eerste release",
+                "it": "adattatore iniziale",
+                "es": "adaptador inicial",
+                "pl": "początkowy adapter",
+                "zh-cn": "初始适配器"
             }
         },
-		"title": "Miele@Home",
+        "title": "Miele@Home",
         "titleLang": {
             "en": "Miele@Home",
             "de": "Miele@Home",
@@ -21,7 +25,9 @@
             "nl": "Miele@Home",
             "fr": "Miele@Home",
             "it": "Miele@Home",
-            "es": "Miele@Home"
+            "es": "Miele@Home",
+            "pl": "Miele @ Home",
+            "zh-cn": "美诺@家"
         },
         "desc": {
             "en": "ioBroker mieleathome",
@@ -31,7 +37,9 @@
             "fr": "ioBroker adaptateur modèle miele@Home",
             "nl": "ioBroker Miele@home",
             "it": "Adattatore modello miele@Home ioBroker",
-            "es": "Adaptador de plantilla ioBroker"
+            "es": "Adaptador de plantilla ioBroker",
+            "pl": "ioBroker mieleathome",
+            "zh-cn": "ioBroker mieleathome"
         },
         "authors": [
             "hash99 <hash99@iesy.net>"
@@ -43,7 +51,13 @@
         "materialize": true,
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/hash99/ioBroker.mieleathome/master/admin/mieleathome.png",
-        "keywords": ["mieleathome", "vis", "GUI", "graphical", "scada"],
+        "keywords": [
+            "mieleathome",
+            "vis",
+            "GUI",
+            "graphical",
+            "scada"
+        ],
         "readme": "https://github.com/hash99/ioBroker.mieleathome/blob/master/README.md",
         "loglevel": "info",
         "type": "household",
@@ -55,10 +69,9 @@
         "Client_secret": "",
         "Miele_pwd": "",
         "Miele_account": "",
-	"Client_ID": "",
-	"Active": ""
+        "Client_ID": "",
+        "locale": "",
+        "Active": ""
     },
-    "objects": [
-
-    ]
+    "objects": []
 }

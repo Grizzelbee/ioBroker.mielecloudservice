@@ -1,9 +1,21 @@
 {
-  "Auto": "Auto",
-  "Manual": "Manual",
-  "My select": "Meu selecionado",
-  "on save adapter restarts with new config immediately": "no adaptador de salvar reinicia com nova configuração imediatamente",
-  "template adapter settings": "configurações do adaptador de modelo",
-  "test1": "Teste 1",
-  "test2": "Teste 2"
+    "Auto": "Auto",
+    "Client_ID": "ID do cliente da API",
+    "Client_ID_desc": "Seu ID de cliente da Miele API",
+    "Client_secret": "Segredo do cliente da API",
+    "Client_secret_desc": "Sua Miele API Client-Secret",
+    "English": "Inglês",
+    "German": "alemão",
+    "Manual": "Manual",
+    "Miele_Account": "Conta Miele",
+    "Miele_Account_desc": "Seu Miele App-Account (normalmente você recebe e-mail)",
+    "Miele_pwd": "Senha Miele",
+    "Miele_pwd_desc": "Sua senha da Miele App-Account",
+    "My select": "Meu selecionado",
+    "locale": "Auto",
+    "locale_desc": "Auto",
+    "on save adapter restarts with new config immediately": "no adaptador de salvar reinicia com nova configuração imediatamente",
+    "template adapter settings": "configurações do adaptador de modelo",
+    "test1": "Teste 1",
+    "test2": "Teste 2"
 }

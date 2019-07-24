@@ -1,9 +1,21 @@
 {
-  "Auto": "Автоматически",
-  "Manual": "Вручную",
-  "My select": "Выбор",
-  "on save adapter restarts with new config immediately": "При сохранении настроек адаптера он сразу же перезапускается",
-  "template adapter settings": "Пример",
-  "test1": "Тест 1",
-  "test2": "Тест 2"
+    "Auto": "Автоматически",
+    "Client_ID": "ID клиента API",
+    "Client_ID_desc": "Ваш Miele API Client-ID",
+    "Client_secret": "API Client-secret",
+    "Client_secret_desc": "Ваш Miele API Client-Secret",
+    "English": "английский",
+    "German": "Немецкий",
+    "Manual": "Вручную",
+    "Miele_Account": "Miele Account",
+    "Miele_Account_desc": "Ваша учетная запись в приложении Miele (обычно вы пишете по электронной почте)",
+    "Miele_pwd": "Miele Password",
+    "Miele_pwd_desc": "Пароль вашего аккаунта Miele",
+    "My select": "Выбор",
+    "locale": "Автоматически",
+    "locale_desc": "Автоматически",
+    "on save adapter restarts with new config immediately": "При сохранении настроек адаптера он сразу же перезапускается",
+    "template adapter settings": "Пример",
+    "test1": "Тест 1",
+    "test2": "Тест 2"
 }

@@ -1,0 +1,21 @@
+{
+    "Auto": "汽车",
+    "Client_ID": "API客户端ID",
+    "Client_ID_desc": "您的Miele API客户端ID",
+    "Client_secret": "API客户端密钥",
+    "Client_secret_desc": "您的Miele API客户端密钥",
+    "English": "英语",
+    "German": "德语",
+    "Manual": "手册",
+    "Miele_Account": "Miele帐户",
+    "Miele_Account_desc": "您的Miele App-Account（通常是您的电子邮件）",
+    "Miele_pwd": "Miele密码",
+    "Miele_pwd_desc": "您的Miele应用帐户密码",
+    "My select": "我的选择",
+    "locale": "API响应语言",
+    "locale_desc": "Miele-API应该响应的语言",
+    "on save adapter restarts with new config immediately": "保存适配器立即重新启动新配置",
+    "template adapter settings": "模板适配器设置",
+    "test1": "测试1",
+    "test2": "测试2"
+}

@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mieleathome",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "mieleathome",
   "author": {
     "name": "hash99",
@@ -9,7 +9,9 @@
   "contributors": [
     {
       "name": "hash99",
-      "email": "hash99@iesy.net"
+      "email": "hash99@iesy.net",
+      "name": "grizzelbee",
+      "email": "captain.tzk@gmail.com"
     }
   ],
   "homepage": "https://github.com/hash99/ioBroker.mieleathome",

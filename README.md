@@ -37,10 +37,22 @@ Client_id
 ### 0.0.4
 * (hash99) add devices configuration
 
+### 0.0.5
+* (grizzelbee) Upd: some code maintenance
+* (grizzelbee) New: added reply-language to config
+                    - Miele API is currently able to answer in German or English, now you can choose.
+* (grizzelbee) New: created new Icon
+* (grizzelbee) Fix: fixed translation issues and translated adapter UI using gulp
 
 
 ## Next Steps
-Device Integration rdevcie type related Button-Creation
+* Device Integration rdevice type related Button-Creation
+* add support for UK Miele-Accounts (-> vg: de-DE | en-EN)
+* create automatically new datapoint for combined nicely shown time values
+  currently elapsedTime and remainingTime are quite useless cause hours and minutes are separate values and minutes are shown without leading 0
+  combine these values into a new datapoint to "h:mm" values
+* make poll interval configurable (currently 10 Minutes)
+
 
 ## License
 The MIT License (MIT)

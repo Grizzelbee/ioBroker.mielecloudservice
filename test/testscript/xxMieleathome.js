@@ -1,4 +1,4 @@
-ome(Miele_account,Miele_pwd,client_id,client_secret);
+ome(Miele_account, Miele_pwd, client_id, client_secret);
 miele.log("Test Exports");
 //miele.GetToken(Miele_pwd, Miele_account,client_id,client_secret,function(err,access_token,refresh_token){
 //console.log(err);
@@ -20,14 +20,14 @@ console.log(rtoken);
 }
 });
 */
-miele.NGetDevices(refresh_token,access_token,
-function(err,data,atoken,rtoken){
-if(!err){
-console.log(data);
-console.log(atoken);
-console.log(rtoken);
-}
-});
+miele.NGetDevices(refresh_token, access_token,
+    function (err, data, atoken, rtoken) {
+        if (!err) {
+            console.log(data);
+            console.log(atoken);
+            console.log(rtoken);
+        }
+    });
 //miele.SetLightEnable(Miele_account,Miele_pwd,refresh_token,
 //                                 access_token,devices,function(err,data,atoken,rtoken){
 //                                 console.log(err);

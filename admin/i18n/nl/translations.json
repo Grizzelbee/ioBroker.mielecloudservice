@@ -1,9 +1,21 @@
 {
-  "Auto": "Auto",
-  "Manual": "Met de hand",
-  "My select": "Mijn select",
-  "on save adapter restarts with new config immediately": "on save-adapter wordt onmiddellijk opnieuw opgestart met nieuwe config",
-  "template adapter settings": "sjabloon-adapterinstellingen",
-  "test1": "Test 1",
-  "test2": "Test 2"
+    "Auto": "Auto",
+    "Client_ID": "API-client-ID",
+    "Client_ID_desc": "Uw Miele API-client-ID",
+    "Client_secret": "API Client-geheim",
+    "Client_secret_desc": "Uw Miele API-clientgeheim",
+    "English": "Engels",
+    "German": "Duitse",
+    "Manual": "Met de hand",
+    "Miele_Account": "Miele-account",
+    "Miele_Account_desc": "Uw Miele-app-account (meestal e-mail)",
+    "Miele_pwd": "Miele-wachtwoord",
+    "Miele_pwd_desc": "Het wachtwoord van uw Miele-app-account",
+    "My select": "Mijn select",
+    "locale": "Auto",
+    "locale_desc": "Auto",
+    "on save adapter restarts with new config immediately": "on save-adapter wordt onmiddellijk opnieuw opgestart met nieuwe config",
+    "template adapter settings": "sjabloon-adapterinstellingen",
+    "test1": "Test 1",
+    "test2": "Test 2"
 }

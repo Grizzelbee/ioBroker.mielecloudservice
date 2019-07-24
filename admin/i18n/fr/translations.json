@@ -1,9 +1,21 @@
 {
-  "Auto": "Auto",
-  "Manual": "Manuel",
-  "My select": "Mon choix",
-  "on save adapter restarts with new config immediately": "sur l'adaptateur de sauvegarde redémarre avec la nouvelle config immédiatement",
-  "template adapter settings": "paramètres de l'adaptateur de modèle",
-  "test1": "Test 1",
-  "test2": "Test 2"
+    "Auto": "Auto",
+    "Client_ID": "ID client API",
+    "Client_ID_desc": "Votre numéro de client API Miele",
+    "Client_secret": "API client-secret",
+    "Client_secret_desc": "Votre secret client API Miele",
+    "English": "Anglais",
+    "German": "allemand",
+    "Manual": "Manuel",
+    "Miele_Account": "Compte Miele",
+    "Miele_Account_desc": "Votre compte Miele App (habituellement vous envoyez un e-mail)",
+    "Miele_pwd": "Miele Password",
+    "Miele_pwd_desc": "Votre mot de passe du compte de l'application Miele",
+    "My select": "Mon choix",
+    "locale": "Auto",
+    "locale_desc": "Auto",
+    "on save adapter restarts with new config immediately": "sur l'adaptateur de sauvegarde redémarre avec la nouvelle config immédiatement",
+    "template adapter settings": "paramètres de l'adaptateur de modèle",
+    "test1": "Test 1",
+    "test2": "Test 2"
 }
