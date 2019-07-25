@@ -40,10 +40,10 @@ Client_id
 ### 0.0.5
 * (grizzelbee) Upd: some code maintenance
 * (grizzelbee) New: added reply-language to config
-                    - Miele API is currently able to answer in German or English, now you can choose.
+                    - Miele API is currently able to reply in German or English, now you can choose.
 * (grizzelbee) New: created new Icon
 * (grizzelbee) Fix: fixed translation issues and translated adapter UI using gulp
-
+* (grizzelbee) Upd: Made changes to travis requested by apollon77
 
 ## Next Steps
 * Device Integration rdevice type related Button-Creation
