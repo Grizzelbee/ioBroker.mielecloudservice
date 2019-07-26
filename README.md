@@ -47,11 +47,11 @@ Client_id
 
 ### 0.9.0
 * (grizzelbee) Upd: New versioning due to completeness and stability of the adapter (about 90%)
-* (grizzelbee) New: make poll interval configurable
+* (grizzelbee) New: make poll interval configurable  (currently 1,2,3,4,5,7,10,15 Minutes)
 * (grizzelbee) Fix: fixed ESLint config
 * (grizzelbee) Upd: Changed order of config fields in UI
 * (grizzelbee) New: Set 5 Minutes poll interval and english response language as default to get initial values 
-* (grizzelbee) New: Parent-Datapoint of timevalues will be used to get a pretty readable time in the format h:mm. The deeper datapoints 0 and 1 will still be updated, but his will be removed removed in a future version to reduce workload.  
+* (grizzelbee) New: Parent-Datapoint of timevalues will be used to get a pretty readable time in the format h:mm. The deeper datapoints 0 and 1 will still be updated, but his will be removed in a future version to reduce workload.  
  
 ## Next Steps
 * Device Integration rdevice type related Button-Creation

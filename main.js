@@ -170,6 +170,7 @@ function GetDevices(data, Pfad) {
                         common: {name: ObjName, type: Type, role: 'state'},
                         native: {}
                     });
+                    // TODO Cleanup: Remove else and put setState behind if
                     adapter.setState(New_Pfad, data[ObjName], true)
                 } else {
                     adapter.setState(New_Pfad, data[ObjName], true)
