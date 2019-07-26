@@ -35,6 +35,9 @@ Client_id
 
 ## Changelog
 
+### 0.9.1
+* (grizzelbee) Fix: Fixed small bug introduced in V0.9.0 throwing an exception in debugging code
+
 ### 0.9.0
 * (grizzelbee) Upd: New versioning due to completeness and stability of the adapter (about 90%)
 * (grizzelbee) New: make poll interval configurable  (currently 1,2,3,4,5,7,10,15 Minutes)

@@ -8,7 +8,7 @@
  *  {datajsonS
  *      "common": {
  *          "name":         "mieleathome",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
- *          "version":      "0.9.0,                         // use "Semantic Versioning"! see http://semver.org/
+ *          "version":      "0.9.1,                         // use "Semantic Versioning"! see http://semver.org/
  *          "title":        "Node.js mieleathome Adapter",  // Adapter title shown in User Interfaces
  *          "authors":  [                                   // Array of authord
  *              "name <hash99@iesy.net>, <hanjo@hingsen.de>"
@@ -102,7 +102,7 @@ function GetDevices(data, Pfad) {
     for (let ObjName in data) {
         let New_Pfad = Pfad + '.' + ObjName;
         let Type = typeof data[ObjName];
-        adapter.log.debug('Main:Function GetDevices: ObjName: [' + ObjName + '] *** Pfad [' + Pfad + '] *** Type: [' + Type+ '] *** Value: [' + valueOf(data) + ']');
+        adapter.log.debug('Main:Function GetDevices: ObjName: [' + ObjName + '] *** Pfad [' + Pfad + '] *** Type: [' + Type+ '] *** Value: [' + data[ObjName] + ']');
         switch (Type) {
             case 'object':
                 adapter.log.debug('Main:GetDevices:1: ObjName: [' + ObjName + '] *** New_Pfad: [' + New_Pfad + ']');
