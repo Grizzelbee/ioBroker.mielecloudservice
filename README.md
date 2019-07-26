@@ -1,6 +1,13 @@
 ![Logo](admin/mieleathome.png)
 # ioBroker.mieleathome
-![Number of Installations](http://iobroker.live/badges/mieleathome-installed.svg) ![Number of Installations](http://iobroker.live/badges/mieleathome-stable.svg) =================
+![Number of Installations](http://iobroker.live/badges/mieleathome-installed.svg) ![Number of Installations](http://iobroker.live/badges/mieleathome-stable.svg)
+[![NPM version](https://img.shields.io/npm/v/iobroker.mieleathome.svg)](https://www.npmjs.com/package/iobroker.alexa2)
+[![Build Status](https://travis-ci.org/Apollon77/ioBroker.mieleathome.svg?branch=master)](https://travis-ci.org/grizzelbee/ioBroker.mieleathome)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/grizzelbee/iobroker.mieleathome/blob/master/LICENSE) 
+ =================
+
+
+
 
 This adapter is a Miele@Home for Miele API. 
 
@@ -28,14 +35,13 @@ Client_id
 
 ## Changelog
 
-### 0.0.1
-* (hash99) initial release
-
-### 0.0.3
-* (hash99) adapter conform
-
-### 0.0.4
-* (hash99) add devices configuration
+### 0.9.0
+* (grizzelbee) Upd: New versioning due to completeness and stability of the adapter (about 90%)
+* (grizzelbee) New: make poll interval configurable  (currently 1,2,3,4,5,7,10,15 Minutes)
+* (grizzelbee) Fix: fixed ESLint config
+* (grizzelbee) Upd: Changed order of config fields in UI
+* (grizzelbee) New: Set 5 Minutes poll interval and english response language as default to get initial values 
+* (grizzelbee) New: Parent-Datapoint of timevalues will be used to get a pretty readable time in the format h:mm. The deeper datapoints 0 and 1 will still be updated, but his will be removed in a future version to reduce workload.  
 
 ### 0.0.5
 * (grizzelbee) Upd: some code maintenance
@@ -45,13 +51,15 @@ Client_id
 * (grizzelbee) Fix: fixed translation issues and translated adapter UI using gulp
 * (grizzelbee) Upd: Made changes to travis requested by apollon77
 
-### 0.9.0
-* (grizzelbee) Upd: New versioning due to completeness and stability of the adapter (about 90%)
-* (grizzelbee) New: make poll interval configurable  (currently 1,2,3,4,5,7,10,15 Minutes)
-* (grizzelbee) Fix: fixed ESLint config
-* (grizzelbee) Upd: Changed order of config fields in UI
-* (grizzelbee) New: Set 5 Minutes poll interval and english response language as default to get initial values 
-* (grizzelbee) New: Parent-Datapoint of timevalues will be used to get a pretty readable time in the format h:mm. The deeper datapoints 0 and 1 will still be updated, but his will be removed in a future version to reduce workload.  
+### 0.0.4
+* (hash99) add devices configuration
+
+### 0.0.3
+* (hash99) adapter conform
+
+### 0.0.1
+* (hash99) initial release
+
  
 ## Next Steps
 * Device Integration rdevice type related Button-Creation
