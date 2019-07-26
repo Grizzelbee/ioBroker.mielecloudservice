@@ -15,6 +15,8 @@
     "locale": "Język odpowiedzi API",
     "locale_desc": "Język, w którym powinien reagować interfejs API Miele",
     "on save adapter restarts with new config immediately": "na adapterze zapisu restartuje się natychmiast z nową konfiguracją",
+    "pollinterval": "API-Pollinterval",
+    "pollinterval_desc": "Czas między dwoma sondami API (w Minutues)",
     "template adapter settings": "ustawienia adaptera szablonu",
     "test1": "Test 1",
     "test2": "Test 2"

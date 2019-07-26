@@ -15,6 +15,8 @@
     "locale": "API响应语言",
     "locale_desc": "Miele-API应该响应的语言",
     "on save adapter restarts with new config immediately": "保存适配器立即重新启动新配置",
+    "pollinterval": "API-的pollinterval",
+    "pollinterval_desc": "两次API民意调查之间的时间（在Minutues中）",
     "template adapter settings": "模板适配器设置",
     "test1": "测试1",
     "test2": "测试2"

@@ -45,13 +45,17 @@ Client_id
 * (grizzelbee) Fix: fixed translation issues and translated adapter UI using gulp
 * (grizzelbee) Upd: Made changes to travis requested by apollon77
 
+### 0.9.0
+* (grizzelbee) Upd: New versioning due to completeness and stability of the adapter (about 90%)
+* (grizzelbee) New: make poll interval configurable
+* (grizzelbee) Fix: fixed ESLint config
+* (grizzelbee) Upd: Changed order of config fields in UI
+* (grizzelbee) New: Set 5 Minutes poll interval and english response language as default to get initial values 
+* (grizzelbee) New: Parent-Datapoint of timevalues will be used to get a pretty readable time in the format h:mm. The deeper datapoints 0 and 1 will still be updated, but his will be removed removed in a future version to reduce workload.  
+ 
 ## Next Steps
 * Device Integration rdevice type related Button-Creation
 * add support for UK Miele-Accounts (-> vg: de-DE | en-EN)
-* create automatically new datapoint for combined nicely shown time values
-  currently elapsedTime and remainingTime are quite useless cause hours and minutes are separate values and minutes are shown without leading 0
-  combine these values into a new datapoint to "h:mm" values
-* make poll interval configurable (currently 10 Minutes)
 
 
 ## License

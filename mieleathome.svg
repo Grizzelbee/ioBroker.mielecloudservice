@@ -29,7 +29,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.0843458"
-     inkscape:cx="-65.46072"
+     inkscape:cx="306.97895"
      inkscape:cy="865.54145"
      inkscape:document-units="mm"
      inkscape:current-layer="g868"
@@ -63,7 +63,10 @@
        height="72.572464"
        x="18.673424"
        y="28.608126"
-       ry="11.231454" />
+       ry="11.231454"
+       inkscape:export-filename="C:\Users\hanjo\WebstormProjects\ioBroker.mieleathome\admin\mieleathome.png"
+       inkscape:export-xdpi="53.509998"
+       inkscape:export-ydpi="53.509998" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot4799"
@@ -80,7 +83,10 @@
        transform="translate(0,-2.4400273)">
       <g
          transform="translate(-1.4640164)"
-         id="g849">
+         id="g849"
+         inkscape:export-filename="C:\Users\hanjo\WebstormProjects\ioBroker.mieleathome\admin\mieleathome.png"
+         inkscape:export-xdpi="53.509998"
+         inkscape:export-ydpi="53.509998">
         <flowRoot
            xml:space="preserve"
            id="flowRoot4791"
@@ -114,7 +120,10 @@
          transform="matrix(0.4652838,0,0,0.45561966,-36.849625,-84.41408)"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:85.33306885px;line-height:1.25;font-family:'Clarendon BT';-inkscape-font-specification:'Clarendon BT, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;fill-opacity:1;stroke:#000000;stroke-opacity:1;"
          id="flowRoot4791-3"
-         xml:space="preserve"><flowRegion
+         xml:space="preserve"
+         inkscape:export-filename="C:\Users\hanjo\WebstormProjects\ioBroker.mieleathome\admin\mieleathome.png"
+         inkscape:export-xdpi="53.509998"
+         inkscape:export-ydpi="53.509998"><flowRegion
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:85.33306885px;font-family:'Clarendon BT';-inkscape-font-specification:'Clarendon BT, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;stroke:#000000;stroke-opacity:1;"
            id="flowRegion4793-3"><rect
              style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:85.33306885px;font-family:'Clarendon BT';-inkscape-font-specification:'Clarendon BT, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;stroke:#000000;stroke-opacity:1;"
@@ -128,7 +137,10 @@
          transform="matrix(0.20957633,0,0,0.26193728,-3.6840649,-2.0139703)"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.33333588px;line-height:1.25;font-family:'Clarendon BT';-inkscape-font-specification:'Clarendon BT, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none"
          id="flowRoot4791-1"
-         xml:space="preserve"><flowRegion
+         xml:space="preserve"
+         inkscape:export-filename="C:\Users\hanjo\WebstormProjects\ioBroker.mieleathome\admin\mieleathome.png"
+         inkscape:export-xdpi="53.509998"
+         inkscape:export-ydpi="53.509998"><flowRegion
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.33333588px;font-family:'Clarendon BT';-inkscape-font-specification:'Clarendon BT, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2"
            id="flowRegion4793-6"><rect
              style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.33333588px;font-family:'Clarendon BT';-inkscape-font-specification:'Clarendon BT, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2"

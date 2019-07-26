@@ -15,6 +15,8 @@
     "locale": "Auto",
     "locale_desc": "Auto",
     "on save adapter restarts with new config immediately": "on save-adapter wordt onmiddellijk opnieuw opgestart met nieuwe config",
+    "pollinterval": "API-pollInterval",
+    "pollinterval_desc": "Tijd tussen twee API-peilingen (in minuten)",
     "template adapter settings": "sjabloon-adapterinstellingen",
     "test1": "Test 1",
     "test2": "Test 2"

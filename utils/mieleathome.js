@@ -147,7 +147,7 @@ class mieleathome{
         let path = 'v1/devices/' + deviceID + '/state';
         this.NSendRequest(Refresh_Token, path, 'GET', Access_Token, '', function (err, data, atoken, rtoken) {
             if (!err) {
-                console.log('data' + JSON.stringify(data));
+                // console is not defined here ... console.log('data' + JSON.stringify(data));
                 return callback(err, data, atoken, rtoken)
             }
         });

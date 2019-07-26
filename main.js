@@ -8,7 +8,7 @@
  *  {datajsonS
  *      "common": {
  *          "name":         "mieleathome",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
- *          "version":      "0.0.5,                         // use "Semantic Versioning"! see http://semver.org/
+ *          "version":      "0.9.0,                         // use "Semantic Versioning"! see http://semver.org/
  *          "title":        "Node.js mieleathome Adapter",  // Adapter title shown in User Interfaces
  *          "authors":  [                                   // Array of authord
  *              "name <hash99@iesy.net>, <hanjo@hingsen.de>"
@@ -98,13 +98,14 @@ function startAdapter(options) {
 
 function GetDevices(data, Pfad) {
     let deviceType;
+
     for (let ObjName in data) {
         let New_Pfad = Pfad + '.' + ObjName;
         let Type = typeof data[ObjName];
-        adapter.log.debug('Function GetDevices: ' + ObjName + ' ' + Pfad + ' ' + Type);
+        adapter.log.debug('Main:Function GetDevices: ObjName: [' + ObjName + '] *** Pfad [' + Pfad + '] *** Type: [' + Type+ '] *** Value: [' + valueOf(data) + ']');
         switch (Type) {
             case 'object':
-                adapter.log.debug('Ist Objekt ' + ObjName + ' ' + New_Pfad);
+                adapter.log.debug('Main:GetDevices:1: ObjName: [' + ObjName + '] *** New_Pfad: [' + New_Pfad + ']');
                 if (!adapter.getObject(New_Pfad)) {
                     adapter.setObjectNotExists(New_Pfad, {
                         type: 'state',
@@ -112,12 +113,39 @@ function GetDevices(data, Pfad) {
                         native: {}
                     });
                 }
-                adapter.log.debug(ObjName + ' ' + Pfad + ' ' + New_Pfad + ' ' + Type);
+                // adapter.log.debug(ObjName + ' ' + Pfad + ' ' + New_Pfad + ' ' + Type);
+                adapter.log.debug('Main:GetDevices:2: Pfad: [' + Pfad + '] *** New_Pfad: [' + New_Pfad + '] *** Type: [' + Type + ']');
                 if (New_Pfad.split('.')[0] === 'Devices' && !New_Pfad.split('.')[2]) {
                     //    createExtendObject(New_Pfad + '.LightOn', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
                     //    createExtendObject(New_Pfad + '.LightOff', { type: 'state', common: { name: 'LightOn',type: 'boolean',role: 'button' },native: {}});
                     addDevicefunction(New_Pfad, deviceType, data);
                 }
+
+                if ( String(ObjName).includes('Time') ){
+                    adapter.log.debug("*****  Objekt [" + ObjName + "] gefunden! *****");
+                    let niceTime = data[ObjName][0] + ':';
+                    if	(data[ObjName][1] < 10) {
+                        niceTime += '0' + data[ObjName][1];
+                    } else {
+                        niceTime += data[ObjName][1];
+                    }
+                    adapter.log.debug("*****  NiceTime= [" + niceTime + "]  *****");
+                    adapter.log.debug("*****  New_Pfad= [" + New_Pfad + "]  *****");
+                    adapter.log.debug("*****  Pfad= [" + Pfad + "]  *****");
+                    if (!adapter.getObject(New_Pfad)) {
+                        adapter.log.debug("*****  State [" + New_Pfad + "] does not exist. Creating new one. *****");
+                        createExtendObject(New_Pfad, {
+                            type: 'state',
+                            common: {name: ObjName, type: Type, role: 'state'},
+                            native: {}
+                        })
+                    }
+                    adapter.log.debug("*****  Setting State [" + New_Pfad + "] *****");
+                    adapter.setState(New_Pfad, niceTime, true);
+                    // break; // if breaking here the deeper states won't be written/updated anymore
+                    // this will be a breaking change!! - but reduce runtime
+                }
+
                 if (Pfad === 'Devices') {
                     createExtendObject(Pfad + '.GetDevices', {
                         type: 'state',
@@ -198,7 +226,7 @@ function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // adapter.config:
     adapter.log.debug('********************************');
-    adapter.log.debug('* Miele@Home Adapter V0.0.5.11 *');
+    adapter.log.debug('* Miele@Home Adapter V0.0.9.00 *');
     adapter.log.debug('********************************');
 
     createExtendObject('Devices', {
@@ -297,11 +325,12 @@ function main() {
 
                     }, 8000);
                 }
-                let j = schedule.scheduleJob('*/10 * * * *', function () {
+                let j = schedule.scheduleJob('*/'+adapter.config.pollinterval.toString()+' * * * *', function () {
                     setTimeout(function () {
                         miele.NGetDevices(rrefresh_token, access_token, adapter.config.locale, function (err, data, atoken, rtoken) {
                             adapter.log.debug('NGetDevices Error: ' + err);
                             if (!err) {
+                                adapter.log.info("Updating device states (polling API scheduled).");
                                 GetDevices(data, 'Devices')
                             }
                         });

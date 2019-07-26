@@ -15,6 +15,8 @@
     "locale": "Auto",
     "locale_desc": "Auto",
     "on save adapter restarts with new config immediately": "sur l'adaptateur de sauvegarde redémarre avec la nouvelle config immédiatement",
+    "pollinterval": "API-Pollinterval",
+    "pollinterval_desc": "Temps entre deux interrogations API (en minutes)",
     "template adapter settings": "paramètres de l'adaptateur de modèle",
     "test1": "Test 1",
     "test2": "Test 2"
