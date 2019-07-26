@@ -1,6 +1,6 @@
 ![Logo](admin/mieleathome.png)
 # ioBroker.mieleathome
-![Number of Installations](http://iobroker.live/badges/mieleathome-installed.svg) ![Number of Installations](http://iobroker.live/badges/mieleathome-stable.svg)
+![Number of Installations](http://iobroker.live/badges/mieleathome-installed.svg)
 [![NPM version](https://img.shields.io/npm/v/iobroker.mieleathome.svg)](https://www.npmjs.com/package/iobroker.alexa2)
 [![Build Status](https://travis-ci.org/Apollon77/ioBroker.mieleathome.svg?branch=master)](https://travis-ci.org/grizzelbee/ioBroker.mieleathome)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/grizzelbee/iobroker.mieleathome/blob/master/LICENSE) 
