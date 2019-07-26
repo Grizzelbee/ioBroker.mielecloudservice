@@ -35,10 +35,10 @@ Client_id
 
 ## Changelog
 
-### 0.9.1
+### 0.9.1 (2019-07-26)
 * (grizzelbee) Fix: Fixed small bug introduced in V0.9.0 throwing an exception in debugging code
 
-### 0.9.0
+### 0.9.0 (2019-07-26)
 * (grizzelbee) Upd: New versioning due to completeness and stability of the adapter (about 90%)
 * (grizzelbee) New: make poll interval configurable  (currently 1,2,3,4,5,7,10,15 Minutes)
 * (grizzelbee) Fix: fixed ESLint config
@@ -46,7 +46,7 @@ Client_id
 * (grizzelbee) New: Set 5 Minutes poll interval and english response language as default to get initial values 
 * (grizzelbee) New: Parent-Datapoint of timevalues will be used to get a pretty readable time in the format h:mm. The deeper datapoints 0 and 1 will still be updated, but his will be removed in a future version to reduce workload.  
 
-### 0.0.5
+### 0.0.5 (2019-07-25)
 * (grizzelbee) Upd: some code maintenance
 * (grizzelbee) New: added reply-language to config
                     - Miele API is currently able to reply in German or English, now you can choose.
