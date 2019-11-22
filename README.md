@@ -1,16 +1,19 @@
-![Logo](admin/mieleathome.png)
+![Logo](admin/mieleathome.svg)
 # ioBroker.mieleathome
 ![Number of Installations](http://iobroker.live/badges/mieleathome-installed.svg)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.mieleathome.svg)](https://www.npmjs.com/package/iobroker.mieleathome)
 [![NPM version](https://img.shields.io/npm/v/iobroker.mieleathome.svg)](https://www.npmjs.com/package/iobroker.alexa2)
-[![Build Status](https://travis-ci.org/Grizzelbee/ioBroker.mieleathome.svg?branch=master)](https://travis-ci.org/grizzelbee/ioBroker.mieleathome)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/grizzelbee/iobroker.mieleathome/blob/master/LICENSE) 
-
+[![Dependency Status](https://img.shields.io/david/Grizzelbee/iobroker.mieleathome.svg)](https://david-dm.org/Grizzelbee/iobroker.mieleathome)
+[![Known Vulnerabilities](https://snyk.io/test/github/Grizzelbee/ioBroker.mieleathome/badge.svg)](https://snyk.io/test/github/Grizzelbee/ioBroker.mieleathome)
+ 
+ [![NPM](https://nodei.co/npm/iobroker.mieleathome.png?downloads=true)](https://nodei.co/npm/iobroker.mieleathome/)
+ 
+ **Tests:**: [![Travis-CI](http://img.shields.io/travis/Grizzelbee/ioBroker.mieleathome/master.svg)](https://travis-ci.org/Grizzelbee/ioBroker.mieleathome)
+ 
  =================
-
-
-
-
-This adapter is a Miele@Home for Miele API. 
+## Description
+This adapter is for retrieving information about all your Miele@Home devices from the official Miele 3rd-party API. 
 
 
 ## Steps 
@@ -18,23 +21,28 @@ To install, excecute the following command
 in /opt/iobroker/node_modules:
 
 1. Install via Admin: https://github.com/Grizzelbee/ioBroker.mieleathome.git
-
-2. create an account for Miele@Home 
-
+2. create an account for Miele@Home in the Miele App 
 3. Add the Miele-Device to the App
-
 4. Get client_secret and client_id from Miele-developer Team via Mail: developer@miele.com.
-
-3. Fill in the client_secret and client_id received from Miele-developer Team and acoount-id and password.
+5. Fill in the client_secret and client_id received from Miele-developer Team and acoount-id and password from the App.
 
 
 ## Requirements
 
-Miele@Home Account
-Client_secret
-Client_id
+* Miele@Home Account (Smartphone App)
+* Miele Client_id
+* Miele Client_secret
 
 ## Changelog
+
+### 1.0.0 (2020-Q1)
+* (grizzelbee) Rewritten adapter from scratch    
+* (grizzelbee) New: (longer) poll interval when no device is active
+* (grizzelbee) New: Sleeptime for complete inactivity (e.g. at night)
+* (grizzelbee) Fix: fixed all build-errors
+* (grizzelbee) Fix: Fixed "NRefreshToken is not a function"-Bug 
+* (grizzelbee) Chg: removed Push-API option (may be introduced newly when API supports this)
+* (grizzelbee) Chg: New Icon
 
 ### 0.9.1 (2019-07-26)
 * (grizzelbee) Fix: Fixed small bug introduced in V0.9.0 throwing an exception in debugging code
@@ -73,7 +81,7 @@ Client_id
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2019 Hash99 <hash99@iesy.net>
+Copyright (c) 2019 grizzelbee <captain.tzk@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
