@@ -1,4 +1,4 @@
-![Logo](admin/mieleathome.svg)
+![Logo](admin/mieleathome.png)
 # ioBroker.mieleathome
 ![Number of Installations](http://iobroker.live/badges/mieleathome-installed.svg)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.mieleathome.svg)](https://www.npmjs.com/package/iobroker.mieleathome)
@@ -36,7 +36,7 @@ in /opt/iobroker/node_modules:
 ## Changelog
 
 ### 1.0.0 (2020-Q1)
-* (grizzelbee) Rewritten adapter from scratch    
+* (grizzelbee) Rewritten adapter from scratch - therefore it's incompatible with prior versions and needs to be freshly installed. 
 * (grizzelbee) New: (longer) poll interval when no device is active
 * (grizzelbee) New: Sleeptime for complete inactivity (e.g. at night)
 * (grizzelbee) Fix: fixed all build-errors
