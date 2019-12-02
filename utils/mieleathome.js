@@ -136,6 +136,7 @@ class mieleathome{
     }
 
     NGetDevices(Refresh_Token, Access_Token, locale, callback) {
+        adapter.log.debug("");
         this.NSendRequest(Refresh_Token, 'v1/devices/?language=' + locale, 'GET', Access_Token, '', function (err, data, atoken, rtoken) {
             if (!err) {
                 return callback(err, data, atoken, rtoken)

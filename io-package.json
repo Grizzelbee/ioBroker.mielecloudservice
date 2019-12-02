@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "mieleathome",
-        "version": "0.9.1",
+        "version": "0.9.2",
         "news": {
             "0.0.3": {
                 "en": "initial adapter",
@@ -42,7 +42,7 @@
             "zh-cn": "ioBroker mieleathome"
         },
         "authors": [
-            "hash99 <hash99@iesy.net>"
+            "hash99 <hash99@iesy.net>, grizzelbee <captain.tzk@gmail.com>"
         ],
         "platform": "Javascript/Node.js",
         "mode": "daemon",
