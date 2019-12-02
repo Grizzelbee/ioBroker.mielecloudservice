@@ -1,15 +1,20 @@
 {
   "name": "iobroker.mieleathome",
-  "version": "0.9.1",
-  "description": "mieleathome",
+  "version": "1.0.0",
+  "description": "Miele@Home Adapter for ioBroker - to integrate your Miele@Home Appliances to ioBroker",
   "author": {
-    "name": "hash99",
-    "email": "hash99@iesy.net"
+    "name": "grizzelbee",
+    "email": "captain.tzk@gmail.com"
   },
   "contributors": [
     {
       "name": "grizzelbee",
-      "email": "captain.tzk@gmail.com"
+      "email": "captain.tzk@gmail.com",
+
+    },
+    {
+      "name": "hash99",
+      "email": "hash99@gmx.net"
     }
   ],
   "homepage": "https://github.com/Grizzelbee/ioBroker.mieleathome",
@@ -20,6 +25,9 @@
     "Smart Home",
     "home automation"
   ],
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Grizzelbee/ioBroker.mieleathome.git"
@@ -50,13 +58,7 @@
   },
   "main": "main.js",
   "scripts": {
-    "test:js": "mocha --opts test/mocha.custom.opts",
-    "test:package": "mocha test/package --exit",
-    "test:unit": "mocha test/unit --exit",
-    "test:integration": "mocha test/integration --exit",
-    "test": "npm run test:js && npm run test:package",
-    "lint": "npm run lint:js",
-    "lint:js": "eslint"
+    "test": "node node_modules/mocha/bin/mocha --exit"
   },
   "bugs": {
     "url": "https://github.com/Grizzelbee/ioBroker.mieleathome/issues"
