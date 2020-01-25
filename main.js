@@ -1,35 +1,30 @@
-/**
- *
- * mieleathome adapter V1.0.0 alpha
- *
- */
-
+/* eslint-disable no-unused-vars */
 /* jshint -W097 */
 /* jshint -W030 */
 /* jshint strict:true */
-/* jslint node: true */
 /* jslint esversion: 6 */
+/* jslint node: true */
+
+/**
+*
+* mieleathome adapter V1.0.0 alpha
+*
+*/
 'use strict';
 
-
 // you have to require the utils module and call adapter function
-const utils = require('@iobroker/adapter-core'); // Get common adapter utils
-// read the adapter name from package.json
-const adapterName = require('./package.json').name.split('.').pop();
-// const mieleathome = require('./utils/mieleathome');
-//const mieledevice = require('./utils/devices.js');
-const schedule = require('node-schedule');
-
-const request = require("request");
-// const req_sync = require('sync-request');
 const BaseURL = 'https://api.mcs3.miele.com/';
+const adapterName = require('./package.json').name.split('.').pop();
+const utils = require('@iobroker/adapter-core'); // Get common adapter utils
+const schedule = require('node-schedule');
+const request = require("request");
+//const mieledevice = require('./utils/devices.js');
+// const req_sync = require('sync-request');
 
-// Global Variables (all capital)
+// Global Variables (all uppercase)
 let ACCESS_TOKEN;
 let REFRESH_TOKEN;
-// create adapter instance which will be used for communication with controller
 let ADAPTER;
-// let miele;
 
 function startadapter(options) {
     options = options || {};
@@ -85,23 +80,171 @@ function startadapter(options) {
     return ADAPTER;
 }
 
+function proofAdapterConfig() {
+    if ('' === ADAPTER.config.Miele_account) {
+        ADAPTER.log.warn('Miele account is missing.');
+    }
+    if ('' === ADAPTER.config.Miele_pwd) {
+        ADAPTER.log.warn('Miele password is missing.');
+    }
+    if ('' === ADAPTER.config.Client_ID) {
+        ADAPTER.log.warn('Miele API client ID is missing.');
+    }
+    if ('' === ADAPTER.config.Client_secret) {
+        ADAPTER.log.warn('Miele API client secret is missing.');
+    }
+    if ('' === ADAPTER.config.locale) {
+        ADAPTER.log.warn('Locale is missing.');
+    }
+}
 
-function NGetToken(callback) {
+function createExtendObject(id, objData, callback) {
+    ADAPTER.getObject(id, function (err, oldObj) {
+        if (!err && oldObj) {
+            ADAPTER.extendObject(id, objData, callback);
+        } else {
+            ADAPTER.setObjectNotExists(id, objData, callback);
+        }
+    });
+}
+
+function createEODeviceTypes(){
+    // Extended Objects
+    createExtendObject('Devices', {
+        type: 'channel',
+        common: {
+            name: 'Outdated !!!',
+            type: 'text',
+            role: 'value'
+        },
+        native: {}
+    });
+    createExtendObject('Washing machines', {
+        type: 'channel',
+        common: {
+            name: 'Washing machines returned from Miele@Home API',
+            type: 'text',
+            role: 'value',
+            value: '1'
+        },
+        native: {}
+    });
+    createExtendObject('Tumble dryer', {
+        type: 'channel',
+        common: {
+            name: 'Tumble dryer returned from Miele@Home API',
+            type: 'text',
+            role: 'value',
+            value: '2'
+        },
+        native: {}
+    });
+
+        /*
+          List of possible devicetypes:
+
+          1 = WASHING MACHINE
+        2 = TUMBLE DRYER
+        7 = DISHWASHER
+        8 = DISHWASHER SEMI-PROF
+        12 = OVEN
+        13 = OVEN MICROWAVE
+        14 = HOB HIGHLIGHT
+        15 = STEAM OVEN
+        16 = MICROWAVE
+        17 = COFFEE SYSTEM
+        18 = HOOD
+        19 = FRIDGE
+        20 = FREEZER
+        21 = FRIDGE-/FREEZER COMBINATION
+        23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER
+        24 = WASHER DRYER
+        25 = DISH WARMER
+        27 = HOB INDUCTION
+        28 = HOB GAS
+        31 = STEAM OVEN COMBINATION
+        32 = WINE CABINET
+        33 = WINE CONDITIONING UNIT
+        34 = WINE STORAGE CONDITIONING UNIT
+        39 = DOUBLE OVEN
+        40 = DOUBLE STEAM OVEN
+        41 = DOUBLE STEAM OVEN COMBINATION
+        42 = DOUBLE MICROWAVE
+        43 = DOUBLE MICROWAVE OVEN
+        45 = STEAM OVEN MICROWAVE COMBINATION
+        48 = VACUUM DRAWER
+        67 = DIALOGOVEN
+        68 = WINE CABINET FREEZER COMBINATION
+
+        */
+
+}
+
+function main() {
+    // The adapters config (in the instance object everything under the attribute "native") is accessible via
+    // ADAPTER.config:
+    // create needed channels to sort devices returned from API to
+    createEODeviceTypes();
+    if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale) {
+        ADAPTER.log.debug('*** Trying to get Authorization Tokens ***');
+        APIGetToken( function (err, access_token, refresh_token) {
+            if (err) {
+                ADAPTER.log.info('Error during Access-Token request.');
+                ADAPTER.log.info('Errormessage : ' + err);
+            } else {
+                ACCESS_TOKEN  = access_token;
+                REFRESH_TOKEN = refresh_token;
+                ADAPTER.log.info("Querying Devices from API");
+                APIGetDevices(REFRESH_TOKEN, ACCESS_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
+                    if (err) {
+                        ADAPTER.log.debug('*** Error during mieleathome.APIGetDevices. ***');
+                        ADAPTER.log.debug('Errormessage: ' + err);
+                    }else{
+                        // GetDevices(data, 'Devices')
+                    }
+                });
+            }
+        });
+    } else {
+        ADAPTER.log.warn('Adapter config is invalid. Please fix.');
+        proofAdapterConfig();
+    }
+    // start refresh scheduler with interval from adapters config
+    let scheduler = schedule.scheduleJob('*/' + ADAPTER.config.pollinterval.toString() + ' * * * *', function () {
+        setTimeout(function () {
+            ADAPTER.log.info("Updating device states (polling API scheduled).");
+            /*
+                miele.NGetDevices(REFRESH_TOKEN, REFRESH_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
+                    ADAPTER.log.debug('NGetDevices Error: ' + err);
+                    if (!err) {
+                        GetDevices(data, 'Devices')
+                    }
+                });
+                */
+        }, 8000);
+    });
+    // in this mieleathome all states changes inside the adapters namespace are subscribed
+    ADAPTER.subscribeStates('*');
+}//End Function main
+
+
+// API-Functions
+function APIGetToken(callback) {
     let options = {
         url: BaseURL + 'thirdparty/token/',
         method: 'POST',
         form: {
             grant_type: 'password',
-            password: ADAPTER.config.Miele_pwd,
-            username: ADAPTER.config.Miele_account,
-            client_id: ADAPTER.config.Client_ID,
+            password:      ADAPTER.config.Miele_pwd,
+            username:      ADAPTER.config.Miele_account,
+            client_id:     ADAPTER.config.Client_ID,
             client_secret: ADAPTER.config.Client_secret,
             vg: 'de-DE'
         },
         headers: {accept: 'application/json'}
     };
-    ADAPTER.log.debug('OAuth2-URL: ['           + options.url + ']');
-    ADAPTER.log.debug('config locale: ['        + ADAPTER.config.locale + ']');
+    ADAPTER.log.debug('OAuth2-URL: ['            + options.url + ']');
+    ADAPTER.log.debug('config locale: ['         + ADAPTER.config.locale + ']');
     ADAPTER.log.debug('options Miele_account: [' + options.form.username + ']');
     ADAPTER.log.debug('options Miele_Passwd: ['  + options.form.password + ']');
     ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
@@ -115,7 +258,7 @@ function NGetToken(callback) {
                 ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
                 return callback(false, P.access_token, P.refresh_token);
             } else {
-                ADAPTER.log.error('*** Error during NGetToken ***')
+                ADAPTER.log.error('*** Error during APIGetToken ***')
                 ADAPTER.log.error('HTTP-Responsecode: ' + response.statusCode);
                 ADAPTER.log.error(body);
                 return callback(true, null, null);
@@ -124,81 +267,100 @@ function NGetToken(callback) {
     )
 }
 
-function main() {
-    // The adapters config (in the instance object everything under the attribute "native") is accessible via
-    // ADAPTER.config:
-    ADAPTER.log.debug('**********************************************');
-    ADAPTER.log.debug('* Miele@Home Adapter V1.0.0 - Function: Main *');
-    ADAPTER.log.debug('**********************************************');
+function APISendRequest(Refresh_Token, Endpoint, Method, Token, Send_Body, callback) {
+    let options;
 
-    // Extended Objects
-    createExtendObject('Devices', {
-        type: 'channel',
-        common: {
-            name: 'Devices detected and supported by Miele@Home',
-            type: 'text',
-            role: 'value'
-        },
-        native: {}
-    });
-    // Get adapter config from Admin
-    if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale) {
-        ADAPTER.log.info('*** Received adapter configuration from admin ***');
-        ADAPTER.log.info('*** Trying to get Authorization Tokens ***');
-        NGetToken( function (err, access_token, refresh_token) {
-            if (err) {
-                ADAPTER.log.info('Error during Access-Token request.');
-                ADAPTER.log.info('Errormessage : ' + err);
-            } else {
-                ACCESS_TOKEN  = access_token;
-                REFRESH_TOKEN = refresh_token;
+    if (Method === 'GET') {
+        options = {
+            url: BaseURL + Endpoint,
+            method: Method,
+            headers: {Authorization: 'Bearer ' + Token, accept: 'application/json'},// Content-Type: 'application/json'},
+            form: Send_Body
+        }
+    } else {
+        options = {
+            url: BaseURL + Endpoint,
+            method: Method,
+            json: true,
+            headers: {Authorization: 'Bearer ' + Token, accept: '*/*'}, //,  'Content-Type': 'application/json;charset=UTF-8'},
+            body: Send_Body
+        }
+    }
+    request(options, function (error, response, body) {
+        ADAPTER.log.debug(response.statusCode);
+        ADAPTER.log.debug(body);
+        switch (response.statusCode) {
+            case 200: // OK
+                //if (!body){return callback(false,JSON.parse(body),null,null);} else {callback(false,null,null,null)};
+            {
+                return callback(false, JSON.parse(body), null, null)
             }
-        });
-
-        // Querying Devices from API
-        ADAPTER.log.info("Querying Devices from API");
+            case 202: //Accepted, processing has not been completed.
+                break;
+            case 204: // OK, No Content
+                return callback(false, null, null, null);
+            case 400: //Bad Request, message body will contain more information
+                return callback(true, null, null, null);
+            case 401: //Unauthorized
+                // @todo implement this
                 /*
-                miele.NGetDevices(REFRESH_TOKEN, access_token, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
-                    ADAPTER.log.debug('*** Error during mieleathome.NGetDevices. ***');
-                    ADAPTER.log.debug('Errormessage: ' + err);
+                this.NRefreshToken(Token, Refresh_Token, function (err, access_token, refresh_token) {
                     if (!err) {
-                        // GetDevices(data, 'Devices')
+                        APISendRequest(Refresh_Token, Endpoint, Method, access_token, Send_Body, function (err, data) {
+                            if (!err) {
+                                return callback(false, data, access_token, refresh_token)
+                            } else {
+                                return callback(true, null, access_token, refresh_token)
+                            }
+                        });
+                    } else {
+                        return callback(true, null, null, null);
                     }
                 });
                 */
-
-    } else {
-        ADAPTER.log.debug("Send GET Devices");
-        setTimeout(function () {
-             ADAPTER.log.info('Mock for getting Devices from API');
-            /*
-            miele.NGetDevices(REFRESH_TOKEN, REFRESH_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
-                ADAPTER.log.debug('NGetDevices Error: ' + err);
-                if (!err) {
-                    // GetDevices(data, 'Devices')
-                }
-            });
-            */
-        }, 8000);
-    }
-    // start refresh scheduler
-    let j = schedule.scheduleJob('*/'+ADAPTER.config.pollinterval.toString()+' * * * *', function () {
-        setTimeout(function () {
-            /*
-            miele.NGetDevices(REFRESH_TOKEN, REFRESH_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
-                ADAPTER.log.debug('NGetDevices Error: ' + err);
-                if (!err) {
-                    ADAPTER.log.info("Updating device states (polling API scheduled).");
-                    GetDevices(data, 'Devices')
-                }
-            });
-            */
-        }, 8000);
+                break;
+            default:
+                return callback(true, null, null, null);
+        }
     });
-    // in this mieleathome all states changes inside the adapters namespace
-    // are subscribed
-    ADAPTER.subscribeStates('*');
-}//End Function main
+}
+
+function APIGetDevices(Refresh_Token, Access_Token, locale, callback) {
+    ADAPTER.log.debug("this is function APIGetDevices");
+    APISendRequest(Refresh_Token, 'v1/devices/?language=' + locale, 'GET', Access_Token, '', function (err, data, atoken, rtoken) {
+        if (!err) {
+            return callback(err, data, atoken, rtoken)
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -300,15 +462,6 @@ function GetDevices(data, Pfad) {
 }//End of Function GetDevices
 
 
-function createExtendObject(id, objData, callback) {
-    ADAPTER.getObject(id, function (err, oldObj) {
-        if (!err && oldObj) {
-            ADAPTER.extendObject(id, objData, callback);
-        } else {
-            ADAPTER.setObjectNotExists(id, objData, callback);
-        }
-    });
-}
 
 function addDevicefunction(Pfad, Type, data) {
     let datajsonS = JSON.stringify(data);
