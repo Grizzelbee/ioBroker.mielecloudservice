@@ -1,8 +1,32 @@
 {
     "common": {
         "name": "mieleathome",
-        "version": "0.9.2",
+        "version": "1.0.0",
         "news": {
+            "1.0.0": {
+                "en": "Completely rewritten",
+                "de": "Initiale Version",
+                "ru": "Первоначальный адаптер",
+                "pt": "Versão inicial",
+                "fr": "Version initiale",
+                "nl": "Eerste release",
+                "it": "adattatore iniziale",
+                "es": "adaptador inicial",
+                "pl": "początkowy adapter",
+                "zh-cn": "初始适配器"
+            },
+            "0.0.4": {
+                "en": "minor updates",
+                "de": "Initiale Version",
+                "ru": "Первоначальный адаптер",
+                "pt": "Versão inicial",
+                "fr": "Version initiale",
+                "nl": "Eerste release",
+                "it": "adattatore iniziale",
+                "es": "adaptador inicial",
+                "pl": "początkowy adapter",
+                "zh-cn": "初始适配器"
+            },
             "0.0.3": {
                 "en": "initial adapter",
                 "de": "Initiale Version",
@@ -70,8 +94,8 @@
         "Miele_pwd": "",
         "Miele_account": "",
         "Client_ID": "",
-        "locale": "",
-        "Active": ""
+        "locale": "Deutsch",
+        "Active": "3"
     },
     "objects": []
 }
