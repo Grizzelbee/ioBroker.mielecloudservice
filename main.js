@@ -18,8 +18,6 @@ const adapterName = require('./package.json').name.split('.').pop();
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const schedule = require('node-schedule');
 const request = require("request");
-//const mieledevice = require('./utils/devices.js');
-// const req_sync = require('sync-request');
 
 // Global Variables (all uppercase)
 let ACCESS_TOKEN;
@@ -259,6 +257,21 @@ function addMieleDevice(path, mieleDevice){
     }
 }
 
+function createBoolDatapoint(path, description, value){
+    ADAPTER.log.debug('createBoolDatapoint: Path['+ path +'] Value[' + value + ']');
+    createExtendObject(path, {
+        type: 'state',
+        common: {"name": description,
+            "read": "true",
+            "write": "false",
+            "role": "state",
+            "type": "boolean"
+        },
+        native: {}
+    });
+    ADAPTER.setState(path, value);
+}
+
 function createStringDatapoint(path, description, value){
     createExtendObject(path, {
         type: 'state',
@@ -354,23 +367,12 @@ function addMieleDeviceState(path, currentDeviceState){
     createTimeDatapoint(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
     createTemperatureDatapoint(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
     createTemperatureDatapoint(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
-
-    // missing:
-/*
-        "signalInfo": false,
-        "signalFailure": false,
-        "signalDoor": false,
-        "remoteEnable": {
-        "fullRemoteControl": true,
-            "smartGrid": false
-    },
-    "light": 0,
-*/
-//    createTimeDatapoint(path + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', currentDeviceState.elapsedTime);
-//    createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw);
-//    createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw);
-
-
+    createBoolDatapoint(path + '.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo);
+    createBoolDatapoint(path + '.signalFailure', 'The SignalFailure field indicates, if a failure is active for this Device.', currentDeviceState.signalFailure);
+    createBoolDatapoint(path + '.signalDoor', 'The SignalDoor field indicates, if a door-open message is active for this Device.', currentDeviceState.signalDoor);
+    createBoolDatapoint(path + '.Light', 'The light field indicates the status of the device light.', currentDeviceState.light === 1?'Enabled':(currentDeviceState.light === 2?'Disabled':'Invalid') );
+    createBoolDatapoint(path + '.fullRemoteControl', 'The device can be controlled from remote.', currentDeviceState.remoteEnable.fullRemoteControl);
+    createBoolDatapoint(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
 }
 
 function refreshMieledata(){
