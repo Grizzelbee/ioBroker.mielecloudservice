@@ -195,16 +195,43 @@ function parseMieleDevice(mieleDevice){
             createEODeviceTypes(1); // create folder for washing machines
             addMieleDevice('Washing machines', mieleDevice);
             createTimeDatapoint('Washing machines.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', mieleDevice.state.elapsedTime);
+            createStringDatapointRaw('Washing machines.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'Spinning speed of a washing machine', mieleDevice.state.spinningSpeed.key_localized, mieleDevice.state.spinningSpeed.value_localized, mieleDevice.state.spinningSpeed.value_raw, mieleDevice.state.spinningSpeed.unit);
             break;
         case 2: // tumble dryer
             ADAPTER.log.debug('Das ist ein ' + mieleDevice.ident.type.value_localized );
             createEODeviceTypes(2);// create folder for Tumble dryer
             addMieleDevice('Tumble dryer', mieleDevice);
             createTimeDatapoint('Tumble dryer.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', mieleDevice.state.elapsedTime);
+            createStringDatapointRaw('Tumble dryer.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for tumble dryers and washer-dryer combinations.', mieleDevice.state.dryingStep.key_localized, mieleDevice.state.dryingStep.value_localized, mieleDevice.state.dryingStep.value_raw, '');
+
             break;
          // more to come
+
+        // hood:
+        //createStringDatapointRaw('Tumble dryer.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.state.ventilationStep', 'This field is only valid for hoods.', mieleDevice.state.ventilationStep.value_raw, mieleDevice.state.ventilationStep.key_localized, mieleDevice.state.ventilationStep.value_localized, '');
     }
 
+
+
+
+
+
+
+    /*
+    elapsedTime since program start (only present for certain devices)
+    Device Device
+    ID     Type
+     1     Washing machine - done
+     2     Tumble dryer    - done
+     7     Dishwasher
+    10     Oven
+    13     Oven microwave
+    15     Steam oven
+    12     Washer dryer
+    31     Steam oven combination
+    43     Steam oven microwave combination
+    67     DialogOven
+    */
 
 }
 
@@ -246,7 +273,8 @@ function createStringDatapoint(path, description, value){
     ADAPTER.setState(path, value);
 }
 
-function createStringDatapointRaw(path, description, key_localized, value_localized, value_raw){
+function createStringDatapointRaw(path, description, key_localized, value_localized, value_raw, unit){
+    ADAPTER.log.debug('createStringDatapointRaw: Path:[' + path + '] key_localized:[' + key_localized + '] value_localized[' + value_localized + '] value_raw[' + value_raw +'] unit[' + unit   +']' );
     createExtendObject(path + '.' + key_localized +'_raw', {
         type: 'state',
         common: {"name":  description + ' (value raw)',
@@ -269,7 +297,7 @@ function createStringDatapointRaw(path, description, key_localized, value_locali
         },
         native: {}
     });
-    ADAPTER.setState(path + '.' + key_localized, value_localized);
+    ADAPTER.setState(path + '.' + key_localized, value_localized + unit);
 }
 
 function createTimeDatapoint(path, description, value){
@@ -288,6 +316,24 @@ function createTimeDatapoint(path, description, value){
     ADAPTER.setState(path, assembledValue);
 }
 
+function createTemperatureDatapoint(path, description, value){
+    // there is a max of 3 temps returned by the miele API
+    // only the first will currently be supported
+    createExtendObject(path, {
+        type: 'state',
+        common: {"name": description,
+            "read": "true",
+            "write": "false",
+            "role": "state",
+            "type": "string"
+        },
+        native: {}
+    });
+    ADAPTER.log.debug('createTemperatureDatapoint: Path:['+ path +'], value:['+ JSON.stringify(value) +']');
+    let assembledValue = value[0].value_localized + '° ' + value[0].unit;
+    ADAPTER.setState(path, assembledValue);
+}
+
 function addMieleDeviceIdent(path, currentDeviceIdent){
     ADAPTER.log.debug('addMieleDeviceIdent: Path = [' + path + ']');
     createStringDatapoint(path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
@@ -297,27 +343,46 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
     createStringDatapoint(path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
 }
 
-
-
-
-
 function addMieleDeviceState(path, currentDeviceState){
     ADAPTER.log.debug('addMieleDeviceState: Path: [' + path + ']');
 
-    createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw);
-    createStringDatapointRaw(path, 'ID of the running Program', currentDeviceState.ProgramID.key_localized, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw);
-    createStringDatapointRaw(path, 'programType of the running Program', currentDeviceState.programType.key_localized,  currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw);
-    createStringDatapointRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw);
+    createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw, '');
+    createStringDatapointRaw(path, 'ID of the running Program', currentDeviceState.ProgramID.key_localized, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw, '');
+    createStringDatapointRaw(path, 'programType of the running Program', currentDeviceState.programType.key_localized,  currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw), '';
+    createStringDatapointRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
     createTimeDatapoint(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
     createTimeDatapoint(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
-//    createTimeDatapoint(path + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', currentDeviceState.elapsedTime);
+    createTemperatureDatapoint(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
+    createTemperatureDatapoint(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
 
-    //    createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw);
+    // missing:
+/*
+        "signalInfo": false,
+        "signalFailure": false,
+        "signalDoor": false,
+        "remoteEnable": {
+        "fullRemoteControl": true,
+            "smartGrid": false
+    },
+    "light": 0,
+*/
+//    createTimeDatapoint(path + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', currentDeviceState.elapsedTime);
+//    createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw);
 //    createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw);
 
 
 }
 
+function refreshMieledata(){
+    APIGetDevices(REFRESH_TOKEN, ACCESS_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
+        if (err) {
+            ADAPTER.log.debug('*** Error during mieleathome.APIGetDevices. ***');
+            ADAPTER.log.debug('Errormessage: ' + err);
+        }else{
+            splitMieleDevices(data);
+        }
+    });
+}
 
 function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
@@ -333,15 +398,7 @@ function main() {
                 ACCESS_TOKEN  = access_token;
                 REFRESH_TOKEN = refresh_token;
                 ADAPTER.log.info("Querying Devices from API");
-                APIGetDevices(REFRESH_TOKEN, ACCESS_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
-                    if (err) {
-                        ADAPTER.log.debug('*** Error during mieleathome.APIGetDevices. ***');
-                        ADAPTER.log.debug('Errormessage: ' + err);
-                    }else{
-                        splitMieleDevices(data);
-                        // GetDevices(data, 'Devices')
-                    }
-                });
+                refreshMieledata();
             }
         });
     } else {
@@ -352,14 +409,7 @@ function main() {
     let scheduler = schedule.scheduleJob('*/' + ADAPTER.config.pollinterval.toString() + ' * * * *', function () {
         setTimeout(function () {
             ADAPTER.log.info("Updating device states (polling API scheduled).");
-            /*
-                miele.NGetDevices(REFRESH_TOKEN, REFRESH_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
-                    ADAPTER.log.debug('NGetDevices Error: ' + err);
-                    if (!err) {
-                        GetDevices(data, 'Devices')
-                    }
-                });
-                */
+            refreshMieledata();
         }, 8000);
     });
     // in this mieleathome all states changes inside the adapters namespace are subscribed
