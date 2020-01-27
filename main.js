@@ -496,7 +496,7 @@ function APIGetToken(callback) {
                 ADAPTER.log.info('Got new Access-Token!');
                 ADAPTER.log.debug('New Access-Token:  [' + P.access_token + ']');
                 ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
-                ADAPTER.log.debug('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
+                ADAPTER.log.info('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
                 ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
                 ADAPTER.log.silly('plain body:  [' + body + ']');
                 return callback(false, P.access_token, P.refresh_token);
@@ -531,10 +531,10 @@ function APIRefreshToken(callback) {
     request(options, function (error, response, body) {
             if (response.statusCode === 200) {
                 let P = JSON.parse(body);
-                ADAPTER.log.info('Got new Access-Token!');
+                ADAPTER.log.info('Successfully refreshd Access-Token!');
                 ADAPTER.log.debug('New Access-Token:  [' + P.access_token + ']');
                 ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
-                ADAPTER.log.debug('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
+                ADAPTER.log.Info('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
                 ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
                 ADAPTER.log.silly('plain body:  [' + body + ']');
                 return callback(false, P.access_token, P.refresh_token);
