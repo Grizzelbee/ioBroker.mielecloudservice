@@ -107,75 +107,123 @@ function createExtendObject(id, objData, callback) {
 }
 
 function createEODeviceTypes(deviceTypeID){
-    // Extended Objects
+/* List of possible devicetypes:
+    2 = TUMBLE DRYER
+    1 = WASHING MACHINE
+    7 = DISHWASHER
+    8 = DISHWASHER SEMI-PROF
+    12 = OVEN
+    13 = OVEN MICROWAVE
+    14 = HOB HIGHLIGHT
+    15 = STEAM OVEN
+    16 = MICROWAVE
+    17 = COFFEE SYSTEM
+    18 = HOOD
+    19 = FRIDGE
+    20 = FREEZER
+    21 = FRIDGE-/FREEZER COMBINATION
+    23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER
+    24 = WASHER DRYER
+    25 = DISH WARMER
+    27 = HOB INDUCTION
+    28 = HOB GAS
+    31 = STEAM OVEN COMBINATION
+    32 = WINE CABINET
+    33 = WINE CONDITIONING UNIT
+    34 = WINE STORAGE CONDITIONING UNIT
+    39 = DOUBLE OVEN
+    40 = DOUBLE STEAM OVEN
+    41 = DOUBLE STEAM OVEN COMBINATION
+    42 = DOUBLE MICROWAVE
+    43 = DOUBLE MICROWAVE OVEN
+    45 = STEAM OVEN MICROWAVE COMBINATION
+    48 = VACUUM DRAWER
+    67 = DIALOGOVEN
+    68 = WINE CABINET FREEZER COMBINATION
+    */
+
+    let deviceFolder;
+    let description;
+
     switch (deviceTypeID) {
         case 1 :
-            createExtendObject('Washing machines', {
-                type: 'channel',
-                common: {
-                    name: 'Washing machines reported by Miele@Home API'
-                },
-                native: {}
-            });
+            deviceFolder = 'Washing machines';
+            description  = 'Washing machines reported by Miele@Home API';
             break;
         case 2:
-            createExtendObject('Tumble dryer', {
-                type: 'channel',
-                common: {
-                    name: 'Tumble dryer reported by  Miele@Home API'
-                },
-                native: {}
-            });
+            deviceFolder = 'Tumble dryers';
+            description  = 'Tumble dryers reported by Miele@Home API';
             break;
-        case 3:
-            createExtendObject('Dishwasher', {
-                type: 'channel',
-                common: {
-                    name: 'Dishwasher reported by  Miele@Home API'
-                },
-                native: {}
-            });
+        case 7:
+        case 8:
+            deviceFolder = 'Dishwashers';
+            description  = 'Dishwashers reported by Miele@Home API';
+            break;
+        case 12:
+        case 13:
+        case 15:
+        case 31:
+        case 39:
+        case 40:
+        case 41:
+        case 43:
+        case 45:
+        case 67:
+            deviceFolder = 'Ovens';
+            description  = 'Ovens reported by Miele@Home API';
+            break;
+        case 14:
+        case 27:
+        case 28:
+            deviceFolder = 'Cooktops';
+            description  = 'Cooktops reported by Miele@Home API';
+            break;
+        case 16:
+        case 42:
+            deviceFolder = 'Microwaves';
+            description  = 'Microwaves reported by Miele@Home API';
+            break;
+        case 17:
+            deviceFolder = 'Coffee Systems';
+            description  = 'Coffee Systems reported by Miele@Home API';
+            break;
+        case 18:
+            deviceFolder = 'Hoods';
+            description  = 'Hoods reported by Miele@Home API';
+            break;
+        case 19:
+        case 20:
+        case 21:
+        case 32:
+        case 33:
+        case 34:
+        case 68:
+            deviceFolder = 'Fridges';
+            description  = 'Fridges reported by Miele@Home API';
+            break;
+        case 23:
+            deviceFolder = 'Vacuum cleaners';
+            description  = 'Vacuum cleaners reported by Miele@Home API';
+            break;
+        case 25:
+            deviceFolder = 'Dish warmers';
+            description  = 'Dish warmers reported by Miele@Home API';
+            break;
+        case 48:
+            deviceFolder = 'Vacuum drawers';
+            description  = 'Vacuum drawers reported by Miele@Home API';
             break;
     }
-        /*
-        // todo implement complete list
-          List of possible devicetypes:
 
-          1 = WASHING MACHINE
-        2 = TUMBLE DRYER
-        7 = DISHWASHER
-        8 = DISHWASHER SEMI-PROF
-        12 = OVEN
-        13 = OVEN MICROWAVE
-        14 = HOB HIGHLIGHT
-        15 = STEAM OVEN
-        16 = MICROWAVE
-        17 = COFFEE SYSTEM
-        18 = HOOD
-        19 = FRIDGE
-        20 = FREEZER
-        21 = FRIDGE-/FREEZER COMBINATION
-        23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER
-        24 = WASHER DRYER
-        25 = DISH WARMER
-        27 = HOB INDUCTION
-        28 = HOB GAS
-        31 = STEAM OVEN COMBINATION
-        32 = WINE CABINET
-        33 = WINE CONDITIONING UNIT
-        34 = WINE STORAGE CONDITIONING UNIT
-        39 = DOUBLE OVEN
-        40 = DOUBLE STEAM OVEN
-        41 = DOUBLE STEAM OVEN COMBINATION
-        42 = DOUBLE MICROWAVE
-        43 = DOUBLE MICROWAVE OVEN
-        45 = STEAM OVEN MICROWAVE COMBINATION
-        48 = VACUUM DRAWER
-        67 = DIALOGOVEN
-        68 = WINE CABINET FREEZER COMBINATION
+    createExtendObject(deviceFolder, {
+        type: 'channel',
+        common: {
+            name: description
+        },
+        native: {}
+    });
 
-        */
-
+    return deviceFolder;
 }
 
 function splitMieleDevices(devices){
@@ -187,50 +235,45 @@ function splitMieleDevices(devices){
 }
 
 function parseMieleDevice(mieleDevice){
+
+    let deviceFolder;
+
+    ADAPTER.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
+    deviceFolder = createEODeviceTypes(mieleDevice.ident.type.value_raw); // create folder for device
+    addMieleDevice(deviceFolder, mieleDevice);
+
+    // add special datapoints to devices
+    // spinning speed
     switch (mieleDevice.ident.type.value_raw) {
-        case 1: // washing machines
-            ADAPTER.log.debug('Das ist eine ' + mieleDevice.ident.type.value_localized );
-            createEODeviceTypes(1); // create folder for washing machines
-            addMieleDevice('Washing machines', mieleDevice);
-            createTimeDatapoint('Washing machines.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', mieleDevice.state.elapsedTime);
-            createStringDatapointRaw('Washing machines.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'Spinning speed of a washing machine', mieleDevice.state.spinningSpeed.key_localized, mieleDevice.state.spinningSpeed.value_localized, mieleDevice.state.spinningSpeed.value_raw, mieleDevice.state.spinningSpeed.unit);
+        case  1: // Washing machine
+            createStringDatapointRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'Spinning speed of a washing machine.', mieleDevice.state.spinningSpeed.key_localized, mieleDevice.state.spinningSpeed.value_localized, mieleDevice.state.spinningSpeed.value_raw, mieleDevice.state.spinningSpeed.unit);
             break;
-        case 2: // tumble dryer
-            ADAPTER.log.debug('Das ist ein ' + mieleDevice.ident.type.value_localized );
-            createEODeviceTypes(2);// create folder for Tumble dryer
-            addMieleDevice('Tumble dryer', mieleDevice);
-            createTimeDatapoint('Tumble dryer.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', mieleDevice.state.elapsedTime);
-            createStringDatapointRaw('Tumble dryer.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for tumble dryers and washer-dryer combinations.', mieleDevice.state.dryingStep.key_localized, mieleDevice.state.dryingStep.value_localized, mieleDevice.state.dryingStep.value_raw, '');
-
-            break;
-         // more to come
-
-        // hood:
-        //createStringDatapointRaw('Tumble dryer.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.state.ventilationStep', 'This field is only valid for hoods.', mieleDevice.state.ventilationStep.value_raw, mieleDevice.state.ventilationStep.key_localized, mieleDevice.state.ventilationStep.value_localized, '');
     }
-
-
-
-
-
-
-
-    /*
-    elapsedTime since program start (only present for certain devices)
-    Device Device
-    ID     Type
-     1     Washing machine - done
-     2     Tumble dryer    - done
-     7     Dishwasher
-    10     Oven
-    13     Oven microwave
-    15     Steam oven
-    12     Washer dryer
-    31     Steam oven combination
-    43     Steam oven microwave combination
-    67     DialogOven
-    */
-
+    // elapsedTime
+    switch (mieleDevice.ident.type.value_raw) {
+        case  1: // Washing machine
+        case  2: // Tumble dryer
+        case  7: // Dishwasher
+        case 10: // Oven
+        case 13: // Oven microwave
+        case 15: // Steam oven
+        case 12: // Washer dryer
+        case 31: // Steam oven combination
+        case 43: // Steam oven microwave combination
+        case 67: // DialogOven
+            createTimeDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', mieleDevice.state.elapsedTime);
+            break;
+        case 18: // Hood
+            createStringDatapointRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for hoods.', mieleDevice.state.ventilationStep.key_localized, mieleDevice.state.ventilationStep.value_localized, mieleDevice.state.ventilationStep.value_raw, '');
+            break;
+    }
+    // dryingStep
+    switch (mieleDevice.ident.type.value_raw) {
+        case  2: // tumble dryer
+        case 24: // washer dryer
+            createStringDatapointRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for tumble dryers and washer-dryer combinations.', mieleDevice.state.dryingStep.key_localized, mieleDevice.state.dryingStep.value_localized, mieleDevice.state.dryingStep.value_raw, '');
+            break;
+    }
 }
 
 function addMieleDevice(path, mieleDevice){
@@ -310,7 +353,7 @@ function createStringDatapointRaw(path, description, key_localized, value_locali
         },
         native: {}
     });
-    ADAPTER.setState(path + '.' + key_localized, value_localized + unit);
+    ADAPTER.setState(path + '.' + key_localized, value_localized + ' ' + unit);
 }
 
 function createTimeDatapoint(path, description, value){
@@ -331,20 +374,26 @@ function createTimeDatapoint(path, description, value){
 
 function createTemperatureDatapoint(path, description, value){
     // there is a max of 3 temps returned by the miele API
-    // only the first will currently be supported
-    createExtendObject(path, {
-        type: 'state',
-        common: {"name": description,
-            "read": "true",
-            "write": "false",
-            "role": "state",
-            "type": "string"
-        },
-        native: {}
-    });
-    ADAPTER.log.debug('createTemperatureDatapoint: Path:['+ path +'], value:['+ JSON.stringify(value) +']');
-    let assembledValue = value[0].value_localized + '° ' + value[0].unit;
-    ADAPTER.setState(path, assembledValue);
+    // only datapoints with a value != -32768 will be created
+    for (let n = 1 ; n < 3; n++) {
+        if (value[n-1].value_localized != -32768) {
+            createExtendObject(path + '_' + n, {
+                type: 'state',
+                common: {"name": description,
+                    "read": "true",
+                    "write": "false",
+                    "role": "state",
+                    "type": "string"
+                },
+                native: {}
+            });
+            ADAPTER.log.debug('createTemperatureDatapoint: Path:['+ path + '_' + n +'], value:['+ JSON.stringify(value) +']');
+            let assembledValue = value[n-1].value_localized + '° ' + value[n-1].unit;
+            ADAPTER.setState(path + '_' + n, assembledValue);
+        } else {
+            ADAPTER.log.debug('createTemperatureDatapoint: Skipped ['+ path + '_' + n +'] due to invalid value:['+ value[n-1].value_localized +']');
+        }
+    }
 }
 
 function addMieleDeviceIdent(path, currentDeviceIdent){
@@ -446,10 +495,51 @@ function APIGetToken(callback) {
                 let P = JSON.parse(body);
                 ADAPTER.log.info('Got new Access-Token!');
                 ADAPTER.log.debug('New Access-Token:  [' + P.access_token + ']');
+                ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
+                ADAPTER.log.debug('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
                 ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
+                ADAPTER.log.silly('plain body:  [' + body + ']');
                 return callback(false, P.access_token, P.refresh_token);
             } else {
                 ADAPTER.log.error('*** Error during APIGetToken ***')
+                ADAPTER.log.error('HTTP-Responsecode: ' + response.statusCode);
+                ADAPTER.log.error(body);
+                return callback(true, null, null);
+            }
+        }
+    )
+}
+
+function APIRefreshToken(callback) {
+    let options = {
+        url: BaseURL + 'thirdparty/token/',
+        method: 'POST',
+        form: {
+            grant_type: 'refresh_token',
+            refresh_token: ADAPTER.config.refresh_token,
+            client_id:     ADAPTER.config.Client_ID,
+            client_secret: ADAPTER.config.Client_secret,
+            vg: 'de-DE'
+        },
+        headers: {accept: 'application/json'}
+    };
+    ADAPTER.log.debug('OAuth2-URL: ['            + options.url + ']');
+    ADAPTER.log.debug('refresh_token: ['         + options.form.refresh_token + ']');
+    ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
+    ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');
+
+    request(options, function (error, response, body) {
+            if (response.statusCode === 200) {
+                let P = JSON.parse(body);
+                ADAPTER.log.info('Got new Access-Token!');
+                ADAPTER.log.debug('New Access-Token:  [' + P.access_token + ']');
+                ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
+                ADAPTER.log.debug('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
+                ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
+                ADAPTER.log.silly('plain body:  [' + body + ']');
+                return callback(false, P.access_token, P.refresh_token);
+            } else {
+                ADAPTER.log.error('*** Error during APIRefreshToken ***')
                 ADAPTER.log.error('HTTP-Responsecode: ' + response.statusCode);
                 ADAPTER.log.error(body);
                 return callback(true, null, null);
@@ -493,22 +583,7 @@ function APISendRequest(Refresh_Token, Endpoint, Method, Token, Send_Body, callb
             case 400: //Bad Request, message body will contain more information
                 return callback(true, null, null, null);
             case 401: //Unauthorized
-                // @todo implement this
-                /*
-                this.NRefreshToken(Token, Refresh_Token, function (err, access_token, refresh_token) {
-                    if (!err) {
-                        APISendRequest(Refresh_Token, Endpoint, Method, access_token, Send_Body, function (err, data) {
-                            if (!err) {
-                                return callback(false, data, access_token, refresh_token)
-                            } else {
-                                return callback(true, null, access_token, refresh_token)
-                            }
-                        });
-                    } else {
-                        return callback(true, null, null, null);
-                    }
-                });
-                */
+                APIRefreshToken();
                 break;
             default:
                 return callback(true, null, null, null);
