@@ -441,7 +441,7 @@ function main() {
     // create needed channels to sort devices returned from API to
     if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale) {
         ADAPTER.log.debug('*** Trying to get Authorization Tokens ***');
-        APIGetToken( function (err, access_token, refresh_token) {
+        APIGetAccessToken( function (err, access_token, refresh_token) {
             if (err) {
                 ADAPTER.log.info('Error during Access-Token request.');
                 ADAPTER.log.info('Errormessage : ' + err);
@@ -469,21 +469,22 @@ function main() {
 
 
 // API-Functions
-function APIGetToken(callback) {
+function APIGetAccessToken(callback) {
     let options = {
         url: BaseURL + 'thirdparty/token/',
         method: 'POST',
         form: {
             grant_type: 'password',
-            password:      ADAPTER.config.Miele_pwd,
-            username:      ADAPTER.config.Miele_account,
-            client_id:     ADAPTER.config.Client_ID,
+            password: ADAPTER.config.Miele_pwd,
+            username: ADAPTER.config.Miele_account,
+            client_id: ADAPTER.config.Client_ID,
             client_secret: ADAPTER.config.Client_secret,
             vg: 'de-DE'
         },
-        headers: {accept: 'application/json'}
+        headers: {accept: 'application/json; charset=utf-8'}
     };
     ADAPTER.log.debug('OAuth2-URL: ['            + options.url + ']');
+    ADAPTER.log.debug('OAuth2 grant_type: ['     + options.form.grant_type + ']');
     ADAPTER.log.debug('config locale: ['         + ADAPTER.config.locale + ']');
     ADAPTER.log.debug('options Miele_account: [' + options.form.username + ']');
     ADAPTER.log.debug('options Miele_Passwd: ['  + options.form.password + ']');
@@ -501,7 +502,7 @@ function APIGetToken(callback) {
                 ADAPTER.log.silly('plain body:  [' + body + ']');
                 return callback(false, P.access_token, P.refresh_token);
             } else {
-                ADAPTER.log.error('*** Error during APIGetToken ***')
+                ADAPTER.log.error('*** Error during APIGetAccessToken ***')
                 ADAPTER.log.error('HTTP-Responsecode: ' + response.statusCode);
                 ADAPTER.log.error(body);
                 return callback(true, null, null);
