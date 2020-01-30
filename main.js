@@ -376,7 +376,7 @@ function createTemperatureDatapoint(path, description, value){
     // there is a max of 3 temps returned by the miele API
     // only datapoints with a value != -32768 will be created
     for (let n = 1 ; n < 3; n++) {
-        if (value[n-1].value_localized != -32768) {
+        if (value[n-1].value_localized !== -32768) {
             createExtendObject(path + '_' + n, {
                 type: 'state',
                 common: {"name": description,
@@ -455,9 +455,11 @@ function main() {
     } else {
         ADAPTER.log.warn('Adapter config is invalid. Please fix.');
         proofAdapterConfig();
+        ADAPTER.stop();
     }
     // start refresh scheduler with interval from adapters config
-    let scheduler = schedule.scheduleJob('*/' + ADAPTER.config.pollinterval.toString() + ' * * * *', function () {
+    let scheduler = schedule.scheduleJob('*/' + (ADAPTER.config.pollinterval.hasOwnProperty()? ADAPTER.config.pollinterval.toString(): '3') + ' * * * *', function () {
+
         setTimeout(function () {
             ADAPTER.log.info("Updating device states (polling API scheduled).");
             refreshMieledata();
