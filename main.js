@@ -455,11 +455,10 @@ function main() {
     } else {
         ADAPTER.log.warn('Adapter config is invalid. Please fix.');
         proofAdapterConfig();
-        ADAPTER.stop();
+        ADAPTER.terminate('Invalid Configuration.', 1000);
     }
     // start refresh scheduler with interval from adapters config
-    let scheduler = schedule.scheduleJob('*/' + (ADAPTER.config.pollinterval.hasOwnProperty()? ADAPTER.config.pollinterval.toString(): '3') + ' * * * *', function () {
-
+    let scheduler = schedule.scheduleJob('*/' + ADAPTER.hasOwnProperty('config.pollinterval')? ADAPTER.config.pollinterval.toString(): '3' + ' * * * *', function () {
         setTimeout(function () {
             ADAPTER.log.info("Updating device states (polling API scheduled).");
             refreshMieledata();
@@ -611,12 +610,6 @@ if (module && module.parent) {
     // or start the instance directly
     startadapter();
 }
-
-ADAPTER.on('stateChange', (id, state) => {
-    if (!id || !state || state.ack) {
-        //  return;
-    }
-});
 
 /*
  var mieleStates = {
