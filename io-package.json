@@ -4,28 +4,28 @@
         "version": "1.0.0",
         "news": {
             "1.0.0": {
-                "en": "Completely rewritten",
-                "de": "Initiale Version",
-                "ru": "Первоначальный адаптер",
-                "pt": "Versão inicial",
-                "fr": "Version initiale",
-                "nl": "Eerste release",
-                "it": "adattatore iniziale",
-                "es": "adaptador inicial",
-                "pl": "początkowy adapter",
-                "zh-cn": "初始适配器"
+                "en": "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install",
+                "de": "Vollständig umgeschrieben, alle Status in einer neuen Reihenfolge, aktualisieren Sie den Adapter NICHT - entfernen Sie ihn und führen Sie eine saubere Neuinstallation durch",
+                "ru": "Полностью переписан, все состояния в новом порядке, НЕ обновляйте адаптер - удалите и произведите чистую новую установку",
+                "pt": "Completamente reescrito, todos os estados em um novo pedido, NÃO atualizam o adaptador - remova e faça uma nova instalação limpa",
+                "nl": "Volledig herschreven, alle staten in een nieuwe volgorde, update de adapter NIET - verwijder en maak een schone nieuwe installatie",
+                "fr": "Entièrement réécrit, tous les états dans une nouvelle commande, ne mettez pas à jour l'adaptateur - supprimez et effectuez une nouvelle installation propre",
+                "it": "Completamente riscritto, tutti gli stati in un nuovo ordine, NON aggiornare l'adattatore: rimuovi ed esegui una nuova installazione pulita",
+                "es": "Completamente reescrito, todos los estados en un nuevo orden, NO actualice el adaptador: elimine y realice una nueva instalación limpia",
+                "pl": "Całkowicie przepisany, wszystkie stany w nowej kolejności, NIE aktualizuj adaptera - usuń i wykonaj czystą nową instalację",
+                "zh-cn": "完全重写，所有状态均处于新顺序，请勿更新适配器-删除并进行全新安装"
             },
             "0.0.4": {
                 "en": "minor updates",
-                "de": "Initiale Version",
-                "ru": "Первоначальный адаптер",
-                "pt": "Versão inicial",
-                "fr": "Version initiale",
-                "nl": "Eerste release",
-                "it": "adattatore iniziale",
-                "es": "adaptador inicial",
-                "pl": "początkowy adapter",
-                "zh-cn": "初始适配器"
+                "de": "kleinere Updates",
+                "ru": "незначительные обновления",
+                "pt": "pequenas atualizações",
+                "nl": "kleine updates",
+                "fr": "mises à jour mineures",
+                "it": "aggiornamenti minori",
+                "es": "actualizaciones menores",
+                "pl": "drobne aktualizacje",
+                "zh-cn": "小更新"
             },
             "0.0.3": {
                 "en": "initial adapter",

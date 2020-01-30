@@ -4,6 +4,7 @@
     "Client_ID_desc": "Your Miele API Client-ID",
     "Client_secret": "API Client-secret",
     "Client_secret_desc": "Your Miele API Client-Secret",
+    "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install": "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install",
     "English": "English",
     "German": "German",
     "Manual": "Manual",
@@ -11,13 +12,11 @@
     "Miele_Account_desc": "Your Miele App-Account (usually your eMail)",
     "Miele_pwd": "Miele Password",
     "Miele_pwd_desc": "Your Miele App-Account Password",
-    "My select": "My select",
     "locale": "API Response language",
     "locale_desc": "Language the Miele-API should respond in",
+    "minor updates": "minor updates",
     "on save adapter restarts with new config immediately": "on save adapter restarts with new config immediately",
     "pollinterval": "API poll interval",
     "pollinterval_desc": "Time between two API polls (in Minutes)",
-    "template adapter settings": "template adapter settings",
-    "test1": "Test 1",
-    "test2": "Test 2"
+    "template adapter settings": "template adapter settings"
 }
