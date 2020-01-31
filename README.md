@@ -1,105 +1,87 @@
-![Logo](img/ioBrokerLogoSmall.png)
-# ioBroker
-=====================
-[![NPM version](http://img.shields.io/npm/v/iobroker.svg)](https://www.npmjs.com/package/iobroker)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.svg)](https://www.npmjs.com/package/iobroker)
-
-[![NPM](https://nodei.co/npm/iobroker.png?downloads=true)](https://nodei.co/npm/iobroker/)
-
-*Automate your life!*
-
-See [ioBroker wiki](https://github.com/ioBroker/ioBroker/wiki/Home-(English)) for more information
-
-* [ioBroker website](http://iobroker.net)
-* [Demo admin](http://iobroker.click)
-* [Demo VIS](https://iobroker.click)
-* [Forum](http://forum.iobroker.net)
-* [Requests for adapters](https://github.com/ioBroker/AdapterRequests/issues)
-* [Statistics](http://download.iobroker.net/stat.html)
-
-ioBroker is an integration platform for the [Internet of Things](http://en.wikipedia.org/wiki/Internet_of_Things),
-focused on Building Automation, Smart Metering, Ambient Assisted Living, Process Automation, Visualization and
-Data Logging. It like a software f.e. [fhem](http://fhem.de), [OpenHAB](http://www.openhab.org/) or
-[the thing system](http://thethingsystem.com/).
-
-## Concept
-
-ioBroker is not just an application, it's more of a a concept, a database schema, and offers a very easy way for systems
-to interoperate. ioBroker defines some common rules for a pair of databases used to exchange data and publish events
-between different systems.
-
-![architecture](img/architecture.png)
-
-#### Databases
-
-ioBroker uses "in memory" database to hold the data and saves it on disk with resonable intervals. There are two types of
-storage:
-- states (values)
-- objects (meta/configuration information)
-
-States can be stored in "in memory" or in redis. Objects can be stored only in "in memory" DB.
-
-[Redis](http://redis.io/) is an in-memory key-value data store and also a message broker with publish/subscribe pattern.
-It's used to maintain and publish all states of connected systems.
-
-#### Adapters
-
-Systems are attached to ioBrokers databases via so called adapters, technically processes running anywhere
-in the network and connecting all kinds of systems to ioBrokers databases. A connection to ioBrokers databases can be
-implemented in nearly any programming language on nearly any platform and an adapter can run on any host that is able to
-reach the databases via ip networking.
-
-A library module for fast and comfortable adapter development exists for Javascript/Node.js until now. Libraries for
-adapter development in other languages are planned (python, java, perl, ...).
-
-See actual list of adapters on [iobroker.net](http://iobroker.net)
-
-#### Security
-
-ioBroker is designed to be accessed by trusted adapters inside trusted networks. This means that usually it is not a
-good idea to expose the ioBroker databases, adapters or any smarthome devices directly to the internet or, in general,
-to an environment where untrusted clients can directly access these network services. Adapters that offer services
-supposed to be exposed to the internet should be handled with care. You should always activate **HTTPS** and use valid
-certificates for web, admin if open it for internet or for example use it with additional security measures like VPN,
-VLAN and reverse proxies.
-
-## Getting Started
-
-#### Operating System and Hardware
-
-[ioBroker.js-controller](https://github.com/iobroker/ioBroker.js-controller/) should run on any hardware and os that runs
-[Node.js](http://nodejs.org/) (ARM, x86, Windows, Linux, OSX). Binary builds for Redis are also available
-for the ARM and x86 under Windows, Linux and OSX. Although redis is not required if it is not high load system.
-ioBroker spawns a new Node.js-Process for every adapter instance, so
-RAM becomes is a limiting factor. A single adapters memory fingerprint is roundabout 10-60MB. Since CouchDB can create
-quite a lot of load a dual core system is beneficial.
-
-We recommend x86 based or ARM based systems like [BananaPi](http://www.bananapi.org/p/product.html) or
-[Cubietruck](http://www.exp-tech.de/Mainboards/ARM/Cubietruck.html) using Debian based Linux as operating system.
-
-#### Installation and first steps
-
-* automated installation packages for windows and linux coming soon
-* [ioBroker.net](http://iobroker.net) => Installation
-
-#### Community support
-
-* get help in the [ioBroker Forums](http://forum.iobroker.net) (english, german and russian languages)
+![Logo](admin/mieleathome.svg)
+# ioBroker.mieleathome
+![Number of Installations](http://iobroker.live/badges/mieleathome-installed.svg)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.mieleathome.svg)](https://www.npmjs.com/package/iobroker.mieleathome)
+[![NPM version](https://img.shields.io/npm/v/iobroker.mieleathome.svg)](https://www.npmjs.com/package/iobroker.alexa2)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/grizzelbee/iobroker.mieleathome/blob/master/LICENSE) 
+[![Dependency Status](https://img.shields.io/david/Grizzelbee/iobroker.mieleathome.svg)](https://david-dm.org/Grizzelbee/iobroker.mieleathome)
+[![Known Vulnerabilities](https://snyk.io/test/github/Grizzelbee/ioBroker.mieleathome/badge.svg)](https://snyk.io/test/github/Grizzelbee/ioBroker.mieleathome)
+ 
+ [![NPM](https://nodei.co/npm/iobroker.mieleathome.png?downloads=true)](https://nodei.co/npm/iobroker.mieleathome/)
+ 
+ **Tests:**: [![Travis-CI](http://img.shields.io/travis/Grizzelbee/ioBroker.mieleathome/master.svg)](https://travis-ci.com/Grizzelbee/ioBroker.mieleathome)
+ 
+ =================
+## Description
+This adapter is for retrieving information about all your Miele@Home devices from the official Miele 3rd-party API. 
 
 
-## Docs for (adapter-)developers
+## Steps 
+To install, excecute the following command 
+in /opt/iobroker/node_modules:
 
-* [Core Concepts and Database Schema](doc/SCHEMA.md)
-* [Example Javascript/Node.js Adapter](https://github.com/ioBroker/ioBroker.template)
-* [ioBroker styleguides](doc/STYLE.md)
-* [ioBroker.js-controller Changelog](https://github.com/ioBroker/ioBroker.js-controller/blob/master/CHANGELOG.md)
+1. Install via Admin: https://github.com/Grizzelbee/ioBroker.mieleathome.git
+2. create an account for Miele@Home in the Miele App 
+3. Add the Miele-Device to the App
+4. Get client_secret and client_id from Miele-developer Team via Mail: developer@miele.com.
+5. Fill in the client_secret and client_id received from Miele-developer Team and acoount-id and password from the App.
+
+
+## Requirements
+
+* Miele@Home Account (Smartphone App)
+* Miele Client_id
+* Miele Client_secret
+
+## Changelog
+
+### 1.0.0 (2020-Q1)
+* (grizzelbee) Rewritten adapter from scratch - therefore it's incompatible with prior versions and needs to be freshly installed. 
+* (grizzelbee) Fix: fixed all build-errors
+* (grizzelbee) Fix: Fixed "NRefreshToken is not a function"-Bug 
+* (grizzelbee) Chg: removed Push-API option (may be introduced newly when API supports this)
+* (grizzelbee) Chg: New Icon
+* (grizzelbee) New: added support for Non german Miele-Accounts - please open an Issue, when more are needed
+
+
+### 0.9.1 (2019-07-26)
+* (grizzelbee) Fix: Fixed small bug introduced in V0.9.0 throwing an exception in debugging code
+
+### 0.9.0 (2019-07-26)
+* (grizzelbee) Upd: New versioning due to completeness and stability of the adapter (about 90%)
+* (grizzelbee) New: make poll interval configurable  (currently 1,2,3,4,5,7,10,15 Minutes)
+* (grizzelbee) Fix: fixed ESLint config
+* (grizzelbee) Upd: Changed order of config fields in UI
+* (grizzelbee) New: Set 5 Minutes poll interval and english response language as default to get initial values 
+* (grizzelbee) New: Parent-Datapoint of timevalues will be used to get a pretty readable time in the format h:mm. The deeper datapoints 0 and 1 will still be updated, but his will be removed in a future version to reduce workload.  
+
+### 0.0.5 (2019-07-25)
+* (grizzelbee) Upd: some code maintenance
+* (grizzelbee) New: added reply-language to config
+                    - Miele API is currently able to reply in German or English, now you can choose.
+* (grizzelbee) New: created new Icon
+* (grizzelbee) Fix: fixed translation issues and translated adapter UI using gulp
+* (grizzelbee) Upd: Made changes to travis requested by apollon77
+
+### 0.0.4
+* (hash99) add devices configuration
+
+### 0.0.3
+* (hash99) adapter conform
+
+### 0.0.1
+* (hash99) initial release
+
+ 
+## Next Steps
+* New: (longer) poll interval when no device is active
+* New: Sleeptime for complete inactivity (e.g. at night)
+
 
 ## License
-This module is distributer under the MIT License (MIT). Please notice, that other ioBroker adapters can have different licenses.
+The MIT License (MIT)
 
-Copyright (c) 2014-2018 bluefox <dogafox@gmail.com>,
-
-Copyright (c) 2014      hobbyquaker
+Copyright (c) 2019 grizzelbee <captain.tzk@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -118,5 +100,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-
