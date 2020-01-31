@@ -458,7 +458,7 @@ function main() {
     } else {
         ADAPTER.log.warn('Adapter config is invalid. Please fix.');
         proofAdapterConfig();
-        ADAPTER.terminate('Invalid Configuration.', 1000);
+        ADAPTER.terminate('Invalid Configuration.', 11);
     }
     // start refresh scheduler with interval from adapters config
     let scheduler = schedule.scheduleJob('*/' + ADAPTER.hasOwnProperty('config.pollinterval')? ADAPTER.config.pollinterval.toString(): '3' + ' * * * *', function () {
