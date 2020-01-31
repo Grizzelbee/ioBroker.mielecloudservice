@@ -94,6 +94,9 @@ function proofAdapterConfig() {
     if ('' === ADAPTER.config.locale) {
         ADAPTER.log.warn('Locale is missing.');
     }
+    if ('' === ADAPTER.config.oauth2_vg) {
+        ADAPTER.log.warn('OAuth2_vg is missing.');
+    }
 }
 
 function createExtendObject(id, objData, callback) {
@@ -480,17 +483,19 @@ function APIGetAccessToken(callback) {
             username: ADAPTER.config.Miele_account,
             client_id: ADAPTER.config.Client_ID,
             client_secret: ADAPTER.config.Client_secret,
-            vg: 'de-DE'
+            vg: ADAPTER.config.oauth2_vg
         },
         headers: {accept: 'application/json; charset=utf-8'}
     };
     ADAPTER.log.debug('OAuth2-URL: ['            + options.url + ']');
     ADAPTER.log.debug('OAuth2 grant_type: ['     + options.form.grant_type + ']');
+    ADAPTER.log.debug('options OAuth2-VG: ['     + options.form.vg + ']');
     ADAPTER.log.debug('config locale: ['         + ADAPTER.config.locale + ']');
     ADAPTER.log.debug('options Miele_account: [' + options.form.username + ']');
     ADAPTER.log.debug('options Miele_Passwd: ['  + options.form.password + ']');
     ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
     ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');
+    ADAPTER.log.debug('options Raw: [' + JSON.stringify(options) + ']');
 
     request(options, function (error, response, body) {
             if (response.statusCode === 200) {
@@ -521,11 +526,12 @@ function APIRefreshToken(callback) {
             refresh_token: ADAPTER.config.refresh_token,
             client_id:     ADAPTER.config.Client_ID,
             client_secret: ADAPTER.config.Client_secret,
-            vg: 'de-DE'
+            vg: ADAPTER.config.oauth2_vg
         },
         headers: {accept: 'application/json'}
     };
     ADAPTER.log.debug('OAuth2-URL: ['            + options.url + ']');
+    ADAPTER.log.debug('options OAuth2-VG: ['     + options.form.oauth2_vg + ']');
     ADAPTER.log.debug('refresh_token: ['         + options.form.refresh_token + ']');
     ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
     ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');

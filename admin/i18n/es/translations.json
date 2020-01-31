@@ -1,4 +1,5 @@
 {
+    "Austria": "Austria (de-AT)",
     "Auto": "Auto",
     "Client_ID": "ID de cliente API",
     "Client_ID_desc": "Tu Miele API Client-ID",
@@ -17,6 +18,8 @@
     "locale": "Auto",
     "locale_desc": "Auto",
     "minor updates": "actualizaciones menores",
+    "oauth2_vg": "Idioma y código de país para la autorización de API",
+    "oauth2_vg_desc": "Idioma y código de país para la autorización de API",
     "on save adapter restarts with new config immediately": "en el adaptador de guardar se reinicia con nueva configuración de inmediato",
     "pollinterval": "API-Pollinterval",
     "pollinterval_desc": "Tiempo entre dos encuestas API (en Minutues)",

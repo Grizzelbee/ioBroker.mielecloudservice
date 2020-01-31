@@ -1,4 +1,5 @@
 {
+    "Austria": "奥地利（de-AT）",
     "Auto": "汽车",
     "Client_ID": "API客户端ID",
     "Client_ID_desc": "您的Miele API客户端ID",
@@ -17,6 +18,8 @@
     "locale": "API响应语言",
     "locale_desc": "Miele-API应该响应的语言",
     "minor updates": "小更新",
+    "oauth2_vg": "API授权的语言和国家/地区代码",
+    "oauth2_vg_desc": "API授权的语言和国家/地区代码",
     "on save adapter restarts with new config immediately": "保存适配器立即重新启动新配置",
     "pollinterval": "API-的pollinterval",
     "pollinterval_desc": "两次API民意调查之间的时间（在Minutues中）",

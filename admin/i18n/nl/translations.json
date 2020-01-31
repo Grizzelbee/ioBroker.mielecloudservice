@@ -1,4 +1,5 @@
 {
+    "Austria": "Oostenrijk (de-AT)",
     "Auto": "Auto",
     "Client_ID": "API-client-ID",
     "Client_ID_desc": "Uw Miele API-client-ID",
@@ -17,6 +18,8 @@
     "locale": "Auto",
     "locale_desc": "Auto",
     "minor updates": "kleine updates",
+    "oauth2_vg": "Taal en landcode voor API-autorisatie",
+    "oauth2_vg_desc": "Taal en landcode voor API-autorisatie",
     "on save adapter restarts with new config immediately": "on save-adapter wordt onmiddellijk opnieuw opgestart met nieuwe config",
     "pollinterval": "API-pollInterval",
     "pollinterval_desc": "Tijd tussen twee API-peilingen (in minuten)",
