@@ -1,5 +1,4 @@
 {
-    "Austria": "奥地利（de-AT）",
     "Auto": "汽车",
     "Client_ID": "API客户端ID",
     "Client_ID_desc": "您的Miele API客户端ID",
@@ -14,16 +13,13 @@
     "Miele_pwd": "Miele密码",
     "Miele_pwd_desc": "您的Miele应用帐户密码",
     "My select": "我的选择",
-    "V1.0.0_Desc": "完全重写，所有状态均处于新顺序，请勿更新适配器-删除全新安装",
     "locale": "API响应语言",
     "locale_desc": "Miele-API应该响应的语言",
     "minor updates": "小更新",
-    "oauth2_vg": "API授权的语言和国家/地区代码",
-    "oauth2_vg_desc": "API授权的语言和国家/地区代码",
+    "oauth2_vg": "Miele帐户国家",
+    "oauth2_vg_desc": "Miele帐户所在的国家/地区。",
     "on save adapter restarts with new config immediately": "保存适配器立即重新启动新配置",
     "pollinterval": "API-的pollinterval",
     "pollinterval_desc": "两次API民意调查之间的时间（在Minutues中）",
-    "template adapter settings": "模板适配器设置",
-    "test1": "测试1",
-    "test2": "测试2"
+    "template adapter settings": "模板适配器设置"
 }

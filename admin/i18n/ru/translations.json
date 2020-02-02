@@ -1,5 +1,4 @@
 {
-    "Austria": "Австрия (де-АТ)",
     "Auto": "Автоматически",
     "Client_ID": "ID клиента API",
     "Client_ID_desc": "Ваш Miele API Client-ID",
@@ -14,16 +13,13 @@
     "Miele_pwd": "Miele Password",
     "Miele_pwd_desc": "Пароль вашего аккаунта Miele",
     "My select": "Выбор",
-    "V1.0.0_Desc": "Полностью переписан, все состояния в новом порядке, НЕ обновляйте адаптер - удалите новую чистую установку",
     "locale": "Автоматически",
     "locale_desc": "Автоматически",
     "minor updates": "незначительные обновления",
-    "oauth2_vg": "Язык и код страны для авторизации API",
-    "oauth2_vg_desc": "Язык и код страны для авторизации API",
+    "oauth2_vg": "Miele аккаунт Страна",
+    "oauth2_vg_desc": "Страна, в которой был открыт счет Miele.",
     "on save adapter restarts with new config immediately": "При сохранении настроек адаптера он сразу же перезапускается",
     "pollinterval": "API-PollInterval",
     "pollinterval_desc": "Время между двумя опросами API (в минутах)",
-    "template adapter settings": "Пример",
-    "test1": "Тест 1",
-    "test2": "Тест 2"
+    "template adapter settings": "Пример"
 }

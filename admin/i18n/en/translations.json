@@ -1,5 +1,4 @@
 {
-    "Austria": "Austria (de-AT)",
     "Auto": "Auto",
     "Client_ID": "API Client ID",
     "Client_ID_desc": "Your Miele API Client-ID",
@@ -7,23 +6,20 @@
     "Client_secret_desc": "Your Miele API Client-Secret",
     "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install": "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install",
     "English": "English",
-    "German": "German (de-DE)",
+    "German": "German",
     "Manual": "Manual",
     "Miele_Account": "Miele Account",
     "Miele_Account_desc": "Your Miele App-Account (usually your eMail)",
     "Miele_pwd": "Miele Password",
     "Miele_pwd_desc": "Your Miele App-Account Password",
     "My select": "",
-    "V1.0.0_Desc": "",
     "locale": "API Response language",
     "locale_desc": "Language the Miele-API should respond in",
     "minor updates": "minor updates",
-    "oauth2_vg": "Language and Countrycode",
-    "oauth2_vg_desc": "Language and Countrycode for API Authorization",
+    "oauth2_vg": "Miele account Country",
+    "oauth2_vg_desc": "Country the Miele account was opened in.",
     "on save adapter restarts with new config immediately": "on save adapter restarts with new config immediately",
     "pollinterval": "API poll interval",
     "pollinterval_desc": "Time between two API polls (in Minutes)",
-    "template adapter settings": "template adapter settings",
-    "test1": "",
-    "test2": ""
+    "template adapter settings": "template adapter settings"
 }

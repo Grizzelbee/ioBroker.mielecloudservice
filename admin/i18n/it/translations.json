@@ -1,5 +1,4 @@
 {
-    "Austria": "Austria (de-AT)",
     "Auto": "Auto",
     "Client_ID": "ID client API",
     "Client_ID_desc": "Il tuo ID client API Miele",
@@ -14,16 +13,13 @@
     "Miele_pwd": "Password Miele",
     "Miele_pwd_desc": "La password dell'account app Miele",
     "My select": "La mia selezione",
-    "V1.0.0_Desc": "Completamente riscritto, tutti gli stati in un nuovo ordine, NON aggiornare l'adattatore - rimuovi una nuova installazione pulita",
     "locale": "Auto",
     "locale_desc": "Auto",
     "minor updates": "aggiornamenti minori",
-    "oauth2_vg": "Lingua e codice Paese per l'autorizzazione API",
-    "oauth2_vg_desc": "Lingua e codice Paese per l'autorizzazione API",
+    "oauth2_vg": "Conto Miele Paese",
+    "oauth2_vg_desc": "Paese in cui è stato aperto l'account Miele.",
     "on save adapter restarts with new config immediately": "su save adapter si riavvia immediatamente con la nuova configurazione",
     "pollinterval": "API-PollInterval",
     "pollinterval_desc": "Tempo tra due sondaggi API (in minuti)",
-    "template adapter settings": "impostazioni dell'adattatore del modello",
-    "test1": "Test 1",
-    "test2": "Test 2"
+    "template adapter settings": "impostazioni dell'adattatore del modello"
 }
