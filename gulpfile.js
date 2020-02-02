@@ -342,7 +342,7 @@ async function translateNotExisting(obj, baseText, yandex) {
 
     if (t) {
         for (let l in languages) {
-            if (!obj[l]) {
+            if (!obj[l]) {                
                 const time = new Date().getTime();
                 obj[l] = await translate(t, l, yandex);
                 console.log("en -> " + l + " " + (new Date().getTime() - time) + " ms");
@@ -408,8 +408,8 @@ gulp.task('updateReadme', function (done) {
         if (readme.indexOf(version) === -1) {
             const timestamp = new Date();
             const date = timestamp.getFullYear() + '-' +
-                ('0' + (timestamp.getMonth() + 1).toString(10)).slice(-2) + '-' +
-                ('0' + (timestamp.getDate()).toString(10)).slice(-2);
+                    ('0' + (timestamp.getMonth() + 1).toString(10)).slice(-2) + '-' +
+                    ('0' + (timestamp.getDate()).toString(10)).slice(-2);
 
             let news = '';
             if (iopackage.common.news && iopackage.common.news[pkg.version]) {
@@ -429,7 +429,7 @@ gulp.task('translate', async function (done) {
     if (i > -1) {
         yandex = process.argv[i + 1];
     }
-
+    
     if (iopackage && iopackage.common) {
         if (iopackage.common.news) {
             console.log("Translate News");

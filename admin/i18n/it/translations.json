@@ -4,6 +4,7 @@
     "Client_ID_desc": "Il tuo ID client API Miele",
     "Client_secret": "Segreto client API",
     "Client_secret_desc": "Il segreto del client API Miele",
+    "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install": "Completamente riscritto, tutti gli stati in un nuovo ordine, NON aggiornare l'adattatore: rimuovi ed esegui una nuova installazione pulita",
     "English": "Inglese",
     "German": "Tedesco",
     "Manual": "Manuale",
@@ -14,10 +15,11 @@
     "My select": "La mia selezione",
     "locale": "Auto",
     "locale_desc": "Auto",
+    "minor updates": "aggiornamenti minori",
+    "oauth2_vg": "Conto Miele Paese",
+    "oauth2_vg_desc": "Paese in cui è stato aperto l'account Miele.",
     "on save adapter restarts with new config immediately": "su save adapter si riavvia immediatamente con la nuova configurazione",
     "pollinterval": "API-PollInterval",
     "pollinterval_desc": "Tempo tra due sondaggi API (in minuti)",
-    "template adapter settings": "impostazioni dell'adattatore del modello",
-    "test1": "Test 1",
-    "test2": "Test 2"
+    "template adapter settings": "impostazioni dell'adattatore del modello"
 }
