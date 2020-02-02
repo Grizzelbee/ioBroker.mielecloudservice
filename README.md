@@ -1,4 +1,4 @@
-![Logo](admin/mieleathome.svg)
+![Logo](admin/mieleathome.png)
 # ioBroker.mieleathome
 ![Number of Installations](http://iobroker.live/badges/mieleathome-installed.svg)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.mieleathome.svg)](https://www.npmjs.com/package/iobroker.mieleathome)
@@ -35,13 +35,15 @@ in /opt/iobroker/node_modules:
 
 ## Changelog
 
-### 1.0.0 (2020-Q1)
-* (grizzelbee) Rewritten adapter from scratch - therefore it's incompatible with prior versions and needs to be freshly installed. 
+### 1.0.0 (2020-02-02)
+* (grizzelbee) Rewritten adapter from scratch - therefor it's incompatible with prior versions and needs to be installed freshly. 
 * (grizzelbee) Fix: fixed all build-errors
 * (grizzelbee) Fix: Fixed "NRefreshToken is not a function"-Bug 
-* (grizzelbee) Chg: removed Push-API option (may be introduced newly when API supports this)
+* (grizzelbee) Chg: removed Push-API checkbox (may be introduced newly when API supports this)
 * (grizzelbee) Chg: New Icon
-* (grizzelbee) New: added support for Non german Miele-Accounts - please open an Issue, when more are needed
+* (grizzelbee) New: added support for Non german Miele-Accounts (ALL should be included)
+* (grizzelbee) Completely new layout of datapoints
+* (grizzelbee) Devicetypes are grouped now 
 
 
 ### 0.9.1 (2019-07-26)
