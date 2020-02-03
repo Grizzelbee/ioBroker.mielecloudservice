@@ -7,7 +7,7 @@
 
 /**
 *
-* mieleathome adapter V1.0.0 alpha
+* mieleCloudService Adapter V1.0.0
 *
 */
 'use strict';
@@ -72,7 +72,7 @@ function startadapter(options) {
         ready: () => main()
     });
     // you have to call the adapter function and pass a options object
-    // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.mieleathome.0
+    // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.mielecloudservice.0
     ADAPTER = new utils.adapter(options);
 
     return ADAPTER;
@@ -430,7 +430,7 @@ function addMieleDeviceState(path, currentDeviceState){
 function refreshMieledata(){
     APIGetDevices(REFRESH_TOKEN, ACCESS_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
         if (err) {
-            ADAPTER.log.debug('*** Error during mieleathome.APIGetDevices. ***');
+            ADAPTER.log.debug('*** Error during mielecloudservice.APIGetDevices. ***');
             ADAPTER.log.debug('Errormessage: ' + err);
         }else{
             splitMieleDevices(data);
@@ -467,7 +467,7 @@ function main() {
             refreshMieledata();
         }, 8000);
     });
-    // in this mieleathome all states changes inside the adapters namespace are subscribed
+    // in this mielecloudservice all states changes inside the adapters namespace are subscribed
     ADAPTER.subscribeStates('*');
 }//End Function main
 
