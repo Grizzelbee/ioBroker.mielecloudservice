@@ -1,4 +1,4 @@
-![Logo](admin/mielecoudservice.png)
+![Logo](admin/mielecloudservice.png)
 # ioBroker.MieleCloudService
 ![Number of Installations](http://iobroker.live/badges/mielecloudservice-installed.svg)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
