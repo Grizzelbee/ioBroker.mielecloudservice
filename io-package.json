@@ -40,30 +40,30 @@
                 "zh-cn": "初始适配器"
             }
         },
-        "title": "Miele@Home",
+        "title": "MieleCloudService",
         "titleLang": {
-            "en": "Miele@Home",
-            "de": "Miele@Home",
-            "ru": "Miele@Home",
-            "pt": "Miele@Home",
-            "nl": "Miele@Home",
-            "fr": "Miele@Home",
-            "it": "Miele@Home",
-            "es": "Miele@Home",
-            "pl": "Miele @ Home",
+            "en": "MieleCloudService",
+            "de": "MieleCloudService",
+            "ru": "MieleCloudService",
+            "pt": "MieleCloudService",
+            "nl": "MieleCloudService",
+            "fr": "MieleCloudService",
+            "it": "MieleCloudService",
+            "es": "MieleCloudService",
+            "pl": "MieleCloudService",
             "zh-cn": "美诺@家"
         },
         "desc": {
-            "en": "ioBroker mieleathome",
-            "de": "ioBroker MieleatHome",
-            "ru": "ioBroker MieleatHome как образец",
+            "en": "ioBroker MieleCloudService",
+            "de": "ioBroker MieleCloudService",
+            "ru": "ioBroker MieleCloudService как образец",
             "pt": "Modelo de adaptador para o ioBroker",
-            "fr": "ioBroker adaptateur modèle miele@Home",
-            "nl": "ioBroker Miele@home",
-            "it": "Adattatore modello miele@Home ioBroker",
+            "fr": "ioBroker adaptateur modèle MieleCloudService",
+            "nl": "ioBroker MieleCloudService",
+            "it": "Adattatore modello MieleCloudService ioBroker",
             "es": "Adaptador de plantilla ioBroker",
-            "pl": "ioBroker mieleathome",
-            "zh-cn": "ioBroker mieleathome"
+            "pl": "ioBroker MieleCloudService",
+            "zh-cn": "ioBroker MieleCloudService"
         },
         "authors": [
             "grizzelbee <captain.tzk@gmail.com>, hash99 <hash99@iesy.net>"
@@ -76,7 +76,7 @@
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.png",
         "keywords": [
-            "mieleathome",
+            "MieleCloudService",
             "vis",
             "GUI",
             "graphical",
