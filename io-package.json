@@ -1,6 +1,6 @@
 {
     "common": {
-        "name": "mieleathome",
+        "name": "mielecloudservice",
         "version": "1.0.0",
         "news": {
             "1.0.0": {
@@ -66,7 +66,7 @@
             "zh-cn": "ioBroker mieleathome"
         },
         "authors": [
-            "hash99 <hash99@iesy.net>, grizzelbee <captain.tzk@gmail.com>"
+            "grizzelbee <captain.tzk@gmail.com>, hash99 <hash99@iesy.net>"
         ],
         "platform": "Javascript/Node.js",
         "mode": "daemon",
@@ -74,7 +74,7 @@
         "icon": "mieleathome.png",
         "materialize": true,
         "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mieleathome/master/admin/mieleathome.png",
+        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.png",
         "keywords": [
             "mieleathome",
             "vis",
@@ -82,7 +82,7 @@
             "graphical",
             "scada"
         ],
-        "readme": "https://github.com/Grizzelbee/ioBroker.mieleathome/blob/master/README.md",
+        "readme": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/README.md",
         "loglevel": "info",
         "type": "household",
         "license": "MIT",
