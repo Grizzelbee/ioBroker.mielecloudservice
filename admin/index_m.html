@@ -41,44 +41,50 @@
             return result;
         }
 
-        function load(settings, onChange) {
+        // the function loadSettings has to exist ...
+        function loadHelper(settings, onChange) {
+            // example: select elements with id=key and class=value and insert value
             if (!settings) return;
+            if (settings.electricityPollingInterval === undefined) settings.electricityPollingInterval = 20;
+
             $('.value').each(function () {
                 var $key = $(this);
                 var id = $key.attr('id');
+                if (id === 'Miele_pwd' || id === 'Client_secret') {
+                    settings[id] = decrypt(secret, settings[id]);
+                }
 
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id]).change(function () {
+                    $key.prop('checked', settings[id]).change(function() {
                         onChange();
                     });
                 } else {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.val(settings[id]).change(function () {
+                    $key.val(settings[id]).change(function() {
                         onChange();
-                    }).keyup(function () {
+                    }).keyup(function() {
                         onChange();
                     });
                 }
             });
+            onChange(false);
+            M.updateTextFields();  // function Materialize.updateTextFields(); to reinitialize all the Materialize labels on the page if you are dynamically adding inputs.
+        }
 
+        // the function loadSettings has to exist ...
+        function load(settings, onChange) {
             socket.emit('getObject', 'system.config', function (err, obj) {
                 secret = (obj.native ? obj.native.secret : '') || 'Zgfr56gFe87jJOM';
-                $key = $('#password');
-                settings['password'] = decrypt(secret, settings['password']);
-                $key.val(settings['password']).change(function () {
-                    onChange();
-                }).keyup(function () {
-                    onChange();
-                });
+                loadHelper(settings, onChange);
             });
 
             onChange(false);
-            // (re)initialize all the Materialize labels on the page
-            M.updateTextFields();
         }
-
+        // ... and the function save has to exist.
+        // you have to make sure the callback is called with the settings object as first param!
         function save(callback) {
+            // example: select elements with class=value and build settings object
             var obj = {};
             $('.value').each(function () {
                 var $this = $(this);
@@ -88,12 +94,13 @@
                     obj[id] = $this.prop('checked');
                 } else {
                     var value = $this.val();
-                    if ($this.attr('type') === 'password') {
+                    if (id === 'Miele_pwd' || id === 'Client_secret') {
                         value = encrypt(secret, value);
                     }
                     obj[id] = value;
                 }
             });
+
             callback(obj);
         }
     </script>
@@ -124,7 +131,7 @@
             <div class="input-field col s12 m6 l2">
                 <select  class="value" id="locale">
                     <option value="de" class="translate">German</option>
-                    <option value="en" class="translate" selected>English</option>
+                    <option value="en" class="translate" >English</option>
                 </select>
                 <label class="translate" for="locale">locale</label>
                 <span class="translate" for="locale_desc">locale_desc</span>
@@ -145,7 +152,7 @@
                 <select  class="value" id="pollinterval">
                     <option value="1" class="translate">1</option>
                     <option value="2" class="translate">2</option>
-                    <option value="3" class="translate"selected>3</option>
+                    <option value="3" class="translate">3</option>
                     <option value="4" class="translate">4</option>
                     <option value="5" class="translate" >5</option>
                     <option value="7" class="translate">7</option>
@@ -166,7 +173,7 @@
                     <option value="hr-HR">Miele Croatia</option>
                     <option value="cs-CZ">Miele Czechia</option>
                     <option value="da-DK">Miele Danmark</option>
-                    <option value="de-DE" selected>Miele Deutschland</option>
+                    <option value="de-DE" >Miele Deutschland</option>
                     <option value="et-EE">Miele Eesti</option>
                     <option value="es-ES">Miele España</option>
                     <option value="fr-FR">Miele France</option>
