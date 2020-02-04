@@ -32,8 +32,7 @@ function startadapter(options) {
         // is called when adapter shuts down - callback has to be called under any circumstances!
         unload: function (callback) {
             try {
-                ADAPTER.log.info('Unloading Miele@Home-adapter ...');
-                ADAPTER.log.info('Goodbye and have a good time!');
+                ADAPTER.log.info('Unloading MieleCloudService...');
                 callback();
             } catch (e) {
                 callback();
@@ -42,11 +41,6 @@ function startadapter(options) {
         // is called if a subscribed object changes
         objectChange: function (id, obj) {
             // Warning, obj can be null if it was deleted
-            if ( obj.isNotNull() ){
-                ADAPTER.log.info('objectChange: ' + id + ' ' + JSON.stringify(obj));
-            } else {
-                ADAPTER.log.info('objectChange: Impossible because obj is null.' );
-            }
         },
         // is called if a subscribed state changes
         //                  stateChange: function (id, state) {
@@ -72,8 +66,6 @@ function startadapter(options) {
         ready: () => {
             ADAPTER.getForeignObject('system.config', (err, obj) => {
                 if (obj && obj.native && obj.native.secret) {
-                    ADAPTER.log.debug('decrypt with NativeSecret: [' + obj.native.secret + ']');
-
                     //noinspection JSUnresolvedVariable
                     ADAPTER.config.Miele_pwd = decrypt(obj.native.secret, ADAPTER.config.Miele_pwd);
                     ADAPTER.config.Client_secret = decrypt(obj.native.secret, ADAPTER.config.Client_secret);
@@ -479,18 +471,18 @@ function main() {
                 refreshMieledata();
             }
         });
+        // start refresh scheduler with interval from adapters config
+        let scheduler = schedule.scheduleJob('*/' + ADAPTER.hasOwnProperty('config.pollinterval')? ADAPTER.config.pollinterval: '3' + ' * * * *', function () {
+            setTimeout(function () {
+                ADAPTER.log.info("Updating device states (polling API scheduled).");
+                refreshMieledata();
+            }, 8000);
+        });
     } else {
         ADAPTER.log.warn('Adapter config is invalid. Please fix.');
         proofAdapterConfig();
         ADAPTER.terminate('Invalid Configuration.', 11);
     }
-    // start refresh scheduler with interval from adapters config
-    let scheduler = schedule.scheduleJob('*/' + ADAPTER.hasOwnProperty('config.pollinterval')? ADAPTER.config.pollinterval.toString(): '3' + ' * * * *', function () {
-        setTimeout(function () {
-            ADAPTER.log.info("Updating device states (polling API scheduled).");
-            refreshMieledata();
-        }, 8000);
-    });
     // in this mielecloudservice all states changes inside the adapters namespace are subscribed
     ADAPTER.subscribeStates('*');
 }//End Function main
@@ -516,9 +508,9 @@ function APIGetAccessToken(callback) {
     ADAPTER.log.debug('options OAuth2-VG: ['     + options.form.vg + ']');
     ADAPTER.log.debug('config locale: ['         + ADAPTER.config.locale + ']');
     ADAPTER.log.debug('options Miele_account: [' + options.form.username + ']');
-    ADAPTER.log.silly('options Miele_Password: ['+ ADAPTER.config.Miele_pwd + ']');
+    // ADAPTER.log.debug('options Miele_Password: ['+ ADAPTER.config.Miele_pwd + ']');
     ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
-    ADAPTER.log.silly('options Client_Secret: [' + options.form.client_secret + ']');
+    // ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');
     ADAPTER.log.debug('options Raw: [' + JSON.stringify(options) + ']');
 
     request(options, function (error, response, body) {
@@ -529,7 +521,7 @@ function APIGetAccessToken(callback) {
                 ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
                 ADAPTER.log.info('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
                 ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
-                ADAPTER.log.silly('plain body:  [' + body + ']');
+                // ADAPTER.log.debug('plain body:  [' + body + ']');
                 return callback(false, P.access_token, P.refresh_token);
             } else {
                 ADAPTER.log.error('*** Error during APIGetAccessToken ***')
@@ -577,7 +569,8 @@ function APIRefreshToken(callback) {
             } else {
                 ADAPTER.log.error('*** Error during APIRefreshToken ***')
                 ADAPTER.log.error('HTTP-Responsecode: ' + response.statusCode);
-                ADAPTER.log.error(body);
+                let message = JSON.parse(body).message
+                ADAPTER.log.error(message);
                 return callback(true, null, null);
             }
         }
