@@ -41,6 +41,7 @@ function startadapter(options) {
         // is called if a subscribed object changes
         objectChange: function (id, obj) {
             // Warning, obj can be null if it was deleted
+            ADAPTER.log.debug('objectChange ' + id + ' ' + JSON.stringify(obj));
         },
         // is called if a subscribed state changes
         //                  stateChange: function (id, state) {
@@ -50,6 +51,9 @@ function startadapter(options) {
         //                  ADAPTER.log.info('ack is not set!');
         //                  }
         //                  },
+        stateChange: function(id, state){
+            ADAPTER.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
+        },
         // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
         message: function (obj) {
             if (typeof obj === 'object' && obj.message) {
@@ -104,6 +108,9 @@ function proofAdapterConfig() {
     }
     if ('' === ADAPTER.config.oauth2_vg) {
         ADAPTER.log.warn('OAuth2_vg is missing.');
+    }
+    if ('' === ADAPTER.config.pollinterval) {
+        ADAPTER.log.warn('PollInterval is missing.');
     }
 }
 
@@ -458,7 +465,7 @@ function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // ADAPTER.config:
     // create needed channels to sort devices returned from API to
-    if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale && ADAPTER.config.oauth2_vg ) {
+    if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale && ADAPTER.config.oauth2_vg && ADAPTER.config.pollinterval) {
         ADAPTER.log.debug('*** Trying to get Authorization Tokens ***');
         APIGetAccessToken( function (err, access_token, refresh_token) {
             if (err) {
@@ -467,14 +474,15 @@ function main() {
             } else {
                 ACCESS_TOKEN  = access_token;
                 REFRESH_TOKEN = refresh_token;
-                ADAPTER.log.info("Querying Devices from API");
+                ADAPTER.log.debug("Querying Devices from API");
                 refreshMieledata();
             }
         });
         // start refresh scheduler with interval from adapters config
-        let scheduler = schedule.scheduleJob('*/' + ADAPTER.hasOwnProperty('config.pollinterval')? ADAPTER.config.pollinterval: '3' + ' * * * *', function () {
+        ADAPTER.log.info('Starting Polltimer with a ' +  ADAPTER.config.pollinterval + ' Minutes interval.');
+        let scheduler = schedule.scheduleJob('*/' + ADAPTER.config.pollinterval + ' * * * *', function () {
             setTimeout(function () {
-                ADAPTER.log.info("Updating device states (polling API scheduled).");
+                ADAPTER.log.debug("Updating device states (polling API scheduled).");
                 refreshMieledata();
             }, 8000);
         });
@@ -485,6 +493,7 @@ function main() {
     }
     // in this mielecloudservice all states changes inside the adapters namespace are subscribed
     ADAPTER.subscribeStates('*');
+
 }//End Function main
 
 
