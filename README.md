@@ -4,8 +4,8 @@
 [![Downloads](https://img.shields.io/npm/dm/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
 [![NPM version](https://img.shields.io/npm/v/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/grizzelbee/iobroker.mielecloudservice/blob/master/LICENSE) 
-[![Dependency Status](https://img.shields.io/david/Grizzelbee/iobroker.mieleathome.svg)](https://david-dm.org/Grizzelbee/iobroker.mielecloudservice)
-[![Known Vulnerabilities](https://snyk.io/test/github/Grizzelbee/ioBroker.mieleathome/badge.svg)](https://snyk.io/test/github/Grizzelbee/ioBroker.mielecloudservice)
+[![Dependency Status](https://img.shields.io/david/Grizzelbee/iobroker.mielecloudservice.svg)](https://david-dm.org/Grizzelbee/iobroker.mielecloudservice)
+[![Known Vulnerabilities](https://snyk.io/test/github/Grizzelbee/ioBroker.mielecloudservice/badge.svg)](https://snyk.io/test/github/Grizzelbee/ioBroker.mielecloudservice)
  
  [![NPM](https://nodei.co/npm/iobroker.mielecloudservice.png?downloads=true)](https://nodei.co/npm/iobroker.mielecloudservice/)
  
@@ -33,6 +33,10 @@ To install, excecute the following:
 * Miele Client_secret (from https://www.miele.com/developer/ )
 
 ## Changelog
+
+### 1.0.1 (2020-02-04)
+* (grizzelbee) Fixes in environment for getting Adapater into the Repo
+* (grizzelbee) Passwords are stored encyrpted now
 
 ### 1.0.0 (2020-02-03)
 * (grizzelbee) renamed to MieleCloudService to get the ability to publish; the old Name is still blocked by hash99
@@ -83,8 +87,6 @@ To install, excecute the following:
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2019 grizzelbee <captain.tzk@gmail.com>
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -102,3 +104,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+##Copyright
+Copyright (c) 2019, 2020 grizzelbee <captain.tzk@gmail.com>

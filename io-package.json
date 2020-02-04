@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "news": {
+            "1.0.1": {
+                "en": "Fixes for getting Adapter into the Repo.",
+                "de": "Korrekturen, um Adapter in das Repo zu bekommen.",
+                "ru": "Исправления для получения адаптера в репо.",
+                "pt": "Correções para obter o adaptador no repositório.",
+                "nl": "Oplossingen voor het in de Repo krijgen van de adapter.",
+                "fr": "Correctifs pour obtenir l'adaptateur dans le Repo.",
+                "it": "Correzioni per ottenere l'adattatore nel Repo.",
+                "es": "Arreglos para llevar el Adaptador al Repo.",
+                "pl": "Naprawiono wprowadzanie adaptera do repozytorium.",
+                "zh-cn": "修复了将Adapter放入Repo中的问题。"
+            },
             "1.0.0": {
                 "en": "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install",
                 "de": "Vollständig umgeschrieben, alle Status in einer neuen Reihenfolge, aktualisieren Sie den Adapter NICHT - entfernen Sie ihn und führen Sie eine saubere Neuinstallation durch",
@@ -51,19 +63,19 @@
             "it": "MieleCloudService",
             "es": "MieleCloudService",
             "pl": "MieleCloudService",
-            "zh-cn": "美诺@家"
+            "zh-cn": "MieleCloudService"
         },
         "desc": {
-            "en": "ioBroker MieleCloudService",
-            "de": "ioBroker MieleCloudService",
-            "ru": "ioBroker MieleCloudService как образец",
-            "pt": "Modelo de adaptador para o ioBroker",
-            "fr": "ioBroker adaptateur modèle MieleCloudService",
-            "nl": "ioBroker MieleCloudService",
-            "it": "Adattatore modello MieleCloudService ioBroker",
-            "es": "Adaptador de plantilla ioBroker",
-            "pl": "ioBroker MieleCloudService",
-            "zh-cn": "ioBroker MieleCloudService"
+            "en": "MieleCloudService: Get your Miele appliances connected to ioBroker.",
+            "de": "MieleCloudService: Verbinden Sie Ihre Miele-Geräte mit ioBroker.",
+            "ru": "MieleCloudService: подключите свои устройства Miele к ioBroker.",
+            "pt": "MieleCloudService: conecte seus dispositivos Miele ao ioBroker.",
+            "nl": "MieleCloudService: verbind uw Miele-apparaten met ioBroker.",
+            "fr": "MieleCloudService: connectez vos appareils Miele à ioBroker.",
+            "it": "MieleCloudService: collega i tuoi apparecchi Miele a ioBroker.",
+            "es": "MieleCloudService: conecte sus dispositivos Miele a ioBroker.",
+            "pl": "MieleCloudService: Połącz swoje urządzenia Miele z ioBroker.",
+            "zh-cn": "MieleCloudService：将Miele设备连接到ioBroker。"
         },
         "authors": [
             "grizzelbee <captain.tzk@gmail.com>, hash99 <hash99@iesy.net>"
@@ -71,10 +83,10 @@
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "compact": true,
-        "icon": "mieleathome.png",
+        "icon": "mielecloudservice.png",
+        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.png",
         "materialize": true,
         "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.png",
         "keywords": [
             "MieleCloudService",
             "vis",
