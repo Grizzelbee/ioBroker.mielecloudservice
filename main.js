@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* jshint -W097 */
 /* jshint -W030 */
 /* jshint strict:true */
@@ -7,7 +6,7 @@
 
 /**
 *
-* mieleCloudService Adapter V1.0.0
+* mieleCloudService Adapter for ioBroker
 *
 */
 'use strict';
@@ -17,7 +16,8 @@ const BaseURL = 'https://api.mcs3.miele.com/';
 const adapterName = require('./package.json').name.split('.').pop();
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const schedule = require('node-schedule');
-const request = require("request");
+const request = require('request');
+const salt = 'Zgfr56gFe87jJOM';
 
 // Global Variables (all uppercase)
 let ACCESS_TOKEN;
@@ -69,7 +69,23 @@ function startadapter(options) {
         },
         // is called when databases are connected and adapter received configuration.
         // start here!
-        ready: () => main()
+        ready: () => {
+            ADAPTER.getForeignObject('system.config', (err, obj) => {
+                if (obj && obj.native && obj.native.secret) {
+                    ADAPTER.log.debug('decrypt with NativeSecret: [' + obj.native.secret + ']');
+
+                    //noinspection JSUnresolvedVariable
+                    ADAPTER.config.Miele_pwd = decrypt(obj.native.secret, ADAPTER.config.Miele_pwd);
+                    ADAPTER.config.Client_secret = decrypt(obj.native.secret, ADAPTER.config.Client_secret);
+                } else {
+                    //noinspection JSUnresolvedVariable
+                    ADAPTER.config.Miele_pwd = decrypt('Zgfr56gFe87jJOM', ADAPTER.config.Miele_pwd);
+                    ADAPTER.config.Client_secret = decrypt('Zgfr56gFe87jJOM', ADAPTER.config.Client_secret);
+                }
+                // Execute main after pwds are decrypted
+                main();
+            });
+        }
     });
     // you have to call the adapter function and pass a options object
     // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.mielecloudservice.0
@@ -391,8 +407,8 @@ function createTemperatureDatapoint(path, description, value){
                 native: {}
             });
             ADAPTER.log.debug('createTemperatureDatapoint: Path:['+ path + '_' + n +'], value:['+ JSON.stringify(value) +']');
-            let assembledValue = value[n-1].value_localized + '° ' + value[n-1].unit;
-            ADAPTER.setState(path + '_' + n, assembledValue);
+            let prettyValue = value[n-1].value_localized + '° ' + value[n-1].unit;
+            ADAPTER.setState(path + '_' + n, prettyValue);
         } else {
             ADAPTER.log.debug('createTemperatureDatapoint: Skipped ['+ path + '_' + n +'] due to invalid value:['+ value[n-1].value_localized +']');
         }
@@ -430,24 +446,32 @@ function addMieleDeviceState(path, currentDeviceState){
 function refreshMieledata(){
     APIGetDevices(REFRESH_TOKEN, ACCESS_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
         if (err) {
-            ADAPTER.log.debug('*** Error during mielecloudservice.APIGetDevices. ***');
-            ADAPTER.log.debug('Errormessage: ' + err);
+            ADAPTER.log.error('*** Error during APIGetDevices. ***');
+            ADAPTER.log.error('Errormessage: ' + err);
         }else{
             splitMieleDevices(data);
         }
     });
 }
 
+function decrypt(key, value) {
+    let result = '';
+    for (let i = 0; i < value.length; ++i) {
+        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+    }
+    return result;
+}
+
 function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // ADAPTER.config:
     // create needed channels to sort devices returned from API to
-    if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale) {
+    if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale && ADAPTER.config.oauth2_vg ) {
         ADAPTER.log.debug('*** Trying to get Authorization Tokens ***');
         APIGetAccessToken( function (err, access_token, refresh_token) {
             if (err) {
-                ADAPTER.log.info('Error during Access-Token request.');
-                ADAPTER.log.info('Errormessage : ' + err);
+                ADAPTER.log.error('Error during Access-Token request.');
+                ADAPTER.log.error('Errormessage : ' + err);
             } else {
                 ACCESS_TOKEN  = access_token;
                 REFRESH_TOKEN = refresh_token;
@@ -492,9 +516,9 @@ function APIGetAccessToken(callback) {
     ADAPTER.log.debug('options OAuth2-VG: ['     + options.form.vg + ']');
     ADAPTER.log.debug('config locale: ['         + ADAPTER.config.locale + ']');
     ADAPTER.log.debug('options Miele_account: [' + options.form.username + ']');
-    ADAPTER.log.debug('options Miele_Passwd: ['  + options.form.password + ']');
+    ADAPTER.log.silly('options Miele_Password: ['+ ADAPTER.config.Miele_pwd + ']');
     ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
-    ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');
+    ADAPTER.log.silly('options Client_Secret: [' + options.form.client_secret + ']');
     ADAPTER.log.debug('options Raw: [' + JSON.stringify(options) + ']');
 
     request(options, function (error, response, body) {
@@ -510,7 +534,11 @@ function APIGetAccessToken(callback) {
             } else {
                 ADAPTER.log.error('*** Error during APIGetAccessToken ***')
                 ADAPTER.log.error('HTTP-Responsecode: ' + response.statusCode);
-                ADAPTER.log.error(body);
+                let message = JSON.parse(body).message
+                ADAPTER.log.error(message);
+                if ( message === 'Client credentials are not valid' ){
+                    ADAPTER.terminate('Terminated due to invalid Client credentials. No need to try again.', 11);
+                }
                 return callback(true, null, null);
             }
         }
@@ -534,12 +562,12 @@ function APIRefreshToken(callback) {
     ADAPTER.log.debug('options OAuth2-VG: ['     + options.form.oauth2_vg + ']');
     ADAPTER.log.debug('refresh_token: ['         + options.form.refresh_token + ']');
     ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
-    ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');
+    ADAPTER.log.debug('options Client_Secret (encrypted): [' + options.form.client_secret + ']');
 
     request(options, function (error, response, body) {
             if (response.statusCode === 200) {
                 let P = JSON.parse(body);
-                ADAPTER.log.info('Successfully refreshd Access-Token!');
+                ADAPTER.log.info('Successfully refreshed Access-Token!');
                 ADAPTER.log.debug('New Access-Token:  [' + P.access_token + ']');
                 ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
                 ADAPTER.log.Info('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
@@ -607,7 +635,6 @@ function APIGetDevices(Refresh_Token, Access_Token, locale, callback) {
         }
     });
 }
-
 
 // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {
