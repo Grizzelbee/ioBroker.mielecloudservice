@@ -23,43 +23,75 @@
     </style>
     <!-- you have to define 2 functions in the global scope: -->
     <script type="text/javascript">
+        var secret;
 
-        // the function loadSettings has to exist ...
+        function encrypt(key, value) {
+            var result = '';
+            for(var i = 0; i < value.length; ++i) {
+                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+            }
+            return result;
+        }
+
+        function decrypt(key, value) {
+            var result = '';
+            for(var i = 0; i < value.length; ++i) {
+                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+            }
+            return result;
+        }
+
         function load(settings, onChange) {
-            // example: select elements with id=key and class=value and insert value
             if (!settings) return;
             $('.value').each(function () {
                 var $key = $(this);
                 var id = $key.attr('id');
+
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id]).on('change', function () {
+                    $key.prop('checked', settings[id]).change(function () {
                         onChange();
                     });
                 } else {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.val(settings[id]).on('change', function () {
+                    $key.val(settings[id]).change(function () {
                         onChange();
-                    }).on('keyup', function () {
+                    }).keyup(function () {
                         onChange();
                     });
                 }
             });
+
+            socket.emit('getObject', 'system.config', function (err, obj) {
+                secret = (obj.native ? obj.native.secret : '') || 'Zgfr56gFe87jJOM';
+                $key = $('#password');
+                settings['password'] = decrypt(secret, settings['password']);
+                $key.val(settings['password']).change(function () {
+                    onChange();
+                }).keyup(function () {
+                    onChange();
+                });
+            });
+
             onChange(false);
-            M.updateTextFields();  // function Materialize.updateTextFields(); to reinitialize all the Materialize labels on the page if you are dynamically adding inputs.
+            // (re)initialize all the Materialize labels on the page
+            M.updateTextFields();
         }
 
-        // ... and the function save has to exist.
-        // you have to make sure the callback is called with the settings object as first param!
         function save(callback) {
-            // example: select elements with class=value and build settings object
             var obj = {};
             $('.value').each(function () {
                 var $this = $(this);
+                var id = $this.attr('id');
+
                 if ($this.attr('type') === 'checkbox') {
-                    obj[$this.attr('id')] = $this.prop('checked');
+                    obj[id] = $this.prop('checked');
                 } else {
-                    obj[$this.attr('id')] = $this.val();
+                    var value = $this.val();
+                    if ($this.attr('type') === 'password') {
+                        value = encrypt(secret, value);
+                    }
+                    obj[id] = value;
                 }
             });
             callback(obj);
@@ -100,9 +132,9 @@
         </div>
         <div class="row">
             <div class="input-field col s12 m6 l4">
-                <input class="value" id="Miele_pwd" type="password">
+                <input class="value"     id="Miele_pwd" type="password">
                 <label class="translate" for="Miele_pwd">Miele_pwd</label>
-                <span class="translate">Miele_pwd_desc</span>
+                <span  class="translate">Miele_pwd_desc</span>
             </div>
             <div class="input-field col s12 m6 l4">
                 <input class="value" id="Client_secret" type="password">
@@ -113,9 +145,9 @@
                 <select  class="value" id="pollinterval">
                     <option value="1" class="translate">1</option>
                     <option value="2" class="translate">2</option>
-                    <option value="3" class="translate">3</option>
+                    <option value="3" class="translate"selected>3</option>
                     <option value="4" class="translate">4</option>
-                    <option value="5" class="translate" selected>5</option>
+                    <option value="5" class="translate" >5</option>
                     <option value="7" class="translate">7</option>
                     <option value="10" class="translate">10</option>
                     <option value="15" class="translate">15</option>
@@ -125,7 +157,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l2">
+            <div class="input-field col s12 m6 l4">
                 <select  class="value" id="oauth2_vg">
                     <option value="en-AU">Miele Australia</option>
                     <option value="nl-BE">Miele België</option>
