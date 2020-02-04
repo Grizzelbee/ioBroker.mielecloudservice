@@ -106,8 +106,9 @@
         "Miele_pwd": "",
         "Miele_account": "",
         "Client_ID": "",
-        "locale": "Deutsch",
-        "Active": "3"
+        "locale": "de",
+        "pollinterval": "3",
+        "oauth2_vg": "de-DE"
     },
     "objects": []
 }
