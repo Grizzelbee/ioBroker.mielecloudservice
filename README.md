@@ -34,6 +34,10 @@ To install, excecute the following:
 
 ## Changelog
 
+### 1.0.2 (2020-02-05)
+* (grizzelbee) removed any logging of Passwords
+* (grizzelbee) Fixed bug in config interface introduced during password encryption that config values aren't loaded properly
+
 ### 1.0.1 (2020-02-04)
 * (grizzelbee) Fixes in environment for getting Adapater into the Repo
 * (grizzelbee) Passwords are stored encyrpted now

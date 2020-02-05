@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "news": {
+            "1.0.2": {
+                "en": "fixed Bugs introduced in V1.0.1. Removed any logging of passwords",
+                "de": "Fehler behoben, die in V1.0.1 eingeführt wurden. Protokollierung von Passwörtern entfernt.",
+                "ru": "исправлены ошибки, введенные в V1.0.1, удалена всякая регистрация паролей",
+                "pt": "bugs corrigidos introduzidos na V1.0.1, removeu qualquer registro de senhas",
+                "nl": "opgeloste bugs geïntroduceerd in V1.0.1, alle logging van wachtwoorden verwijderd",
+                "fr": "correction de bugs introduits dans V1.0.1, suppression de toute journalisation des mots de passe",
+                "it": "corretti bug introdotti in V1.0.1, rimossi tutti i log delle password",
+                "es": "Se corrigieron errores introducidos en V1.0.1, se eliminó cualquier registro de contraseñas",
+                "pl": "naprawiono błędy wprowadzone w wersji 1.0.1, usunięto wszelkie rejestrowanie haseł",
+                "zh-cn": "修复了V1.0.1中引入的错误，删除了所有密码记录"
+            },
             "1.0.1": {
                 "en": "Fixes for getting Adapter into the Repo.",
                 "de": "Korrekturen, um Adapter in das Repo zu bekommen.",
@@ -88,11 +100,7 @@
         "materialize": true,
         "enabled": true,
         "keywords": [
-            "MieleCloudService",
-            "vis",
-            "GUI",
-            "graphical",
-            "scada"
+            "MieleCloudService"
         ],
         "readme": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/README.md",
         "loglevel": "info",
@@ -107,8 +115,8 @@
         "Miele_account": "",
         "Client_ID": "",
         "locale": "de",
-        "pollinterval": "3",
-        "oauth2_vg": "de-DE"
+        "oauth2_vg": "de-DE",
+        "pollinterval": 3
     },
     "objects": []
 }
