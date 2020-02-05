@@ -32,6 +32,7 @@ function startadapter(options) {
         // is called when adapter shuts down - callback has to be called under any circumstances!
         unload: function (callback) {
             try {
+                ADAPTER.setState('info.connection', false);
                 ADAPTER.log.info('Unloading MieleCloudService...');
                 callback();
             } catch (e) {
@@ -75,8 +76,8 @@ function startadapter(options) {
                     ADAPTER.config.Client_secret = decrypt(obj.native.secret, ADAPTER.config.Client_secret);
                 } else {
                     //noinspection JSUnresolvedVariable
-                    ADAPTER.config.Miele_pwd = decrypt('Zgfr56gFe87jJOM', ADAPTER.config.Miele_pwd);
-                    ADAPTER.config.Client_secret = decrypt('Zgfr56gFe87jJOM', ADAPTER.config.Client_secret);
+                    ADAPTER.config.Miele_pwd = decrypt(salt, ADAPTER.config.Miele_pwd);
+                    ADAPTER.config.Client_secret = decrypt(salt, ADAPTER.config.Client_secret);
                 }
                 // Execute main after pwds are decrypted
                 main();
@@ -464,8 +465,8 @@ function decrypt(key, value) {
 function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // ADAPTER.config:
-    // create needed channels to sort devices returned from API to
     if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale && ADAPTER.config.oauth2_vg && ADAPTER.config.pollinterval) {
+        ADAPTER.log.debug('Stored Adapter config: [' + JSON.stringify(ADAPTER.config) + ']');
         ADAPTER.log.debug('*** Trying to get Authorization Tokens ***');
         APIGetAccessToken( function (err, access_token, refresh_token) {
             if (err) {
@@ -489,6 +490,7 @@ function main() {
     } else {
         ADAPTER.log.warn('Adapter config is invalid. Please fix.');
         proofAdapterConfig();
+        ADAPTER.setState('info.connection', false);
         ADAPTER.terminate('Invalid Configuration.', 11);
     }
     // in this mielecloudservice all states changes inside the adapters namespace are subscribed
@@ -515,12 +517,12 @@ function APIGetAccessToken(callback) {
     ADAPTER.log.debug('OAuth2-URL: ['            + options.url + ']');
     ADAPTER.log.debug('OAuth2 grant_type: ['     + options.form.grant_type + ']');
     ADAPTER.log.debug('options OAuth2-VG: ['     + options.form.vg + ']');
-    ADAPTER.log.debug('config locale: ['         + ADAPTER.config.locale + ']');
+    ADAPTER.log.debug('config API Language: ['   + ADAPTER.config.locale + ']');
     ADAPTER.log.debug('options Miele_account: [' + options.form.username + ']');
     // ADAPTER.log.debug('options Miele_Password: ['+ ADAPTER.config.Miele_pwd + ']');
     ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
-    // ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');
-    ADAPTER.log.debug('options Raw: [' + JSON.stringify(options) + ']');
+    //ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');
+    //ADAPTER.log.debug('options Raw: [' + JSON.stringify(options) + ']');
 
     request(options, function (error, response, body) {
             if (response.statusCode === 200) {
@@ -531,13 +533,15 @@ function APIGetAccessToken(callback) {
                 ADAPTER.log.info('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
                 ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
                 // ADAPTER.log.debug('plain body:  [' + body + ']');
+                ADAPTER.setState('info.connection', true);
                 return callback(false, P.access_token, P.refresh_token);
             } else {
                 ADAPTER.log.error('*** Error during APIGetAccessToken ***')
                 ADAPTER.log.error('HTTP-Responsecode: ' + response.statusCode);
                 let message = JSON.parse(body).message
-                ADAPTER.log.error(message);
-                if ( message === 'Client credentials are not valid' ){
+                ADAPTER.log.error('Response from Miele API: ' + message);
+                if ( (message === 'Client credentials are not valid') || (message === 'username/password is invalid') ){
+                    ADAPTER.setState('info.connection', false);
                     ADAPTER.terminate('Terminated due to invalid Client credentials. No need to try again.', 11);
                 }
                 return callback(true, null, null);
