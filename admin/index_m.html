@@ -41,70 +41,69 @@
             return result;
         }
 
-        // the function loadSettings has to exist ...
-        function loadHelper(settings, onChange) {
-            // example: select elements with id=key and class=value and insert value
+        function load(settings, onChange) {
             if (!settings) return;
-            if (settings.electricityPollingInterval === undefined) settings.electricityPollingInterval = 20;
-
             $('.value').each(function () {
                 var $key = $(this);
                 var id = $key.attr('id');
-                if (id === 'Miele_pwd' || id === 'Client_secret') {
-                    settings[id] = decrypt(secret, settings[id]);
-                }
 
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id]).change(function() {
+                    $key.prop('checked', settings[id]).change(function () {
                         onChange();
                     });
                 } else {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.val(settings[id]).change(function() {
+                    $key.val(settings[id]).change(function () {
                         onChange();
-                    }).keyup(function() {
+                    }).keyup(function () {
                         onChange();
                     });
                 }
             });
-            onChange(false);
-            M.updateTextFields();  // function Materialize.updateTextFields(); to reinitialize all the Materialize labels on the page if you are dynamically adding inputs.
-        }
-
-        // the function loadSettings has to exist ...
-        function load(settings, onChange) {
             socket.emit('getObject', 'system.config', function (err, obj) {
                 secret = (obj.native ? obj.native.secret : '') || 'Zgfr56gFe87jJOM';
-                loadHelper(settings, onChange);
+                $key = $('#Miele_pwd');
+                settings['Miele_pwd'] = decrypt(secret, settings['Miele_pwd']);
+                $key.val(settings['Miele_pwd']).change(function () {
+                    onChange();
+                }).keyup(function () {
+                    onChange();
+                });
+                $key = $('#Client_secret');
+                settings['Client_secret'] = decrypt(secret, settings['Client_secret']);
+                $key.val(settings['Client_secret']).change(function () {
+                    onChange();
+                }).keyup(function () {
+                    onChange();
+                });
             });
 
             onChange(false);
+            // (re)initialize all the Materialize labels on the page
+            M.updateTextFields();
         }
-        // ... and the function save has to exist.
-        // you have to make sure the callback is called with the settings object as first param!
+
         function save(callback) {
-            // example: select elements with class=value and build settings object
-            var obj = {};
+            let obj = {};
             $('.value').each(function () {
-                var $this = $(this);
-                var id = $this.attr('id');
+                let $this = $(this);
+                let id = $this.attr('id');
 
                 if ($this.attr('type') === 'checkbox') {
                     obj[id] = $this.prop('checked');
                 } else {
-                    var value = $this.val();
-                    if (id === 'Miele_pwd' || id === 'Client_secret') {
+                    let value = $this.val();
+                    if ( (id === 'Miele_pwd') || (id === 'Client_secret') ) {
                         value = encrypt(secret, value);
                     }
                     obj[id] = value;
                 }
             });
-
             callback(obj);
         }
     </script>
-    <script src="../gulpfile.js"></script>
+    <script type="text/javascript" src="../gulpfile.js"></script>
 </head>
 <body>
 <!-- you have to put your config page in a div with id adapter-container -->
