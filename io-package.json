@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "news": {
             "1.0.3": {
                 "en": "Bugfix release",
