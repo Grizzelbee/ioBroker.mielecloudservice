@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "news": {
+            "1.0.3": {
+                "en": "Bugfix release",
+                "de": "Bugfix-Version",
+                "ru": "Релиз исправления",
+                "pt": "Bugfix release",
+                "nl": "Bugfix-release",
+                "fr": "Version du correctif",
+                "it": "Rilascio bugfix",
+                "es": "Lanzamiento de corrección de errores",
+                "pl": "Wersja Bugfix",
+                "zh-cn": "错误修正版本"
+            },
             "1.0.2": {
                 "en": "fixed Bugs introduced in V1.0.1. Removed any logging of passwords",
                 "de": "Fehler behoben, die in V1.0.1 eingeführt wurden. Protokollierung von Passwörtern entfernt.",

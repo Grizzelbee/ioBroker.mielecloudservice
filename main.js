@@ -40,10 +40,12 @@ function startadapter(options) {
             }
         },
         // is called if a subscribed object changes
+        /* currently unused
         objectChange: function (id, obj) {
             // Warning, obj can be null if it was deleted
             ADAPTER.log.debug('objectChange ' + id + ' ' + JSON.stringify(obj));
         },
+        */
         // is called if a subscribed state changes
         //                  stateChange: function (id, state) {
         // Warning, state can be null if it was deleted
@@ -52,9 +54,11 @@ function startadapter(options) {
         //                  ADAPTER.log.info('ack is not set!');
         //                  }
         //                  },
+        /* currently unused
         stateChange: function(id, state){
             ADAPTER.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
         },
+         */
         // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
         message: function (obj) {
             if (typeof obj === 'object' && obj.message) {
@@ -303,7 +307,9 @@ function addMieleDevice(path, mieleDevice){
         common: {name: mieleDevice.ident.deviceName, read: true},
         native: {}
     });
-
+    // Add device actions
+    addMieleDeviceActions(newPath, mieleDevice.ident.deviceIdentLabel.fabNumber);
+    // add device states and idents
     for (let deviceInfo in mieleDevice){
         ADAPTER.log.debug('addMieleDevice:' + deviceInfo);
         switch (deviceInfo) {
@@ -314,8 +320,6 @@ function addMieleDevice(path, mieleDevice){
                 addMieleDeviceState(newPath, mieleDevice[deviceInfo]);
                 break;
         }
-
-
     }
 }
 
@@ -392,26 +396,23 @@ function createTimeDatapoint(path, description, value){
 }
 
 function createTemperatureDatapoint(path, description, value){
-    // there is a max of 3 temps returned by the miele API
-    // only datapoints with a value != -32768 will be created
-    for (let n = 1 ; n < 3; n++) {
-        if (value[n-1].value_localized !== -32768) {
-            createExtendObject(path + '_' + n, {
-                type: 'state',
-                common: {"name": description,
-                    "read": "true",
-                    "write": "false",
-                    "role": "state",
-                    "type": "string"
-                },
-                native: {}
-            });
-            ADAPTER.log.debug('createTemperatureDatapoint: Path:['+ path + '_' + n +'], value:['+ JSON.stringify(value) +']');
-            let prettyValue = value[n-1].value_localized + '° ' + value[n-1].unit;
-            ADAPTER.setState(path + '_' + n, prettyValue);
-        } else {
-            ADAPTER.log.debug('createTemperatureDatapoint: Skipped ['+ path + '_' + n +'] due to invalid value:['+ value[n-1].value_localized +']');
-        }
+    // depending on the device we receive up to 3 values
+    // there is a min of 1 and a max of 3 temps returned by the miele API
+    for (let n in value) {
+        createExtendObject(path + '_' + n, {
+            type: 'state',
+            common: {
+                "name": description,
+                "read": "true",
+                "write": "false",
+                "role": "state",
+                "type": "string"
+            },
+            native: {}
+        });
+        ADAPTER.log.debug('createTemperatureDatapoint: Path:[' + path + '_' + n + '], value:[' + JSON.stringify(value) + ']');
+        let prettyValue = value[n].value_localized + '° ' + value[n].unit;
+        ADAPTER.setState(path + '_' + n, prettyValue);
     }
 }
 
@@ -443,6 +444,18 @@ function addMieleDeviceState(path, currentDeviceState){
     createBoolDatapoint(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
 }
 
+function addMieleDeviceActions(path, currentDevice){
+    ADAPTER.log.debug('addMieleDeviceActions: Path: [' + path + ']');
+    // Create ACTIONS folder
+    createExtendObject(path + '.ACTIONS', {
+        type: 'channel',
+        common: {name: 'Currently supported Actions for this device.', read: true, write: true},
+        native: {}
+    });
+    // APIGetActions(REFRESH_TOKEN, ACCESS_TOKEN, currentDevice, callback);
+}
+
+
 function refreshMieledata(){
     APIGetDevices(REFRESH_TOKEN, ACCESS_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
         if (err) {
@@ -466,7 +479,6 @@ function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // ADAPTER.config:
     if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale && ADAPTER.config.oauth2_vg && ADAPTER.config.pollinterval) {
-        ADAPTER.log.debug('Stored Adapter config: [' + JSON.stringify(ADAPTER.config) + ']');
         ADAPTER.log.debug('*** Trying to get Authorization Tokens ***');
         APIGetAccessToken( function (err, access_token, refresh_token) {
             if (err) {
@@ -634,14 +646,27 @@ function APISendRequest(Refresh_Token, Endpoint, Method, Token, Send_Body, callb
 }
 
 function APIGetDevices(Refresh_Token, Access_Token, locale, callback) {
-    ADAPTER.log.debug("this is function APIGetDevices");
+    ADAPTER.log.debug("APIGetDevices: Querying devices from API.");
     APISendRequest(Refresh_Token, 'v1/devices/?language=' + locale, 'GET', Access_Token, '', function (err, data, atoken, rtoken) {
         if (!err) {
             return callback(err, data, atoken, rtoken)
+        } else {
+            ADAPTER.log.warn("Error during function APIGetDevices.");
         }
     });
 }
 
+function APIGetActions(Refresh_Token, Access_Token, device, callback) {
+    ADAPTER.log.debug("APIGetActions: Querying supported actions from API.");
+    APISendRequest(Refresh_Token, 'v1/devices/' + device + '/actions', 'GET', Access_Token, '', function (err, data, atoken, rtoken) {
+        if (!err) {
+            ADAPTER.log.debug(`Got DeviceActions: [${JSON.stringify(data)}]`);
+            return callback(err, data, atoken, rtoken)
+        } else {
+            ADAPTER.log.warn("Error during function APIGetActions.");
+        }
+    });
+}
 // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {
     module.exports = startadapter;
@@ -649,26 +674,3 @@ if (module && module.parent) {
     // or start the instance directly
     startadapter();
 }
-
-/*
- var mieleStates = {
- 1: 'STATE_OFF',
- 2: 'STATE_STAND_BY',
- 3: 'STATE_PROGRAMMED',
- 4: 'STATE_PROGRAMMED_WAITING_TO_START',
- 5: 'STATE_RUNNING',
- 6: 'STATE_PAUSE',
- 7: 'STATE_END_PROGRAMMED',
- 8: 'STATE_FAILURE',
- 9: 'STATE_PROGRAMME_INTERRUPTED',
- 10: 'STATE_IDLE',
- 11: 'STATE_RINSE_HOLD',
- 12: 'STATE_SERVICE',
- 13: 'STATE_SUPERFREEZING',
- 14: 'STATE_SUPERCOOLING',
- 15: 'STATE_SUPERHEATING',
- 144: 'STATE_DEFAULT',
- 145: 'STATE_LOCKED',
- 146: 'STATE_SUPERCOOLING_SUPERFREEZING'
- };
- */
