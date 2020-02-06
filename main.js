@@ -466,7 +466,6 @@ function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // ADAPTER.config:
     if (ADAPTER.config.Miele_account && ADAPTER.config.Miele_pwd && ADAPTER.config.Client_ID && ADAPTER.config.Client_secret && ADAPTER.config.locale && ADAPTER.config.oauth2_vg && ADAPTER.config.pollinterval) {
-        ADAPTER.log.debug('Stored Adapter config: [' + JSON.stringify(ADAPTER.config) + ']');
         ADAPTER.log.debug('*** Trying to get Authorization Tokens ***');
         APIGetAccessToken( function (err, access_token, refresh_token) {
             if (err) {
