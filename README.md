@@ -36,8 +36,9 @@ To install, excecute the following:
 
 ### 1.0.3 (2020-02-06)
 * (grizzelbee) removed an overseen logging of Passwords
+* (grizzelbee) Fixed createTemperatureDatapoint to work with less than 3 values delivered from API
 * (grizzelbee) Added some documentation
-* (grizzelbee) 
+* (grizzelbee) Started implementation of DeviceActions 
 
 
 ### 1.0.2 (2020-02-05)
