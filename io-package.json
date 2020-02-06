@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "news": {
+            "1.0.4": {
+                "en": "Added first support for DeviceActions",
+                "de": "Erste Unterstützung für DeviceActions hinzugefügt",
+                "ru": "Добавлена ​​первая поддержка DeviceActions",
+                "pt": "Adicionado primeiro suporte para DeviceActions",
+                "nl": "Eerste ondersteuning toegevoegd voor DeviceActions",
+                "fr": "Ajout du premier support pour DeviceActions",
+                "it": "Aggiunto il primo supporto per DeviceActions",
+                "es": "Se agregó el primer soporte para DeviceActions",
+                "pl": "Dodano pierwszą obsługę DeviceActions",
+                "zh-cn": "添加了对DeviceActions的首次支持"
+            },
             "1.0.3": {
                 "en": "Bugfix release",
                 "de": "Bugfix-Version",
