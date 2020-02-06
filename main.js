@@ -307,7 +307,9 @@ function addMieleDevice(path, mieleDevice){
         common: {name: mieleDevice.ident.deviceName, read: true},
         native: {}
     });
-
+    // Add device actions
+    addMieleDeviceActions(newPath, mieleDevice.ident.deviceIdentLabel.fabNumber);
+    // add device states and idents
     for (let deviceInfo in mieleDevice){
         ADAPTER.log.debug('addMieleDevice:' + deviceInfo);
         switch (deviceInfo) {
@@ -318,8 +320,6 @@ function addMieleDevice(path, mieleDevice){
                 addMieleDeviceState(newPath, mieleDevice[deviceInfo]);
                 break;
         }
-
-
     }
 }
 
@@ -443,6 +443,18 @@ function addMieleDeviceState(path, currentDeviceState){
     createBoolDatapoint(path + '.fullRemoteControl', 'The device can be controlled from remote.', currentDeviceState.remoteEnable.fullRemoteControl);
     createBoolDatapoint(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
 }
+
+function addMieleDeviceActions(path, currentDevice){
+    ADAPTER.log.debug('addMieleDeviceActions: Path: [' + path + ']');
+    // Create ACTIONS folder
+    createExtendObject(path + '.ACTIONS', {
+        type: 'channel',
+        common: {name: 'Currently supported Actions for this device.', read: true, write: true},
+        native: {}
+    });
+    // APIGetActions(REFRESH_TOKEN, ACCESS_TOKEN, currentDevice, callback);
+}
+
 
 function refreshMieledata(){
     APIGetDevices(REFRESH_TOKEN, ACCESS_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
@@ -634,14 +646,27 @@ function APISendRequest(Refresh_Token, Endpoint, Method, Token, Send_Body, callb
 }
 
 function APIGetDevices(Refresh_Token, Access_Token, locale, callback) {
-    ADAPTER.log.debug("this is function APIGetDevices");
+    ADAPTER.log.debug("APIGetDevices: Querying devices from API.");
     APISendRequest(Refresh_Token, 'v1/devices/?language=' + locale, 'GET', Access_Token, '', function (err, data, atoken, rtoken) {
         if (!err) {
             return callback(err, data, atoken, rtoken)
+        } else {
+            ADAPTER.log.warn("Error during function APIGetDevices.");
         }
     });
 }
 
+function APIGetActions(Refresh_Token, Access_Token, device, callback) {
+    ADAPTER.log.debug("APIGetActions: Querying supported actions from API.");
+    APISendRequest(Refresh_Token, 'v1/devices/' + device + '/actions', 'GET', Access_Token, '', function (err, data, atoken, rtoken) {
+        if (!err) {
+            ADAPTER.log.debug(`Got DeviceActions: [${JSON.stringify(data)}]`);
+            return callback(err, data, atoken, rtoken)
+        } else {
+            ADAPTER.log.warn("Error during function APIGetActions.");
+        }
+    });
+}
 // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {
     module.exports = startadapter;
@@ -649,26 +674,3 @@ if (module && module.parent) {
     // or start the instance directly
     startadapter();
 }
-
-/*
- var mieleStates = {
- 1: 'STATE_OFF',
- 2: 'STATE_STAND_BY',
- 3: 'STATE_PROGRAMMED',
- 4: 'STATE_PROGRAMMED_WAITING_TO_START',
- 5: 'STATE_RUNNING',
- 6: 'STATE_PAUSE',
- 7: 'STATE_END_PROGRAMMED',
- 8: 'STATE_FAILURE',
- 9: 'STATE_PROGRAMME_INTERRUPTED',
- 10: 'STATE_IDLE',
- 11: 'STATE_RINSE_HOLD',
- 12: 'STATE_SERVICE',
- 13: 'STATE_SUPERFREEZING',
- 14: 'STATE_SUPERCOOLING',
- 15: 'STATE_SUPERHEATING',
- 144: 'STATE_DEFAULT',
- 145: 'STATE_LOCKED',
- 146: 'STATE_SUPERCOOLING_SUPERFREEZING'
- };
- */
