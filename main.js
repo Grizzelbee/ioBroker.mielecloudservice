@@ -40,10 +40,12 @@ function startadapter(options) {
             }
         },
         // is called if a subscribed object changes
+        /* currently unused
         objectChange: function (id, obj) {
             // Warning, obj can be null if it was deleted
             ADAPTER.log.debug('objectChange ' + id + ' ' + JSON.stringify(obj));
         },
+        */
         // is called if a subscribed state changes
         //                  stateChange: function (id, state) {
         // Warning, state can be null if it was deleted
@@ -52,9 +54,11 @@ function startadapter(options) {
         //                  ADAPTER.log.info('ack is not set!');
         //                  }
         //                  },
+        /* currently unused
         stateChange: function(id, state){
             ADAPTER.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
         },
+         */
         // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
         message: function (obj) {
             if (typeof obj === 'object' && obj.message) {
@@ -392,26 +396,23 @@ function createTimeDatapoint(path, description, value){
 }
 
 function createTemperatureDatapoint(path, description, value){
-    // there is a max of 3 temps returned by the miele API
-    // only datapoints with a value != -32768 will be created
-    for (let n = 1 ; n < 3; n++) {
-        if (value[n-1].value_localized !== -32768) {
-            createExtendObject(path + '_' + n, {
-                type: 'state',
-                common: {"name": description,
-                    "read": "true",
-                    "write": "false",
-                    "role": "state",
-                    "type": "string"
-                },
-                native: {}
-            });
-            ADAPTER.log.debug('createTemperatureDatapoint: Path:['+ path + '_' + n +'], value:['+ JSON.stringify(value) +']');
-            let prettyValue = value[n-1].value_localized + '° ' + value[n-1].unit;
-            ADAPTER.setState(path + '_' + n, prettyValue);
-        } else {
-            ADAPTER.log.debug('createTemperatureDatapoint: Skipped ['+ path + '_' + n +'] due to invalid value:['+ value[n-1].value_localized +']');
-        }
+    // depending on the device we receive up to 3 values
+    // there is a min of 1 and a max of 3 temps returned by the miele API
+    for (let n in value) {
+        createExtendObject(path + '_' + n, {
+            type: 'state',
+            common: {
+                "name": description,
+                "read": "true",
+                "write": "false",
+                "role": "state",
+                "type": "string"
+            },
+            native: {}
+        });
+        ADAPTER.log.debug('createTemperatureDatapoint: Path:[' + path + '_' + n + '], value:[' + JSON.stringify(value) + ']');
+        let prettyValue = value[n].value_localized + '° ' + value[n].unit;
+        ADAPTER.setState(path + '_' + n, prettyValue);
     }
 }
 
