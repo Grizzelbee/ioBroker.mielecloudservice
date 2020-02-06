@@ -34,6 +34,12 @@ To install, excecute the following:
 
 ## Changelog
 
+### 1.0.3 (2020-02-06)
+* (grizzelbee) removed an overseen logging of Passwords
+* (grizzelbee) Added some documentation
+* (grizzelbee) 
+
+
 ### 1.0.2 (2020-02-05)
 * (grizzelbee) removed any logging of Passwords
 * (grizzelbee) Fixed bug in config interface introduced during password encryption that config values aren't loaded properly
@@ -87,6 +93,54 @@ To install, excecute the following:
 * New: (longer) poll interval when no device is active
 * New: Sleeptime for complete inactivity (e.g. at night)
 
+## Documentation
+There are some datapoints avaliable in 2 kinds. As a human readable text and as a number.
+These numeric datafields belonging to a textfield have the same name but a "_raw" appended. 
+Those fields which have a general meaning are listed below.
+The fields which aren't listed vary in their meaning from device to device and aren't decumented by Miele.
+If you need to refer in scripts to these fields, always use the _raw values. 
+The textvalues may change in the future and also depend on the language.
+Here is a list of what these raw values stand for: 
+
+###State/Status
+ | Raw value | State
+ |----------|-------
+ |1| OFF|
+ |2|   STAND_BY|
+ |3|   PROGRAMMED|
+ |4|   PROGRAMMED_WAITING_TO_START|
+ |5|   RUNNING|
+ |6|   PAUSE|
+ |7|   END_PROGRAMMED|
+ |8|   FAILURE|
+ |9|   PROGRAMME_INTERRUPTED|
+ |10|  IDLE|
+ |11|  RINSE_HOLD|
+ |12|  SERVICE|
+ |13|  SUPERFREEZING|
+ |14|  SUPERCOOLING|
+ |15|  SUPERHEATING|
+ |144| DEFAULT|
+ |145| LOCKED|
+ |146| SUPERCOOLING_SUPERFREEZING|
+###ProgramType/Programmart
+| Rawvalue | State
+|----------|-------
+|0 | Normal operation mode  |
+|1 | Own program            |
+|2 | Automatic program      |
+|3 | Cleaning-/Care program |
+
+###dryingStep/Trockenstufe
+ | Rawvalue | State
+ |----------|-------
+ |0 |   Extra dry
+ |1 |   Normal Plus
+ |2 |   Normal
+ |3 |   Slightly Dry
+ |4 |   Hand iron level 1
+ |5 |   Hand iron level 2
+ |6 |   Machine iron
 
 ## License
 The MIT License (MIT)
