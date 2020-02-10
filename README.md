@@ -103,10 +103,11 @@ If you need to refer in scripts to these fields, always use the _raw values.
 The textvalues may change in the future and also depend on the language.
 Here is a list of what these raw values stand for: 
 
-###State/Status
- | Raw value | State
- |----------|-------
- |1| OFF|
+### State/Status
+
+ | Raw value | State|
+ |----------|-------|
+|1| OFF|
  |2|   STAND_BY|
  |3|   PROGRAMMED|
  |4|   PROGRAMMED_WAITING_TO_START|
@@ -124,24 +125,27 @@ Here is a list of what these raw values stand for:
  |144| DEFAULT|
  |145| LOCKED|
  |146| SUPERCOOLING_SUPERFREEZING|
-###ProgramType/Programmart
-| Rawvalue | State
-|----------|-------
+ 
+### ProgramType/Programmart
+
+| Raw value | State|
+|----------|-------|
 |0 | Normal operation mode  |
 |1 | Own program            |
 |2 | Automatic program      |
 |3 | Cleaning-/Care program |
 
-###dryingStep/Trockenstufe
- | Rawvalue | State
- |----------|-------
- |0 |   Extra dry
- |1 |   Normal Plus
- |2 |   Normal
- |3 |   Slightly Dry
- |4 |   Hand iron level 1
- |5 |   Hand iron level 2
- |6 |   Machine iron
+### dryingStep/Trockenstufe
+
+ | Raw value | State|
+ |----------|-------|
+ |0 |   Extra dry|
+ |1 |   Normal Plus|
+ |2 |   Normal|
+ |3 |   Slightly Dry|
+ |4 |   Hand iron level 1|
+ |5 |   Hand iron level 2|
+ |6 |   Machine iron|
 
 ## License
 The MIT License (MIT)
