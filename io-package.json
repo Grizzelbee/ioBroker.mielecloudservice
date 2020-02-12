@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "news": {
+            "1.0.4": {
+                "en": "removed unneeded setTimeout, clearing scheduler on unload",
+                "de": "nicht benötigtes setTimeout entfernt, Scheduler wird beim Entladen bereinigt",
+                "ru": "убрал ненужный setTimeout, очистил планировщик при выгрузке",
+                "pt": "removeu setTimeout desnecessário, limpando o planejador ao descarregar",
+                "nl": "onnodige setTimeout verwijderd, planner wissen bij lossen",
+                "fr": "supprimé setTimeout inutile, effaçant le planificateur au déchargement",
+                "it": "rimosso setTimeout non necessario, annullando lo scheduler allo scaricamento",
+                "es": "eliminó setTimeout innecesario, borrando el planificador al descargar",
+                "pl": "usunięto niepotrzebne setTimeout, czyszczenie harmonogramu przy rozładowaniu",
+                "zh-cn": "删除了不需要的setTimeout，在卸载时清除了调度程序"
+            },
             "1.0.3": {
                 "en": "Bugfix release",
                 "de": "Bugfix-Version",
