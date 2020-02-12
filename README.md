@@ -16,14 +16,14 @@
 This adapter is for retrieving information about all your Miele@Home devices from the official Miele 3rd-party API. 
 
 
-## Steps 
+## Installation 
 To install, excecute the following:
 
 1. Install via Admin: https://github.com/Grizzelbee/ioBroker.mielecloudservice.git
 2. create an App-Account for Miele@Home in the Miele Smartphone App
 3. Create an developer account at https://www.miele.com/f/com/en/register_api.aspx 
 4. Add your Miele-Devices to the App (if not added automatically)
-6. Fill in the client_secret and client_id received from Miele-developer Team and acoount-id and password from the App.
+6. Fill in the client_secret and client_id received from Miele-developer Team and account-id and password from the App.
 
 
 ## Requirements
@@ -33,6 +33,11 @@ To install, excecute the following:
 * Miele Client_secret (from https://www.miele.com/developer/ )
 
 ## Changelog
+
+### 1.0.4 (2020-02-12)
+* (grizzelbee) removed unneeded setTimeout from main
+* (grizzelbee) Clearing scheduler on unload of adapter
+* (grizzelbee) Minor updates and fixed typos in Readme
 
 ### 1.0.3 (2020-02-06)
 * (grizzelbee) removed an overseen logging of Passwords
@@ -59,7 +64,6 @@ To install, excecute the following:
 * (grizzelbee) New: added support for Non german Miele-Accounts (ALL should be included)
 * (grizzelbee) Completely new layout of datapoints
 * (grizzelbee) Devicetypes are grouped now 
-
 
 ### 0.9.1 (2019-07-26)
 * (grizzelbee) Fix: Fixed small bug introduced in V0.9.0 throwing an exception in debugging code

@@ -23,6 +23,7 @@ const salt = 'Zgfr56gFe87jJOM';
 let ACCESS_TOKEN;
 let REFRESH_TOKEN;
 let ADAPTER;
+let SCHEDULER;
 
 function startadapter(options) {
     options = options || {};
@@ -32,6 +33,8 @@ function startadapter(options) {
         // is called when adapter shuts down - callback has to be called under any circumstances!
         unload: function (callback) {
             try {
+                ADAPTER.log.info('Canceling all scheduled events.');
+                SCHEDULER.cancel();
                 ADAPTER.setState('info.connection', false);
                 ADAPTER.log.info('Unloading MieleCloudService...');
                 callback();
@@ -258,13 +261,10 @@ function splitMieleDevices(devices){
 }
 
 function parseMieleDevice(mieleDevice){
-
     let deviceFolder;
-
     ADAPTER.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
     deviceFolder = createEODeviceTypes(mieleDevice.ident.type.value_raw); // create folder for device
     addMieleDevice(deviceFolder, mieleDevice);
-
     // add special datapoints to devices
     // spinning speed
     switch (mieleDevice.ident.type.value_raw) {
@@ -455,7 +455,6 @@ function addMieleDeviceActions(path, currentDevice){
     // APIGetActions(REFRESH_TOKEN, ACCESS_TOKEN, currentDevice, callback);
 }
 
-
 function refreshMieledata(){
     APIGetDevices(REFRESH_TOKEN, ACCESS_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
         if (err) {
@@ -485,19 +484,19 @@ function main() {
                 ADAPTER.log.error('Error during Access-Token request.');
                 ADAPTER.log.error('Errormessage : ' + err);
             } else {
+                // put tokens to global variables
                 ACCESS_TOKEN  = access_token;
                 REFRESH_TOKEN = refresh_token;
-                ADAPTER.log.debug("Querying Devices from API");
+                // do initial population of adapter immediatly
+                ADAPTER.log.debug("Querying Devices from API initially.");
                 refreshMieledata();
+                // start refresh scheduler with interval from adapters config
+                ADAPTER.log.info('Starting Polltimer with a ' +  ADAPTER.config.pollinterval + ' Minutes interval.');
+                SCHEDULER = schedule.scheduleJob('*/' + ADAPTER.config.pollinterval + ' * * * *', function () {
+                    ADAPTER.log.debug("Updating device states (polling API scheduled).");
+                    refreshMieledata();
+                });
             }
-        });
-        // start refresh scheduler with interval from adapters config
-        ADAPTER.log.info('Starting Polltimer with a ' +  ADAPTER.config.pollinterval + ' Minutes interval.');
-        let scheduler = schedule.scheduleJob('*/' + ADAPTER.config.pollinterval + ' * * * *', function () {
-            setTimeout(function () {
-                ADAPTER.log.debug("Updating device states (polling API scheduled).");
-                refreshMieledata();
-            }, 8000);
         });
     } else {
         ADAPTER.log.warn('Adapter config is invalid. Please fix.');
@@ -548,9 +547,9 @@ function APIGetAccessToken(callback) {
                 ADAPTER.setState('info.connection', true);
                 return callback(false, P.access_token, P.refresh_token);
             } else {
-                ADAPTER.log.error('*** Error during APIGetAccessToken ***')
+                ADAPTER.log.error('*** Error during APIGetAccessToken ***');
                 ADAPTER.log.error('HTTP-Responsecode: ' + response.statusCode);
-                let message = JSON.parse(body).message
+                let message = JSON.parse(body).message;
                 ADAPTER.log.error('Response from Miele API: ' + message);
                 if ( (message === 'Client credentials are not valid') || (message === 'username/password is invalid') ){
                     ADAPTER.setState('info.connection', false);
@@ -592,9 +591,9 @@ function APIRefreshToken(callback) {
                 ADAPTER.log.silly('plain body:  [' + body + ']');
                 return callback(false, P.access_token, P.refresh_token);
             } else {
-                ADAPTER.log.error('*** Error during APIRefreshToken ***')
+                ADAPTER.log.error('*** Error during APIRefreshToken ***');
                 ADAPTER.log.error('HTTP-Responsecode: ' + response.statusCode);
-                let message = JSON.parse(body).message
+                let message = JSON.parse(body).message;
                 ADAPTER.log.error(message);
                 return callback(true, null, null);
             }
