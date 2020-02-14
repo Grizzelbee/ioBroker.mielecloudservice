@@ -102,6 +102,7 @@ To install, excecute the following:
 ## Next Steps
 * New: (longer) poll interval when no device is active
 * New: Sleeptime for complete inactivity (e.g. at night)
+* New: Support for Actions 
 
 ## Documentation
 There are some datapoints avaliable in 2 kinds. As a human readable text and as a number.
