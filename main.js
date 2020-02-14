@@ -3,7 +3,6 @@
 /* jshint strict:true */
 /* jslint esversion: 6 */
 /* jslint node: true */
-
 /**
 *
 * mieleCloudService Adapter for ioBroker
@@ -452,7 +451,7 @@ function addMieleDeviceActions(path, currentDevice){
     // Create ACTIONS folder
     createExtendObject(path + '.ACTIONS', {
         type: 'channel',
-        common: {name: 'Currently supported Actions for this device.', read: true, write: true},
+        common: {name: 'Supported Actions for this device.', read: true, write: true},
         native: {}
     });
     // APIGetActions(REFRESH_TOKEN, ACCESS_TOKEN, currentDevice, callback);
@@ -494,7 +493,7 @@ function main() {
                 ADAPTER.log.info('Starting Polltimer with a ' +  ADAPTER.config.pollinterval + ' Minutes interval.');
                 // start refresh scheduler with interval from adapters config
                 pollTimeout= setTimeout(function schedule() {
-                    ADAPTER.log.info("Updating device states (polling API scheduled).");
+                    ADAPTER.log.debug("Updating device states (polling API scheduled).");
                     refreshMieledata(err);
                     pollTimeout= setTimeout(schedule , ADAPTER.config.pollinterval * 60000);
                     } , 100);
@@ -532,18 +531,21 @@ function APIGetAccessToken(callback) {
     ADAPTER.log.debug('options OAuth2-VG: ['     + options.form.vg + ']');
     ADAPTER.log.debug('config API Language: ['   + ADAPTER.config.locale + ']');
     ADAPTER.log.debug('options Miele_account: [' + options.form.username + ']');
-    // ADAPTER.log.debug('options Miele_Password: ['+ ADAPTER.config.Miele_pwd + ']');
     ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
-    //ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');
-    //ADAPTER.log.debug('options Raw: [' + JSON.stringify(options) + ']');
+    // Logging of passwords has been commended out intentionally. May be enabled again by user for debugging purposes
+    // ADAPTER.log.debug('options Miele_Password: ['+ ADAPTER.config.Miele_pwd + ']');
+    // ADAPTER.log.debug('options Client_Secret: [' + options.form.client_secret + ']');
 
     request(options, function (error, response, body) {
             if (response.statusCode === 200) {
                 let P = JSON.parse(body);
+                // let expiry = now + expiry in seconds
+                let expiryDate = new Date().setSeconds(expiry.getSeconds() + P.expires_in );
                 ADAPTER.log.info('Got new Access-Token!');
                 ADAPTER.log.debug('New Access-Token:  [' + P.access_token + ']');
                 ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
                 ADAPTER.log.info('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
+                ADAPTER.log.info('Access-Token expires at:  [' + expiryDate.toString() + ']');
                 ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
                 // ADAPTER.log.debug('plain body:  [' + body + ']');
                 ADAPTER.setState('info.connection', true);
