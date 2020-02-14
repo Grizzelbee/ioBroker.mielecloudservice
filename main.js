@@ -15,7 +15,6 @@
 const BaseURL = 'https://api.mcs3.miele.com/';
 const adapterName = require('./package.json').name.split('.').pop();
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
-const schedule = require('node-schedule');
 const request = require('request');
 const salt = 'Zgfr56gFe87jJOM';
 
@@ -23,7 +22,7 @@ const salt = 'Zgfr56gFe87jJOM';
 let ACCESS_TOKEN;
 let REFRESH_TOKEN;
 let ADAPTER;
-let SCHEDULER;
+let pollTimeout;
 
 function startadapter(options) {
     options = options || {};
@@ -33,8 +32,12 @@ function startadapter(options) {
         // is called when adapter shuts down - callback has to be called under any circumstances!
         unload: function (callback) {
             try {
-                ADAPTER.log.info('Canceling all scheduled events.');
-                SCHEDULER.cancel();
+                // ADAPTER.log.info('Canceling all scheduled events.');
+                //SCHEDULER.cancel();
+                if (pollTimeout) {
+                    ADAPTER.log.info('Clearing Timeout: pollTimeout');
+                    clearTimeout(pollTimeout);
+                }
                 ADAPTER.setState('info.connection', false);
                 ADAPTER.log.info('Unloading MieleCloudService...');
                 callback();
@@ -455,7 +458,7 @@ function addMieleDeviceActions(path, currentDevice){
     // APIGetActions(REFRESH_TOKEN, ACCESS_TOKEN, currentDevice, callback);
 }
 
-function refreshMieledata(){
+function refreshMieledata(err){
     APIGetDevices(REFRESH_TOKEN, ACCESS_TOKEN, ADAPTER.config.locale, function (err, data, atoken, rtoken) {
         if (err) {
             ADAPTER.log.error('*** Error during APIGetDevices. ***');
@@ -463,6 +466,7 @@ function refreshMieledata(){
         }else{
             splitMieleDevices(data);
         }
+        return err;
     });
 }
 
@@ -487,15 +491,13 @@ function main() {
                 // put tokens to global variables
                 ACCESS_TOKEN  = access_token;
                 REFRESH_TOKEN = refresh_token;
-                // do initial population of adapter immediatly
-                ADAPTER.log.debug("Querying Devices from API initially.");
-                refreshMieledata();
-                // start refresh scheduler with interval from adapters config
                 ADAPTER.log.info('Starting Polltimer with a ' +  ADAPTER.config.pollinterval + ' Minutes interval.');
-                SCHEDULER = schedule.scheduleJob('*/' + ADAPTER.config.pollinterval + ' * * * *', function () {
-                    ADAPTER.log.debug("Updating device states (polling API scheduled).");
-                    refreshMieledata();
-                });
+                // start refresh scheduler with interval from adapters config
+                pollTimeout= setTimeout(function schedule() {
+                    ADAPTER.log.info("Updating device states (polling API scheduled).");
+                    refreshMieledata(err);
+                    pollTimeout= setTimeout(schedule , ADAPTER.config.pollinterval * 60000);
+                    } , 100);
             }
         });
     } else {
