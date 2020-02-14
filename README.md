@@ -34,6 +34,11 @@ To install, excecute the following:
 
 ## Changelog
 
+### 1.0.5 (2020-02-14)
+* (grizzelbee) removed node-schedule as a dependency
+* (grizzelbee) implemented scheduling via setTimeout, which raises the possibility 
+               to schedule with less than a minute in the future
+
 ### 1.0.4 (2020-02-12)
 * (grizzelbee) removed unneeded setTimeout from main
 * (grizzelbee) Clearing scheduler on unload of adapter

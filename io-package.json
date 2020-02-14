@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.0.4",
+        "version": "1.0.5",
         "news": {
+            "1.0.5": {
+                "en": "removed dependency 'node-schedule' and realized scheduling via setTimeout",
+                "de": "Abhängigkeit auf 'node-schedule' wurde entfernt und die Planung über setTimeout realisiert",
+                "ru": "удалено расписание узлов зависимостей и реализовано планирование через setTimeout",
+                "pt": "agendamento de nó de dependência removido e agendamento realizado via setTimeout",
+                "nl": "afhankelijkheidsknooppuntschema verwijderd en planning gerealiseerd via setTimeout",
+                "fr": "suppression de la planification des nœuds de dépendance et planification réalisée via setTimeout",
+                "it": "rimossa la pianificazione dei nodi di dipendenza e la pianificazione realizzata tramite setTimeout",
+                "es": "Se eliminó la programación de nodo de dependencia y se realizó la programación a través de setTimeout",
+                "pl": "usunięto harmonogram węzłów zależności i zrealizowano planowanie za pomocą setTimeout",
+                "zh-cn": "删除依赖关系节点计划并通过setTimeout实现计划"
+            },
             "1.0.4": {
                 "en": "removed unneeded setTimeout, clearing scheduler on unload",
                 "de": "nicht benötigtes setTimeout entfernt, Scheduler wird beim Entladen bereinigt",
