@@ -32,8 +32,6 @@ function startadapter(options) {
         // is called when adapter shuts down - callback has to be called under any circumstances!
         unload: function (callback) {
             try {
-                // ADAPTER.log.info('Canceling all scheduled events.');
-                //SCHEDULER.cancel();
                 if (pollTimeout) {
                     ADAPTER.log.info('Clearing Timeout: pollTimeout');
                     clearTimeout(pollTimeout);
@@ -656,8 +654,8 @@ function APIGetDevices(Refresh_Token, Access_Token, locale, callback) {
         if (!err) {
             return callback(err, data, atoken, rtoken)
         } else {
-            ADAPTER.log.warn("Error during function APIGetDevices.");
-        }
+            ADAPTER.log.error("Error during function APIGetDevices.");
+            ADAPTER.log.error('Errormessage : ' + err);        }
     });
 }
 
@@ -668,7 +666,8 @@ function APIGetActions(Refresh_Token, Access_Token, device, callback) {
             ADAPTER.log.debug(`Got DeviceActions: [${JSON.stringify(data)}]`);
             return callback(err, data, atoken, rtoken)
         } else {
-            ADAPTER.log.warn("Error during function APIGetActions.");
+            ADAPTER.log.error("Error during function APIGetActions.");
+            ADAPTER.log.error('Errormessage : ' + err);
         }
     });
 }
