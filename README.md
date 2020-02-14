@@ -36,7 +36,7 @@ To install, excecute the following:
 
 ### 1.0.5 (2020-02-14)
 * (grizzelbee) removed node-schedule as a dependency
-* (grizzelbee) implemented scheduling via setTimeout, which raises the possibility 
+* (grizzelbee) implemented scheduling via setTimeout, which raises the opportunity 
                to schedule with less than a minute in the future
 
 ### 1.0.4 (2020-02-12)
