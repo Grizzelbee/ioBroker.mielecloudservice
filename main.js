@@ -22,6 +22,7 @@ let ACCESS_TOKEN;
 let REFRESH_TOKEN;
 let ADAPTER;
 let pollTimeout;
+let expiryDate;
 
 function startadapter(options) {
     options = options || {};
@@ -540,7 +541,8 @@ function APIGetAccessToken(callback) {
             if (response.statusCode === 200) {
                 let P = JSON.parse(body);
                 // let expiry = now + expiry in seconds
-                let expiryDate = new Date().setSeconds(expiry.getSeconds() + P.expires_in );
+                expiryDate = new Date();
+                expiryDate.setSeconds(expiryDate.getSeconds() + P.expires_in );
                 ADAPTER.log.info('Got new Access-Token!');
                 ADAPTER.log.debug('New Access-Token:  [' + P.access_token + ']');
                 ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
@@ -592,7 +594,7 @@ function APIRefreshToken(callback) {
                 ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
                 ADAPTER.log.Info('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
                 ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
-                ADAPTER.log.silly('plain body:  [' + body + ']');
+                // ADAPTER.log.debug('plain body:  [' + body + ']');
                 return callback(false, P.access_token, P.refresh_token);
             } else {
                 ADAPTER.log.error('*** Error during APIRefreshToken ***');
