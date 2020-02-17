@@ -10,15 +10,14 @@
 [![Travis-CI](http://img.shields.io/travis/Grizzelbee/ioBroker.mielecloudservice/master.svg)](https://travis-ci.com/Grizzelbee/ioBroker.mielecloudservice) 
  [![NPM](https://nodei.co/npm/iobroker.mielecloudservice.png?downloads=true)](https://nodei.co/npm/iobroker.mielecloudservice/)
 
- =================
 ## Description
 This adapter is for retrieving information about all your Miele@Home devices from the official Miele 3rd-party API. 
-
+Regardless if they are connected via WiFi or XGW3000 Gateway.
 
 ## Installation 
 To install, excecute the following:
 
-1. Install via Admin: https://github.com/Grizzelbee/ioBroker.mielecloudservice.git
+1. Install via Admin using the stable or latest Repo or via: https://github.com/Grizzelbee/ioBroker.mielecloudservice.git
 2. create an App-Account for Miele@Home in the Miele Smartphone App
 3. Create an developer account at https://www.miele.com/f/com/en/register_api.aspx 
 4. Add your Miele-Devices to the App (if not added automatically)
@@ -104,6 +103,10 @@ To install, excecute the following:
 * New: Support for Actions 
 
 ## Documentation
+Please mainly refer to the main API documentation published by Miele
+* [General Documentation](https://www.miele.com/developer/swagger-ui/index.html)
+* [Preconditons to perform an action on a device](https://www.miele.com/developer/swagger-ui/put_additional_info.html) 
+
 There are some datapoints avaliable in 2 kinds. As a human readable text and as a number.
 These numeric datafields belonging to a textfield have the same name but a "_raw" appended. 
 Those fields which have a general meaning are listed below.
@@ -111,6 +114,44 @@ The fields which aren't listed vary in their meaning from device to device and a
 If you need to refer in scripts to these fields, always use the _raw values. 
 The textvalues may change in the future and also depend on the language.
 Here is a list of what these raw values stand for: 
+
+### DeviceTypes
+
+ | Raw value | State|
+ |----------|-------|
+ |1 | WASHING MACHINE|
+ |2 | TUMBLE DRYER|
+ |7 | DISHWASHER|
+ |8 | DISHWASHER SEMI-PROF|
+ |12 | OVEN|
+ |13 | OVEN MICROWAVE|
+ |14 | HOB HIGHLIGHT|
+ |15 | STEAM OVEN|
+ |16 | MICROWAVE|
+ |17 | COFFEE SYSTEM|
+ |18 | HOOD|
+ |19 | FRIDGE|
+ |20 | FREEZER|
+ |21 | FRIDGE-/FREEZER COMBINATION|
+ |23 | VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER|
+ |24 | WASHER DRYER|
+ |25 | DISH WARMER|
+ |27 | HOB INDUCTION|
+ |28 | HOB GAS|
+ |31 | STEAM OVEN COMBINATION|
+ |32 | WINE CABINET|
+ |33 | WINE CONDITIONING UNIT|
+ |34 | WINE STORAGE CONDITIONING UNIT|
+ |39 | DOUBLE OVEN|
+ |40 | DOUBLE STEAM OVEN|
+ |41 | DOUBLE STEAM OVEN COMBINATION|
+ |42 | DOUBLE MICROWAVE|
+ |43 | DOUBLE MICROWAVE OVEN|
+ |45 | STEAM OVEN MICROWAVE COMBINATION|
+ |48 | VACUUM DRAWER|
+ |67 | DIALOGOVEN|
+ |68 | WINE CABINET FREEZER COMBINATION| 
+
 
 ### State/Status
 
