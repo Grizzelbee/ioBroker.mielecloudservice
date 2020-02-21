@@ -36,6 +36,8 @@ function startadapter(options) {
                     ADAPTER.log.info('Clearing Timeout: pollTimeout');
                     clearTimeout(pollTimeout);
                 }
+                ADAPTER.unsubscribeObjects('*');
+                ADAPTER.unsubscribeStates('*');
                 ADAPTER.setState('info.connection', false);
                 ADAPTER.log.info('Unloading MieleCloudService...');
                 callback();
@@ -44,25 +46,22 @@ function startadapter(options) {
             }
         },
         // is called if a subscribed object changes
-        /* currently unused
         objectChange: function (id, obj) {
             // Warning, obj can be null if it was deleted
             ADAPTER.log.debug('objectChange ' + id + ' ' + JSON.stringify(obj));
         },
-        */
         // is called if a subscribed state changes
-        //                  stateChange: function (id, state) {
+        stateChange: function (id, state) {
         // Warning, state can be null if it was deleted
-        // you can use the ack flag to detect if it is status (true) or command (false)
-        //                  if (state && !state.ack) {
-        //                  ADAPTER.log.info('ack is not set!');
-        //                  }
-        //                  },
-        /* currently unused
-        stateChange: function(id, state){
-            ADAPTER.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
-        },
-         */
+          if (state && !state.ack) {
+              ADAPTER.log.debug('ack is not set!');
+              // you can use the ack flag to detect if it is status (true) or command (false)
+              ADAPTER.log.error('stateChange ' + id + ' ' + JSON.stringify(state));
+          }
+          },
+        // stateChange: function(id, state){
+        //    ADAPTER.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
+        // },
         // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
         message: function (obj) {
             if (typeof obj === 'object' && obj.message) {
@@ -87,7 +86,7 @@ function startadapter(options) {
                     ADAPTER.config.Miele_pwd = decrypt(salt, ADAPTER.config.Miele_pwd);
                     ADAPTER.config.Client_secret = decrypt(salt, ADAPTER.config.Client_secret);
                 }
-                // Execute main after pwds are decrypted
+                // Execute main after pwds have been decrypted
                 main();
             });
         }
@@ -97,6 +96,23 @@ function startadapter(options) {
     ADAPTER = new utils.adapter(options);
 
     return ADAPTER;
+}
+
+function addActionButton(path, action, description){
+    ADAPTER.log.debug('addActionButton: Path['+ path +']');
+    createExtendObject(path + '.ACTIONS.' + action, {
+            type: 'state',
+            common: {"name": description,
+                "read": "false",
+                "write": "true",
+                "role": "button",
+                "type": "boolean"
+            },
+            native: {"type": "button"
+            }
+        }
+    );
+    ADAPTER.subscribeStates(path + '.ACTIONS.' + action);
 }
 
 function proofAdapterConfig() {
@@ -266,6 +282,7 @@ function parseMieleDevice(mieleDevice){
     ADAPTER.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
     deviceFolder = createEODeviceTypes(mieleDevice.ident.type.value_raw); // create folder for device
     addMieleDevice(deviceFolder, mieleDevice);
+
     // add special datapoints to devices
     // spinning speed
     switch (mieleDevice.ident.type.value_raw) {
@@ -305,11 +322,14 @@ function addMieleDevice(path, mieleDevice){
     ADAPTER.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
     createExtendObject(newPath, {
         type: 'device',
-        common: {name: mieleDevice.ident.deviceName, read: true},
+        common: {name:   (mieleDevice.ident.deviceName === ''? mieleDevice.ident.type.value_localized: mieleDevice.ident.deviceName) , read: true, write: false},
         native: {}
     });
-    // Add device actions
-    addMieleDeviceActions(newPath, mieleDevice.ident.deviceIdentLabel.fabNumber);
+
+    // add device specific actions
+    addMieleDeviceActions(newPath, mieleDevice.ident.type.value_raw);
+    addDeviceNicknameAction(newPath, mieleDevice);
+
     // add device states and idents
     for (let deviceInfo in mieleDevice){
         ADAPTER.log.debug('addMieleDevice:' + deviceInfo);
@@ -336,10 +356,11 @@ function createBoolDatapoint(path, description, value){
         },
         native: {}
     });
-    ADAPTER.setState(path, value);
+    ADAPTER.setState(path, value, true);
 }
 
 function createStringDatapoint(path, description, value){
+    ADAPTER.log.debug('createStringDatapoint: Path['+ path +'] Value[' + value + ']');
     createExtendObject(path, {
         type: 'state',
         common: {"name": description,
@@ -350,8 +371,9 @@ function createStringDatapoint(path, description, value){
         },
         native: {}
     });
-    ADAPTER.setState(path, value);
+    ADAPTER.setState(path, value, true);
 }
+
 
 function createStringDatapointRaw(path, description, key_localized, value_localized, value_raw, unit){
     ADAPTER.log.debug('createStringDatapointRaw: Path:[' + path + '] key_localized:[' + key_localized + '] value_localized[' + value_localized + '] value_raw[' + value_raw +'] unit[' + unit   +']' );
@@ -365,7 +387,7 @@ function createStringDatapointRaw(path, description, key_localized, value_locali
         },
         native: {}
     });
-    ADAPTER.setState(path + '.' + key_localized +'_raw', value_raw);
+    ADAPTER.setState(path + '.' + key_localized +'_raw', value_raw, true);
 
     createExtendObject(path + '.' + key_localized, {
         type: 'state',
@@ -377,7 +399,7 @@ function createStringDatapointRaw(path, description, key_localized, value_locali
         },
         native: {}
     });
-    ADAPTER.setState(path + '.' + key_localized, value_localized + ' ' + unit);
+    ADAPTER.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
 }
 
 function createTimeDatapoint(path, description, value){
@@ -393,7 +415,7 @@ function createTimeDatapoint(path, description, value){
     });
     ADAPTER.log.debug('createTimeDatapoint: Path:['+ path +'], value:['+ value +']');
     let assembledValue = value[0] + ':' + (value[1]<10? '0': '') + value[1];
-    ADAPTER.setState(path, assembledValue);
+    ADAPTER.setState(path, assembledValue, true);
 }
 
 function createTemperatureDatapoint(path, description, value){
@@ -413,7 +435,7 @@ function createTemperatureDatapoint(path, description, value){
         });
         ADAPTER.log.debug('createTemperatureDatapoint: Path:[' + path + '_' + n + '], value:[' + JSON.stringify(value) + ']');
         let prettyValue = value[n].value_localized + '° ' + value[n].unit;
-        ADAPTER.setState(path + '_' + n, prettyValue);
+        ADAPTER.setState(path + '_' + n, prettyValue, true);
     }
 }
 
@@ -445,15 +467,102 @@ function addMieleDeviceState(path, currentDeviceState){
     createBoolDatapoint(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
 }
 
-function addMieleDeviceActions(path, currentDevice){
-    ADAPTER.log.debug('addMieleDeviceActions: Path: [' + path + ']');
-    // Create ACTIONS folder
+function addDeviceNicknameAction(path, mieledevice) {
+    ADAPTER.log.debug( 'addDeviceNicknameAction: Path:['+ path +'], mieledevice:['+JSON.stringify(mieledevice)+']' );
+    // addDeviceNicknameAction - suitable for each and every device
+    createExtendObject(path + '.ACTIONS.Nickname', {
+        type: 'state',
+        common: {
+            name: 'Nickname of your device. Can be edited in Miele APP or here!',
+            read: true,
+            write: true,
+            type: 'String'
+        },
+        native: {}
+    });
+    ADAPTER.setState(path + '.ACTIONS.Nickname', (mieledevice.ident.deviceName === '' ? mieledevice.ident.type.value_localized : mieledevice.ident.deviceName), true);
+    ADAPTER.subscribeStates(path + '.ACTIONS.Nickname');
+}
+
+function addMieleDeviceActions(path, DeviceType){
+    ADAPTER.log.debug(`addMieleDeviceActions: Path: [${path}]`);
+    // Create ACTIONS folder if not already existing
     createExtendObject(path + '.ACTIONS', {
         type: 'channel',
         common: {name: 'Supported Actions for this device.', read: true, write: true},
         native: {}
     });
-    // APIGetActions(REFRESH_TOKEN, ACCESS_TOKEN, currentDevice, callback);
+
+
+    // Add Actions depending on devicetype
+    switch (DeviceType) {
+        case 1:
+        case 2:
+        case 7:
+            // addStartAction
+            addActionButton(path,'Start', 'Starts the Device.');
+            addActionButton(path,'Stop', 'Stops the Device.');
+            // addStopAction
+            // addStartTimeAction
+            break;
+        case 12:
+        case 13:
+            // addStopAction
+            break;
+        case 17:
+        case 18:
+            // addStopAction
+            // addLightEnable
+            // addLightDisable
+            break;
+        case 19:
+            // addStartSuperCoolingAction
+            // addStopSuperCoolingAction
+            break;
+        case 20:
+            // addStartSuperFreezingAction
+            // addStopSuperFreezingAction
+            break;
+        case 21:
+            break;
+        // addStartSuperCoolingAction
+        // addStopSuperCoolingAction
+        // addStartSuperFreezingAction
+        // addStopSuperFreezingAction
+        case 24:
+            // addStopAction
+            break;
+        case 31:
+            // addStopAction
+            break;
+        case 32:
+            // addLightEnable
+            // addLightDisable
+            break;
+        case 33:
+            // addLightEnable
+            // addLightDisable
+            break;
+        case 34:
+            // addLightEnable
+            // addLightDisable
+            break;
+        case 45:
+            // addStopAction
+            break;
+        case 67:
+            // addStopAction
+            break;
+        case 68:
+            // addLightEnable
+            // addLightDisable
+            // addStartSuperFreezingAction
+            // addStopSuperFreezingAction
+            break;
+
+    }
+
+
 }
 
 function refreshMieledata(err){
@@ -505,7 +614,7 @@ function main() {
         ADAPTER.terminate('Invalid Configuration.', 11);
     }
     // in this mielecloudservice all states changes inside the adapters namespace are subscribed
-    ADAPTER.subscribeStates('*');
+    // ADAPTER.subscribeStates('*');
 
 }//End Function main
 
@@ -582,15 +691,17 @@ function APIRefreshToken(callback) {
     ADAPTER.log.debug('options OAuth2-VG: ['     + options.form.oauth2_vg + ']');
     ADAPTER.log.debug('refresh_token: ['         + options.form.refresh_token + ']');
     ADAPTER.log.debug('options Client_ID: ['     + options.form.client_id + ']');
-    ADAPTER.log.debug('options Client_Secret (encrypted): [' + options.form.client_secret + ']');
 
     request(options, function (error, response, body) {
             if (response.statusCode === 200) {
                 let P = JSON.parse(body);
+                expiryDate = new Date();
+                expiryDate.setSeconds(expiryDate.getSeconds() + P.expires_in );
                 ADAPTER.log.info('Successfully refreshed Access-Token!');
                 ADAPTER.log.debug('New Access-Token:  [' + P.access_token + ']');
                 ADAPTER.log.debug('Access-Token-Type:  [' + P.token_type + ']');
                 ADAPTER.log.Info('Access-Token expires in:  [' + P.expires_in + '] Seconds (='+ P.expires_in/3600 +'hours  = '+ P.expires_in/86400 +'days)');
+                ADAPTER.log.info('Access-Token expires at:  [' + expiryDate.toString() + ']');
                 ADAPTER.log.debug('New Refresh-Token: [' + P.refresh_token + ']');
                 // ADAPTER.log.debug('plain body:  [' + body + ']');
                 return callback(false, P.access_token, P.refresh_token);
