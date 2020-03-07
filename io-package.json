@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.0.5",
+        "version": "1.1.0",
         "news": {
+            "1.1.0": {
+                "en": "Added Actions: All currently supported and documented actions for all devices should work.",
+                "de": "Aktionen hinzugefügt: Alle derzeit unterstützten und dokumentierten Aktionen für alle Geräte sollten funktionieren.",
+                "ru": "Добавленные действия: все поддерживаемые в настоящее время и документированные действия для всех устройств должны работать.",
+                "pt": "Ações adicionadas: todas as ações atualmente suportadas e documentadas para todos os dispositivos devem funcionar.",
+                "nl": "Toegevoegde acties: alle momenteel ondersteunde en gedocumenteerde acties voor alle apparaten zouden moeten werken.",
+                "fr": "Actions ajoutées: toutes les actions actuellement prises en charge et documentées pour tous les appareils devraient fonctionner.",
+                "it": "Azioni aggiunte: tutte le azioni attualmente supportate e documentate per tutti i dispositivi dovrebbero funzionare.",
+                "es": "Acciones agregadas: Todas las acciones actualmente soportadas y documentadas para todos los dispositivos deberían funcionar.",
+                "pl": "Dodano akcje: wszystkie obecnie obsługiwane i udokumentowane akcje dla wszystkich urządzeń powinny działać.",
+                "zh-cn": "新增的操作：所有设备当前所有受支持和记录的操作都应该起作用。"
+            },
             "1.0.5": {
                 "en": "removed dependency 'node-schedule' and realized scheduling via setTimeout",
                 "de": "Abhängigkeit auf 'node-schedule' wurde entfernt und die Planung über setTimeout realisiert",

@@ -12,7 +12,7 @@
 
 ## Description
 This adapter is for retrieving information about all your Miele@Home devices from the official Miele 3rd-party API. 
-Regardless if they are connected via WiFi or XGW3000 Gateway.
+Regardless if they are connected via WiFi or XGW3000 Gateway. It implements the **Miele 3rd Party API V1.0.0**
 
 ## Installation 
 To install, excecute the following:
@@ -32,6 +32,10 @@ To install, excecute the following:
 
 ## Changelog
 
+### 1.1.0 (2020-03-07)
+* (grizzelbee) New: Added Actions - Implemented all currently supported and documented Actions for all devices
+               Please remember that Actions will only work if you put your device into the appropiate state (e.g. Mobile Control) 
+  
 ### 1.0.5 (2020-02-14)
 * (grizzelbee) removed node-schedule as a dependency
 * (grizzelbee) implemented scheduling via setTimeout, which raises the opportunity 
@@ -100,7 +104,6 @@ To install, excecute the following:
 ## Next Steps
 * New: (longer) poll interval when no device is active
 * New: Sleeptime for complete inactivity (e.g. at night)
-* New: Support for Actions 
 
 ## Documentation
 Please mainly refer to the main API documentation published by Miele
