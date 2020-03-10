@@ -1,13 +1,13 @@
 ![Logo](admin/mielecloudservice.png)
 # ioBroker.MieleCloudService
-![Number of Installations](http://iobroker.live/badges/mielecloudservice-installed.svg) 
+![Number of Installations](http://iobroker.live/badges/mielecloudservice-installed.svg)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
 ![Number of Installations](http://iobroker.live/badges/mielecloudservice-stable.svg)
 [![NPM version](https://img.shields.io/npm/v/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/grizzelbee/iobroker.mielecloudservice/blob/master/LICENSE) 
 [![Dependency Status](https://img.shields.io/david/Grizzelbee/iobroker.mielecloudservice.svg)](https://david-dm.org/Grizzelbee/iobroker.mielecloudservice)
 [![Known Vulnerabilities](https://snyk.io/test/github/Grizzelbee/ioBroker.mielecloudservice/badge.svg)](https://snyk.io/test/github/Grizzelbee/ioBroker.mielecloudservice)
-[![Travis-CI](http://img.shields.io/travis/Grizzelbee/ioBroker.mielecloudservice/master.svg)](https://travis-ci.com/Grizzelbee/ioBroker.mielecloudservice) 
+[![Travis-CI](http://img.shields.io/travis/Grizzelbee/ioBroker.mielecloudservice/master.svg)](https://travis-ci.org/Grizzelbee/ioBroker.mielecloudservice) 
  [![NPM](https://nodei.co/npm/iobroker.mielecloudservice.png?downloads=true)](https://nodei.co/npm/iobroker.mielecloudservice/)
 
 ## Description
@@ -24,7 +24,7 @@ To install, excecute the following:
 6. Fill in the client_secret and client_id received from Miele-developer Team and account-id and password from the App.
 
 
-## Requirements
+## Prerequisites
 * Miele@Home User (Smartphone App)
 * Miele@Home Password (Smartphone App)
 * Miele Client_id (from https://www.miele.com/developer/)
@@ -34,7 +34,8 @@ To install, excecute the following:
 
 ### 1.1.0 (2020-03-07)
 * (grizzelbee) New: Added Actions - Implemented all currently supported and documented Actions for all devices
-               Please remember that Actions will only work if you put your device into the appropiate state (e.g. Mobile Control) 
+               Please remember that Actions will only work if you put your device into the appropiate state (e.g. Mobile Control)
+               please refer to https://www.miele.com/developer/swagger-ui/put_additional_info.html for more Information on actions. 
   
 ### 1.0.5 (2020-02-14)
 * (grizzelbee) removed node-schedule as a dependency
@@ -108,7 +109,7 @@ To install, excecute the following:
 ## Documentation
 Please mainly refer to the main API documentation published by Miele
 * [General Documentation](https://www.miele.com/developer/swagger-ui/index.html)
-* [Preconditons to perform an action on a device](https://www.miele.com/developer/swagger-ui/put_additional_info.html) 
+* [Preconditions to perform an action on a device](https://www.miele.com/developer/swagger-ui/put_additional_info.html) 
 
 There are some datapoints avaliable in 2 kinds. As a human readable text and as a number.
 These numeric datafields belonging to a textfield have the same name but a "_raw" appended. 
@@ -222,4 +223,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ##Copyright
-Copyright (c) 2019, 2020 grizzelbee <captain.tzk@gmail.com>
+Copyright (c) 2019, 2020 grizzelbee <hanjo@hingsen.de>
