@@ -1,13 +1,13 @@
 ![Logo](admin/mielecloudservice.png)
 # ioBroker.MieleCloudService
-[![Number of Installations](http://iobroker.live/badges/mielecloudservice-installed.svg)]()
+![Number of Installations](http://iobroker.live/badges/mielecloudservice-installed.svg)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
 ![Number of Installations](http://iobroker.live/badges/mielecloudservice-stable.svg)
 [![NPM version](https://img.shields.io/npm/v/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/grizzelbee/iobroker.mielecloudservice/blob/master/LICENSE) 
 [![Dependency Status](https://img.shields.io/david/Grizzelbee/iobroker.mielecloudservice.svg)](https://david-dm.org/Grizzelbee/iobroker.mielecloudservice)
 [![Known Vulnerabilities](https://snyk.io/test/github/Grizzelbee/ioBroker.mielecloudservice/badge.svg)](https://snyk.io/test/github/Grizzelbee/ioBroker.mielecloudservice)
-[![Travis-CI](http://img.shields.io/travis/Grizzelbee/ioBroker.mielecloudservice/master.svg)](https://travis-ci.org/Grizzelbee/ioBroker.mielecloudservice) 
+[![Travis-CI](http://img.shields.io/travis/Grizzelbee/ioBroker.mielecloudservice/master.svg)](https://travis-ci.com/Grizzelbee/ioBroker.mielecloudservice) 
 [![NPM](https://nodei.co/npm/iobroker.mielecloudservice.png?downloads=true)](https://nodei.co/npm/iobroker.mielecloudservice/)
 
 ## Description
