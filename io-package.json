@@ -86,30 +86,6 @@
                 "es": "Completamente reescrito, todos los estados en un nuevo orden, NO actualice el adaptador: elimine y realice una nueva instalación limpia",
                 "pl": "Całkowicie przepisany, wszystkie stany w nowej kolejności, NIE aktualizuj adaptera - usuń i wykonaj czystą nową instalację",
                 "zh-cn": "完全重写，所有状态均处于新顺序，请勿更新适配器-删除并进行全新安装"
-            },
-            "0.0.4": {
-                "en": "minor updates",
-                "de": "kleinere Updates",
-                "ru": "незначительные обновления",
-                "pt": "pequenas atualizações",
-                "nl": "kleine updates",
-                "fr": "mises à jour mineures",
-                "it": "aggiornamenti minori",
-                "es": "actualizaciones menores",
-                "pl": "drobne aktualizacje",
-                "zh-cn": "小更新"
-            },
-            "0.0.3": {
-                "en": "initial adapter",
-                "de": "Initiale Version",
-                "ru": "Первоначальный адаптер",
-                "pt": "Versão inicial",
-                "fr": "Version initiale",
-                "nl": "Eerste release",
-                "it": "adattatore iniziale",
-                "es": "adaptador inicial",
-                "pl": "początkowy adapter",
-                "zh-cn": "初始适配器"
             }
         },
         "title": "MieleCloudService",
@@ -138,7 +114,7 @@
             "zh-cn": "MieleCloudService：将Miele设备连接到ioBroker。"
         },
         "authors": [
-            "grizzelbee <captain.tzk@gmail.com>, hash99 <hash99@iesy.net>"
+            "grizzelbee <hanjo@hingsen.de>"
         ],
         "platform": "Javascript/Node.js",
         "mode": "daemon",
