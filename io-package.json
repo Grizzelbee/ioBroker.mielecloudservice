@@ -102,16 +102,16 @@
             "zh-cn": "MieleCloudService"
         },
         "desc": {
-            "en": "MieleCloudService: Get your Miele appliances connected to ioBroker.",
-            "de": "MieleCloudService: Verbinden Sie Ihre Miele-Geräte mit ioBroker.",
-            "ru": "MieleCloudService: подключите свои устройства Miele к ioBroker.",
-            "pt": "MieleCloudService: conecte seus dispositivos Miele ao ioBroker.",
-            "nl": "MieleCloudService: verbind uw Miele-apparaten met ioBroker.",
-            "fr": "MieleCloudService: connectez vos appareils Miele à ioBroker.",
-            "it": "MieleCloudService: collega i tuoi apparecchi Miele a ioBroker.",
-            "es": "MieleCloudService: conecte sus dispositivos Miele a ioBroker.",
-            "pl": "MieleCloudService: Połącz swoje urządzenia Miele z ioBroker.",
-            "zh-cn": "MieleCloudService：将Miele设备连接到ioBroker。"
+            "en": "MieleCloudService: Get your Miele appliances (WiFiConn@ct & XGW 3000) connected to ioBroker.",
+            "de": "MieleCloudService: Verbinden Sie Ihre Miele-Geräte (WiFiConn@ct & XGW 3000) mit ioBroker.",
+            "ru": "MieleCloudService: подключите свои устройства Miele (WiFiConn@ct & XGW 3000) к ioBroker.",
+            "pt": "MieleCloudService: conecte seus dispositivos Miele (WiFiConn@ct & XGW 3000) ao ioBroker.",
+            "nl": "MieleCloudService: verbind uw Miele-apparaten (WiFiConn@ct & XGW 3000) met ioBroker.",
+            "fr": "MieleCloudService: connectez vos appareils Miele (WiFiConn@ct & XGW 3000) à ioBroker.",
+            "it": "MieleCloudService: collega i tuoi apparecchi Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
+            "es": "MieleCloudService: conecte sus dispositivos Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
+            "pl": "MieleCloudService: Połącz swoje urządzenia Miele (WiFiConn@ct & XGW 3000) z ioBroker.",
+            "zh-cn": "MieleCloudService：将Miele (WiFiConn@ct & XGW 3000)设备连接到ioBroker。"
         },
         "authors": [
             "grizzelbee <hanjo@hingsen.de>"
