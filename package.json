@@ -4,12 +4,12 @@
   "description": "Integrates your MieleCloudService (aka Miele@Home) Devices to ioBroker",
   "author": {
     "name": "grizzelbee",
-    "email": "captain.tzk@gmail.com"
+    "email": "hanjo@hingsen.de"
   },
   "contributors": [
     {
       "name": "grizzelbee",
-      "email": "captain.tzk@gmail.com"
+      "email": "hanjo@hingsen.de"
     },
     {
       "name": "hash99",
