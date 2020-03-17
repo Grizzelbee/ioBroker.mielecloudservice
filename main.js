@@ -132,7 +132,7 @@ function addActionButton(path, action, description, buttonType){
     adapter.subscribeStates(path + '.ACTIONS.' + action);
 }
 
-function proofAdapterConfig() {
+function validateAdapterConfig() {
     if ('' === adapter.config.Miele_account) {
         adapter.log.warn('Miele account is missing.');
     }
@@ -689,7 +689,7 @@ function main() {
         });
     } else {
         adapter.log.warn('Adapter config is invalid. Please fix.');
-        proofAdapterConfig();
+        validateAdapterConfig();
         adapter.setState('info.connection', false);
         adapter.terminate('Invalid Configuration.', 11);
     }
