@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "news": {
+            "1.2.0": {
+                "en": "Added two new (redundant) states (connected and signalInUse) for convenience purposes in VIS.",
+                "de": "Zur Vereinfachung in VIS wurden zwei neue (redundante) Zustände (connected und signalInUse) hinzugefügt.",
+                "ru": "Для удобства добавлены два новых (избыточных) состояния (connected и signalInUse) в VIS.",
+                "pt": "Adicionados dois novos estados (redundantes) (connected e signalInUse) para fins de conveniência no VIS.",
+                "nl": "Twee nieuwe (redundante) statussen (connected en signalInUse) toegevoegd voor het gemak in VIS.",
+                "fr": "Ajout de deux nouveaux états (redondants) (connected et signalInUse) à des fins de commodité dans VIS.",
+                "it": "Aggiunti due nuovi stati (ridondanti) (connected e signalInUse) per motivi di praticità in VIS.",
+                "es": "Se agregaron dos nuevos estados (redundantes) (connected y signalInUse) para fines de conveniencia en VIS.",
+                "pl": "Dodano dwa nowe (redundantne) stany (connected i signalInUse) dla wygody w VIS.",
+                "zh-cn": "为了方便起见，在VIS中添加了两个新的（冗余）状态（已连接和signalInUse）。"
+            },
             "1.1.0": {
                 "en": "Added Actions: All currently supported and documented actions for all devices should work.",
                 "de": "Aktionen hinzugefügt: Alle derzeit unterstützten und dokumentierten Aktionen für alle Geräte sollten funktionieren.",

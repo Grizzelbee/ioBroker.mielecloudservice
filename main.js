@@ -466,13 +466,18 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
 
 function addMieleDeviceState(path, currentDeviceState){
     adapter.log.debug('addMieleDeviceState: Path: [' + path + ']');
-
+    // set the default values for redundant state indicators
+    createBoolDatapoint(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', true);
+    createBoolDatapoint(path + '.signalInUse', 'Indicates whether the device is in use or switched off.', false);
+    switch ( currentDeviceState.status.value_raw ) {
+        case 1:
+            createBoolDatapoint(path + '.signalInUse', 'Indicates whether the device is in use or switched off.', false);
+            break;
+        case 255:
+            createBoolDatapoint(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', false);
+            break;
+    }
     createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw, '');
-    if (currentDeviceState.status.value_raw === 255){
-        createBoolDatapoint(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', false);
-    } else{
-        createBoolDatapoint(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', true);
-    };
     createStringDatapointRaw(path, 'ID of the running Program', currentDeviceState.ProgramID.key_localized, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw, '');
     createStringDatapointRaw(path, 'programType of the running Program', currentDeviceState.programType.key_localized,  currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw), '';
     createStringDatapointRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
