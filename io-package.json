@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "news": {
+            "1.2.0": {
+                "en": "Switched to AXIOS http-client and added two new (redundant) states (connected and signalInUse) for convenience purposes in VIS.",
+                "de": "Zu AXIOS http-client gewechselt und zwei neue (redundante) Zustände (verbunden und signalInUse) hinzugefügt, um die Arbeit in VIS zu vereinfachen.",
+                "ru": "Переключился на http-client AXIOS и добавил два новых (избыточных) состояния (подключен и signalInUse) для удобства в VIS.",
+                "pt": "Alternou para o AXIOS http-client e adicionou dois novos estados (redundantes) (conectado e signalInUse) para fins de conveniência no VIS.",
+                "nl": "Overgeschakeld naar AXIOS http-client en twee nieuwe (redundante) statussen (verbonden en signalInUse) toegevoegd voor het gemak in VIS.",
+                "fr": "Passé à AXIOS http-client et ajouté deux nouveaux états (redondants) (connectés et signalInUse) à des fins de commodité dans VIS.",
+                "it": "Passato a AXIOS http-client e aggiunto due nuovi stati (ridondanti) (connesso e signalInUse) per motivi di praticità in VIS.",
+                "es": "Cambió a AXIOS http-client y agregó dos nuevos estados (redundantes) (conectado y signalInUse) para fines de conveniencia en VIS.",
+                "pl": "Przełączono na http-client AXIOS i dodano dwa nowe (redundantne) stany (podłączony i signalInUse) dla wygody w VIS.",
+                "zh-cn": "切换到AXIOS http-client并添加了两个新的（冗余）状态（connected和signalInUse），以便在VIS中使用。"
+            },
             "1.1.0": {
                 "en": "Added Actions: All currently supported and documented actions for all devices should work.",
                 "de": "Aktionen hinzugefügt: Alle derzeit unterstützten und dokumentierten Aktionen für alle Geräte sollten funktionieren.",
