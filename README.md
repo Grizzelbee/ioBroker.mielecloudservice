@@ -207,6 +207,17 @@ Here is a list of what these raw values stand for:
  |5 |   Hand iron level 2|
  |6 |   Machine iron|
 
+### ProgramPhase for washing machines
+
+| Raw value | State|
+|----------|-------|
+|260 | "Waschen" / "Washing"  |
+|261 | "Spülen"  / "Rinse"    |
+|266 | "Schleudern" / "Spinning"|
+|267 | "Knitterschutz" / ""|
+|268 |  "Ende" / "End"|
+|256 | "" |
+
 ## License
 The MIT License (MIT)
 
