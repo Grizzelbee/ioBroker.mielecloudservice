@@ -37,9 +37,11 @@ To install, excecute the following:
 * New: Sleeptime for complete inactivity (e.g. at night)
 
 ## Changelog
-### 1.2.0 (2020-03-18)
+### 1.2.0 (2020-04-18)
 * (grizzelbee) New: Added new boolean state (**Connected**) that indicates whether the device is connected to WLAN or a gateway.
-* (grizzelbee) New: Added new boolean state (**signalInUse**) that indicates whether the device is switched off (false) or in Use (true).  
+* (grizzelbee) New: Added new boolean state (**signalInUse**) that indicates whether the device is switched off (false) or in Use (true).
+* (grizzelbee) Change: replaced the deprecated http-library **request** with **axios** 
+* (grizzelbee) Change: Made functions communicating with API asynchronus 
   
 ### 1.1.0 (2020-03-07)
 * (grizzelbee) New: Added Actions - Implemented all currently supported and documented Actions for all devices
