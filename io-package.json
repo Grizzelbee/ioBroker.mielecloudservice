@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.2.0",
+        "version": "1.2.1",
         "news": {
+            "1.2.1": {
+                "en": "New: SignalActionRequired, Updated Documentation on github, Fixes for js-Controller 3",
+                "de": "Neu: SignalActionRequired, Aktualisierte Dokumentation auf Github, Korrekturen für js-Controller 3",
+                "ru": "Новое: SignalActionRequired, обновленная документация по github, исправления для js-Controller 3",
+                "pt": "Novo: SignalActionRequired, documentação atualizada no github, correções para js-Controller 3",
+                "nl": "Nieuw: SignalActionRequired, bijgewerkte documentatie op github, fixes voor js-Controller 3",
+                "fr": "Nouveau: SignalActionRequired, documentation mise à jour sur github, correctifs pour js-Controller 3",
+                "it": "Novità: SignalActionRequired, documentazione aggiornata su github, correzioni per js-Controller 3",
+                "es": "Nuevo: SignalActionRequired, documentación actualizada en github, correcciones para js-Controller 3",
+                "pl": "Nowość: SignalActionRequired, zaktualizowana dokumentacja github, poprawki dla js-Controller 3",
+                "zh-cn": "新增内容：SignalActionRequired，github上更新的文档，js-Controller 3的修复"
+            },
             "1.2.0": {
                 "en": "Switched to AXIOS http-client and added two new (redundant) states (connected and signalInUse) for convenience purposes in VIS.",
                 "de": "Zu AXIOS http-client gewechselt und zwei neue (redundante) Zustände (verbunden und signalInUse) hinzugefügt, um die Arbeit in VIS zu vereinfachen.",
