@@ -38,7 +38,7 @@ To install, excecute the following:
 
 ## Changelog
 ### 1.2.1 (2020-04-22)
-* (grizzelbee) New: Introduced new boolean state (**signalActionRequired**) that indicates that the machine has finished running, but a human action, like putting the wet clothes to the dryer, ... is needed. State is cleared automatically when the door of the appliance is opened, or it is restarted. State is implemented for washing machines, tumbledryers, washer dryer and dishwashers.  
+* (grizzelbee) New: Introduced new boolean state (**signalActionRequired**) that indicates that the machine has finished running, but a human action, like putting the wet clothes to the dryer, ... is needed. State is cleared automatically when the door of the appliance is opened, or it is restarted. State is implemented for washing machines, tumbledryers, washer dryer and dishwashers. **Dosen't work perfectly currently.**  
 * (grizzelbee) Upd: Updated Documentation 
 * (grizzelbee) Fix: Fixed warnings with js-Controller >=3.0 (Issue #23)
 
