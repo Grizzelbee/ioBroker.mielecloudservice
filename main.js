@@ -116,10 +116,10 @@ function addActionButton(path, action, description, buttonType){
    createExtendObject(path + '.ACTIONS.' + action, {
             type: 'state',
             common: {"name": description,
-                "read": "false",
-                "write": "true",
-                "role": "button",
-                "type": "boolean"
+                "read": false,
+                "write": true,
+                "role": 'button',
+                "type": 'boolean'
             },
             native: {"type": buttonType // "button"
             }
@@ -156,8 +156,10 @@ function createExtendObject(id, objData, callback) {
     adapter.getObject(id, function (err, oldObj) {
         if (!err && oldObj) {
             adapter.extendObject(id, objData, callback);
+            // adapter.setState(id, objData, callback);
         } else {
             adapter.setObjectNotExists(id, objData, callback);
+            // adapter.createState(id, objData, callback);
         }
     });
 }
@@ -272,7 +274,7 @@ function createEODeviceTypes(deviceTypeID){
     }
 
     createExtendObject(deviceFolder, {
-        type: 'channel',
+        type: 'device',
         common: {
             name: description
         },
@@ -281,7 +283,10 @@ function createEODeviceTypes(deviceTypeID){
 
     return deviceFolder;
 }
-
+/*
+* @param: mieleDevice
+* @param: mieleDevice.ident
+* */
 function splitMieleDevices(devices){
     // Splits the data-package returned by the API into single devices
     // and lets you iterate over each single device
@@ -291,6 +296,14 @@ function splitMieleDevices(devices){
     }
 }
 
+/*
+* @param mieleDevice
+* @param mieleDevice.ident
+* @param mieleDevice.ident.type
+* @param mieleDevice.ident.type.value_localized
+* @param mieleDevice.ident.type.value_raw
+* @param mieleDevice.ident.deviceIdentLabel.fabNumber
+* */
 function parseMieleDevice(mieleDevice){
     let deviceFolder;
     adapter.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
@@ -298,7 +311,30 @@ function parseMieleDevice(mieleDevice){
     addMieleDevice(deviceFolder, mieleDevice);
 
     // add special datapoints to devices
-    // spinning speed
+    // Action required due to wet clothes, dry clothes, clean dishes, ...
+    // set to true when device has finished and door hasn't opend yet
+    // set to false when device has finished and door is open
+    // set to false when device has been started and door is closed
+    switch (mieleDevice.ident.type.value_raw) {
+        case  1: // Washing machine
+        case  2: // Tumble dryer
+        case  7: // Dishwasher
+        case 12: // Washer dryer
+            // set to true when device has finished (Value_raw 7 => end programmed) and door hasn't opend yet
+            if (mieleDevice.state.status.value_raw === 7 && !mieleDevice.signalDoor) {
+                createBoolDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', true);
+            }
+            // set to false when device has finished and door is open
+            if (mieleDevice.state.status.value_raw === 1 && mieleDevice.signalDoor) {
+                createBoolDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false);
+            }
+            // set to false when device has been started and door is closed
+            if (mieleDevice.state.status.value_raw === 5 && !mieleDevice.signalDoor) {
+                createBoolDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false);
+            }
+    }
+
+            // spinning speed
     switch (mieleDevice.ident.type.value_raw) {
         case  1: // Washing machine
             createStringDatapointRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'Spinning speed of a washing machine.', mieleDevice.state.spinningSpeed.key_localized, mieleDevice.state.spinningSpeed.value_localized, mieleDevice.state.spinningSpeed.value_raw, mieleDevice.state.spinningSpeed.unit);
@@ -334,6 +370,7 @@ function parseMieleDevice(mieleDevice){
 function addMieleDevice(path, mieleDevice){
     let newPath = path + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber;
     adapter.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
+
     createExtendObject(newPath, {
         type: 'device',
         common: {name:   (mieleDevice.ident.deviceName === ''? mieleDevice.ident.type.value_localized: mieleDevice.ident.deviceName) , read: true, write: false},
@@ -358,17 +395,17 @@ function addMieleDevice(path, mieleDevice){
     }
 }
 
-function createBoolDatapoint(path, description, value){
+function createBoolDatapoint(path, description, value, role){
+    role = role || 'indicator';
     adapter.log.debug('createBoolDatapoint: Path['+ path +'] Value[' + value + ']');
     createExtendObject(path, {
         type: 'state',
         common: {"name": description,
-            "read": "true",
-            "write": "false",
-            "role": "state",
+            "read": true,
+            "write":false,
+            "role": role,
             "type": "boolean"
-        },
-        native: {}
+        }
     });
     adapter.setState(path, value, true);
 }
@@ -378,12 +415,11 @@ function createStringDatapoint(path, description, value){
     createExtendObject(path, {
         type: 'state',
         common: {"name": description,
-            "read": "true",
-            "write": "false",
+            "read":  true,
+            "write": false,
             "role": "state",
             "type": "string"
-        },
-        native: {}
+        }
     });
     adapter.setState(path, value, true);
 }
@@ -393,58 +429,60 @@ function createStringDatapointRaw(path, description, key_localized, value_locali
     createExtendObject(path + '.' + key_localized +'_raw', {
         type: 'state',
         common: {"name":  description + ' (value raw)',
-            "read": "true",
-            "write": "false",
-            "role": "state",
-            "type": "string"
-        },
-        native: {}
+            "read":  true,
+            "write": false,
+            "role": "value.raw",
+            "type": "number"
+        }
     });
     adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
 
     createExtendObject(path + '.' + key_localized, {
         type: 'state',
         common: {"name":  description,
-            "read": "true",
-            "write": "false",
-            "role": "state",
+            "read":  true,
+            "write": false,
+            "role": "value",
             "type": "string"
-        },
-        native: {}
+        }
     });
     adapter.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
 }
 
-function createTimeDatapoint(path, description, value){
+function createTimeDatapoint(path, description, value, role){
+    role = role || 'value.time';
     createExtendObject(path, {
         type: 'state',
         common: {"name": description,
-            "read": "true",
-            "write": "false",
-            "role": "state",
+            "read": true,
+            "write":false,
+            "role": "value",
             "type": "string"
-        },
-        native: {}
+        }
     });
     adapter.log.debug('createTimeDatapoint: Path:['+ path +'], value:['+ value +']');
     let assembledValue = value[0] + ':' + (value[1]<10? '0': '') + value[1];
     adapter.setState(path, assembledValue, true);
 }
 
-function createTemperatureDatapoint(path, description, value){
+/*
+* @param value
+* @param value[].value_localized
+ */
+function createTemperatureDatapoint(path, description, value, role){
     // depending on the device we receive up to 3 values
     // there is a min of 1 and a max of 3 temps returned by the miele API
+    role = role || 'value.temp';
     for (let n in value) {
         createExtendObject(path + '_' + n, {
             type: 'state',
             common: {
                 "name": description,
-                "read": "true",
-                "write": "false",
-                "role": "state",
+                "read": true,
+                "write":false,
+                "role": role,
                 "type": "string"
-            },
-            native: {}
+            }
         });
         adapter.log.debug('createTemperatureDatapoint: Path:[' + path + '_' + n + '], value:[' + JSON.stringify(value) + ']');
         let prettyValue = value[n].value_localized + '° ' + value[n].unit;
@@ -461,11 +499,21 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
     createStringDatapoint(path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
 }
 
+/*
+* @param  currentDeviceState.status.key_localized
+* @param  status
+* @param  ProgramID
+* @param  remainingTime
+* @param  programPhase
+* @param  key_localized
+* @param  value_raw
+* @param  value_localized
+ */
 function addMieleDeviceState(path, currentDeviceState){
     adapter.log.debug('addMieleDeviceState: Path: [' + path + ']');
     // set the values for redundant state indicators
-    createBoolDatapoint(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255);
-    createBoolDatapoint(path + '.signalInUse', 'Indicates whether the device is in use or switched off.', currentDeviceState.status.value_raw !== 1);
+    createBoolDatapoint(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
+    createBoolDatapoint(path + '.signalInUse', 'Indicates whether the device is in use or switched off.', currentDeviceState.status.value_raw !== 1, 'indicator.InUse');
     // regular states
     createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw, '');
     createStringDatapointRaw(path, 'ID of the running Program', currentDeviceState.ProgramID.key_localized, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw, '');
@@ -492,7 +540,7 @@ function addDeviceNicknameAction(path, mieledevice) {
             name: 'Nickname of your device. Can be edited in Miele APP or here!',
             read: true,
             write: true,
-            type: 'String'
+            type: 'string'
         },
         native: {}
     });
