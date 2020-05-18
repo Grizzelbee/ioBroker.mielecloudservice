@@ -325,7 +325,7 @@ function parseMieleDevice(mieleDevice){
                 createBoolDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', true);
             }
             // set to false when device has finished and door is open
-            if (mieleDevice.state.status.value_raw === 1 && mieleDevice.signalDoor) {
+            if ( ((mieleDevice.state.status.value_raw === 7) || mieleDevice.state.status.value_raw === 1) && mieleDevice.signalDoor) {
                 createBoolDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false);
             }
             // set to false when device has been started and door is closed
