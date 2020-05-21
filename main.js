@@ -863,11 +863,17 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
 
         return response.data;
     } catch(error){
-        adapter.log.error('APISendRequest returned an error!');
         adapter.log.error(error);
-        adapter.log.error(JSON.stringify(error.response.data.message));
-        if (error.response.status === 401){
-            auth = await APIRefreshToken(auth.refresh_token);
+        if (error.hasOwnProperty(response.data.message)) {
+            adapter.log.error(JSON.stringify(error.response.data.message));
+        }
+        switch (error.response.status) {
+            case 401:
+                auth = await APIRefreshToken(auth.refresh_token);
+                break;
+            case 504:
+                adapter.log.error('HTTP 504: Gateway Timeout! This error happend outside of this adapter. Please google it for a possible solution.');
+                break;
         }
         return error;
     }
