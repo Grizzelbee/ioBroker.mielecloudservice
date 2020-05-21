@@ -37,9 +37,11 @@ To install, excecute the following:
 * New: Sleeptime for complete inactivity (e.g. at night)
 
 ## Changelog
-### 1.2.2 (2020-05-14)
+### 1.2.2 (2020-05-21)
 * (grizzelbee) Upd: removed node 8 from testing on travis.com 
 * (grizzelbee) Fix: signalActionRequired should work better now 
+* (grizzelbee) Upd: Updated documentation 
+* (grizzelbee) Upd: Improved error handling in function APISendRequest 
 
 ### 1.2.1 (2020-04-22)
 * (grizzelbee) New: Introduced new boolean state (**signalActionRequired**) that indicates that the machine has finished running, but a human action, like putting the wet clothes to the dryer, ... is needed. State is cleared automatically when the door of the appliance is opened, or it is restarted. State is implemented for washing machines, tumbledryers, washer dryer and dishwashers. **Dosen't work perfectly currently.**  
