@@ -1,25 +1,24 @@
 os:
-- linux
-- osx
-- windows
+  - linux
+  - osx
+  - windows
 language: node_js
 node_js:
-- '8'
-- '10'
-- '12'
-cache:
-  npm: false
-before_script:
-- export NPMVERSION=$(echo "$($(which npm) -v)"|cut -c1)
-- 'if [[ $NPMVERSION == 5 ]]; then npm install -g npm@5; fi'
-- npm -v
-- npm install winston@3.2.1
-- 'npm install https://github.com/ioBroker/ioBroker.js-controller/tarball/master --production'
+  - '10'
+  - '12'
+  - '14'
+  - 'node'
+before_install:
+  - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi'
+  - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then chmod +x ./cc-test-reporter; fi'
+  - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./cc-test-reporter before-build; fi'
+after_success:
+  - 'if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -r d379204c954f93f1e578df488f95337d50a7d9d86b3f6334ff00e22c8a55981b; fi'
 env:
-- CXX=g++-6
+  - CXX=g++-4.8
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
     packages:
-    - g++-6
+      - g++-4.8
