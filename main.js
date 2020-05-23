@@ -99,7 +99,15 @@ function startadapter(options) {
                     adapter.config.Client_secret = decrypt(salt, adapter.config.Client_secret);
                 }
                 // Execute main after pwds have been decrypted
-                main();
+                // The adapters config (in the instance object everything under the attribute "native") is accessible via
+                // ADAPTER.config:
+                if ( adapterConfigIsValid() ) {
+                    main();
+                } else {
+                    adapter.log.warn('Adapter config is invalid. Please fix.');
+                    adapter.setState('info.connection', false);
+                    adapter.terminate('Invalid Configuration.', 11);
+                }
             });
         }
     });
@@ -128,28 +136,39 @@ function addActionButton(path, action, description, buttonType){
     adapter.subscribeStates(path + '.ACTIONS.' + action);
 }
 
-function validateAdapterConfig() {
+function adapterConfigIsValid() {
+    let configIsValid = true;
+
     if ('' === adapter.config.Miele_account) {
         adapter.log.warn('Miele account is missing.');
+        configIsValid = false;
     }
     if ('' === adapter.config.Miele_pwd) {
         adapter.log.warn('Miele password is missing.');
+        configIsValid = false;
     }
     if ('' === adapter.config.Client_ID) {
         adapter.log.warn('Miele API client ID is missing.');
+        configIsValid = false;
     }
     if ('' === adapter.config.Client_secret) {
         adapter.log.warn('Miele API client secret is missing.');
+        configIsValid = false;
     }
     if ('' === adapter.config.locale) {
         adapter.log.warn('Locale is missing.');
+        configIsValid = false;
     }
     if ('' === adapter.config.oauth2_vg) {
         adapter.log.warn('OAuth2_vg is missing.');
+        configIsValid = false;
     }
     if ('' === adapter.config.pollinterval) {
         adapter.log.warn('PollInterval is missing.');
+        configIsValid = false;
     }
+
+    return configIsValid;
 }
 
 function createExtendObject(id, objData, callback) {
@@ -704,23 +723,14 @@ async function refreshMieledata(auth){
  *  Main function
  */
 async function main() {
-    // The adapters config (in the instance object everything under the attribute "native") is accessible via
-    // ADAPTER.config:
-    if (adapter.config.Miele_account && adapter.config.Miele_pwd && adapter.config.Client_ID && adapter.config.Client_secret && adapter.config.locale && adapter.config.oauth2_vg && adapter.config.pollinterval) {
-        auth = await APIGetAccessToken();
-        adapter.log.info('Starting Polltimer with a ' +  adapter.config.pollinterval + ' Minutes interval.');
-        // start refresh scheduler with interval from adapters config
-        pollTimeout= setTimeout(function schedule() {
-            adapter.log.debug("Updating device states (polling API scheduled).");
-            refreshMieledata( auth );
-            pollTimeout= setTimeout(schedule , adapter.config.pollinterval * 60000);
-            } , 100);
-    } else {
-        adapter.log.warn('Adapter config is invalid. Please fix.');
-        validateAdapterConfig();
-        adapter.setState('info.connection', false);
-        adapter.terminate('Invalid Configuration.', 11);
-    }
+    auth = await APIGetAccessToken();
+    adapter.log.info('Starting Polltimer with a ' +  adapter.config.pollinterval + ' Minutes interval.');
+    // start refresh scheduler with interval from adapters config
+    pollTimeout= setTimeout(function schedule() {
+        adapter.log.debug("Updating device states (polling API scheduled).");
+        refreshMieledata( auth );
+        pollTimeout= setTimeout(schedule , adapter.config.pollinterval * 60000);
+        } , 100);
 }//End Function main
 
 
