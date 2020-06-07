@@ -175,10 +175,8 @@ function createExtendObject(id, objData, callback) {
     adapter.getObject(id, function (err, oldObj) {
         if (!err && oldObj) {
             adapter.extendObject(id, objData, callback);
-            // adapter.setState(id, objData, callback);
         } else {
             adapter.setObjectNotExists(id, objData, callback);
-            // adapter.createState(id, objData, callback);
         }
     });
 }
@@ -714,30 +712,42 @@ function decrypt(key, value) {
 
 async function refreshMieledata(auth){
     adapter.log.debug('refreshMieledata: get data from API');
-    let data = await APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
-    adapter.log.debug('refreshMieledata: handover data to splitMieledevices');
-    splitMieleDevices( data );
+    try {
+        let data = APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
+        adapter.log.debug('refreshMieledata: handover data to splitMieledevices');
+        splitMieleDevices(data);
+    } catch(err) {
+        adapter.log.error('[refreshMieledata] ' + JSON.stringify(err));
+    };
 }
 
 /*
  *  Main function
  */
 async function main() {
-    auth = await APIGetAccessToken();
-    adapter.log.info('Starting Polltimer with a ' +  adapter.config.pollinterval + ' Minutes interval.');
-    // start refresh scheduler with interval from adapters config
-    pollTimeout= setTimeout(function schedule() {
-        adapter.log.debug("Updating device states (polling API scheduled).");
-        refreshMieledata( auth );
-        pollTimeout= setTimeout(schedule , adapter.config.pollinterval * 60000);
-        } , 100);
+    try {
+        auth = await APIGetAccessToken();
+        if (auth.hasOwnProperty('access_token') ) {
+            adapter.log.info('Starting Polltimer with a ' +  adapter.config.pollinterval + ' Minutes interval.');
+            // start refresh scheduler with interval from adapters config
+            pollTimeout= setTimeout(function schedule() {
+                adapter.log.debug("Updating device states (polling API scheduled).");
+                refreshMieledata( auth );
+                pollTimeout= setTimeout(schedule , adapter.config.pollinterval * 60000);
+            } , 100);
+        } else {
+            adapter.log.error('[main] APIGetAccessToken returned neiter a token nor an errormessage. Returned value=[' + JSON.stringify(auth)+']');
+        };
+    } catch(err) {
+        adapter.log.error('[main] ' + JSON.stringify(err));
+    };
 }//End Function main
 
 
 // API-Functions
 async function APIGetAccessToken() {
     adapter.log.debug('function APIGetAccessToken');
-    const getOwnerCredentials  = oauth.client(axios.create(), {
+    const getOwnerCredentials = oauth.client(axios.create(), {
         url: BaseURL + 'thirdparty/token/',
         grant_type: 'password',
         client_id: adapter.config.Client_ID,
@@ -747,23 +757,25 @@ async function APIGetAccessToken() {
         vg: adapter.config.oauth2_vg
     });
 
+    adapter.log.debug('Awaiting OAuth2 Token.');
+    adapter.log.debug('OAuth2 grant_type: [password]');
+    adapter.log.debug('options OAuth2-VG: [' + adapter.config.oauth2_vg + ']');
+    adapter.log.debug('config API Language: [' + adapter.config.locale + ']');
+    /*
+    // Logging of credentials has been commented out intentionally. May be enabled again by user for debugging purposes
+    adapter.log.debug('options Miele_account: [' + adapter.config.Miele_account + ']');
+    adapter.log.debug('options Client_ID: ['     + adapter.config.Client_ID     + ']');
+    adapter.log.debug('options Miele_Password: ['+ adapter.config.Miele_pwd     + ']');
+    adapter.log.debug('options Client_Secret: [' + adapter.config.Client_secret + ']');
+     */
     try {
-        adapter.log.debug('Awaiting OAuth2 Token.');
-        adapter.log.debug('OAuth2 grant_type: [password]');
-        adapter.log.debug('options OAuth2-VG: ['     + adapter.config.oauth2_vg + ']');
-        adapter.log.debug('config API Language: ['   + adapter.config.locale + ']');
-        // Logging of credentials has been commented out intentionally. May be enabled again by user for debugging purposes
-        // adapter.log.debug('options Miele_account: [' + adapter.config.Miele_account + ']');
-        // adapter.log.debug('options Client_ID: ['     + adapter.config.Client_ID     + ']');
-        // adapter.log.debug('options Miele_Password: ['+ adapter.config.Miele_pwd     + ']');
-        // adapter.log.debug('options Client_Secret: [' + adapter.config.Client_secret + ']');
         const auth = await getOwnerCredentials();
         expiryDate = new Date();
-        expiryDate.setSeconds(expiryDate.getSeconds() +  auth.hasOwnProperty('expires_in')?auth.expires_in:0 );
+        expiryDate.setSeconds(expiryDate.getSeconds() + auth.hasOwnProperty('expires_in') ? auth.expires_in : 0);
         adapter.log.info('Access-Token expires at:  [' + expiryDate.toString() + ']');
         adapter.setState('info.connection', true);
         return auth;
-    }  catch (error){
+    } catch (error) {
         adapter.log.error('OAuth2 returned an error!');
         adapter.log.error(error);
         adapter.log.error('Are your credentials okay? Please doublecheck them in your adapters configuration.');
@@ -775,7 +787,7 @@ async function APIGetAccessToken() {
 
 async function APIRefreshToken(refresh_token) {
     adapter.log.debug('function APIGetAccessToken');
-    const getNewAccessToken  = oauth.client(axios.create(), {
+    const getNewAccessToken = oauth.client(axios.create(), {
         url: BaseURL + 'thirdparty/token/',
         grant_type: 'refresh_token',
         client_id: adapter.config.Client_ID,
@@ -784,11 +796,11 @@ async function APIRefreshToken(refresh_token) {
         vg: adapter.config.oauth2_vg
     });
 
+    adapter.log.debug('Awaiting new OAuth2 Token.');
+    adapter.log.debug('OAuth2 grant_type: [refresh_token]');
+    adapter.log.debug('options OAuth2-VG: [' + adapter.config.oauth2_vg + ']');
+    adapter.log.debug('config API Language: [' + adapter.config.locale + ']');
     try {
-        adapter.log.debug('Awaiting new OAuth2 Token.');
-        adapter.log.debug('OAuth2 grant_type: [refresh_token]');
-        adapter.log.debug('options OAuth2-VG: ['     + adapter.config.oauth2_vg + ']');
-        adapter.log.debug('config API Language: ['   + adapter.config.locale + ']');
         const auth = await getNewAccessToken();
         expiryDate = new Date();
         expiryDate.setSeconds(expiryDate.getSeconds() +  auth.hasOwnProperty('expires_in')?auth.expires_in:0 );
@@ -838,16 +850,19 @@ async function APIStartAction(auth, path, action, value) {
             break;
     }
     adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
-
-    let result = await APISendRequest(auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
-    createStringDatapoint(currentPath + '.Action information', 'Additional Information returned from API.', action + ': ' + result.message);
-    if (result.status >= 200 && result.status < 300) {
-        adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
-        createBoolDatapoint(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', true);
-        refreshMieledata(auth);
-    } else if (result.status >= 300){
-        createBoolDatapoint(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', false);
-    }
+    try {
+        APISendRequest(auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
+        createStringDatapoint(currentPath + '.Action information', 'Additional Information returned from API.', action + ': ' + result.message);
+        if (result.status >= 200 && result.status < 300) {
+            adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
+            createBoolDatapoint(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', true);
+            refreshMieledata(auth);
+        } else if (result.status >= 300){
+            createBoolDatapoint(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', false);
+        }
+    } catch(err) {
+        adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
+    };
 }
 
 async function APISendRequest(auth, Endpoint, Method, actions) {
@@ -856,37 +871,44 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
         method: Method,
         json: true,
         dataType: "json",
-        headers: {Authorization: 'Bearer ' + auth.access_token, 'Content-Type': 'application/json', 'Accept': 'application/json'},
+        headers: {
+            Authorization: 'Bearer ' + auth.access_token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
         data: actions
     };
 
-    try {
-        adapter.log.debug('APISendRequest: Awaiting requested data.');
-        const response = await axios(options);
+    adapter.log.debug('APISendRequest: Awaiting requested data.');
+    await axios(options).then(function (response) {
         adapter.log.debug('API returned Status: [' + response.status + ']');
         switch (response.status) {
             case 202:
-                return {"message":"Accepted, processing has not been completed."};
+                return {"message": "Accepted, processing has not been completed."};
             case 204: // OK, No Content
-                return {"message":"OK"};
+                return {"message": "OK"};
         }
-
         return response.data;
-    } catch(error){
-        adapter.log.error(error);
+    }
+    ), (function (error) {
+        adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
         if (error.hasOwnProperty(response.data.message)) {
             adapter.log.error(JSON.stringify(error.response.data.message));
         }
         switch (error.response.status) {
             case 401:
-                auth = await APIRefreshToken(auth.refresh_token);
+                try {
+                    adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
+                    auth = APIRefreshToken(auth.refresh_token);
+                } catch (err) {
+                    adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
+                }
                 break;
             case 504:
                 adapter.log.error('HTTP 504: Gateway Timeout! This error happend outside of this adapter. Please google it for a possible solution.');
                 break;
         }
-        return error;
-    }
+    })
 }
 
 // If started as allInOne/compact mode => return function to create instance
