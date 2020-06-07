@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mielecloudservice",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Integrates your MieleCloudService (aka Miele@Home) Devices to ioBroker",
   "author": {
     "name": "grizzelbee",
@@ -10,10 +10,6 @@
     {
       "name": "grizzelbee",
       "email": "hanjo@hingsen.de"
-    },
-    {
-      "name": "hash99",
-      "email": "hash99@gmx.net"
     }
   ],
   "homepage": "https://github.com/Grizzelbee/ioBroker.mielecloudservice",
@@ -28,7 +24,7 @@
     "home automation"
   ],
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "repository": {
     "type": "git",
