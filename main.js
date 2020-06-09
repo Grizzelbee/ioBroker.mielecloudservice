@@ -307,6 +307,7 @@ function createEODeviceTypes(deviceTypeID){
 function splitMieleDevices(devices){
     // Splits the data-package returned by the API into single devices
     // and lets you iterate over each single device
+    adapter.log.debug('[splitMieleDevices] Splitting JSON to single devices.');
     for (let mieleDevice in devices) {
         adapter.log.debug('splitMieleDevices: ' + mieleDevice+ ': [' + mieleDevice + '] *** Value: [' + JSON.stringify(devices[mieleDevice]) + ']');
         parseMieleDevice(devices[mieleDevice]);
@@ -713,12 +714,14 @@ function decrypt(key, value) {
 async function refreshMieledata(auth){
     adapter.log.debug('refreshMieledata: get data from API');
     try {
-        let data = APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
-        adapter.log.debug('refreshMieledata: handover data to splitMieledevices');
+        //let data = await APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
+        let data = await APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
+        adapter.log.debug('refreshMieledata: handover all devices data to splitMieledevices');
+        adapter.log.debug('refreshMieledata: data [' + JSON.stringify(data) + ']');
         splitMieleDevices(data);
     } catch(err) {
         adapter.log.error('[refreshMieledata] ' + JSON.stringify(err));
-    };
+    }
 }
 
 /*
@@ -737,10 +740,10 @@ async function main() {
             } , 100);
         } else {
             adapter.log.error('[main] APIGetAccessToken returned neiter a token nor an errormessage. Returned value=[' + JSON.stringify(auth)+']');
-        };
+        }
     } catch(err) {
         adapter.log.error('[main] ' + JSON.stringify(err));
-    };
+    }
 }//End Function main
 
 
@@ -880,7 +883,8 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
     };
 
     adapter.log.debug('APISendRequest: Awaiting requested data.');
-    await axios(options).then(function (response) {
+    try {
+        let response = await axios(options);
         adapter.log.debug('API returned Status: [' + response.status + ']');
         switch (response.status) {
             case 202:
@@ -889,8 +893,7 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
                 return {"message": "OK"};
         }
         return response.data;
-    }
-    ), (function (error) {
+    } catch(error) {
         adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
         if (error.hasOwnProperty(response.data.message)) {
             adapter.log.error(JSON.stringify(error.response.data.message));
@@ -905,10 +908,10 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
                 }
                 break;
             case 504:
-                adapter.log.error('HTTP 504: Gateway Timeout! This error happend outside of this adapter. Please google it for a possible solution.');
+                adapter.log.error('HTTP 504: Gateway Timeout! This error occured outside of this adapter. Please google it for possible reasons and solutions.');
                 break;
         }
-    })
+    }
 }
 
 // If started as allInOne/compact mode => return function to create instance
