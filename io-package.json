@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.2.3",
+        "version": "1.2.4",
         "news": {
+            "1.2.4": {
+                "en": "Fixed No-Data-Bug which was introduced in V1.2.3",
+                "de": "No-Data-Bug behoben, der in V1.2.3 eingeführt wurde",
+                "ru": "Исправлена ​​ошибка No-Data-Bug, которая была представлена ​​в V1.2.3",
+                "pt": "Corrigido o erro sem dados, que foi introduzido na V1.2.3",
+                "nl": "Fixed No-Data-Bug die werd geïntroduceerd in V1.2.3",
+                "fr": "Correction de No-Data-Bug qui a été introduit dans V1.2.3",
+                "it": "Fixato No-Data-Bug che fu introdotto in V1.2.3",
+                "es": "Se corrigió el error Sin datos que se introdujo en V1.2.3",
+                "pl": "Naprawiono błąd braku danych, który został wprowadzony w wersji 1.2.3",
+                "zh-cn": "修复了V1.2.3中引入的No-Data-Bug"
+            },
             "1.2.3": {
                 "en": "Improved error handling, ",
                 "de": "Verbesserte Fehlerbehandlung,",

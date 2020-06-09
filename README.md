@@ -37,6 +37,9 @@ To install, do the following:
 * New: Sleeptime for complete inactivity (e.g. at night)
 
 ## Changelog
+### 1.2.4 (2020-06-09)
+* (grizzelbee) Fix: fixed No-Data Bug (introduced in V1.2.3)
+
 ### 1.2.3 (2020-06-07)
 * (grizzelbee) Upd: fixed snyk badge
 * (grizzelbee) Upd: Improved error handling 
