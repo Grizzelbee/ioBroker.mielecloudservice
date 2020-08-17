@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="55.000004mm"
+   height="55mm"
+   viewBox="0 0 55.000004 55"
    version="1.1"
    id="svg848"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   sodipodi:docname="mieleathome.svg">
+   sodipodi:docname="mielecloudservice.svg">
   <defs
      id="defs842" />
   <sodipodi:namedview
@@ -25,17 +25,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.6789062"
-     inkscape:cx="408.93438"
-     inkscape:cy="556.42622"
+     inkscape:zoom="2.3724294"
+     inkscape:cx="83.387729"
+     inkscape:cy="102.08182"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="3440"
-     inkscape:window-height="1377"
-     inkscape:window-x="1272"
+     inkscape:window-width="1280"
+     inkscape:window-height="961"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     showguides="true" />
   <metadata
      id="metadata845">
     <rdf:RDF>
@@ -51,7 +52,8 @@
   <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-93.919608,-123.57963)">
     <path
        style="fill:#8c0014;stroke-width:0.88871664"
        inkscape:connector-curvature="0"
@@ -60,17 +62,9 @@
        inkscape:export-filename="Z:\node_modules\iobroker.mieleathome\admin\mieleathome.png"
        inkscape:export-xdpi="51"
        inkscape:export-ydpi="51" />
-    <path
-       style="fill:#ffffff;stroke-width:0.43539831"
-       inkscape:connector-curvature="0"
-       id="path7"
-       d="m 135.29972,155.99297 v 0.38962 c 0,0.32744 0.3531,0.62822 0.9075,0.62822 0.79517,0 1.11447,-0.50314 1.17968,-0.71389 0.85941,0 1.53563,-3.9e-4 1.7788,-3.9e-4 -0.26507,0.68997 -1.35813,1.50942 -3.36823,1.50942 -2.61967,0 -3.44102,-1.18793 -3.44102,-2.09581 0,-0.96842 0.94888,-2.12091 3.43674,-2.12091 2.15096,0 3.43676,1.04372 3.43676,2.1213 0,0.18002 -0.0187,0.28244 -0.0187,0.28244 z m 0,-0.65491 h 0.99646 v -0.53421 c 0,-0.16131 -0.15362,-0.41669 -0.50155,-0.41669 -0.32265,0 -0.49491,0.24459 -0.49491,0.4143 z m -7.29942,1.44529 h -0.70807 v 0.83576 h 4.78488 v -0.83576 h -0.71762 v -4.2498 h -4.06726 v 0.83617 h 0.70807 z m -4.92954,-0.79038 v 0.38962 c 0,0.32744 0.35405,0.62822 0.90843,0.62822 0.79471,0 1.11449,-0.50314 1.17921,-0.71389 0.85991,0 1.53612,-3.9e-4 1.77929,-3.9e-4 -0.26505,0.68997 -1.35862,1.50942 -3.36822,1.50942 -2.62014,0 -3.44102,-1.18793 -3.44102,-2.09581 0,-0.96842 0.94793,-2.12091 3.43722,-2.12091 2.14998,0 3.43674,1.04372 3.43674,2.1213 0,0.18002 -0.0187,0.28244 -0.0187,0.28244 z m 0,-0.65491 h 0.99694 v -0.53421 c 0,-0.16131 -0.15362,-0.41669 -0.50155,-0.41669 -0.32217,0 -0.49539,0.24459 -0.49539,0.4143 z m -4.51317,-2.27985 -0.46302,-0.73777 -1.46187,0.631 0.46301,0.74496 z m 0.58104,0.73738 h -3.93071 v 0.83616 h 0.71667 v 2.1516 h -0.71667 v 0.83576 h 4.64784 v -0.83576 h -0.71713 z m -8.15264,-1.26204 h 3.57713 v 0.83659 h -0.71714 v 3.41321 h 0.71714 v 0.83576 h -4.64927 v -0.83576 h 0.71761 v -2.21214 l -2.64157,3.0479 -2.65155,-3.0479 v 2.21214 h 0.71761 v 0.83576 h -2.57018 v -0.83576 h 0.70858 v -3.41321 h -0.70858 v -0.83659 h 4.05871 l 1.72505,1.98428 z"
-       inkscape:export-filename="Z:\node_modules\iobroker.mieleathome\admin\mieleathome.png"
-       inkscape:export-xdpi="51"
-       inkscape:export-ydpi="51" />
     <g
        id="g4625"
-       transform="matrix(0.23378268,0,-0.00426208,0.22305342,79.857824,111.37588)"
+       transform="matrix(0.23378268,0,-0.00426208,0.22305342,80.856231,110.69374)"
        inkscape:export-filename="Z:\node_modules\iobroker.mieleathome\admin\mieleathome.png"
        inkscape:export-xdpi="51"
        inkscape:export-ydpi="51">
@@ -91,7 +85,7 @@
            id="g4586">
           <polygon
              id="polygon4580"
-             points="180.833,74.584 74.56,155.583 287.107,155.583 "
+             points="74.56,155.583 287.107,155.583 180.833,74.584 "
              style="fill:#ffffff" />
           <g
              id="g4584">
@@ -131,26 +125,39 @@
            id="Home_2_"
            inkscape:connector-curvature="0" />
         <polygon
-           points="180.896,88.243 256.833,145.452 104.958,145.452 "
+           points="256.833,145.452 104.958,145.452 180.896,88.243 "
            style="display:none;fill:#ffffff;stroke:#ffffff;stroke-width:7;stroke-linejoin:round;stroke-miterlimit:10"
            id="DG_x5F_Block_2_" />
       </g>
       <g
          id="Ebene_1-6" />
     </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666603px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.54999995"
-       x="125.34258"
-       y="170.19504"
-       id="text4645"
+    <path
+       style="fill:none;stroke:none;stroke-width:0.919788;stroke-opacity:1"
+       inkscape:connector-curvature="0"
+       d="m 110.63146,153.73545 h 22.07491 v 22.07491 h -22.07491 z"
+       id="path994" />
+    <path
+       style="fill:#ffffff;stroke:none;stroke-width:0.919788;stroke-opacity:1"
+       inkscape:connector-curvature="0"
+       d="m 121.89197,159.03112 c 2.40984,0 4.48856,1.7108 4.95765,4.07466 l 0.27594,1.37968 1.40727,0.10118 c 1.43487,0.092 2.55701,1.2969 2.55701,2.72257 0,1.51765 -1.24171,2.75937 -2.75936,2.75937 h -11.95724 c -2.03273,0 -3.67915,-1.64642 -3.67915,-3.67916 0,-1.88556 1.40727,-3.4584 3.27444,-3.65156 l 0.98417,-0.10117 0.4599,-0.8738 c 0.8738,-1.68321 2.5846,-2.73177 4.47937,-2.73177 m 0,-1.83958 c -2.65819,0 -4.96686,1.50845 -6.11659,3.71595 -2.76857,0.29433 -4.92087,2.63979 -4.92087,5.48193 0,3.0445 2.47423,5.51873 5.51873,5.51873 h 11.95724 c 2.53862,0 4.59894,-2.06032 4.59894,-4.59894 0,-2.42824 -1.88557,-4.39659 -4.27701,-4.56215 -0.62546,-3.17327 -3.41242,-5.55552 -6.76044,-5.55552 z"
+       id="path996" />
+    <ellipse
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-miterlimit:4;stroke-dasharray:4.49999994, 1.49999998;stroke-dashoffset:0;stroke-opacity:1"
+       id="path1010"
+       cx="79.19841"
+       cy="126.16325"
+       rx="1.6728632"
+       ry="0.44609687" />
+    <path
+       style="fill:#ffffff;stroke-width:0.43539831"
+       inkscape:connector-curvature="0"
+       id="path7"
+       d="m 135.92898,152.94507 v 0.38962 c 0,0.32744 0.3531,0.62822 0.9075,0.62822 0.79517,0 1.11447,-0.50314 1.17968,-0.71389 0.85941,0 1.53563,-3.9e-4 1.7788,-3.9e-4 -0.26507,0.68997 -1.35813,1.50942 -3.36823,1.50942 -2.61967,0 -3.44102,-1.18793 -3.44102,-2.09581 0,-0.96842 0.94888,-2.12091 3.43674,-2.12091 2.15096,0 3.43676,1.04372 3.43676,2.1213 0,0.18002 -0.0187,0.28244 -0.0187,0.28244 z m 0,-0.65491 h 0.99646 v -0.53421 c 0,-0.16131 -0.15362,-0.41669 -0.50155,-0.41669 -0.32265,0 -0.49491,0.24459 -0.49491,0.4143 z m -7.29942,1.44529 h -0.70807 v 0.83576 h 4.78488 v -0.83576 h -0.71762 v -4.2498 h -4.06726 v 0.83617 h 0.70807 z m -4.92954,-0.79038 v 0.38962 c 0,0.32744 0.35405,0.62822 0.90843,0.62822 0.79471,0 1.11449,-0.50314 1.17921,-0.71389 0.85991,0 1.53612,-3.9e-4 1.77929,-3.9e-4 -0.26505,0.68997 -1.35862,1.50942 -3.36822,1.50942 -2.62014,0 -3.44102,-1.18793 -3.44102,-2.09581 0,-0.96842 0.94793,-2.12091 3.43722,-2.12091 2.14998,0 3.43674,1.04372 3.43674,2.1213 0,0.18002 -0.0187,0.28244 -0.0187,0.28244 z m 0,-0.65491 h 0.99694 v -0.53421 c 0,-0.16131 -0.15362,-0.41669 -0.50155,-0.41669 -0.32217,0 -0.49539,0.24459 -0.49539,0.4143 z m -4.51317,-2.27985 -0.46302,-0.73777 -1.46187,0.631 0.46301,0.74496 z m 0.58104,0.73738 h -3.93071 v 0.83616 h 0.71667 v 2.1516 h -0.71667 v 0.83576 h 4.64784 v -0.83576 h -0.71713 z m -8.15264,-1.26204 h 3.57713 v 0.83659 h -0.71714 v 3.41321 h 0.71714 v 0.83576 h -4.64927 v -0.83576 h 0.71761 v -2.21214 l -2.64157,3.0479 -2.65155,-3.0479 v 2.21214 h 0.71761 v 0.83576 h -2.57018 v -0.83576 h 0.70858 v -3.41321 h -0.70858 v -0.83659 h 4.05871 l 1.72505,1.98428 z"
        inkscape:export-filename="Z:\node_modules\iobroker.mieleathome\admin\mieleathome.png"
        inkscape:export-xdpi="51"
-       inkscape:export-ydpi="51"><tspan
-         sodipodi:role="line"
-         id="tspan4643"
-         x="125.34258"
-         y="170.19504"
-         style="fill:#ffffff;stroke-width:0.54999995">@</tspan></text>
+       inkscape:export-ydpi="51"
+       inkscape:transform-center-x="2.2304844"
+       inkscape:transform-center-y="1.7843895" />
   </g>
 </svg>
