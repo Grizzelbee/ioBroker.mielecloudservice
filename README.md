@@ -1,4 +1,4 @@
-![Logo](admin/mielecloudservice.png)
+![Logo](admin/mielecloudservice.svg)
 # ioBroker.MieleCloudService
 ![Number of Installations](http://iobroker.live/badges/mielecloudservice-installed.svg)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
@@ -37,6 +37,13 @@ To install, do the following:
 * New: Sleeptime for complete inactivity (e.g. at night)
 
 ## Changelog
+### 1.2.5 (2020-08-25)
+* (grizzelbee) Change: New Icon
+* (grizzelbee) Fix: Number datappoints are no longer strings due to the unit. Now they are correct numbers with units.
+* (grizzelbee) Fix: Unit °Celsius is now shown as °C - not longer °Celsius
+* (grizzelbee) New: Introduced support for °Fahrenheit
+* (grizzelbee) New: Introduced support for new Value "" for Hobs.
+
 ### 1.2.4 (2020-06-09)
 * (grizzelbee) Fix: fixed No-Data Bug (introduced in V1.2.3)
 
