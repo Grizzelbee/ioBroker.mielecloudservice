@@ -355,7 +355,8 @@ function parseMieleDevice(mieleDevice){
             // spinning speed
     switch (mieleDevice.ident.type.value_raw) {
         case  1: // Washing machine
-            createStringDatapointRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'Spinning speed of a washing machine.', mieleDevice.state.spinningSpeed.key_localized, mieleDevice.state.spinningSpeed.value_localized, mieleDevice.state.spinningSpeed.value_raw, mieleDevice.state.spinningSpeed.unit);
+            createNumberDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.' + mieleDevice.state.spinningSpeed.key_localized, 'Spinning speed of a washing machine.',
+                { value_localized: mieleDevice.state.spinningSpeed.value_localized, "unit" :  mieleDevice.state.spinningSpeed.unit}, 'value.spinningspeed');
             break;
     }
     // elapsedTime
@@ -487,24 +488,46 @@ function createTimeDatapoint(path, description, value, role){
 * @param value
 * @param value[].value_localized
  */
-function createTemperatureDatapoint(path, description, value, role){
+function createNumberDatapoint(path, description, value, role){
     // depending on the device we receive up to 3 values
     // there is a min of 1 and a max of 3 temps returned by the miele API
     role = role || 'value.temp';
+    let unit;
+    let items = Object.keys(value).length;
+    let MyPath = path;
+    adapter.log.debug('Number of Items in Array: [' + items +']');
     for (let n in value) {
-        createExtendObject(path + '_' + n, {
+        switch (value[n].unit){
+            case "Celsius" : unit = "°C";
+                break;
+            case "Fahrenheit" : unit = "°F";
+                break;
+            default: unit = value[n].unit;
+        }
+
+        if (items > 1){
+            MyPath = path + '_' + n;
+        }
+        adapter.log.debug('createNumberDatapoint: Object:['   + JSON.stringify(value)  + ']');
+        adapter.log.debug('createNumberDatapoint: Path:['   + MyPath  + ']');
+        adapter.log.debug('createNumberDatapoint:  value:[' + value   + ']');
+        adapter.log.debug('createNumberDatapoint:  unit: [' + unit    + ']');
+        adapter.log.debug('createNumberDatapoint:  OrgUnit: [' + value[n].unit + ']');
+
+        createExtendObject(MyPath, {
             type: 'state',
             common: {
                 "name": description,
                 "read": true,
                 "write":false,
                 "role": role,
-                "type": "string"
+                "type": "number",
+                "unit": unit
             }
         });
-        adapter.log.debug('createTemperatureDatapoint: Path:[' + path + '_' + n + '], value:[' + JSON.stringify(value) + ']');
-        let prettyValue = value[n].value_localized + '° ' + value[n].unit;
-        adapter.setState(path + '_' + n, prettyValue, true);
+        // let prettyValue = value[n].value_localized + '° ' + value[n].unit;
+        adapter.setState(MyPath, value[n].value_localized, true);
+
     }
 }
 
@@ -539,8 +562,8 @@ function addMieleDeviceState(path, currentDeviceState){
     createStringDatapointRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
     createTimeDatapoint(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
     createTimeDatapoint(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
-    createTemperatureDatapoint(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
-    createTemperatureDatapoint(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
+    createNumberDatapoint(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
+    createNumberDatapoint(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
     createBoolDatapoint(path + '.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo);
     createBoolDatapoint(path + '.signalFailure', 'The SignalFailure field indicates, if a failure is active for this Device.', currentDeviceState.signalFailure);
     createBoolDatapoint(path + '.signalDoor', 'The SignalDoor field indicates, if a door-open message is active for this Device.', currentDeviceState.signalDoor);
@@ -720,7 +743,7 @@ async function refreshMieledata(auth){
         adapter.log.debug('refreshMieledata: data [' + JSON.stringify(data) + ']');
         splitMieleDevices(data);
     } catch(err) {
-        adapter.log.error('[refreshMieledata] ' + JSON.stringify(err));
+        adapter.log.error('[refreshMieledata] [' + err +'] JSON.stringify(err):' + JSON.stringify(err));
     }
 }
 
