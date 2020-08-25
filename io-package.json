@@ -148,30 +148,30 @@
                 "zh-cn": "完全重写，所有状态均处于新顺序，请勿更新适配器-删除并进行全新安装"
             }
         },
-        "title": "MieleCloudService",
+        "title": "Miele CloudService",
         "titleLang": {
-            "en": "MieleCloudService",
-            "de": "MieleCloudService",
-            "ru": "MieleCloudService",
-            "pt": "MieleCloudService",
-            "nl": "MieleCloudService",
-            "fr": "MieleCloudService",
-            "it": "MieleCloudService",
-            "es": "MieleCloudService",
-            "pl": "MieleCloudService",
-            "zh-cn": "MieleCloudService"
+            "en": "Miele CloudService",
+            "de": "Miele CloudService",
+            "ru": "Miele CloudService",
+            "pt": "Miele CloudService",
+            "nl": "Miele CloudService",
+            "fr": "Miele CloudService",
+            "it": "Miele CloudService",
+            "es": "Miele CloudService",
+            "pl": "Miele CloudService",
+            "zh-cn": "Miele CloudService"
         },
         "desc": {
-            "en": "MieleCloudService: Get your Miele appliances (WiFiConn@ct & XGW 3000) connected to ioBroker.",
-            "de": "MieleCloudService: Verbinden Sie Ihre Miele-Geräte (WiFiConn@ct & XGW 3000) mit ioBroker.",
-            "ru": "MieleCloudService: подключите свои устройства Miele (WiFiConn@ct & XGW 3000) к ioBroker.",
-            "pt": "MieleCloudService: conecte seus dispositivos Miele (WiFiConn@ct & XGW 3000) ao ioBroker.",
-            "nl": "MieleCloudService: verbind uw Miele-apparaten (WiFiConn@ct & XGW 3000) met ioBroker.",
-            "fr": "MieleCloudService: connectez vos appareils Miele (WiFiConn@ct & XGW 3000) à ioBroker.",
-            "it": "MieleCloudService: collega i tuoi apparecchi Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
-            "es": "MieleCloudService: conecte sus dispositivos Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
-            "pl": "MieleCloudService: Połącz swoje urządzenia Miele (WiFiConn@ct & XGW 3000) z ioBroker.",
-            "zh-cn": "MieleCloudService：将Miele (WiFiConn@ct & XGW 3000)设备连接到ioBroker。"
+            "en": "Miele CloudService: Get your Miele appliances (WiFiConn@ct & XGW 3000) connected to ioBroker.",
+            "de": "Miele CloudService: Verbinden Sie Ihre Miele-Geräte (WiFiConn@ct & XGW 3000) mit ioBroker.",
+            "ru": "Miele CloudService: подключите свои устройства Miele (WiFiConn@ct & XGW 3000) к ioBroker.",
+            "pt": "Miele CloudService: conecte seus dispositivos Miele (WiFiConn@ct & XGW 3000) ao ioBroker.",
+            "nl": "Miele CloudService: verbind uw Miele-apparaten (WiFiConn@ct & XGW 3000) met ioBroker.",
+            "fr": "Miele CloudService: connectez vos appareils Miele (WiFiConn@ct & XGW 3000) à ioBroker.",
+            "it": "Miele CloudService: collega i tuoi apparecchi Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
+            "es": "Miele CloudService: conecte sus dispositivos Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
+            "pl": "Miele CloudService: Połącz swoje urządzenia Miele (WiFiConn@ct & XGW 3000) z ioBroker.",
+            "zh-cn": "Miele CloudService：将Miele (WiFiConn@ct & XGW 3000)设备连接到ioBroker。"
         },
         "authors": [
             "grizzelbee <hanjo@hingsen.de>"
@@ -179,8 +179,8 @@
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "compact": true,
-        "icon": "mielecloudservice.png",
-        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.png",
+        "icon": "mielecloudservice.svg",
+        "extIcon": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/admin/mielecloudservice.svg",
         "materialize": true,
         "enabled": true,
         "keywords": [
