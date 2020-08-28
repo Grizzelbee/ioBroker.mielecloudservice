@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "1.2.4",
+        "version": "2.0.0",
         "news": {
             "1.2.4": {
                 "en": "Fixed No-Data-Bug which was introduced in V1.2.3",
@@ -14,18 +14,6 @@
                 "es": "Se corrigió el error Sin datos que se introdujo en V1.2.3",
                 "pl": "Naprawiono błąd braku danych, który został wprowadzony w wersji 1.2.3",
                 "zh-cn": "修复了V1.2.3中引入的No-Data-Bug"
-            },
-            "1.2.3": {
-                "en": "Improved error handling, ",
-                "de": "Verbesserte Fehlerbehandlung,",
-                "ru": "Улучшена обработка ошибок,",
-                "pt": "Manipulação de erro aprimorada,",
-                "nl": "Verbeterde foutafhandeling,",
-                "fr": "Amélioration de la gestion des erreurs,",
-                "it": "Gestione degli errori migliorata,",
-                "es": "Manejo mejorado de errores,",
-                "pl": "Poprawiona obsługa błędów,",
-                "zh-cn": "改进的错误处理，"
             },
             "1.2.2": {
                 "en": "Improved error handling, ",
@@ -62,116 +50,32 @@
                 "es": "Cambió a AXIOS http-client y agregó dos nuevos estados (redundantes) (conectado y signalInUse) para fines de conveniencia en VIS.",
                 "pl": "Przełączono na http-client AXIOS i dodano dwa nowe (redundantne) stany (podłączony i signalInUse) dla wygody w VIS.",
                 "zh-cn": "切换到AXIOS http-client并添加了两个新的（冗余）状态（connected和signalInUse），以便在VIS中使用。"
-            },
-            "1.1.0": {
-                "en": "Added Actions: All currently supported and documented actions for all devices should work.",
-                "de": "Aktionen hinzugefügt: Alle derzeit unterstützten und dokumentierten Aktionen für alle Geräte sollten funktionieren.",
-                "ru": "Добавленные действия: все поддерживаемые в настоящее время и документированные действия для всех устройств должны работать.",
-                "pt": "Ações adicionadas: todas as ações atualmente suportadas e documentadas para todos os dispositivos devem funcionar.",
-                "nl": "Toegevoegde acties: alle momenteel ondersteunde en gedocumenteerde acties voor alle apparaten zouden moeten werken.",
-                "fr": "Actions ajoutées: toutes les actions actuellement prises en charge et documentées pour tous les appareils devraient fonctionner.",
-                "it": "Azioni aggiunte: tutte le azioni attualmente supportate e documentate per tutti i dispositivi dovrebbero funzionare.",
-                "es": "Acciones agregadas: Todas las acciones actualmente soportadas y documentadas para todos los dispositivos deberían funcionar.",
-                "pl": "Dodano akcje: wszystkie obecnie obsługiwane i udokumentowane akcje dla wszystkich urządzeń powinny działać.",
-                "zh-cn": "新增的操作：所有设备当前所有受支持和记录的操作都应该起作用。"
-            },
-            "1.0.5": {
-                "en": "removed dependency 'node-schedule' and realized scheduling via setTimeout",
-                "de": "Abhängigkeit auf 'node-schedule' wurde entfernt und die Planung über setTimeout realisiert",
-                "ru": "удалено расписание узлов зависимостей и реализовано планирование через setTimeout",
-                "pt": "agendamento de nó de dependência removido e agendamento realizado via setTimeout",
-                "nl": "afhankelijkheidsknooppuntschema verwijderd en planning gerealiseerd via setTimeout",
-                "fr": "suppression de la planification des nœuds de dépendance et planification réalisée via setTimeout",
-                "it": "rimossa la pianificazione dei nodi di dipendenza e la pianificazione realizzata tramite setTimeout",
-                "es": "Se eliminó la programación de nodo de dependencia y se realizó la programación a través de setTimeout",
-                "pl": "usunięto harmonogram węzłów zależności i zrealizowano planowanie za pomocą setTimeout",
-                "zh-cn": "删除依赖关系节点计划并通过setTimeout实现计划"
-            },
-            "1.0.4": {
-                "en": "removed unneeded setTimeout, clearing scheduler on unload",
-                "de": "nicht benötigtes setTimeout entfernt, Scheduler wird beim Entladen bereinigt",
-                "ru": "убрал ненужный setTimeout, очистил планировщик при выгрузке",
-                "pt": "removeu setTimeout desnecessário, limpando o planejador ao descarregar",
-                "nl": "onnodige setTimeout verwijderd, planner wissen bij lossen",
-                "fr": "supprimé setTimeout inutile, effaçant le planificateur au déchargement",
-                "it": "rimosso setTimeout non necessario, annullando lo scheduler allo scaricamento",
-                "es": "eliminó setTimeout innecesario, borrando el planificador al descargar",
-                "pl": "usunięto niepotrzebne setTimeout, czyszczenie harmonogramu przy rozładowaniu",
-                "zh-cn": "删除了不需要的setTimeout，在卸载时清除了调度程序"
-            },
-            "1.0.3": {
-                "en": "Bugfix release",
-                "de": "Bugfix-Version",
-                "ru": "Релиз исправления",
-                "pt": "Bugfix release",
-                "nl": "Bugfix-release",
-                "fr": "Version du correctif",
-                "it": "Rilascio bugfix",
-                "es": "Lanzamiento de corrección de errores",
-                "pl": "Wersja Bugfix",
-                "zh-cn": "错误修正版本"
-            },
-            "1.0.2": {
-                "en": "fixed Bugs introduced in V1.0.1. Removed any logging of passwords",
-                "de": "Fehler behoben, die in V1.0.1 eingeführt wurden. Protokollierung von Passwörtern entfernt.",
-                "ru": "исправлены ошибки, введенные в V1.0.1, удалена всякая регистрация паролей",
-                "pt": "bugs corrigidos introduzidos na V1.0.1, removeu qualquer registro de senhas",
-                "nl": "opgeloste bugs geïntroduceerd in V1.0.1, alle logging van wachtwoorden verwijderd",
-                "fr": "correction de bugs introduits dans V1.0.1, suppression de toute journalisation des mots de passe",
-                "it": "corretti bug introdotti in V1.0.1, rimossi tutti i log delle password",
-                "es": "Se corrigieron errores introducidos en V1.0.1, se eliminó cualquier registro de contraseñas",
-                "pl": "naprawiono błędy wprowadzone w wersji 1.0.1, usunięto wszelkie rejestrowanie haseł",
-                "zh-cn": "修复了V1.0.1中引入的错误，删除了所有密码记录"
-            },
-            "1.0.1": {
-                "en": "Fixes for getting Adapter into the Repo.",
-                "de": "Korrekturen, um Adapter in das Repo zu bekommen.",
-                "ru": "Исправления для получения адаптера в репо.",
-                "pt": "Correções para obter o adaptador no repositório.",
-                "nl": "Oplossingen voor het in de Repo krijgen van de adapter.",
-                "fr": "Correctifs pour obtenir l'adaptateur dans le Repo.",
-                "it": "Correzioni per ottenere l'adattatore nel Repo.",
-                "es": "Arreglos para llevar el Adaptador al Repo.",
-                "pl": "Naprawiono wprowadzanie adaptera do repozytorium.",
-                "zh-cn": "修复了将Adapter放入Repo中的问题。"
-            },
-            "1.0.0": {
-                "en": "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install",
-                "de": "Vollständig umgeschrieben, alle Status in einer neuen Reihenfolge, aktualisieren Sie den Adapter NICHT - entfernen Sie ihn und führen Sie eine saubere Neuinstallation durch",
-                "ru": "Полностью переписан, все состояния в новом порядке, НЕ обновляйте адаптер - удалите и произведите чистую новую установку",
-                "pt": "Completamente reescrito, todos os estados em um novo pedido, NÃO atualizam o adaptador - remova e faça uma nova instalação limpa",
-                "nl": "Volledig herschreven, alle staten in een nieuwe volgorde, update de adapter NIET - verwijder en maak een schone nieuwe installatie",
-                "fr": "Entièrement réécrit, tous les états dans une nouvelle commande, ne mettez pas à jour l'adaptateur - supprimez et effectuez une nouvelle installation propre",
-                "it": "Completamente riscritto, tutti gli stati in un nuovo ordine, NON aggiornare l'adattatore: rimuovi ed esegui una nuova installazione pulita",
-                "es": "Completamente reescrito, todos los estados en un nuevo orden, NO actualice el adaptador: elimine y realice una nueva instalación limpia",
-                "pl": "Całkowicie przepisany, wszystkie stany w nowej kolejności, NIE aktualizuj adaptera - usuń i wykonaj czystą nową instalację",
-                "zh-cn": "完全重写，所有状态均处于新顺序，请勿更新适配器-删除并进行全新安装"
             }
         },
         "title": "MieleCloudService",
         "titleLang": {
-            "en": "MieleCloudService",
-            "de": "MieleCloudService",
-            "ru": "MieleCloudService",
-            "pt": "MieleCloudService",
-            "nl": "MieleCloudService",
-            "fr": "MieleCloudService",
-            "it": "MieleCloudService",
-            "es": "MieleCloudService",
-            "pl": "MieleCloudService",
-            "zh-cn": "MieleCloudService"
+            "en": "Miele CloudService",
+            "de": "Miele CloudService",
+            "ru": "Miele CloudService",
+            "pt": "Miele CloudService",
+            "nl": "Miele CloudService",
+            "fr": "Miele CloudService",
+            "it": "Miele CloudService",
+            "es": "Miele CloudService",
+            "pl": "Miele CloudService",
+            "zh-cn": "Miele CloudService"
         },
         "desc": {
-            "en": "MieleCloudService: Get your Miele appliances (WiFiConn@ct & XGW 3000) connected to ioBroker.",
-            "de": "MieleCloudService: Verbinden Sie Ihre Miele-Geräte (WiFiConn@ct & XGW 3000) mit ioBroker.",
-            "ru": "MieleCloudService: подключите свои устройства Miele (WiFiConn@ct & XGW 3000) к ioBroker.",
-            "pt": "MieleCloudService: conecte seus dispositivos Miele (WiFiConn@ct & XGW 3000) ao ioBroker.",
-            "nl": "MieleCloudService: verbind uw Miele-apparaten (WiFiConn@ct & XGW 3000) met ioBroker.",
-            "fr": "MieleCloudService: connectez vos appareils Miele (WiFiConn@ct & XGW 3000) à ioBroker.",
-            "it": "MieleCloudService: collega i tuoi apparecchi Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
-            "es": "MieleCloudService: conecte sus dispositivos Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
-            "pl": "MieleCloudService: Połącz swoje urządzenia Miele (WiFiConn@ct & XGW 3000) z ioBroker.",
-            "zh-cn": "MieleCloudService：将Miele (WiFiConn@ct & XGW 3000)设备连接到ioBroker。"
+            "en": "Miele CloudService: Get your Miele appliances (WiFiConn@ct & XGW 3000) connected to ioBroker.",
+            "de": "Miele CloudService: Verbinden Sie Ihre Miele-Geräte (WiFiConn@ct & XGW 3000) mit ioBroker.",
+            "ru": "Miele CloudService: подключите свои устройства Miele (WiFiConn@ct & XGW 3000) к ioBroker.",
+            "pt": "Miele CloudService: conecte seus dispositivos Miele (WiFiConn@ct & XGW 3000) ao ioBroker.",
+            "nl": "Miele CloudService: verbind uw Miele-apparaten (WiFiConn@ct & XGW 3000) met ioBroker.",
+            "fr": "Miele CloudService: connectez vos appareils Miele (WiFiConn@ct & XGW 3000) à ioBroker.",
+            "it": "Miele CloudService: collega i tuoi apparecchi Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
+            "es": "Miele CloudService: conecte sus dispositivos Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
+            "pl": "Miele CloudService: Połącz swoje urządzenia Miele (WiFiConn@ct & XGW 3000) z ioBroker.",
+            "zh-cn": "Miele CloudService：将Miele (WiFiConn@ct & XGW 3000)设备连接到ioBroker。"
         },
         "authors": [
             "grizzelbee <hanjo@hingsen.de>"
@@ -179,8 +83,8 @@
         "platform": "Javascript/Node.js",
         "mode": "daemon",
         "compact": true,
-        "icon": "mielecloudservice.png",
-        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.png",
+        "icon": "mielecloudservice.svg",
+        "extIcon": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/admin/mielecloudservice.svg",
         "materialize": true,
         "enabled": true,
         "keywords": [

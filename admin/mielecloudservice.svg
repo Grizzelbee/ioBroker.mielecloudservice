@@ -1,156 +1,28 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
-   version="1.1"
-   id="svg848"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   sodipodi:docname="mieleathome.svg">
-  <defs
-     id="defs842" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="1.6789062"
-     inkscape:cx="408.93438"
-     inkscape:cy="556.42622"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="3440"
-     inkscape:window-height="1377"
-     inkscape:window-x="1272"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
-  <metadata
-     id="metadata845">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="Ebene 1"
-     inkscape:groupmode="layer"
-     id="layer1">
-    <path
-       style="fill:#8c0014;stroke-width:0.88871664"
-       inkscape:connector-curvature="0"
-       id="path5"
-       d="m 93.919608,178.57963 h 55.000002 v -55 H 93.919608 Z"
-       inkscape:export-filename="Z:\node_modules\iobroker.mieleathome\admin\mieleathome.png"
-       inkscape:export-xdpi="51"
-       inkscape:export-ydpi="51" />
-    <path
-       style="fill:#ffffff;stroke-width:0.43539831"
-       inkscape:connector-curvature="0"
-       id="path7"
-       d="m 135.29972,155.99297 v 0.38962 c 0,0.32744 0.3531,0.62822 0.9075,0.62822 0.79517,0 1.11447,-0.50314 1.17968,-0.71389 0.85941,0 1.53563,-3.9e-4 1.7788,-3.9e-4 -0.26507,0.68997 -1.35813,1.50942 -3.36823,1.50942 -2.61967,0 -3.44102,-1.18793 -3.44102,-2.09581 0,-0.96842 0.94888,-2.12091 3.43674,-2.12091 2.15096,0 3.43676,1.04372 3.43676,2.1213 0,0.18002 -0.0187,0.28244 -0.0187,0.28244 z m 0,-0.65491 h 0.99646 v -0.53421 c 0,-0.16131 -0.15362,-0.41669 -0.50155,-0.41669 -0.32265,0 -0.49491,0.24459 -0.49491,0.4143 z m -7.29942,1.44529 h -0.70807 v 0.83576 h 4.78488 v -0.83576 h -0.71762 v -4.2498 h -4.06726 v 0.83617 h 0.70807 z m -4.92954,-0.79038 v 0.38962 c 0,0.32744 0.35405,0.62822 0.90843,0.62822 0.79471,0 1.11449,-0.50314 1.17921,-0.71389 0.85991,0 1.53612,-3.9e-4 1.77929,-3.9e-4 -0.26505,0.68997 -1.35862,1.50942 -3.36822,1.50942 -2.62014,0 -3.44102,-1.18793 -3.44102,-2.09581 0,-0.96842 0.94793,-2.12091 3.43722,-2.12091 2.14998,0 3.43674,1.04372 3.43674,2.1213 0,0.18002 -0.0187,0.28244 -0.0187,0.28244 z m 0,-0.65491 h 0.99694 v -0.53421 c 0,-0.16131 -0.15362,-0.41669 -0.50155,-0.41669 -0.32217,0 -0.49539,0.24459 -0.49539,0.4143 z m -4.51317,-2.27985 -0.46302,-0.73777 -1.46187,0.631 0.46301,0.74496 z m 0.58104,0.73738 h -3.93071 v 0.83616 h 0.71667 v 2.1516 h -0.71667 v 0.83576 h 4.64784 v -0.83576 h -0.71713 z m -8.15264,-1.26204 h 3.57713 v 0.83659 h -0.71714 v 3.41321 h 0.71714 v 0.83576 h -4.64927 v -0.83576 h 0.71761 v -2.21214 l -2.64157,3.0479 -2.65155,-3.0479 v 2.21214 h 0.71761 v 0.83576 h -2.57018 v -0.83576 h 0.70858 v -3.41321 h -0.70858 v -0.83659 h 4.05871 l 1.72505,1.98428 z"
-       inkscape:export-filename="Z:\node_modules\iobroker.mieleathome\admin\mieleathome.png"
-       inkscape:export-xdpi="51"
-       inkscape:export-ydpi="51" />
-    <g
-       id="g4625"
-       transform="matrix(0.23378268,0,-0.00426208,0.22305342,79.857824,111.37588)"
-       inkscape:export-filename="Z:\node_modules\iobroker.mieleathome\admin\mieleathome.png"
-       inkscape:export-xdpi="51"
-       inkscape:export-ydpi="51">
-      <g
-         id="control_x5F_building_x5F_empty">
-        <g
-           id="g4578">
-          <g
-             id="g4576">
-            <path
-               id="path4574"
-               d="m 177.977,78.901 c 35.59,26.992 71.18,53.984 106.77,80.976 0.011,0.008 0.021,0.016 0.031,0.024 0.841,-3.106 1.683,-6.211 2.523,-9.317 -35.519,0 -71.038,0 -106.557,0 -6.449,0 -6.449,10 0,10 35.519,0 71.038,0 106.557,0 5.402,0 6.252,-6.489 2.523,-9.317 -35.59,-26.992 -71.18,-53.984 -106.77,-80.976 -0.011,-0.008 -0.021,-0.016 -0.031,-0.024 -5.141,-3.9 -10.114,4.791 -5.046,8.634 z"
-               style="fill:#ffffff"
-               inkscape:connector-curvature="0" />
-          </g>
-        </g>
-        <g
-           id="g4586">
-          <polygon
-             id="polygon4580"
-             points="180.833,74.584 74.56,155.583 287.107,155.583 "
-             style="fill:#ffffff" />
-          <g
-             id="g4584">
-            <path
-               id="path4582"
-               d="M 289.631,151.266 C 254.209,124.268 218.787,97.27 183.365,70.272 c -0.003,-0.002 -0.006,-0.004 -0.008,-0.006 -1.254,-0.956 -3.794,-0.956 -5.047,0 -35.422,26.998 -70.844,53.996 -106.266,80.994 -0.003,0.002 -0.005,0.004 -0.008,0.006 -3.717,2.833 -2.888,9.317 2.523,9.317 48.627,0 97.254,0 145.882,0 22.222,0 44.444,0 66.666,0 6.448,0 6.448,-10 0,-10 -48.627,0 -97.254,0 -145.881,0 -22.222,0 -44.444,0 -66.667,0 0.841,3.106 1.683,6.211 2.523,9.317 35.422,-26.998 70.844,-53.996 106.267,-80.994 0.002,-0.002 0.005,-0.004 0.008,-0.006 -1.683,0 -3.365,0 -5.047,0 35.421,26.998 70.844,53.996 106.266,80.994 0.002,0.002 0.005,0.004 0.008,0.006 5.131,3.912 10.104,-4.78 5.047,-8.634 z"
-               style="fill:#ffffff"
-               inkscape:connector-curvature="0" />
-          </g>
-        </g>
-        <g
-           id="g4592">
-          <g
-             id="g4590">
-            <path
-               id="path4588"
-               d="m 263.679,280.616 c -0.087,0.557 1.509,0.468 -0.29,0.468 -1.179,0 -2.358,0 -3.538,0 -4.208,0 -8.417,0 -12.625,0 -13.748,0 -27.495,0 -41.243,0 -30.299,0 -60.599,0 -90.898,0 -5.97,0 -11.939,0 -17.91,0 1.289,0 0.992,1.503 0.992,-0.631 0,-1.555 0,-3.109 0,-4.664 0,-5.338 0,-10.676 0,-16.015 0,-29.691 0,-59.384 0,-89.076 0,-3.376 0,-6.752 0,-10.129 0,-1.542 -0.106,0.014 -0.874,0.014 0.691,0 1.382,0 2.073,0 9.068,0 18.137,0 27.205,0 31.417,0 62.833,0 94.25,0 11.768,0 23.534,0 35.301,0 2.583,0 5.166,0 7.749,0 1.35,0 -0.37,-0.523 -0.37,-0.692 0,0.922 0,1.844 0,2.766 0,27.49 0,54.981 0,82.472 0,12.271 0,24.544 0,36.815 0,6.448 10,6.448 10,0 0,-23.021 0,-46.042 0,-69.063 0,-14.061 0,-28.122 0,-42.183 0,-7.317 1.835,-20.115 -9.196,-20.115 -50.779,0 -101.558,0 -152.336,0 -5.911,0 -14.248,-1.429 -19.687,1.481 -6.598,3.53 -4.114,18.674 -4.114,24.562 0,29.939 0,59.878 0,89.818 0,6.114 -2.59,22.748 6.407,24.25 6.053,1.011 12.502,0.39 18.611,0.39 29.969,0 59.938,0 89.908,0 15.334,0 30.669,0 46.003,0 7.599,0 22.583,2.726 24.226,-7.81 0.982,-6.306 -8.653,-9.014 -9.644,-2.658 z"
-               style="fill:#ffffff"
-               inkscape:connector-curvature="0" />
-          </g>
-        </g>
-        <rect
-           height="109"
-           width="153.5"
-           style="display:none;fill:#ffffff;stroke:#ffffff;stroke-width:7;stroke-linejoin:round;stroke-miterlimit:10"
-           y="166.16701"
-           x="104.18"
-           id="Haus_x5F_Block_1_" />
-        <path
-           id="path4595"
-           d="m 104.18,166.167 v 109 h 153.5 v -109 z m 103.654,71.947 c 0,5.368 -4.352,9.72 -9.721,9.72 h -34.56 c -5.369,0 -9.72,-4.352 -9.72,-9.72 v -34.562 c 0,-5.367 4.352,-9.72 9.72,-9.72 h 34.56 c 5.369,0 9.721,4.353 9.721,9.72 z"
-           style="display:none;fill:#ffffff;stroke:#ffffff;stroke-width:7;stroke-linejoin:round;stroke-miterlimit:10"
-           inkscape:connector-curvature="0" />
-        <path
-           d="m 207.834,238.114 c 0,5.368 -4.352,9.72 -9.721,9.72 h -34.56 c -5.369,0 -9.72,-4.352 -9.72,-9.72 v -34.562 c 0,-5.367 4.352,-9.72 9.72,-9.72 h 34.56 c 5.369,0 9.721,4.353 9.721,9.72 z"
-           style="display:none;fill:none;stroke:#ffffff;stroke-width:7;stroke-miterlimit:10"
-           id="Home_2_"
-           inkscape:connector-curvature="0" />
-        <polygon
-           points="180.896,88.243 256.833,145.452 104.958,145.452 "
-           style="display:none;fill:#ffffff;stroke:#ffffff;stroke-width:7;stroke-linejoin:round;stroke-miterlimit:10"
-           id="DG_x5F_Block_2_" />
-      </g>
-      <g
-         id="Ebene_1-6" />
-    </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666603px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.54999995"
-       x="125.34258"
-       y="170.19504"
-       id="text4645"
-       inkscape:export-filename="Z:\node_modules\iobroker.mieleathome\admin\mieleathome.png"
-       inkscape:export-xdpi="51"
-       inkscape:export-ydpi="51"><tspan
-         sodipodi:role="line"
-         id="tspan4643"
-         x="125.34258"
-         y="170.19504"
-         style="fill:#ffffff;stroke-width:0.54999995">@</tspan></text>
-  </g>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW Home & Student 2018 (Keine kommerzielle Nutzung) -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="50mm" height="50mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 5000 5000"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .fil0 {fill:#8C0014}
+    .fil1 {fill:white}
+    .fil2 {fill:url(#id0)}
+   ]]>
+  </style>
+  <linearGradient id="id0" gradientUnits="userSpaceOnUse" x1="2506.18" y1="4089.44" x2="2506.18" y2="2922.19">
+   <stop offset="0" style="stop-opacity:1; stop-color:#8C0014"/>
+   <stop offset="0.968627" style="stop-opacity:1; stop-color:#C57F89"/>
+   <stop offset="1" style="stop-opacity:1; stop-color:white"/>
+  </linearGradient>
+ </defs>
+ <g id="Ebene_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <polygon class="fil0" points="-250.01,-250.01 5250.01,-250.01 5250.01,5250.01 -250.01,5250.01 "/>
+  <path class="fil1" d="M4364.74 2624.41l0 51.99c0,43.84 47.19,84.03 121.26,84.03 106.36,0 149.16,-67.27 157.98,-95.44 114.85,0 205.35,0 237.77,0 -35.39,92.34 -181.57,201.8 -450.48,201.8 -350.4,0 -460.25,-158.87 -460.25,-280.32 0,-129.43 127.03,-283.67 459.69,-283.67 287.73,-0.02 459.72,139.7 459.72,283.81 0,23.97 -2.59,37.8 -2.59,37.8l-523.1 0zm0 -87.72l133.24 0 0 -71.34c0,-21.58 -20.42,-55.83 -67.09,-55.83 -43.12,0 -66.15,32.79 -66.15,55.45l0 71.72zm-976.31 193.31l-94.75 0 0 111.93 639.93 0 0 -111.93 -95.83 0 0 -568.38 -544.1 0 0 111.87 94.75 0 0 456.51zm-659.32 -105.59l0 51.99c0,43.84 47.37,84.03 121.44,84.03 106.37,0 149.11,-67.27 157.79,-95.44 115.01,0 205.36,0 237.96,0 -35.39,92.34 -181.75,201.8 -450.48,201.8 -350.58,0 -460.24,-158.87 -460.24,-280.32 0,-129.43 126.65,-283.67 459.68,-283.67 287.54,-0.02 459.73,139.7 459.73,283.81 0,23.97 -2.6,37.8 -2.6,37.8l-523.28 0zm0 -87.72l133.26 0 0 -71.34c0,-21.58 -20.44,-55.83 -67.11,-55.83 -43.13,0 -66.15,32.79 -66.15,55.45l0 71.72zm-603.65 -304.86l-61.9 -98.62 -195.59 84.22 61.92 99.7 195.57 -85.3zm77.62 98.61l-525.69 0 0 111.87 95.83 0 0 287.69 -95.83 0 0 111.93 621.71 0 0 -111.93 -96.02 0 0 -399.56zm-1090.45 -168.82l478.51 0 0 111.87 -95.83 0 0 456.51 95.83 0 0 111.93 -621.91 0 0 -111.93 96.04 0 0 -295.8 -353.33 407.73 -354.65 -407.73 0 295.8 96.07 0 0 111.93 -343.79 0 0 -111.93 94.75 0 0 -456.51 -94.75 0 0 -111.87 542.81 0 230.79 265.41 229.46 -265.41z"/>
+  <rect class="fil2" x="-246.78" y="2922.19" width="5505.93" height="1167.25"/>
+  <path class="fil1" d="M2500.09 3331.13c305.15,0 568.6,216.84 627.95,516.22l35.07 174.73 178.23 12.92c181.76,11.53 323.82,164.28 323.82,344.78 0,192.4 -157.26,349.66 -349.47,349.66l-1514.78 0c-257.45,0 -466.07,-208.61 -466.07,-466.07 0,-239.01 178.23,-438.19 414.76,-462.64l124.65 -12.73 58.32 -110.88c110.66,-213.13 327.48,-345.99 567.52,-345.99zm0 -233.06c-336.74,0 -629.33,191.19 -774.93,470.85 -350.73,37.18 -623.39,334.28 -623.39,694.45 0.01,385.58 313.55,699.13 699.14,699.13l1514.78 0c321.55,0 582.54,-261.17 582.54,-582.72 0,-307.6 -238.83,-556.88 -541.7,-577.84 -79.23,-402.04 -432.41,-703.87 -856.44,-703.87z"/>
+ </g>
 </svg>

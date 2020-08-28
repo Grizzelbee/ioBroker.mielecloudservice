@@ -47,6 +47,12 @@ function startadapter(options) {
                 adapter.unsubscribeObjects('*');
                 adapter.unsubscribeStates('*');
                 adapter.setState('info.connection', false);
+                if (auth.refresh_token) {
+                    APILogOff(auth, "refresh_token")
+                }
+                if (auth.access_token) {
+                    APILogOff(auth, "access_token")
+                }
                 adapter.log.info('Unloading MieleCloudService...');
                 callback();
             } catch (e) {
@@ -340,22 +346,26 @@ function parseMieleDevice(mieleDevice){
         case 12: // Washer dryer
             // set to true when device has finished (Value_raw 7 => end programmed) and door hasn't opend yet
             if (mieleDevice.state.status.value_raw === 7 && !mieleDevice.signalDoor) {
-                createBoolDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', true);
+                createBool(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', true);
             }
             // set to false when device has finished and door is open
             if ( ((mieleDevice.state.status.value_raw === 7) || mieleDevice.state.status.value_raw === 1) && mieleDevice.signalDoor) {
-                createBoolDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false);
+                createBool(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false);
             }
             // set to false when device has been started and door is closed
             if (mieleDevice.state.status.value_raw === 5 && !mieleDevice.signalDoor) {
-                createBoolDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false);
+                createBool(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false);
             }
     }
 
             // spinning speed
     switch (mieleDevice.ident.type.value_raw) {
         case  1: // Washing machine
-            createStringDatapointRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'Spinning speed of a washing machine.', mieleDevice.state.spinningSpeed.key_localized, mieleDevice.state.spinningSpeed.value_localized, mieleDevice.state.spinningSpeed.value_raw, mieleDevice.state.spinningSpeed.unit);
+            createNumber(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.' + mieleDevice.state.spinningSpeed.key_localized,
+                    'Spinning speed of a washing machine.',
+                              mieleDevice.state.spinningSpeed.value_localized,
+                              mieleDevice.state.spinningSpeed.unit,
+                         'value.spinningspeed');
             break;
     }
     // elapsedTime
@@ -370,19 +380,29 @@ function parseMieleDevice(mieleDevice){
         case 31: // Steam oven combination
         case 43: // Steam oven microwave combination
         case 67: // DialogOven
-            createTimeDatapoint(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', mieleDevice.state.elapsedTime);
+            createTime(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', mieleDevice.state.elapsedTime);
             break;
         case 18: // Hood
-            createStringDatapointRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for hoods.', mieleDevice.state.ventilationStep.key_localized, mieleDevice.state.ventilationStep.value_localized, mieleDevice.state.ventilationStep.value_raw, '');
+            createStringAndRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for hoods.', mieleDevice.state.ventilationStep.key_localized, mieleDevice.state.ventilationStep.value_localized, mieleDevice.state.ventilationStep.value_raw, '');
             break;
     }
     // dryingStep
     switch (mieleDevice.ident.type.value_raw) {
         case  2: // tumble dryer
         case 24: // washer dryer
-            createStringDatapointRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for tumble dryers and washer-dryer combinations.', mieleDevice.state.dryingStep.key_localized, mieleDevice.state.dryingStep.value_localized, mieleDevice.state.dryingStep.value_raw, '');
+            createStringAndRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for tumble dryers and washer-dryer combinations.', mieleDevice.state.dryingStep.key_localized, mieleDevice.state.dryingStep.value_localized, mieleDevice.state.dryingStep.value_raw, '');
             break;
     }
+    // PlateStep - occurs at Hobs
+    switch (mieleDevice.ident.type.value_raw) {
+        case 14: // Highlight Hob
+        case 27: // Induction Hob
+            createArray(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + mieleDevice.state.plateStep[0].key_localized,
+                   'The plateStepobject represents the selected cooking zone levels for a hob.',
+                             mieleDevice.state.plateStep);
+            break;
+    }
+
 }
 
 function addMieleDevice(path, mieleDevice){
@@ -413,9 +433,9 @@ function addMieleDevice(path, mieleDevice){
     }
 }
 
-function createBoolDatapoint(path, description, value, role){
+function createBool(path, description, value, role){
     role = role || 'indicator';
-    adapter.log.debug('createBoolDatapoint: Path['+ path +'] Value[' + value + ']');
+    adapter.log.debug('createBool: Path['+ path +'] Value[' + value + ']');
     createExtendObject(path, {
         type: 'state',
         common: {"name": description,
@@ -428,8 +448,8 @@ function createBoolDatapoint(path, description, value, role){
     adapter.setState(path, value, true);
 }
 
-function createStringDatapoint(path, description, value){
-    adapter.log.debug('createStringDatapoint: Path['+ path +'] Value[' + value + ']');
+function createString(path, description, value){
+    adapter.log.debug('createString: Path['+ path +'] Value[' + value + ']');
     createExtendObject(path, {
         type: 'state',
         common: {"name": description,
@@ -442,8 +462,8 @@ function createStringDatapoint(path, description, value){
     adapter.setState(path, value, true);
 }
 
-function createStringDatapointRaw(path, description, key_localized, value_localized, value_raw, unit){
-    adapter.log.debug('createStringDatapointRaw: Path:[' + path + '] key_localized:[' + key_localized + '] value_localized[' + value_localized + '] value_raw[' + value_raw +'] unit[' + unit   +']' );
+function createStringAndRaw(path, description, key_localized, value_localized, value_raw, unit){
+    adapter.log.debug('createStringAndRaw: Path:[' + path + '] key_localized:[' + key_localized + '] value_localized[' + value_localized + '] value_raw[' + value_raw +'] unit[' + unit   +']' );
     createExtendObject(path + '.' + key_localized +'_raw', {
         type: 'state',
         common: {"name":  description + ' (value raw)',
@@ -467,7 +487,7 @@ function createStringDatapointRaw(path, description, key_localized, value_locali
     adapter.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
 }
 
-function createTimeDatapoint(path, description, value, role){
+function createTime(path, description, value, role){
     role = role || 'value.time';
     createExtendObject(path, {
         type: 'state',
@@ -478,43 +498,69 @@ function createTimeDatapoint(path, description, value, role){
             "type": "string"
         }
     });
-    adapter.log.debug('createTimeDatapoint: Path:['+ path +'], value:['+ value +']');
+    adapter.log.debug('createTime: Path:['+ path +'], value:['+ value +']');
     let assembledValue = value[0] + ':' + (value[1]<10? '0': '') + value[1];
     adapter.setState(path, assembledValue, true);
 }
+
+function createNumber(path, description, value, unit, role){
+    adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
+    // get back to calling function if there is no valid value given.
+    if ( !value || value === -32768 ) {
+        adapter.log.debug('[createNumber]: invalid value detected. Skipping...');
+        return;
+    }
+    role = role || 'value';
+
+    switch (unit){
+        case "Celsius" : unit = "°C";
+            break;
+        case "Fahrenheit" : unit = "°F";
+            break;
+    }
+    adapter.log.debug('createNumber: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
+    createExtendObject(path, {
+        type: 'state',
+        common: {"name": description,
+            "read": true,
+            "write":false,
+            "role": role,
+            "type": "number",
+            "unit": unit
+        }
+    });
+    adapter.setState(path, value, true);
+}
+
 
 /*
 * @param value
 * @param value[].value_localized
  */
-function createTemperatureDatapoint(path, description, value, role){
+function createArray(path, description, value){
     // depending on the device we receive up to 3 values
     // there is a min of 1 and a max of 3 temps returned by the miele API
-    role = role || 'value.temp';
+    let MyPath = path;
+    const items = Object.keys(value).length;
+    adapter.log.debug('Number of Items in Array: [' + items +']');
     for (let n in value) {
-        createExtendObject(path + '_' + n, {
-            type: 'state',
-            common: {
-                "name": description,
-                "read": true,
-                "write":false,
-                "role": role,
-                "type": "string"
-            }
-        });
-        adapter.log.debug('createTemperatureDatapoint: Path:[' + path + '_' + n + '], value:[' + JSON.stringify(value) + ']');
-        let prettyValue = value[n].value_localized + '° ' + value[n].unit;
-        adapter.setState(path + '_' + n, prettyValue, true);
+        if (items > 1){
+            MyPath = path + '_' + n;
+        }
+        adapter.log.debug('createArray: Path:['   + MyPath  + ']');
+        adapter.log.debug('createArray:  value:[' + value   + ']');
+        adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
+        createNumber(MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
     }
 }
 
 function addMieleDeviceIdent(path, currentDeviceIdent){
     adapter.log.debug('addMieleDeviceIdent: Path = [' + path + ']');
-    createStringDatapoint(path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
-    createStringDatapoint(path + '.ComModTechType', "the technical type of the communication module", currentDeviceIdent.xkmIdentLabel.techType);
-    createStringDatapoint(path + '.DeviceSerial', "the serial number of the device", currentDeviceIdent.deviceIdentLabel.fabNumber);
-    createStringDatapoint(path + '.DeviceTechType', "the technical type of the device", currentDeviceIdent.deviceIdentLabel.techType);
-    createStringDatapoint(path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
+    createString(path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
+    createString(path + '.ComModTechType', "the technical type of the communication module", currentDeviceIdent.xkmIdentLabel.techType);
+    createString(path + '.DeviceSerial', "the serial number of the device", currentDeviceIdent.deviceIdentLabel.fabNumber);
+    createString(path + '.DeviceTechType', "the technical type of the device", currentDeviceIdent.deviceIdentLabel.techType);
+    createString(path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
 }
 
 /*
@@ -530,23 +576,23 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
 function addMieleDeviceState(path, currentDeviceState){
     adapter.log.debug('addMieleDeviceState: Path: [' + path + ']');
     // set the values for redundant state indicators
-    createBoolDatapoint(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
-    createBoolDatapoint(path + '.signalInUse', 'Indicates whether the device is in use or switched off.', currentDeviceState.status.value_raw !== 1, 'indicator.InUse');
+    createBool(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
+    createBool(path + '.signalInUse', 'Indicates whether the device is in use or switched off.', currentDeviceState.status.value_raw !== 1, 'indicator.InUse');
     // regular states
-    createStringDatapointRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw, '');
-    createStringDatapointRaw(path, 'ID of the running Program', currentDeviceState.ProgramID.key_localized, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw, '');
-    createStringDatapointRaw(path, 'programType of the running Program', currentDeviceState.programType.key_localized,  currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw, '');
-    createStringDatapointRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
-    createTimeDatapoint(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
-    createTimeDatapoint(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
-    createTemperatureDatapoint(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
-    createTemperatureDatapoint(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
-    createBoolDatapoint(path + '.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo);
-    createBoolDatapoint(path + '.signalFailure', 'The SignalFailure field indicates, if a failure is active for this Device.', currentDeviceState.signalFailure);
-    createBoolDatapoint(path + '.signalDoor', 'The SignalDoor field indicates, if a door-open message is active for this Device.', currentDeviceState.signalDoor);
-    createBoolDatapoint(path + '.Light', 'The light field indicates the status of the device light.', currentDeviceState.light === 1?'Enabled':(currentDeviceState.light === 2?'Disabled':'Invalid') );
-    createBoolDatapoint(path + '.fullRemoteControl', 'The device can be controlled from remote.', currentDeviceState.remoteEnable.fullRemoteControl);
-    createBoolDatapoint(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
+    createStringAndRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw, '');
+    createStringAndRaw(path, 'ID of the running Program', currentDeviceState.ProgramID.key_localized, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw, '');
+    createStringAndRaw(path, 'programType of the running Program', currentDeviceState.programType.key_localized,  currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw, '');
+    createStringAndRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
+    createTime(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
+    createTime(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
+    createArray(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
+    createArray(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
+    createBool(path + '' +'.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo);
+    createBool(path + '.signalFailure', 'The SignalFailure field indicates, if a failure is active for this Device.', currentDeviceState.signalFailure);
+    createBool(path + '.signalDoor', 'The SignalDoor field indicates, if a door-open message is active for this Device.', currentDeviceState.signalDoor);
+    createBool(path + '.Light', 'The light field indicates the status of the device light.', currentDeviceState.light === 1?'Enabled':(currentDeviceState.light === 2?'Disabled':'Invalid') );
+    createBool(path + '.fullRemoteControl', 'The device can be controlled from remote.', currentDeviceState.remoteEnable.fullRemoteControl);
+    createBool(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
 }
 
 function addDeviceNicknameAction(path, mieledevice) {
@@ -720,7 +766,7 @@ async function refreshMieledata(auth){
         adapter.log.debug('refreshMieledata: data [' + JSON.stringify(data) + ']');
         splitMieleDevices(data);
     } catch(err) {
-        adapter.log.error('[refreshMieledata] ' + JSON.stringify(err));
+        adapter.log.error('[refreshMieledata] [' + err +'] JSON.stringify(err):' + JSON.stringify(err));
     }
 }
 
@@ -819,6 +865,12 @@ async function APIRefreshToken(refresh_token) {
     }
 }
 
+async function APILogOff(auth, token_type) {
+    adapter.log.debug('[APILogOff]: Invalidating: '+token_type + ' ('+auth[token_type]+')');
+    await APISendRequest(auth, "thirdparty/logout/", "POST", "token: "+ auth[token_type] )
+         .catch(adapter.log.error('[APILogOff] ' + JSON.stringify(err)));
+}
+
 async function APIStartAction(auth, path, action, value) {
     let currentAction;
     let paths = path.split('.');    // transform into array
@@ -855,13 +907,13 @@ async function APIStartAction(auth, path, action, value) {
     adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
     try {
         APISendRequest(auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
-        createStringDatapoint(currentPath + '.Action information', 'Additional Information returned from API.', action + ': ' + result.message);
+        createString(currentPath + '.Action information', 'Additional Information returned from API.', action + ': ' + result.message);
         if (result.status >= 200 && result.status < 300) {
             adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
-            createBoolDatapoint(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', true);
+            createBool(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', true);
             refreshMieledata(auth);
         } else if (result.status >= 300){
-            createBoolDatapoint(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', false);
+            createBool(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', false);
         }
     } catch(err) {
         adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
