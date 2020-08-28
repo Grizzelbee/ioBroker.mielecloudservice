@@ -47,8 +47,12 @@ function startadapter(options) {
                 adapter.unsubscribeObjects('*');
                 adapter.unsubscribeStates('*');
                 adapter.setState('info.connection', false);
-                APILogOff(auth, "refresh_token");
-                APILogOff(auth, "access_token");
+                if (auth.refresh_token) {
+                    APILogOff(auth, "refresh_token")
+                }
+                if (auth.access_token) {
+                    APILogOff(auth, "access_token")
+                }
                 adapter.log.info('Unloading MieleCloudService...');
                 callback();
             } catch (e) {
@@ -863,7 +867,8 @@ async function APIRefreshToken(refresh_token) {
 
 async function APILogOff(auth, token_type) {
     adapter.log.debug('[APILogOff]: Invalidating: '+token_type + ' ('+auth[token_type]+')');
-    APISendRequest(auth, "thirdparty/logout/", "POST", "token: "+ auth[token_type] );
+    await APISendRequest(auth, "thirdparty/logout/", "POST", "token: "+ auth[token_type] )
+         .catch(adapter.log.error('[APILogOff] ' + JSON.stringify(err)));
 }
 
 async function APIStartAction(auth, path, action, value) {
