@@ -33,7 +33,7 @@
   "dependencies": {
     "@iobroker/adapter-core": "^2.2.1",
     "axios": "^0.19.2",
-    "axios-oauth-client": "^1.2.1",
+    "axios-oauth-client": "^1.3.0",
     "minimist": "^1.2.5",
     "semver": "^7.1.3"
   },
