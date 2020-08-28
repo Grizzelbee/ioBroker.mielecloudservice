@@ -38,13 +38,15 @@ To install, do the following:
 
 ## Changelog
 ### 2.0.0 - Support for Miele API V1.0.3 (2020-08-25)
-Some breaking changes in this release. Some datapoints changed their type. May require fixes in scripts.
+Some breaking changes in this release. Some datapoints changed their type. May require fixes in scripts. **Update with care!**
+Due to the fix that datapoints with invalid values aren't created any longer, I recommend deleting all datapoints in Object view.
 * (grizzelbee) Change: New Icon
-* (grizzelbee) Fix: Number datappoints are no longer strings due to the unit. Now they are correct numbers with units.
+* (grizzelbee) Fix: Number-datapoints are no longer created as strings due to their unit. They are correct numbers with units now.
 * (grizzelbee) Fix: Unit °Celsius is now shown as °C - not longer °Celsius
 * (grizzelbee) New: Introduced support for °Fahrenheit
 * (grizzelbee) New: Introduced support for new Value "plateStep" for Hobs.
 * (grizzelbee) New: Performing a LogOut from Miele API on shutdown to invalidate the Auth-Tokens. 
+* (grizzelbee) Fix: Datapoints with invalid values (null/-32768) are no longer created.
 
 ### 1.2.4 (2020-06-09)
 * (grizzelbee) Fix: fixed No-Data Bug (introduced in V1.2.3)
