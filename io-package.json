@@ -3,6 +3,18 @@
         "name": "mielecloudservice",
         "version": "2.0.0",
         "news": {
+            "2.0.0": {
+                "en": "Support for Miele API V1.0.3 - Update with care due to breaking changes - Read Changelog!",
+                "de": "Unterstützung für Miele API V1.0.3 - Mit Vorsicht aktualisieren aufgrund wesentlicher Änderungen - Lies das Changelog!",
+                "ru": "Поддержка Miele API V1.0.3 - Обновление с осторожностью из-за критических изменений - Прочтите журнал изменений!",
+                "pt": "Suporte para Miele API V1.0.3 - Atualize com cuidado devido a alterações importantes - Leia o registro de alterações!",
+                "nl": "Ondersteuning voor Miele API V1.0.3 - Update met zorg vanwege het breken van wijzigingen - Lees Changelog!",
+                "fr": "Prise en charge de l'API Miele V1.0.3 - Mise à jour avec précaution en raison de modifications importantes - Lisez le journal des modifications!",
+                "it": "Supporto per Miele API V1.0.3 - Aggiorna con cura a causa di modifiche di rilievo - Leggi il log delle modifiche!",
+                "es": "Soporte para Miele API V1.0.3 - Actualice con cuidado debido a cambios importantes - ¡Lea el registro de cambios!",
+                "pl": "Wsparcie dla Miele API V1.0.3 - Aktualizuj ostrożnie ze względu na istotne zmiany - Przeczytaj Changelog!",
+                "zh-cn": "支持Miele API V1.0.3-重大更改请谨慎更新-阅读Changelog！"
+            },
             "1.2.4": {
                 "en": "Fixed No-Data-Bug which was introduced in V1.2.3",
                 "de": "No-Data-Bug behoben, der in V1.2.3 eingeführt wurde",
