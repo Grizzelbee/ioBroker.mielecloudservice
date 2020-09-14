@@ -868,7 +868,7 @@ async function APIRefreshToken(refresh_token) {
 async function APILogOff(auth, token_type) {
     adapter.log.debug('[APILogOff]: Invalidating: '+token_type + ' ('+auth[token_type]+')');
     await APISendRequest(auth, "thirdparty/logout/", "POST", "token: "+ auth[token_type] )
-         .catch(adapter.log.error('[APILogOff] ' + JSON.stringify(err)));
+         .catch(error => {adapter.log.error('[APILogOff] ' + JSON.stringify(error) + ' Stack: '+error.stack)});
 }
 
 async function APIStartAction(auth, path, action, value) {
@@ -935,35 +935,41 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
     };
 
     adapter.log.debug('APISendRequest: Awaiting requested data.');
-    try {
-        let response = await axios(options);
-        adapter.log.debug('API returned Status: [' + response.status + ']');
-        switch (response.status) {
-            case 202:
-                return {"message": "Accepted, processing has not been completed."};
-            case 204: // OK, No Content
-                return {"message": "OK"};
-        }
-        return response.data;
-    } catch(error) {
-        adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
-        if (error.hasOwnProperty(response.data.message)) {
-            adapter.log.error(JSON.stringify(error.response.data.message));
-        }
-        switch (error.response.status) {
-            case 401:
-                try {
-                    adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
-                    auth = APIRefreshToken(auth.refresh_token);
-                } catch (err) {
-                    adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
+    adapter.log.debug('Given parameters:');
+    adapter.log.debug('Auth: [' + JSON.stringify(auth)+ ']');
+    adapter.log.debug('Endpoint: [' + Endpoint + ']');
+    adapter.log.debug('Method: [' + Method + ']');
+    adapter.log.debug('Actions: [' + actions + ']');
+    await axios(options)
+            .then(response => {
+                adapter.log.debug('API returned Status: [' + response.status + ']');
+                switch (response.status) {
+                    case 202:
+                        return {"message": "Accepted, processing has not been completed."};
+                    case 204: // OK, No Content
+                        return {"message": "OK"};
                 }
-                break;
-            case 504:
-                adapter.log.error('HTTP 504: Gateway Timeout! This error occured outside of this adapter. Please google it for possible reasons and solutions.');
-                break;
-        }
-    }
+                return response.data;
+            })
+            .catch(error => {
+                adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
+                if (error.hasOwnProperty(response.data.message)) {
+                    adapter.log.error(JSON.stringify(error.response.data.message));
+                }
+                switch (error.response.status) {
+                    case 401:
+                        try {
+                            adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
+                            auth = APIRefreshToken(auth.refresh_token);
+                        } catch (err) {
+                            adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
+                        }
+                        break;
+                    case 504:
+                        adapter.log.error('HTTP 504: Gateway Timeout! This error occured outside of this adapter. Please google it for possible reasons and solutions.');
+                        break;
+                }
+            })
 }
 
 // If started as allInOne/compact mode => return function to create instance
