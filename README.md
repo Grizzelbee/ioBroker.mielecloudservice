@@ -37,7 +37,7 @@ To install, do the following:
 * New: Sleeptime for complete inactivity (e.g. at night)
 
 ## Changelog
-### 2.0.1 (14.09.2020)
+### 2.0.1 (2020-09-14)
 * (grizzelbee) New: Added some debug Code to find an Error
 * (grizzelbee) Fix: fixed error on logout while invalidating token
 
