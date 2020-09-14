@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "news": {
+            "2.0.1": {
+                "en": "Added debug code and fixed Error on logout",
+                "de": "Debug-Code hinzugefügt und Fehler beim Abmelden behoben",
+                "ru": "Добавлен код отладки и исправлена ​​ошибка при выходе из системы",
+                "pt": "Adicionado o código de depuração e corrigido o erro no logout",
+                "nl": "Foutopsporingscode toegevoegd en fout opgelost bij uitloggen",
+                "fr": "Ajout du code de débogage et correction d'une erreur lors de la déconnexion",
+                "it": "Aggiunto codice di debug e corretto errore al logout",
+                "es": "Se agregó el código de depuración y se corrigió el error al cerrar la sesión.",
+                "pl": "Dodano kod debugowania i naprawiono błąd przy wylogowywaniu",
+                "zh-cn": "添加了调试代码并修复了注销时的错误"
+            },
             "2.0.0": {
                 "en": "Support for Miele API V1.0.3 - Update with care due to breaking changes - Read Changelog!",
                 "de": "Unterstützung für Miele API V1.0.3 - Mit Vorsicht aktualisieren aufgrund wesentlicher Änderungen - Lies das Changelog!",
