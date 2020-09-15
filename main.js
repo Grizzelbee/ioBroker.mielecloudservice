@@ -945,7 +945,12 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
         }
         return response.data;
     } catch(error) {
-        adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
+        adapter.log.debug('Given parameters:');
+        adapter.log.debug('Auth: [' + JSON.stringify(auth)+ ']');
+        adapter.log.debug('Endpoint: [' + Endpoint + ']');
+        adapter.log.debug('Method: [' + Method + ']');
+        adapter.log.debug('Actions: [' + actions + ']');
+        adapter.log.error('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
         if (error.hasOwnProperty(response.data.message)) {
             adapter.log.error(JSON.stringify(error.response.data.message));
         }
