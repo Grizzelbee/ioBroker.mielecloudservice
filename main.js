@@ -748,6 +748,10 @@ function addMieleDeviceActions(path, DeviceType){
 
 /*
  * decrypt
+ *
+ * @param key   {string} secret key used for decryption
+ * @param value {string} string that needs to be decrypted
+ * @returns     {string} decrypted version of dtring given in param value
  */
 function decrypt(key, value) {
     let result = '';
@@ -756,16 +760,21 @@ function decrypt(key, value) {
     }
     return result;
 }
-
+/*
+ * refreshMieledata
+ *
+ * @param Auth {object}  OAuth2 object containing required credentials
+ * @returns    {void}    returns nothing
+ */
 async function refreshMieledata(auth){
     adapter.log.debug('refreshMieledata: get data from API');
     try {
-        let data = await APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
+        let result = await APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
         adapter.log.debug('refreshMieledata: handover all devices data to splitMieledevices');
-        adapter.log.debug('refreshMieledata: data [' + JSON.stringify(data) + ']');
-        splitMieleDevices(data);
-    } catch(err) {
-        adapter.log.error('[refreshMieledata] [' + err +'] JSON.stringify(err):' + JSON.stringify(err));
+        adapter.log.debug('refreshMieledata: data [' + JSON.stringify(result) + ']');
+        splitMieleDevices(result);
+    } catch(error) {
+        adapter.log.error('[refreshMieledata] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
     }
 }
 
@@ -916,10 +925,11 @@ async function APIStartAction(auth, path, action, value) {
         }
     } catch(err) {
         adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
-    };
+    }
 }
 
 async function APISendRequest(auth, Endpoint, Method, actions) {
+    // build options object for axios
     const options = {
         url: BaseURL + Endpoint,
         method: Method,
@@ -933,41 +943,56 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
         data: actions
     };
 
-    adapter.log.debug('APISendRequest: Awaiting requested data.');
-    try {
-        let response = await axios(options);
-        adapter.log.debug('API returned Status: [' + response.status + ']');
-        switch (response.status) {
-            case 202:
-                return {"message": "Accepted, processing has not been completed."};
-            case 204: // OK, No Content
-                return {"message": "OK"};
+        adapter.log.debug('APISendRequest: Awaiting requested data.');
+        try {
+            let response = await axios(options);
+            adapter.log.debug('API returned Status: [' + response.status + ']');
+            switch (response.status) {
+                case 202:
+                    response.data =  {"message": "Accepted, processing has not been completed."};
+                    break;
+                case 204: // OK, No Content
+                    response.data =  {"message": "OK"};
+                    break;
+            }
+            adapter.log.debug('API returned Data: [' + JSON.stringify(response.data) + ']');
+            return response.data;
+        } catch(error) {
+            adapter.log.debug('Given parameters:');
+            adapter.log.debug('Auth: [' + JSON.stringify(auth) + ']');
+            adapter.log.debug('Endpoint: [' + Endpoint + ']');
+            adapter.log.debug('Method: [' + Method + ']');
+            adapter.log.debug('Actions: [' + actions + ']');
+            adapter.log.error('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
+            if (error.response) {
+                // Request made and server responded
+                adapter.log.error('Request made and server responded:');
+                adapter.log.error(error.response.data);
+                adapter.log.error(error.response.status);
+                adapter.log.error(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                adapter.log.error('The request was made but no response was received:');
+                adapter.log.error(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                adapter.log.error('Something happened in setting up the request that triggered an Error:');
+                adapter.log.error('Error', error.message);
+            }
+            switch (error.response.status) {
+                case 401:
+                    try {
+                        adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
+                        auth = APIRefreshToken(auth.refresh_token);
+                    } catch (err) {
+                        adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
+                    }
+                    break;
+                case 504:
+                    adapter.log.error('HTTP 504: Gateway Timeout! This error occured outside of this adapter. Please google it for possible reasons and solutions.');
+                    break;
+            }
         }
-        return response.data;
-    } catch(error) {
-        adapter.log.debug('Given parameters:');
-        adapter.log.debug('Auth: [' + JSON.stringify(auth)+ ']');
-        adapter.log.debug('Endpoint: [' + Endpoint + ']');
-        adapter.log.debug('Method: [' + Method + ']');
-        adapter.log.debug('Actions: [' + actions + ']');
-        adapter.log.error('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
-        if (error.hasOwnProperty(response.data.message)) {
-            adapter.log.error(JSON.stringify(error.response.data.message));
-        }
-        switch (error.response.status) {
-            case 401:
-                try {
-                    adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
-                    auth = APIRefreshToken(auth.refresh_token);
-                } catch (err) {
-                    adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
-                }
-                break;
-            case 504:
-                adapter.log.error('HTTP 504: Gateway Timeout! This error occured outside of this adapter. Please google it for possible reasons and solutions.');
-                break;
-        }
-    }
 }
 
 // If started as allInOne/compact mode => return function to create instance
