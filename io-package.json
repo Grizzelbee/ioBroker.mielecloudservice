@@ -1,31 +1,19 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "2.0.2",
+        "version": "2.0.3",
         "news": {
-            "2.0.2": {
-                "en": "Added debug code and fixed Error on failed authentication.",
-                "de": "Debug-Code hinzugefügt und Fehler bei fehlgeschlagener Authentifizierung behoben.",
-                "ru": "Добавлен код отладки и исправлена ​​ошибка при неудачной аутентификации.",
-                "pt": "Adicionado código de depuração e erro corrigido na autenticação com falha.",
-                "nl": "Foutopsporingscode toegevoegd en fout opgelost bij mislukte authenticatie.",
-                "fr": "Ajout du code de débogage et correction d'une erreur en cas d'échec de l'authentification.",
-                "it": "Aggiunto codice di debug e corretto errore in caso di autenticazione fallita.",
-                "es": "Se agregó el código de depuración y se corrigió el error en la autenticación fallida.",
-                "pl": "Dodano kod debugowania i naprawiono błąd podczas nieudanego uwierzytelniania.",
-                "zh-cn": "添加了调试代码，并修复了身份验证失败时的错误。"
-            },
-            "2.0.1": {
-                "en": "Added debug code and fixed Error on logout",
-                "de": "Debug-Code hinzugefügt und Fehler beim Abmelden behoben",
-                "ru": "Добавлен код отладки и исправлена ​​ошибка при выходе из системы",
-                "pt": "Adicionado o código de depuração e corrigido o erro no logout",
-                "nl": "Foutopsporingscode toegevoegd en fout opgelost bij uitloggen",
-                "fr": "Ajout du code de débogage et correction d'une erreur lors de la déconnexion",
-                "it": "Aggiunto codice di debug e corretto errore al logout",
-                "es": "Se agregó el código de depuración y se corrigió el error al cerrar la sesión.",
-                "pl": "Dodano kod debugowania i naprawiono błąd przy wylogowywaniu",
-                "zh-cn": "添加了调试代码并修复了注销时的错误"
+            "2.0.3": {
+                "en": "Added debug code and fixed some minor bugs.",
+                "de": "Debug-Code hinzugefügt und einige kleinere Fehler behoben.",
+                "ru": "Добавлен код отладки и исправлены мелкие ошибки.",
+                "pt": "Adicionado código de depuração e corrigidos alguns pequenos bugs.",
+                "nl": "Foutopsporingscode toegevoegd en enkele kleine bugs verholpen.",
+                "fr": "Ajout du code de débogage et correction de quelques bugs mineurs.",
+                "it": "Aggiunto codice di debug e risolti alcuni bug minori.",
+                "es": "Se agregó código de depuración y se corrigieron algunos errores menores.",
+                "pl": "Dodano kod debugowania i naprawiono kilka drobnych błędów.",
+                "zh-cn": "添加了调试代码并修复了一些小错误。"
             },
             "2.0.0": {
                 "en": "Support for Miele API V1.0.3 - Update with care due to breaking changes - Read Changelog!",
