@@ -35,7 +35,8 @@
     "axios": "^0.20.0",
     "axios-oauth-client": "^1.3.0",
     "minimist": "^1.2.5",
-    "semver": "^7.3.2"
+    "semver": "^7.3.2",
+    "snyk": "^1.325.0"
   },
   "devDependencies": {
     "@iobroker/testing": "^2.1.0",
@@ -63,5 +64,6 @@
   "bugs": {
     "url": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues"
   },
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "snyk: true
 }
