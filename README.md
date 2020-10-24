@@ -253,8 +253,9 @@ Here is a list of what these raw values stand for:
 | 23 | "Oberhemden" /  | Washing Machine |
 | 27 | "Imprägnieren"  /     | Washing Machine |
 | 48 | "Flusen ausspülen"| Washer Dryer |
-| 50 | "Dunkle Wäsche"/ | Washer Dryer |
-|123 | "Dunkles / Jeans"  |   Washing Machine |
+| 50 | "Dunkle Wäsche" / | Washer Dryer |
+| 122 | "Express 20" / | Washer Dryer |
+| 123 | "Dunkles / Jeans"  |   Washing Machine |
 
 ### ProgramPhase
 
