@@ -37,13 +37,13 @@ To install, do the following:
 * Add Sentry
 * Check for new Warning with js-controller 3.2
 * encrypt password(s) using js-controller
-* update dependecies
 
 
 
 ## Changelog
 ### 2.1.0 (2021-02-xx)
 *  (grizzelbee) Upd: removed david-dm badge
+*  (grizzelbee) Upd: updated dependencies
 
 ### 2.0.3 (2020-09-15)
 * (grizzelbee) Upd: Updated country list in config dialog
