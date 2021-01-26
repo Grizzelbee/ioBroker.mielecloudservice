@@ -248,7 +248,7 @@ Here is a list of what these raw values stand for:
 
 ### ProgramBezeichnung
 
-| Raw value | State| avaliable for |
+| Raw value | State| available for |
 |----------|-------|---------------|
 |  1 | "Baumwolle" / "Cotton"  | Washing Machine |
 | 27 | "Imprägnieren"  /     | Washing Machine |
@@ -258,14 +258,16 @@ Here is a list of what these raw values stand for:
 
 ### ProgramPhase
 
-| Raw value | State| avaliable for |
+| Raw value | State| available for |
 |----------|-------|---------------|
 |260 | "Waschen" / "Washing"  | Washing Machine |
 |261 | "Spülen"  / "Rinse"    | Washing Machine |
 |266 | "Schleudern" / "Spinning"| Washing Machine |
 |267 | "Knitterschutz" / ""| Washing Machine |
-|268 |  "Ende" / "End"| Most devices |
-|256 | "" | | |
+|268 |  "Ende" / "End"| Washing Machine |
+|256 | "" | |
+|512 | "" | Tumble dryer |
+|522 | "Ende" / "End" | Tumble dryer |
 |514 | "Trocknen" | Washer Dryer |
 |519 | "Abkühlen" | Washer Dryer |
 |532 | "Flusen ausspülen" | Washer Dryer |
