@@ -329,9 +329,8 @@ function splitMieleDevices(devices){
 * @param mieleDevice.ident.deviceIdentLabel.fabNumber
 * */
 function parseMieleDevice(mieleDevice){
-    let deviceFolder;
     adapter.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
-    deviceFolder = createEODeviceTypes(mieleDevice.ident.type.value_raw); // create folder for device
+    let deviceFolder = createEODeviceTypes(mieleDevice.ident.type.value_raw); // create folder for device
     addMieleDevice(deviceFolder, mieleDevice);
 
     // add special datapoints to devices
@@ -914,12 +913,12 @@ async function APIStartAction(auth, path, action, value) {
     }
     adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
     try {
-        APISendRequest(auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
+        await APISendRequest(auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
         createString(currentPath + '.Action information', 'Additional Information returned from API.', action + ': ' + result.message);
         if (result.status >= 200 && result.status < 300) {
             adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
             createBool(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', true);
-            refreshMieledata(auth);
+            await refreshMieledata(auth);
         } else if (result.status >= 300){
             createBool(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', false);
         }
