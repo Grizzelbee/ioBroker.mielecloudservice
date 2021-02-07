@@ -793,7 +793,7 @@ async function main() {
                 pollTimeout= setTimeout(schedule , adapter.config.pollinterval * 60000);
             } , 100);
         } else {
-            adapter.log.error('[main] APIGetAccessToken returned neiter a token nor an errormessage. Returned value=[' + JSON.stringify(auth)+']');
+            adapter.log.error('[main] APIGetAccessToken returned neither a token nor an errormessage. Returned value=[' + JSON.stringify(auth)+']');
         }
     } catch(err) {
         adapter.log.error('[main] ' + JSON.stringify(err));
@@ -835,7 +835,7 @@ async function APIGetAccessToken() {
     } catch (error) {
         adapter.log.error('OAuth2 returned an error!');
         adapter.log.error(error);
-        adapter.log.error('Are your credentials okay? Please doublecheck them in your adapters configuration.');
+        adapter.log.error('Are your credentials okay? Please double check them in your adapters configuration.');
         adapter.setState('info.connection', false);
         adapter.terminate('Terminating adapter due to error on token request.', 11);
     }
