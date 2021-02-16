@@ -132,5 +132,28 @@
         "oauth2_vg": "de-DE",
         "pollinterval": 3
     },
-    "objects": []
+    "encryptedNative": [
+        "Client_secret",
+        "Miele_pwd"
+    ],
+    "protectedNative": [
+        "Client_secret",
+        "Miele_pwd"
+    ],
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected to dyson device",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
+    ]
 }
