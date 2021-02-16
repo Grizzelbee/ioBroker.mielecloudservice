@@ -41,9 +41,14 @@ To install, do the following:
 
 
 ## Changelog
-### 2.1.0 (2021-02-xx)
+### 3.0.0 (2021-02-xx)
+*  (grizzelbee) Upd: [73](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/73) BREAKING CHANGE: Removed white-spaces from any ID in device tree. This creates completely new device trees. So please delete the old ones.  
 *  (grizzelbee) Upd: removed david-dm badge
 *  (grizzelbee) Upd: updated dependencies
+*  (grizzelbee) Fix: added passwords to encryptedNative
+*  (grizzelbee) Fix: added passwords to protectedNative
+*  (grizzelbee) Fix: [63](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/63) added missing info.connection object to io-package
+
 
 ### 2.0.3 (2020-09-15)
 * (grizzelbee) Upd: Updated country list in config dialog
