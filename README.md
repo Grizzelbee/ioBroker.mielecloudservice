@@ -42,6 +42,7 @@ To install, do the following:
 
 ## Changelog
 ### 3.0.0 (2021-02-xx)
+*  (grizzelbee) New: BREAKING CHANGE: Making use of build-in password de-/encryption. This raises the need to re-enter your passwords again, because the old ones can't be decrypted anymore.
 *  (grizzelbee) Upd: [73](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/73) BREAKING CHANGE: Removed white-spaces from any ID in device tree. This creates completely new device trees. So please delete the old ones.  
 *  (grizzelbee) Upd: removed david-dm badge
 *  (grizzelbee) Upd: updated dependencies

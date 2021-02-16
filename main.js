@@ -94,6 +94,7 @@ function startadapter(options) {
         // is called when databases are connected and adapter received configuration.
         // start here!
         ready: () => {
+            /*
             adapter.getForeignObject('system.config', (err, obj) => {
                 if (obj && obj.native && obj.native.secret) {
                     //noinspection JSUnresolvedVariable
@@ -104,17 +105,37 @@ function startadapter(options) {
                     adapter.config.Miele_pwd = decrypt(salt, adapter.config.Miele_pwd);
                     adapter.config.Client_secret = decrypt(salt, adapter.config.Client_secret);
                 }
+
+             */
                 // Execute main after pwds have been decrypted
                 // The adapters config (in the instance object everything under the attribute "native") is accessible via
                 // ADAPTER.config:
                 if ( adapterConfigIsValid() ) {
-                    main();
+                    //main();
+
+
+                    adapter.getForeignObject('system.config', (err, obj) => {
+                        if (adapter.supportsFeature && adapter.supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
+                            if (obj && obj.native && obj.native.secret) {
+                                //noinspection JSUnresolvedVariable
+                                adapter.config.Miele_pwd = adapter.decrypt(obj.native.secret, adapter.config.Miele_pwd);
+                                adapter.config.Client_secret = adapter.decrypt(obj.native.secret, adapter.config.Client_secret);
+                            }
+                            main();
+                        } else {
+                            throw new Error('This adapter requires at least js-controller V3.0.0. Your system is not compatible. Please update.');
+                        }
+                    });
+
+
+
+
                 } else {
                     adapter.log.warn('Adapter config is invalid. Please fix.');
                     adapter.setState('info.connection', false);
                     adapter.terminate('Invalid Configuration.', 11);
                 }
-            });
+            // });
         }
     });
     // you have to call the adapter function and pass a options object
@@ -564,16 +585,11 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
 }
 
 /*
-* @param  currentDeviceState.status.key_localized
-* @param  status
-* @param  ProgramID
-* @param  remainingTime
-* @param  programPhase
-* @param  key_localized
-* @param  value_raw
-* @param  value_localized
+* @param  path
+* @param  currentDeviceState
  */
 function addMieleDeviceState(path, currentDeviceState){
+    let now = Date.getTime();
     adapter.log.debug('addMieleDeviceState: Path: [' + path + ']');
     // set the values for redundant state indicators
     createBool(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
@@ -584,6 +600,9 @@ function addMieleDeviceState(path, currentDeviceState){
     createStringAndRaw(path, 'programType of the running Program', currentDeviceState.programType.key_localized,  currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw, '');
     createStringAndRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
     createTime(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
+
+    createTime(path + '.EstimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', (  now + currentDeviceState.remainingTime));
+
     createTime(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
     createArray(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
     createArray(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);

@@ -23,81 +23,63 @@
     </style>
     <!-- you have to define 2 functions in the global scope: -->
     <script type="text/javascript">
-        var secret;
+        if (typeof supportsFeature !== 'function' || !supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
+            alert('This adapter requires at least js-controller V3.0.0. Your system is not compatible. Please update.');
+            throw new Error('This adapter requires at least js-controller V3.0.0. Your system is not compatible. Please update.');
+        };
+        let secret = '';
 
-        function encrypt(key, value) {
-            var result = '';
-            for(var i = 0; i < value.length; ++i) {
-                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-            }
-            return result;
-        }
-
-        function decrypt(key, value) {
-            var result = '';
-            for(var i = 0; i < value.length; ++i) {
-                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-            }
-            return result;
-        }
-
+        // This will be called by the admin adapter when the settings page loads
         function load(settings, onChange) {
+            // example: select elements with id=key and class=value and insert value
             if (!settings) return;
+
             $('.value').each(function () {
                 var $key = $(this);
                 var id = $key.attr('id');
 
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id]).change(function () {
-                        onChange();
-                    });
+                    $key.prop('checked', settings[id])
+                        .on('change', () => onChange());
                 } else {
+                    if ((id === 'Miele_pwd') || (id === 'Client_secret')) {
+                        // get the system secret for pwd de-/encryption
+                        socket.emit('getObject', 'system.config', function (err, obj) {
+                            secret = (obj.native ? obj.native.secret : '');
+                            settings[id] = decrypt(secret, settings[id]);
+                            $key.val(settings[id]).on('change', () => onChange());
+                        });
+                    }
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.val(settings[id]).change(function () {
-                        onChange();
-                    }).keyup(function () {
-                        onChange();
-                    });
+                    $key.val(settings[id])
+                        .on('change', () => onChange())
+                        .on('keyup', () => onChange());
                 }
             });
-            socket.emit('getObject', 'system.config', function (err, obj) {
-                secret = (obj.native ? obj.native.secret : '') || 'Zgfr56gFe87jJOM';
-                $key = $('#Miele_pwd');
-                settings['Miele_pwd'] = decrypt(secret, settings['Miele_pwd']);
-                $key.val(settings['Miele_pwd']).change(function () {
-                    onChange();
-                }).keyup(function () {
-                    onChange();
-                });
-                $key = $('#Client_secret');
-                settings['Client_secret'] = decrypt(secret, settings['Client_secret']);
-                $key.val(settings['Client_secret']).change(function () {
-                    onChange();
-                }).keyup(function () {
-                    onChange();
-                });
-            });
-
             onChange(false);
-            // (re)initialize all the Materialize labels on the page
-            M.updateTextFields();
+            // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
+            if (M) M.updateTextFields();
         }
 
+        // This will be called by the admin adapter when the user presses the save button
         function save(callback) {
-            let obj = {};
+            // example: select elements with class=value and build settings object
+            var obj = {};
             $('.value').each(function () {
-                let $this = $(this);
-                let id = $this.attr('id');
+                var $this = $(this);
+                var id = $this.attr('id');
 
                 if ($this.attr('type') === 'checkbox') {
                     obj[id] = $this.prop('checked');
+                } else if ($this.attr('type') === 'number') {
+                    obj[id] = parseFloat($this.val());
                 } else {
-                    let value = $this.val();
-                    if ( (id === 'Miele_pwd') || (id === 'Client_secret') ) {
-                        value = encrypt(secret, value);
+                    if ((id === 'Miele_pwd') || (id === 'Client_secret')) {
+                        obj[id] = encrypt(secret, $this.val());
+                    } else {
+                        obj[id] = $this.val();
                     }
-                    obj[id] = value;
                 }
             });
             callback(obj);

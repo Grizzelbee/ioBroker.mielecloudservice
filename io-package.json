@@ -1,8 +1,10 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "2.0.3",
+        "version": "3.0.0-beta",
         "news": {
+            "3.0.0": {
+                "en": "BREAKING CHANGE Release see changelog for all changes."},
             "2.0.3": {
                 "en": "Added debug code and fixed some minor bugs.",
                 "de": "Debug-Code hinzugefügt und einige kleinere Fehler behoben.",
@@ -119,6 +121,12 @@
         "type": "household",
         "connectionType": "cloud",
         "dataSource": "poll",
+        "dependencies": [
+            {
+                "js-controller": ">=3.0.0",
+                "admin": ">=4.0.9"
+            }
+        ],
         "license": "MIT",
         "messagebox": true,
         "subscribe": "messagebox"
@@ -147,7 +155,7 @@
             "type": "state",
             "common": {
                 "role": "indicator.connected",
-                "name": "If connected to dyson device",
+                "name": "If connected to miele cloud service",
                 "type": "boolean",
                 "read": true,
                 "write": false,

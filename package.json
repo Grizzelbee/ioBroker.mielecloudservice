@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mielecloudservice",
-  "version": "2.0.3",
+  "version": "3.0.0-beta",
   "description": "Integrates your MieleCloudService (aka Miele@Home) Devices to ioBroker",
   "author": {
     "name": "grizzelbee",
