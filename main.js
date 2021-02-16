@@ -228,11 +228,11 @@ function createEODeviceTypes(deviceTypeID){
 
     switch (deviceTypeID) {
         case 1 :
-            deviceFolder = 'Washing machines';
+            deviceFolder = 'Washing_machines';
             description  = 'Washing machines reported by Miele@Home API';
             break;
         case 2:
-            deviceFolder = 'Tumble dryers';
+            deviceFolder = 'Tumble_dryers';
             description  = 'Tumble dryers reported by Miele@Home API';
             break;
         case 7:
@@ -265,7 +265,7 @@ function createEODeviceTypes(deviceTypeID){
             description  = 'Microwaves reported by Miele@Home API';
             break;
         case 17:
-            deviceFolder = 'Coffee Systems';
+            deviceFolder = 'Coffee_Systems';
             description  = 'Coffee Systems reported by Miele@Home API';
             break;
         case 18:
@@ -283,15 +283,15 @@ function createEODeviceTypes(deviceTypeID){
             description  = 'Fridges reported by Miele@Home API';
             break;
         case 23:
-            deviceFolder = 'Vacuum cleaners';
+            deviceFolder = 'Vacuum_cleaners';
             description  = 'Vacuum cleaners reported by Miele@Home API';
             break;
         case 25:
-            deviceFolder = 'Dish warmers';
+            deviceFolder = 'Dish_warmers';
             description  = 'Dish warmers reported by Miele@Home API';
             break;
         case 48:
-            deviceFolder = 'Vacuum drawers';
+            deviceFolder = 'Vacuum_drawers';
             description  = 'Vacuum drawers reported by Miele@Home API';
             break;
     }
@@ -398,7 +398,7 @@ function parseMieleDevice(mieleDevice){
         case 14: // Highlight Hob
         case 27: // Induction Hob
             createArray(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + mieleDevice.state.plateStep[0].key_localized,
-                   'The plateStepobject represents the selected cooking zone levels for a hob.',
+                   'The plateStep object represents the selected cooking zone levels for a hob.',
                              mieleDevice.state.plateStep);
             break;
     }
@@ -614,9 +614,9 @@ function addDeviceNicknameAction(path, mieledevice) {
 
 function addPowerActionButtons(path) {
     // addPowerOnAction
-    addActionButton(path,'Power On', 'Power the Device on.');
+    addActionButton(path,'Power_On', 'Power the Device on.');
     // addPowerOffAction
-    addActionButton(path,'Power Off', 'Power the Device off.');
+    addActionButton(path,'Power_Off', 'Power the Device off.');
 }
 
 function addStartActionButton(path) {
@@ -636,23 +636,23 @@ function addStartStopActionButtons(path) {
 
 function addLightActionButtons(path) {
     // addLightOnAction
-    addActionButton(path,'Light On', 'Switches the lights of the Device on.');
+    addActionButton(path,'Light_On', 'Switches the lights of the Device on.');
     // addLightOffAction
-    addActionButton(path,'Light Off', 'Switches the lights of the Device off.');
+    addActionButton(path,'Light_Off', 'Switches the lights of the Device off.');
 }
 
 function addSupercoolingActionButtons(path) {
     // addLightOnAction
-    addActionButton(path,'Start Supercooling', 'Brings the Device into Supercooling mode.');
+    addActionButton(path,'Start_Supercooling', 'Brings the Device into Supercooling mode.');
     // addLightOffAction
-    addActionButton(path,'Stop Supercooling', 'Brings the Device out of Supercooling mode.');
+    addActionButton(path,'Stop_Supercooling', 'Brings the Device out of Supercooling mode.');
 }
 
 function addSuperfreezingActionButtons(path) {
     // addLightOnAction
-    addActionButton(path,'Start Superfreezing', 'Brings the Device into Superfreezing mode.');
+    addActionButton(path,'Start_Superfreezing', 'Brings the Device into Superfreezing mode.');
     // addLightOffAction
-    addActionButton(path,'Stop Superfreezing', 'Brings the Device out of Superfreezing mode.');
+    addActionButton(path,'Stop_Superfreezing', 'Brings the Device out of Superfreezing mode.');
 }
 
 function addMieleDeviceActions(path, DeviceType){
@@ -664,7 +664,7 @@ function addMieleDeviceActions(path, DeviceType){
         native: {}
     });
 
-    // Add Actions depending on devicetype
+    // Add Actions depending on device type
     switch (DeviceType) {
         case 1:
         case 2:
