@@ -32,16 +32,12 @@ To install, do the following:
 4. Add your Miele-Devices to the App (if not added automatically)
 6. Fill in the client_secret and client_id received from Miele-developer Team and account-id and password from the App.
 
-## ToDo
-* Implement MieleAPI 1.0.4 - https://www.miele.com/developer/news.html
-
-
-
 ## Changelog
-### 3.0.0 (2021-02-xx)
+### 3.0.0 (2021-02-18)
 *  (grizzelbee) New: BREAKING CHANGE: Making use of build-in password de-/encryption. This raises the need to re-enter your passwords again, because the old ones can't be decrypted anymore.
 *  (grizzelbee) New: [70](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/70) Implements Miele API 1.0.4
 *  (grizzelbee) New: [64](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/64) Introduces data point estimatedFinishingTime
+*  (grizzelbee) New: [54](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/54) Poll interval can now freely be selected in seconds and minutes
 *  (grizzelbee) Upd: [73](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/73) BREAKING CHANGE: Removed white-spaces from any ID in device tree. This creates completely new device trees. So please delete the old ones.  
 *  (grizzelbee) Upd: removed david-dm badge
 *  (grizzelbee) Upd: updated dependencies
