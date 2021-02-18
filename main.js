@@ -80,6 +80,7 @@ function startadapter(options) {
         //    ADAPTER.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
         // },
         // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
+        /* Currently not used ...
         message: function (obj) {
             if (typeof obj === 'object' && obj.message) {
                 if (obj.command === 'send') {
@@ -90,6 +91,7 @@ function startadapter(options) {
                 }
             }
         },
+         */
         // is called when databases are connected and adapter received configuration.
         // start here!
         ready: async () => {
@@ -828,12 +830,12 @@ async function main() {
     try {
         auth = await APIGetAccessToken();
         if (auth.hasOwnProperty('access_token') ) {
-            adapter.log.info('Starting Polltimer with a ' +  adapter.config.pollinterval + ' Minutes interval.');
+            adapter.log.info(`Starting Polltimer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
             // start refresh scheduler with interval from adapters config
             pollTimeout= setTimeout(function schedule() {
                 adapter.log.debug("Updating device states (polling API scheduled).");
                 refreshMieledata( auth );
-                pollTimeout= setTimeout(schedule , adapter.config.pollinterval * 60000);
+                pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
             } , 100);
         } else {
             adapter.log.error('[main] APIGetAccessToken returned neither a token nor an errormessage. Returned value=[' + JSON.stringify(auth)+']');

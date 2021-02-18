@@ -129,22 +129,6 @@
                 <label class="translate" for="Client_secret">Client_secret</label>
                 <span class="translate">Client_secret_desc</span>
             </div>
-            <div class="input-field col s12 m6 l2" >
-                <select  class="value" id="pollinterval">
-                    <option value="1" class="translate">1</option>
-                    <option value="2" class="translate">2</option>
-                    <option value="3" class="translate">3</option>
-                    <option value="4" class="translate">4</option>
-                    <option value="5" class="translate" >5</option>
-                    <option value="7" class="translate">7</option>
-                    <option value="10" class="translate">10</option>
-                    <option value="15" class="translate">15</option>
-                </select>
-                <label class="translate" for="pollinterval">pollinterval</label>
-                <span class="translate" for="pollinterval_desc">pollinterval_desc</span>
-            </div>
-        </div>
-        <div class="row">
             <div class="input-field col s12 m6 l4">
                 <select  class="value" id="oauth2_vg">
                     <option value="en-AU">Miele Australia</option>
@@ -201,6 +185,35 @@
                 </select>
                 <label class="translate" for="oauth2_vg">oauth2_vg</label>
                 <span class="translate" for="oauth2_vg_desc">oauth2_vg_desc</span>
+            </div>
+        </div>
+        <div class="row">
+            <!--div class="input-field col s12 m6 l10" -->
+            <div class="input-field col s12 m6 l2" >
+                <input class="value" id="pollinterval" type="number">
+
+                <!--select  class="value" id="pollinterval">
+                    <option value="1" class="translate">1</option>
+                    <option value="2" class="translate">2</option>
+                    <option value="3" class="translate">3</option>
+                    <option value="4" class="translate">4</option>
+                    <option value="5" class="translate">5</option>
+                    <option value="7" class="translate">7</option>
+                    <option value="10" class="translate">10</option>
+                    <option value="15" class="translate">15</option>
+                    <option value="30" class="translate">30</option>
+                    <option value="45" class="translate">45</option>
+                </select-->
+                <label class="translate" for="pollinterval">pollinterval</label>
+                <span class="translate" for="pollinterval_desc">pollinterval_desc</span>
+            </div>
+            <div class="input-field col s12 m6 l2" >
+                <select  class="value" id="pollUnit">
+                    <option value="1" class="translate">Seconds</option>
+                    <option value="60" class="translate">Minutes</option>
+                </select>
+                <label class="translate" for="pollUnit">pollUnit</label>
+                <span class="translate" for="pollUnit_desc">pollUnit_desc</span>
             </div>
         </div>
     </div>
