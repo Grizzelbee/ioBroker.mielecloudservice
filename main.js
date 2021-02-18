@@ -378,7 +378,7 @@ function parseMieleDevice(mieleDevice){
                     'Spinning speed of a washing machine.',
                               mieleDevice.state.spinningSpeed.value_localized,
                               mieleDevice.state.spinningSpeed.unit,
-                         'value.spinningspeed');
+                         'value');
             break;
     }
     // elapsedTime
@@ -505,7 +505,7 @@ function createStringAndRaw(path, description, key_localized, value_localized, v
 }
 
 function createTime(path, description, value, role){
-    role = role || 'value.time';
+    role = role || 'text';
     createExtendObject(path, {
         type: 'state',
         common: {"name": description,
@@ -588,6 +588,7 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
  */
 function addMieleDeviceState(path, currentDeviceState){
     let now = new Date;
+    let estimatedEndTime = new Date;
     adapter.log.debug('addMieleDeviceState: Path: [' + path + ']');
     // set the values for redundant state indicators
     createBool(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
@@ -598,18 +599,42 @@ function addMieleDeviceState(path, currentDeviceState){
     createStringAndRaw(path, 'programType of the running Program', currentDeviceState.programType.key_localized,  currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw, '');
     createStringAndRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
     createTime(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
-
-    createTime(path + '.EstimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', (  now.getTime() + currentDeviceState.remainingTime));
-
+    estimatedEndTime.setMinutes((now.getMinutes() + ((currentDeviceState.remainingTime[0]*60) + (currentDeviceState.remainingTime[1]*1))));
+    createString(path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', estimatedEndTime.toLocaleTimeString(), 'text');
     createTime(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
     createArray(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
     createArray(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
-    createBool(path + '' +'.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo);
+    createBool(path + '.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo);
     createBool(path + '.signalFailure', 'The SignalFailure field indicates, if a failure is active for this Device.', currentDeviceState.signalFailure);
     createBool(path + '.signalDoor', 'The SignalDoor field indicates, if a door-open message is active for this Device.', currentDeviceState.signalDoor);
-    createBool(path + '.Light', 'The light field indicates the status of the device light.', currentDeviceState.light === 1?'Enabled':(currentDeviceState.light === 2?'Disabled':'Invalid') );
+    // Light - create only if not null
+    if (currentDeviceState.light) {
+        createString(path + '.Light', 'The light field indicates the status of the device light.', currentDeviceState.light === 1 ? 'Enabled' : (currentDeviceState.light === 2 ? 'Disabled' : 'Invalid'), 'text');
+    }
+    // NEW API 1.0.4 - ambientLight
+    if (currentDeviceState.ambientLight) {
+        createString(path + '.ambientLight', 'The ambientLight field indicates the status of the device ambient light.', currentDeviceState.ambientLight, 'text');
+    }
     createBool(path + '.fullRemoteControl', 'The device can be controlled from remote.', currentDeviceState.remoteEnable.fullRemoteControl);
     createBool(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
+    // NEW API 1.0.4 - ecoFeedback
+    // the ecoFeedback object returns the amount of water and energy used by the current running program up to the present moment.
+    // Furthermore it returns a forecast for water and energy consumption for a selected program.
+    if (currentDeviceState.ecoFeedback){
+        if (currentDeviceState.ecoFeedback.currentWaterConsumption){
+            createNumber(path + '.currentWaterConsumption', 'The amount of water used by the current running program up to the present moment.', currentDeviceState.ecoFeedback.currentWaterConsumption.value.valueOf(), currentDeviceState.ecoFeedback.currentWaterConsumption.unit.valueOf(), 'value');
+            createNumber(path + '.waterForecast', 'The relative water usage for the selected program from 0 to 100.', (currentDeviceState.ecoFeedback.waterForecast * 100), '%', 'value');
+        }
+        if (currentDeviceState.ecoFeedback.currentEnergyConsumption) {
+            createNumber(path + '.currentEnergyConsumption', 'The amount of energy used by the current running program up to the present moment.', currentDeviceState.ecoFeedback.currentEnergyConsumption.value.valueOf(), currentDeviceState.ecoFeedback.currentEnergyConsumption.unit.valueOf(), 'value.power.consumption');
+            createNumber(path + '.energyForecast', 'The relative energy usage for the selected program from 0 to 100.', (currentDeviceState.ecoFeedback.energyForecast * 100), '%', 'value');
+        }
+    }
+    // NEW API 1.0.4 - batteryLevel - create only if not null
+    if (currentDeviceState.batteryLevel) {
+        createNumber(path + '.batteryLevel', 'The batteryLevel object returns the charging level of a builtin battery as a percentage value between 0 .. 100', currentDeviceState.batteryLevel, '%', 'value');
+    }
+
 }
 
 function addDeviceNicknameAction(path, mieledevice) {
@@ -769,7 +794,7 @@ function addMieleDeviceActions(path, DeviceType){
  *
  * @param key   {string} secret key used for decryption
  * @param value {string} string that needs to be decrypted
- * @returns     {string} decrypted version of dtring given in param value
+ * @returns     {string} decrypted version of string given in param value
  */
 function decrypt(key, value) {
     let result = '';

@@ -34,20 +34,22 @@ To install, do the following:
 
 ## ToDo
 * Implement MieleAPI 1.0.4 - https://www.miele.com/developer/news.html
-* Check for new Warning with js-controller 3.2
+
 
 
 ## Changelog
 ### 3.0.0 (2021-02-xx)
 *  (grizzelbee) New: BREAKING CHANGE: Making use of build-in password de-/encryption. This raises the need to re-enter your passwords again, because the old ones can't be decrypted anymore.
+*  (grizzelbee) New: [70](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/70) Implements Miele API 1.0.4
+*  (grizzelbee) New: [64](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/64) Introduces data point estimatedFinishingTime
 *  (grizzelbee) Upd: [73](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/73) BREAKING CHANGE: Removed white-spaces from any ID in device tree. This creates completely new device trees. So please delete the old ones.  
 *  (grizzelbee) Upd: removed david-dm badge
 *  (grizzelbee) Upd: updated dependencies
 *  (grizzelbee) Fix: added passwords to encryptedNative
 *  (grizzelbee) Fix: added passwords to protectedNative
 *  (grizzelbee) Fix: [63](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/63) added missing info.connection object to io-package
+*  (grizzelbee) Fix: [63](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/63) Fixed new Warnings introduced with js-controller 3.2
 *  (grizzelbee) Fix: [74](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/74) Light-Actions should work now
-
 
 ### 2.0.3 (2020-09-15)
 * (grizzelbee) Upd: Updated country list in config dialog
