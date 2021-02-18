@@ -16,7 +16,6 @@ const adapterName = require('./package.json').name.split('.').pop();
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const axios = require('axios');
 const oauth = require('axios-oauth-client');
-const salt = 'Zgfr56gFe87jJOM';
 const START = 1;
 const STOP  = 2;
 const PAUSE = 3;
@@ -93,43 +92,13 @@ function startadapter(options) {
         },
         // is called when databases are connected and adapter received configuration.
         // start here!
-        ready: () => {
-            /*
-            adapter.getForeignObject('system.config', (err, obj) => {
-                if (obj && obj.native && obj.native.secret) {
-                    //noinspection JSUnresolvedVariable
-                    adapter.config.Miele_pwd = decrypt(obj.native.secret, adapter.config.Miele_pwd);
-                    adapter.config.Client_secret = decrypt(obj.native.secret, adapter.config.Client_secret);
-                } else {
-                    //noinspection JSUnresolvedVariable
-                    adapter.config.Miele_pwd = decrypt(salt, adapter.config.Miele_pwd);
-                    adapter.config.Client_secret = decrypt(salt, adapter.config.Client_secret);
-                }
-
-             */
+        ready: async () => {
                 // Execute main after pwds have been decrypted
                 // The adapters config (in the instance object everything under the attribute "native") is accessible via
                 // ADAPTER.config:
                 if ( adapterConfigIsValid() ) {
-                    //main();
-
-
-                    adapter.getForeignObject('system.config', (err, obj) => {
-                        if (adapter.supportsFeature && adapter.supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
-                            if (obj && obj.native && obj.native.secret) {
-                                //noinspection JSUnresolvedVariable
-                                adapter.config.Miele_pwd = adapter.decrypt(obj.native.secret, adapter.config.Miele_pwd);
-                                adapter.config.Client_secret = adapter.decrypt(obj.native.secret, adapter.config.Client_secret);
-                            }
-                            main();
-                        } else {
-                            throw new Error('This adapter requires at least js-controller V3.0.0. Your system is not compatible. Please update.');
-                        }
-                    });
-
-
-
-
+                    await decryptPasswords();
+                    main();
                 } else {
                     adapter.log.warn('Adapter config is invalid. Please fix.');
                     adapter.setState('info.connection', false);
@@ -145,6 +114,28 @@ function startadapter(options) {
     return adapter;
 }
 
+
+async function decryptPasswords() {
+    return new Promise((resolve, reject) => {
+            if (adapter.supportsFeature && adapter.supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
+                adapter.getForeignObject('system.config', (err, obj) => {
+                    if (obj && obj.native && obj.native.secret) {
+                        //noinspection JSUnresolvedVariable
+                        adapter.config.Miele_pwd = adapter.decrypt(obj.native.secret, adapter.config.Miele_pwd);
+                        adapter.config.Client_secret = adapter.decrypt(obj.native.secret, adapter.config.Client_secret);
+                        resolve(true);
+                    } else {
+                        reject('Error during password decryption: ' + err);
+                    }
+                });
+            } else {
+                reject('This adapter requires at least js-controller V3.0.0. Your system is not compatible. Please update your system or use max. v2.0.3 of this adapter.');
+            }
+    })
+}
+
+
+
 function addActionButton(path, action, description, buttonType){
    adapter.log.debug('addActionButton: Path['+ path +']');
    buttonType = buttonType || "button";
@@ -159,8 +150,9 @@ function addActionButton(path, action, description, buttonType){
             native: {"type": buttonType // "button"
             }
         }
-    );
-    adapter.subscribeStates(path + '.ACTIONS.' + action);
+    , () => {
+           adapter.subscribeStates(path + '.ACTIONS.' + action);
+       });
 }
 
 function adapterConfigIsValid() {
@@ -465,8 +457,9 @@ function createBool(path, description, value, role){
             "role": role,
             "type": "boolean"
         }
+    }, () => {
+        adapter.setState(path, value, true);
     });
-    adapter.setState(path, value, true);
 }
 
 function createString(path, description, value){
@@ -479,8 +472,9 @@ function createString(path, description, value){
             "role": "state",
             "type": "string"
         }
+    }, () => {
+        adapter.setState(path, value, true);
     });
-    adapter.setState(path, value, true);
 }
 
 function createStringAndRaw(path, description, key_localized, value_localized, value_raw, unit){
@@ -493,8 +487,9 @@ function createStringAndRaw(path, description, key_localized, value_localized, v
             "role": "value.raw",
             "type": "number"
         }
+    }, ()  => {
+        adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
     });
-    adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
 
     createExtendObject(path + '.' + key_localized, {
         type: 'state',
@@ -504,8 +499,9 @@ function createStringAndRaw(path, description, key_localized, value_localized, v
             "role": "value",
             "type": "string"
         }
+    }, () => {
+        adapter.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
     });
-    adapter.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
 }
 
 function createTime(path, description, value, role){
@@ -515,13 +511,14 @@ function createTime(path, description, value, role){
         common: {"name": description,
             "read": true,
             "write":false,
-            "role": "value",
+            "role": role,
             "type": "string"
         }
+    }, () => {
+        adapter.log.debug('createTime: Path:['+ path +'], value:['+ value +']');
+        let assembledValue = value[0] + ':' + (value[1]<10? '0': '') + value[1];
+        adapter.setState(path, assembledValue, true);
     });
-    adapter.log.debug('createTime: Path:['+ path +'], value:['+ value +']');
-    let assembledValue = value[0] + ':' + (value[1]<10? '0': '') + value[1];
-    adapter.setState(path, assembledValue, true);
 }
 
 function createNumber(path, description, value, unit, role){
@@ -549,8 +546,9 @@ function createNumber(path, description, value, unit, role){
             "type": "number",
             "unit": unit
         }
+    }, () => {
+        adapter.setState(path, value, true);
     });
-    adapter.setState(path, value, true);
 }
 
 
@@ -589,7 +587,7 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
 * @param  currentDeviceState
  */
 function addMieleDeviceState(path, currentDeviceState){
-    let now = Date.getTime();
+    let now = new Date;
     adapter.log.debug('addMieleDeviceState: Path: [' + path + ']');
     // set the values for redundant state indicators
     createBool(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
@@ -601,7 +599,7 @@ function addMieleDeviceState(path, currentDeviceState){
     createStringAndRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
     createTime(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
 
-    createTime(path + '.EstimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', (  now + currentDeviceState.remainingTime));
+    createTime(path + '.EstimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', (  now.getTime() + currentDeviceState.remainingTime));
 
     createTime(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
     createArray(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
@@ -626,9 +624,10 @@ function addDeviceNicknameAction(path, mieledevice) {
             type: 'string'
         },
         native: {}
+    }, () => {
+        adapter.setState(path + '.ACTIONS.Nickname', (mieledevice.ident.deviceName === '' ? mieledevice.ident.type.value_localized : mieledevice.ident.deviceName), true);
+        adapter.subscribeStates(path + '.ACTIONS.Nickname');
     });
-    adapter.setState(path + '.ACTIONS.Nickname', (mieledevice.ident.deviceName === '' ? mieledevice.ident.type.value_localized : mieledevice.ident.deviceName), true);
-    adapter.subscribeStates(path + '.ACTIONS.Nickname');
 }
 
 function addPowerActionButtons(path) {
@@ -908,9 +907,9 @@ async function APIStartAction(auth, path, action, value) {
     switch (action) {
         case 'Nickname': currentAction = {'deviceName':value};
             break;
-        case 'Power On': currentAction = {'powerOn':true};
+        case 'Power_On': currentAction = {'powerOn':true};
             break;
-        case 'Power Off': currentAction = {'powerOff':true};
+        case 'Power_Off': currentAction = {'powerOff':true};
             break;
         case 'Start': currentAction = {'processAction':START};
             break;
@@ -918,17 +917,17 @@ async function APIStartAction(auth, path, action, value) {
             break;
         case 'Pause': currentAction = {'processAction':PAUSE};
             break;
-        case 'Start Superfreezing': currentAction = {processAction:START_SUPERFREEZING};
+        case 'Start_Superfreezing': currentAction = {processAction:START_SUPERFREEZING};
             break;
-        case 'Stop Superfreezing': currentAction = {processAction:STOP_SUPERFREEZING};
+        case 'Stop_Superfreezing': currentAction = {processAction:STOP_SUPERFREEZING};
             break;
-        case 'Start Supercooling': currentAction = {processAction:START_SUPERCOOLING};
+        case 'Start_Supercooling': currentAction = {processAction:START_SUPERCOOLING};
             break;
-        case 'Stop Supercooling': currentAction = {processAction:STOP_SUPERCOOLING};
+        case 'Stop_Supercooling': currentAction = {processAction:STOP_SUPERCOOLING};
             break;
-        case 'Light On': currentAction = {light:LIGHT_ON};
+        case 'Light_On': currentAction = {light:LIGHT_ON};
             break;
-        case 'Light Off': currentAction = {light:LIGHT_OFF};
+        case 'Light_Off': currentAction = {light:LIGHT_OFF};
             break;
     }
     adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
