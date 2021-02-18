@@ -34,10 +34,7 @@ To install, do the following:
 
 ## ToDo
 * Implement MieleAPI 1.0.4 - https://www.miele.com/developer/news.html
-* Add Sentry
 * Check for new Warning with js-controller 3.2
-* encrypt password(s) using js-controller
-
 
 
 ## Changelog
@@ -49,6 +46,7 @@ To install, do the following:
 *  (grizzelbee) Fix: added passwords to encryptedNative
 *  (grizzelbee) Fix: added passwords to protectedNative
 *  (grizzelbee) Fix: [63](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/63) added missing info.connection object to io-package
+*  (grizzelbee) Fix: [74](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/74) Light-Actions should work now
 
 
 ### 2.0.3 (2020-09-15)

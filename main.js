@@ -917,17 +917,17 @@ async function APIStartAction(auth, path, action, value) {
             break;
         case 'Pause': currentAction = {'processAction':PAUSE};
             break;
-        case 'Start_Superfreezing': currentAction = {processAction:START_SUPERFREEZING};
+        case 'Start_Superfreezing': currentAction = {'processAction':START_SUPERFREEZING};
             break;
-        case 'Stop_Superfreezing': currentAction = {processAction:STOP_SUPERFREEZING};
+        case 'Stop_Superfreezing': currentAction = {'processAction':STOP_SUPERFREEZING};
             break;
-        case 'Start_Supercooling': currentAction = {processAction:START_SUPERCOOLING};
+        case 'Start_Supercooling': currentAction = {'processAction':START_SUPERCOOLING};
             break;
-        case 'Stop_Supercooling': currentAction = {processAction:STOP_SUPERCOOLING};
+        case 'Stop_Supercooling': currentAction = {'processAction':STOP_SUPERCOOLING};
             break;
-        case 'Light_On': currentAction = {light:LIGHT_ON};
+        case 'Light_On': currentAction = {'light':LIGHT_ON};
             break;
-        case 'Light_Off': currentAction = {light:LIGHT_OFF};
+        case 'Light_Off': currentAction = {'light':LIGHT_OFF};
             break;
     }
     adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
