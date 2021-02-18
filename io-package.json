@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "2.0.3",
+        "version": "3.0.0-beta",
         "news": {
+            "3.0.0": {
+                "en": "BREAKING CHANGE Release see changelog for all changes.",
+                "de": "BREAKING CHANGE Release Alle Änderungen finden Sie im Changelog.",
+                "ru": "BREAKING CHANGE Release см. В журнале изменений все изменения.",
+                "pt": "QUEBRANDO MUDANÇAS Release veja o changelog para todas as mudanças.",
+                "nl": "BREAKING CHANGE Release zie het changelog voor alle wijzigingen.",
+                "fr": "BREAKING CHANGE Relâchez voir changelog pour tous les changements.",
+                "it": "CAMBIAMENTI ROTTURANTI Rilasciare vedere il log delle modifiche per tutte le modifiche.",
+                "es": "CAMBIO IMPORTANTE Lanzamiento ver registro de cambios para todos los cambios.",
+                "pl": "NIESAMOWITA ZMIANA Wydanie Zobacz listę zmian dla wszystkich zmian.",
+                "zh-cn": "BREAKING CHANGE发布，请参阅更改日志以了解所有更改。"
+            },
             "2.0.3": {
                 "en": "Added debug code and fixed some minor bugs.",
                 "de": "Debug-Code hinzugefügt und einige kleinere Fehler behoben.",
@@ -119,6 +131,12 @@
         "type": "household",
         "connectionType": "cloud",
         "dataSource": "poll",
+        "dependencies": [
+            {
+                "js-controller": ">=3.0.0",
+                "admin": ">=4.0.9"
+            }
+        ],
         "license": "MIT",
         "messagebox": true,
         "subscribe": "messagebox"
@@ -130,7 +148,31 @@
         "Client_ID": "",
         "locale": "de",
         "oauth2_vg": "de-DE",
-        "pollinterval": 3
+        "pollinterval": 1,
+        "pollUnit": 60
     },
-    "objects": []
+    "encryptedNative": [
+        "Client_secret",
+        "Miele_pwd"
+    ],
+    "protectedNative": [
+        "Client_secret",
+        "Miele_pwd"
+    ],
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "If connected to miele cloud service",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
+    ]
 }
