@@ -1012,13 +1012,13 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
             if (error.response) {
                 // Request made and server responded
                 adapter.log.error('Request made and server responded:');
-                adapter.log.error(error.response.data);
+                adapter.log.error(JSON.stringify(error.response.data));
                 adapter.log.error(error.response.status);
-                adapter.log.error(error.response.headers);
+                adapter.log.error(JSON.stringify(error.response.headers));
             } else if (error.request) {
                 // The request was made but no response was received
                 adapter.log.error('The request was made but no response was received:');
-                adapter.log.error(error.request);
+                adapter.log.error(JSON.stringify(error.request));
             } else {
                 // Something happened in setting up the request that triggered an Error
                 adapter.log.error('Something happened in setting up the request that triggered an Error:');
