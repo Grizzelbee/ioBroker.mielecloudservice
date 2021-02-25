@@ -799,20 +799,6 @@ function addMieleDeviceActions(path, DeviceType){
 }
 
 /*
- * decrypt
- *
- * @param key   {string} secret key used for decryption
- * @param value {string} string that needs to be decrypted
- * @returns     {string} decrypted version of string given in param value
- */
-function decrypt(key, value) {
-    let result = '';
-    for (let i = 0; i < value.length; ++i) {
-        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-    }
-    return result;
-}
-/*
  * refreshMieledata
  *
  * @param Auth {object}  OAuth2 object containing required credentials
