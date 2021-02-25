@@ -595,11 +595,6 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
 * @param  currentDeviceState
  */
 async function addMieleDeviceState(path, currentDeviceState){
-    const options = {
-        hour12 : false,
-        hour:  "2-digit",
-        minute: "2-digit"
-    }
     let now = new Date;
     let estimatedEndTime = new Date;
     adapter.log.debug('addMieleDeviceState: Path: [' + path + ']');
@@ -613,7 +608,7 @@ async function addMieleDeviceState(path, currentDeviceState){
     createStringAndRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
     createTime(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
     estimatedEndTime.setMinutes((now.getMinutes() + ((currentDeviceState.remainingTime[0]*60) + (currentDeviceState.remainingTime[1]*1))));
-    await createString(path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', estimatedEndTime.toLocaleTimeString(options), 'text');
+    await createString(path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', estimatedEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), 'text');
     createTime(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
     createArray(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
     createArray(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
