@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "3.0.0-beta",
+        "version": "3.0.1",
         "news": {
+            "3.0.1": {
+                "en": "Maintenance release - Bugfixes and minor improvements.",
+                "de": "Wartungsversion - Bugfixes und kleinere Verbesserungen.",
+                "ru": "Технический релиз - исправления и мелкие улучшения.",
+                "pt": "Versão de manutenção - correções de bugs e pequenas melhorias.",
+                "nl": "Onderhoudsrelease - Bugfixes en kleine verbeteringen.",
+                "fr": "Version de maintenance - Corrections de bogues et améliorations mineures.",
+                "it": "Versione di manutenzione: correzioni di bug e miglioramenti minori.",
+                "es": "Versión de mantenimiento: correcciones de errores y mejoras menores.",
+                "pl": "Wydanie konserwacyjne - poprawki błędów i drobne ulepszenia.",
+                "zh-cn": "维护版本-错误修正和较小的改进。"
+            },
             "3.0.0": {
                 "en": "BREAKING CHANGE Release see changelog for all changes.",
                 "de": "BREAKING CHANGE Release Alle Änderungen finden Sie im Changelog.",
