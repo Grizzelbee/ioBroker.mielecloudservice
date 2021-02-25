@@ -171,6 +171,9 @@ Here is a list of what these raw values stand for:
 *  (grizzelbee) Upd: Actions are tested before sending whether they are permitted in current device state
 *  (grizzelbee) Upd: estimatedEndTime doesn't show seconds anymore
 *  (grizzelbee) Upd: Improved documentation
+*  (grizzelbee) Upd: removed unused function decrypt
+*  (grizzelbee) Upd: removed superfluent parameters
+
 
 ### 3.0.0 (2021-02-18)
 > Hint: ecoFeedback objects are created on the first run of the device. This allows to only create them, when they contain data.
