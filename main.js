@@ -100,7 +100,7 @@ function startadapter(options) {
                 // ADAPTER.config:
                 if ( adapterConfigIsValid() ) {
                     await decryptPasswords();
-                    main();
+                    await main();
                 } else {
                     adapter.log.warn('Adapter config is invalid. Please fix.');
                     adapter.setState('info.connection', false);
