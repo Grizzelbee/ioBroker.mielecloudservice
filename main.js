@@ -52,6 +52,9 @@ function startadapter(options) {
                 if (auth.access_token) {
                     APILogOff(auth, "access_token")
                 }
+                auth = undefined;
+                pollTimeout = null;
+                expiryDate = null;
                 adapter.log.info('Unloading MieleCloudService...');
                 callback();
             } catch (e) {
@@ -97,16 +100,20 @@ function startadapter(options) {
         ready: async () => {
                 // Execute main after pwds have been decrypted
                 // The adapters config (in the instance object everything under the attribute "native") is accessible via
-                // ADAPTER.config:
+                // adapter.config:
                 if ( adapterConfigIsValid() ) {
-                    await decryptPasswords();
-                    main();
+                    decryptPasswords()
+                        .then(() => {
+                            main();
+                        })
+                        .catch((error) => {
+                            adapter.log.error(error);
+                        });
                 } else {
                     adapter.log.warn('Adapter config is invalid. Please fix.');
                     adapter.setState('info.connection', false);
                     adapter.terminate('Invalid Configuration.', 11);
                 }
-            // });
         }
     });
     // you have to call the adapter function and pass a options object
@@ -115,7 +122,6 @@ function startadapter(options) {
 
     return adapter;
 }
-
 
 async function decryptPasswords() {
     return new Promise((resolve, reject) => {
@@ -135,8 +141,6 @@ async function decryptPasswords() {
             }
     })
 }
-
-
 
 function addActionButton(path, action, description, buttonType){
    adapter.log.debug('addActionButton: Path['+ path +']');
@@ -158,38 +162,37 @@ function addActionButton(path, action, description, buttonType){
 }
 
 function adapterConfigIsValid() {
-    let configIsValid = true;
+        let configIsValid = true;
 
-    if ('' === adapter.config.Miele_account) {
-        adapter.log.warn('Miele account is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.Miele_pwd) {
-        adapter.log.warn('Miele password is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.Client_ID) {
-        adapter.log.warn('Miele API client ID is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.Client_secret) {
-        adapter.log.warn('Miele API client secret is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.locale) {
-        adapter.log.warn('Locale is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.oauth2_vg) {
-        adapter.log.warn('OAuth2_vg is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.pollinterval) {
-        adapter.log.warn('PollInterval is missing.');
-        configIsValid = false;
-    }
-
-    return configIsValid;
+        if ('' === adapter.config.Miele_account) {
+            adapter.log.warn('Miele account is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.Miele_pwd) {
+            adapter.log.warn('Miele password is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.Client_ID) {
+            adapter.log.warn('Miele API client ID is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.Client_secret) {
+            adapter.log.warn('Miele API client secret is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.locale) {
+            adapter.log.warn('Locale is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.oauth2_vg) {
+            adapter.log.warn('OAuth2_vg is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.pollinterval) {
+            adapter.log.warn('PollInterval is missing.');
+            configIsValid = false;
+        }
+        return configIsValid;
 }
 
 function createExtendObject(id, objData, callback) {
@@ -449,34 +452,40 @@ function addMieleDevice(path, mieleDevice){
 }
 
 function createBool(path, description, value, role){
-    role = role || 'indicator';
-    adapter.log.debug('createBool: Path['+ path +'] Value[' + value + ']');
-    createExtendObject(path, {
-        type: 'state',
-        common: {"name": description,
-            "read": true,
-            "write":false,
-            "role": role,
-            "type": "boolean"
-        }
-    }, () => {
-        adapter.setState(path, value, true);
-    });
+    return new Promise(resolve => {
+        role = role || 'indicator';
+        adapter.log.debug('createBool: Path['+ path +'] Value[' + value + ']');
+        createExtendObject(path, {
+            type: 'state',
+            common: {"name": description,
+                "read": true,
+                "write":false,
+                "role": role,
+                "type": "boolean"
+            }
+        }, () => {
+            adapter.setState(path, value, true);
+        });
+        resolve(true);
+    })
 }
 
 function createString(path, description, value){
-    adapter.log.debug('createString: Path['+ path +'] Value[' + value + ']');
-    createExtendObject(path, {
-        type: 'state',
-        common: {"name": description,
-            "read":  true,
-            "write": false,
-            "role": "state",
-            "type": "string"
-        }
-    }, () => {
-        adapter.setState(path, value, true);
-    });
+    return new Promise(resolve => {
+        adapter.log.debug('createString: Path['+ path +'] Value[' + value + ']');
+        createExtendObject(path, {
+            type: 'state',
+            common: {"name": description,
+                "read":  true,
+                "write": false,
+                "role": "text",
+                "type": "string"
+            }
+        }, () => {
+            adapter.setState(path, value, true);
+        });
+        resolve(true);
+    })
 }
 
 function createStringAndRaw(path, description, key_localized, value_localized, value_raw, unit){
@@ -498,7 +507,7 @@ function createStringAndRaw(path, description, key_localized, value_localized, v
         common: {"name":  description,
             "read":  true,
             "write": false,
-            "role": "value",
+            "role": "text",
             "type": "string"
         }
     }, () => {
@@ -569,7 +578,7 @@ function createArray(path, description, value){
             MyPath = path + '_' + n;
         }
         adapter.log.debug('createArray: Path:['   + MyPath  + ']');
-        adapter.log.debug('createArray:  value:[' + value   + ']');
+        adapter.log.debug('createArray:  value:[' + JSON.stringify(value)   + ']');
         adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
         createNumber(MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
     }
@@ -588,13 +597,13 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
 * @param  path
 * @param  currentDeviceState
  */
-function addMieleDeviceState(path, currentDeviceState){
+async function addMieleDeviceState(path, currentDeviceState){
     let now = new Date;
     let estimatedEndTime = new Date;
     adapter.log.debug('addMieleDeviceState: Path: [' + path + ']');
     // set the values for redundant state indicators
-    createBool(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
-    createBool(path + '.signalInUse', 'Indicates whether the device is in use or switched off.', currentDeviceState.status.value_raw !== 1, 'indicator.InUse');
+    await createBool(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
+    await createBool(path + '.signalInUse', 'Indicates whether the device is in use or switched off.', currentDeviceState.status.value_raw !== 1, 'indicator.InUse');
     // regular states
     createStringAndRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw, '');
     createStringAndRaw(path, 'ID of the running Program', currentDeviceState.ProgramID.key_localized, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw, '');
@@ -602,23 +611,23 @@ function addMieleDeviceState(path, currentDeviceState){
     createStringAndRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
     createTime(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
     estimatedEndTime.setMinutes((now.getMinutes() + ((currentDeviceState.remainingTime[0]*60) + (currentDeviceState.remainingTime[1]*1))));
-    createString(path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', estimatedEndTime.toLocaleTimeString(), 'text');
+    await createString(path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', estimatedEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     createTime(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
     createArray(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
     createArray(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
-    createBool(path + '.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo);
-    createBool(path + '.signalFailure', 'The SignalFailure field indicates, if a failure is active for this Device.', currentDeviceState.signalFailure);
-    createBool(path + '.signalDoor', 'The SignalDoor field indicates, if a door-open message is active for this Device.', currentDeviceState.signalDoor);
+    await createBool(path + '.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo);
+    await createBool(path + '.signalFailure', 'The SignalFailure field indicates, if a failure is active for this Device.', currentDeviceState.signalFailure);
+    await createBool(path + '.signalDoor', 'The SignalDoor field indicates, if a door-open message is active for this Device.', currentDeviceState.signalDoor);
     // Light - create only if not null
     if (currentDeviceState.light) {
-        createString(path + '.Light', 'The light field indicates the status of the device light.', currentDeviceState.light === 1 ? 'Enabled' : (currentDeviceState.light === 2 ? 'Disabled' : 'Invalid'), 'text');
+        await createString(path + '.Light', 'The light field indicates the status of the device light.', currentDeviceState.light === 1 ? 'Enabled' : (currentDeviceState.light === 2 ? 'Disabled' : 'Invalid'));
     }
     // NEW API 1.0.4 - ambientLight
     if (currentDeviceState.ambientLight) {
-        createString(path + '.ambientLight', 'The ambientLight field indicates the status of the device ambient light.', currentDeviceState.ambientLight, 'text');
+        await createString(path + '.ambientLight', 'The ambientLight field indicates the status of the device ambient light.', currentDeviceState.ambientLight);
     }
-    createBool(path + '.fullRemoteControl', 'The device can be controlled from remote.', currentDeviceState.remoteEnable.fullRemoteControl);
-    createBool(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
+    await createBool(path + '.fullRemoteControl', 'The device can be controlled from remote.', currentDeviceState.remoteEnable.fullRemoteControl);
+    await createBool(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
     // NEW API 1.0.4 - ecoFeedback
     // the ecoFeedback object returns the amount of water and energy used by the current running program up to the present moment.
     // Furthermore it returns a forecast for water and energy consumption for a selected program.
@@ -648,7 +657,8 @@ function addDeviceNicknameAction(path, mieledevice) {
             name: 'Nickname of your device. Can be edited in Miele APP or here!',
             read: true,
             write: true,
-            type: 'string'
+            type: 'string',
+            role:'text'
         },
         native: {}
     }, () => {
@@ -792,34 +802,20 @@ function addMieleDeviceActions(path, DeviceType){
 }
 
 /*
- * decrypt
- *
- * @param key   {string} secret key used for decryption
- * @param value {string} string that needs to be decrypted
- * @returns     {string} decrypted version of string given in param value
- */
-function decrypt(key, value) {
-    let result = '';
-    for (let i = 0; i < value.length; ++i) {
-        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-    }
-    return result;
-}
-/*
- * refreshMieledata
+ * refreshMieleData
  *
  * @param Auth {object}  OAuth2 object containing required credentials
  * @returns    {void}    returns nothing
  */
-async function refreshMieledata(auth){
-    adapter.log.debug('refreshMieledata: get data from API');
+async function refreshMieleData(auth){
+    adapter.log.debug('refreshMieleData: get data from API');
     try {
         let result = await APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
-        adapter.log.debug('refreshMieledata: handover all devices data to splitMieledevices');
-        adapter.log.debug('refreshMieledata: data [' + JSON.stringify(result) + ']');
+        adapter.log.debug('refreshMieleData: handover all devices data to splitMieleDevices');
+        adapter.log.debug('refreshMieleData: data [' + JSON.stringify(result) + ']');
         splitMieleDevices(result);
     } catch(error) {
-        adapter.log.error('[refreshMieledata] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
+        adapter.log.error('[refreshMieleData] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
     }
 }
 
@@ -828,13 +824,14 @@ async function refreshMieledata(auth){
  */
 async function main() {
     try {
+        // todo: try 10 logins when it fails with a delay of 5 min each
         auth = await APIGetAccessToken();
         if (auth.hasOwnProperty('access_token') ) {
             adapter.log.info(`Starting Polltimer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
             // start refresh scheduler with interval from adapters config
             pollTimeout= setTimeout(function schedule() {
                 adapter.log.debug("Updating device states (polling API scheduled).");
-                refreshMieledata( auth );
+                refreshMieleData( auth );
                 pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
             } , 100);
         } else {
@@ -863,13 +860,6 @@ async function APIGetAccessToken() {
     adapter.log.debug('OAuth2 grant_type: [password]');
     adapter.log.debug('options OAuth2-VG: [' + adapter.config.oauth2_vg + ']');
     adapter.log.debug('config API Language: [' + adapter.config.locale + ']');
-    /*
-    // Logging of credentials has been commented out intentionally. May be enabled again by user for debugging purposes
-    adapter.log.debug('options Miele_account: [' + adapter.config.Miele_account + ']');
-    adapter.log.debug('options Client_ID: ['     + adapter.config.Client_ID     + ']');
-    adapter.log.debug('options Miele_Password: ['+ adapter.config.Miele_pwd     + ']');
-    adapter.log.debug('options Client_Secret: [' + adapter.config.Client_secret + ']');
-     */
     try {
         const auth = await getOwnerCredentials();
         expiryDate = new Date();
@@ -878,11 +868,40 @@ async function APIGetAccessToken() {
         adapter.setState('info.connection', true);
         return auth;
     } catch (error) {
-        adapter.log.error('OAuth2 returned an error!');
-        adapter.log.error(error);
-        adapter.log.error('Are your credentials okay? Please double check them in your adapters configuration.');
+        adapter.log.error('OAuth2 returned an error during first login!');
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            switch (error.response.status) {
+                case 401 : // unauthorized
+                    adapter.log.error('Error: Unable to authenticate user! Your credentials seem to be invalid. Please double check and fix them.');
+                    adapter.log.error('Credentials used for login:');
+                    adapter.log.error('options Miele_account: [' + adapter.config.Miele_account + ']');
+                    adapter.log.error('options Miele_Password: ['+ adapter.config.Miele_pwd     + ']');
+                    adapter.log.error('options Client_ID: ['     + adapter.config.Client_ID     + ']');
+                    adapter.log.error('options Client_Secret: [' + adapter.config.Client_secret + ']');
+                    adapter.log.error('options country: ['       + adapter.config.oauth2_vg     + ']');
+                    adapter.log.warn('IMPORTANT!! Mask/Delete your credentials when posting your log online!');
+                    adapter.terminate('Terminating adapter due to inability to authenticate.', 11);
+                    break;
+                case 429: // endpoint currently not available
+                    adapter.log.error('Error: Endpoint: [' + BaseURL + 'thirdparty/token/] is currently not available.');
+                default:
+                    adapter.log.error('[error.response.data]: ' + ((typeof error.response.data === 'object') ? stringify(error.response.data) : error.response.data));
+                    adapter.log.error('[error.response.status]: ' + ((typeof error.response.status === 'object') ? stringify(error.response.status) : error.response.status));
+                    adapter.log.error('[error.response.headers]: ' + ((typeof error.response.headers === 'object') ? stringify(error.response.headers) : error.response.headers));
+                    break;
+            }
+        } else if (error.request) {
+            // The request was made but no response was received
+            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+            // http.ClientRequest in node.js
+            adapter.log.error('[error.request]: ' + ((typeof error.request === 'object') ? stringify(error.request) : error.request));
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            adapter.log.error('[Error]: ' + error.message);
+        }
         adapter.setState('info.connection', false);
-        adapter.terminate('Terminating adapter due to error on token request.', 11);
     }
 }
 
@@ -924,6 +943,29 @@ async function APILogOff(auth, token_type) {
          .catch(error => {adapter.log.error('[APILogOff] ' + JSON.stringify(error) + ' Stack: '+error.stack)});
 }
 
+async function actionIsAllowedInCurrentState(auth, deviceId, action){
+    return new Promise( (resolve, reject) => {
+        // Test action
+        APISendRequest(auth, `v1/devices/${deviceId}/actions`, 'GET', action)
+            .then( (result) => {
+                    adapter.log.debug(`All action-states: [${JSON.stringify(result)}].`);
+                    if ( ( (typeof result[action] === 'boolean') && (result[action]) ) ) {
+                        adapter.log.debug(`Action [${action}] is permitted in this device state.`);
+                        resolve(true);
+                    } else if ( ( (typeof result[action] === 'object') && (result[action].length > 0) ) ) {
+                        adapter.log.debug(`Action [${action}] seems to be permitted in this device state.`);
+                        resolve(true);
+                    } else {
+                        reject(`Action [${action}] is not permitted in the current device state.` );
+                    }
+            })
+            .catch( (error) => {
+                reject('An error occurred during a cloud API request: ' + JSON.stringify(error) );
+            });
+    })
+}
+
+
 async function APIStartAction(auth, path, action, value) {
     let currentAction;
     let paths = path.split('.');    // transform into array
@@ -957,18 +999,18 @@ async function APIStartAction(auth, path, action, value) {
         case 'Light_Off': currentAction = {'light':LIGHT_OFF};
             break;
     }
-    adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
     try {
-        APISendRequest(auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
-        createString(currentPath + '.Action information', 'Additional Information returned from API.', action + ': ' + result.message);
-        if (result.status >= 200 && result.status < 300) {
+        if ( await actionIsAllowedInCurrentState(auth, device, Object.keys(currentAction)[0]) ){
+            adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
+            const result = await APISendRequest(auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
+            await createString(currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
+            await createBool(currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true );
             adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
-            createBool(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', true);
-            refreshMieledata(auth);
-        } else if (result.status >= 300){
-            createBool(currentPath + '.Action successful', 'Indicator if last executed Action has been successful.', false);
+            await refreshMieleData(auth);
         }
     } catch(err) {
+        await createBool(currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false);
+        await createString(currentPath + '.Action_information', 'Additional Information returned from API.', JSON.stringify(err));
         adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
     }
 }
@@ -988,56 +1030,62 @@ async function APISendRequest(auth, Endpoint, Method, actions) {
         data: actions
     };
 
-        adapter.log.debug('APISendRequest: Awaiting requested data.');
-        try {
-            let response = await axios(options);
-            adapter.log.debug('API returned Status: [' + response.status + ']');
-            switch (response.status) {
+    function verifyData(verifiedData){
+        return new Promise((resolve) => {
+            switch (verifiedData.status) {
                 case 202:
-                    response.data =  {"message": "Accepted, processing has not been completed."};
+                    verifiedData.data =  {"message": "Accepted, processing has not been completed."};
                     break;
                 case 204: // OK, No Content
-                    response.data =  {"message": "OK"};
+                    verifiedData.data =  {"message": "OK"};
                     break;
             }
-            adapter.log.debug('API returned Data: [' + JSON.stringify(response.data) + ']');
-            return response.data;
-        } catch(error) {
-            adapter.log.debug('Given parameters:');
-            adapter.log.debug('Auth: [' + JSON.stringify(auth) + ']');
-            adapter.log.debug('Endpoint: [' + Endpoint + ']');
-            adapter.log.debug('Method: [' + Method + ']');
-            adapter.log.debug('Actions: [' + actions + ']');
-            adapter.log.error('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
-            if (error.response) {
-                // Request made and server responded
-                adapter.log.error('Request made and server responded:');
-                adapter.log.error(error.response.data);
-                adapter.log.error(error.response.status);
-                adapter.log.error(error.response.headers);
-            } else if (error.request) {
-                // The request was made but no response was received
-                adapter.log.error('The request was made but no response was received:');
-                adapter.log.error(error.request);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                adapter.log.error('Something happened in setting up the request that triggered an Error:');
-                adapter.log.error('Error', error.message);
-            }
-            switch (error.response.status) {
-                case 401:
-                    try {
-                        adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
-                        auth = APIRefreshToken(auth.refresh_token);
-                    } catch (err) {
-                        adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
-                    }
-                    break;
-                case 504:
-                    adapter.log.error('HTTP 504: Gateway Timeout! This error occured outside of this adapter. Please google it for possible reasons and solutions.');
-                    break;
-            }
+            resolve(verifiedData);
+        })
+    }
+
+    adapter.log.debug('APISendRequest: Awaiting requested data.');
+    try {
+        const response = await axios(options);
+        const verifiedData = await verifyData(response);
+        adapter.log.debug('API returned Status: [' + verifiedData.status + ']');
+        return verifiedData.data;
+    } catch(error) {
+        adapter.log.debug('Given parameters:');
+        adapter.log.debug('Auth: [' + JSON.stringify(auth) + ']');
+        adapter.log.debug('Endpoint: [' + Endpoint + ']');
+        adapter.log.debug('Method: [' + Method + ']');
+        adapter.log.debug('Actions: [' + JSON.stringify(actions) + ']');
+        adapter.log.error('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
+        if (error.response) {
+            // Request made and server responded
+            adapter.log.error('Request made and server responded:');
+            adapter.log.error('Response.status:' + error.response.status);
+            adapter.log.error('Response.headers: ' + JSON.stringify(error.response.headers));
+            adapter.log.error('Response.data: ' + JSON.stringify(error.response.data));
+        } else if (error.request) {
+            // The request was made but no response was received
+            adapter.log.error('The request was made but no response was received:');
+            adapter.log.error(JSON.stringify(error.request));
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            adapter.log.error('Something happened in setting up the request that triggered an Error:');
+            adapter.log.error('Error', error.message);
         }
+        switch (error.response.status) {
+            case 401:
+                try {
+                    adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
+                    auth = APIRefreshToken(auth.refresh_token);
+                } catch (err) {
+                    adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
+                }
+                break;
+            case 504:
+                adapter.log.error('HTTP 504: Gateway Timeout! This error occured outside of this adapter. Please google it for possible reasons and solutions.');
+                break;
+        }
+    }
 }
 
 // If started as allInOne/compact mode => return function to create instance
