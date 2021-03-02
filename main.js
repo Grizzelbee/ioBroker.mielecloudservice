@@ -52,6 +52,9 @@ function startadapter(options) {
                 if (auth.access_token) {
                     APILogOff(auth, "access_token")
                 }
+                auth = undefined;
+                pollTimeout = null;
+                expiryDate = null;
                 adapter.log.info('Unloading MieleCloudService...');
                 callback();
             } catch (e) {
@@ -97,16 +100,20 @@ function startadapter(options) {
         ready: async () => {
                 // Execute main after pwds have been decrypted
                 // The adapters config (in the instance object everything under the attribute "native") is accessible via
-                // ADAPTER.config:
+                // adapter.config:
                 if ( adapterConfigIsValid() ) {
-                    await decryptPasswords();
-                    await main();
+                    decryptPasswords()
+                        .then(() => {
+                            main();
+                        })
+                        .catch((error) => {
+                            adapter.log.error(error);
+                        });
                 } else {
                     adapter.log.warn('Adapter config is invalid. Please fix.');
                     adapter.setState('info.connection', false);
                     adapter.terminate('Invalid Configuration.', 11);
                 }
-            // });
         }
     });
     // you have to call the adapter function and pass a options object
@@ -115,7 +122,6 @@ function startadapter(options) {
 
     return adapter;
 }
-
 
 async function decryptPasswords() {
     return new Promise((resolve, reject) => {
@@ -135,8 +141,6 @@ async function decryptPasswords() {
             }
     })
 }
-
-
 
 function addActionButton(path, action, description, buttonType){
    adapter.log.debug('addActionButton: Path['+ path +']');
@@ -158,38 +162,37 @@ function addActionButton(path, action, description, buttonType){
 }
 
 function adapterConfigIsValid() {
-    let configIsValid = true;
+        let configIsValid = true;
 
-    if ('' === adapter.config.Miele_account) {
-        adapter.log.warn('Miele account is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.Miele_pwd) {
-        adapter.log.warn('Miele password is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.Client_ID) {
-        adapter.log.warn('Miele API client ID is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.Client_secret) {
-        adapter.log.warn('Miele API client secret is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.locale) {
-        adapter.log.warn('Locale is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.oauth2_vg) {
-        adapter.log.warn('OAuth2_vg is missing.');
-        configIsValid = false;
-    }
-    if ('' === adapter.config.pollinterval) {
-        adapter.log.warn('PollInterval is missing.');
-        configIsValid = false;
-    }
-
-    return configIsValid;
+        if ('' === adapter.config.Miele_account) {
+            adapter.log.warn('Miele account is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.Miele_pwd) {
+            adapter.log.warn('Miele password is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.Client_ID) {
+            adapter.log.warn('Miele API client ID is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.Client_secret) {
+            adapter.log.warn('Miele API client secret is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.locale) {
+            adapter.log.warn('Locale is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.oauth2_vg) {
+            adapter.log.warn('OAuth2_vg is missing.');
+            configIsValid = false;
+        }
+        if ('' === adapter.config.pollinterval) {
+            adapter.log.warn('PollInterval is missing.');
+            configIsValid = false;
+        }
+        return configIsValid;
 }
 
 function createExtendObject(id, objData, callback) {
@@ -799,20 +802,20 @@ function addMieleDeviceActions(path, DeviceType){
 }
 
 /*
- * refreshMieledata
+ * refreshMieleData
  *
  * @param Auth {object}  OAuth2 object containing required credentials
  * @returns    {void}    returns nothing
  */
-async function refreshMieledata(auth){
-    adapter.log.debug('refreshMieledata: get data from API');
+async function refreshMieleData(auth){
+    adapter.log.debug('refreshMieleData: get data from API');
     try {
         let result = await APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
-        adapter.log.debug('refreshMieledata: handover all devices data to splitMieledevices');
-        adapter.log.debug('refreshMieledata: data [' + JSON.stringify(result) + ']');
+        adapter.log.debug('refreshMieleData: handover all devices data to splitMieleDevices');
+        adapter.log.debug('refreshMieleData: data [' + JSON.stringify(result) + ']');
         splitMieleDevices(result);
     } catch(error) {
-        adapter.log.error('[refreshMieledata] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
+        adapter.log.error('[refreshMieleData] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
     }
 }
 
@@ -828,7 +831,7 @@ async function main() {
             // start refresh scheduler with interval from adapters config
             pollTimeout= setTimeout(function schedule() {
                 adapter.log.debug("Updating device states (polling API scheduled).");
-                refreshMieledata( auth );
+                refreshMieleData( auth );
                 pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
             } , 100);
         } else {
@@ -857,13 +860,6 @@ async function APIGetAccessToken() {
     adapter.log.debug('OAuth2 grant_type: [password]');
     adapter.log.debug('options OAuth2-VG: [' + adapter.config.oauth2_vg + ']');
     adapter.log.debug('config API Language: [' + adapter.config.locale + ']');
-    /*
-    // Logging of credentials has been commented out intentionally. May be enabled again by user for debugging purposes
-    adapter.log.debug('options Miele_account: [' + adapter.config.Miele_account + ']');
-    adapter.log.debug('options Client_ID: ['     + adapter.config.Client_ID     + ']');
-    adapter.log.debug('options Miele_Password: ['+ adapter.config.Miele_pwd     + ']');
-    adapter.log.debug('options Client_Secret: [' + adapter.config.Client_secret + ']');
-     */
     try {
         const auth = await getOwnerCredentials();
         expiryDate = new Date();
@@ -872,11 +868,40 @@ async function APIGetAccessToken() {
         adapter.setState('info.connection', true);
         return auth;
     } catch (error) {
-        adapter.log.error('OAuth2 returned an error!');
-        adapter.log.error(error);
-        adapter.log.error('Are your credentials okay? Please double check them in your adapters configuration.');
+        adapter.log.error('OAuth2 returned an error during first login!');
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            switch (error.response.status) {
+                case 401 : // unauthorized
+                    adapter.log.error('Error: Unable to authenticate user! Your credentials seem to be invalid. Please double check and fix them.');
+                    adapter.log.error('Credentials used for login:');
+                    adapter.log.error('options Miele_account: [' + adapter.config.Miele_account + ']');
+                    adapter.log.error('options Miele_Password: ['+ adapter.config.Miele_pwd     + ']');
+                    adapter.log.error('options Client_ID: ['     + adapter.config.Client_ID     + ']');
+                    adapter.log.error('options Client_Secret: [' + adapter.config.Client_secret + ']');
+                    adapter.log.error('options country: ['       + adapter.config.oauth2_vg     + ']');
+                    adapter.log.warn('IMPORTANT!! Mask/Delete your credentials when posting your log online!');
+                    adapter.terminate('Terminating adapter due to inability to authenticate.', 11);
+                    break;
+                case 429: // endpoint currently not available
+                    adapter.log.error('Error: Endpoint: [' + BaseURL + 'thirdparty/token/] is currently not available.');
+                default:
+                    adapter.log.error('[error.response.data]: ' + ((typeof error.response.data === 'object') ? stringify(error.response.data) : error.response.data));
+                    adapter.log.error('[error.response.status]: ' + ((typeof error.response.status === 'object') ? stringify(error.response.status) : error.response.status));
+                    adapter.log.error('[error.response.headers]: ' + ((typeof error.response.headers === 'object') ? stringify(error.response.headers) : error.response.headers));
+                    break;
+            }
+        } else if (error.request) {
+            // The request was made but no response was received
+            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+            // http.ClientRequest in node.js
+            adapter.log.error('[error.request]: ' + ((typeof error.request === 'object') ? stringify(error.request) : error.request));
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            adapter.log.error('[Error]: ' + error.message);
+        }
         adapter.setState('info.connection', false);
-        adapter.terminate('Terminating adapter due to error on token request.', 11);
     }
 }
 
@@ -981,7 +1006,7 @@ async function APIStartAction(auth, path, action, value) {
             await createString(currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
             await createBool(currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true );
             adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
-            await refreshMieledata(auth);
+            await refreshMieleData(auth);
         }
     } catch(err) {
         await createBool(currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false);
