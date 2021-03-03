@@ -274,8 +274,8 @@ function createEODeviceTypes(deviceTypeID){
         case 14:
         case 27:
         case 28:
-            deviceFolder = 'Cooktops';
-            description  = 'Cooktops reported by Miele@Home API';
+            deviceFolder = 'Hobs';
+            description  = 'Hobs reported by Miele@Home API';
             break;
         case 16:
         case 42:
@@ -334,6 +334,10 @@ function splitMieleDevices(devices){
     adapter.log.debug('[splitMieleDevices] Splitting JSON to single devices.');
     for (let mieleDevice in devices) {
         adapter.log.debug('splitMieleDevices: ' + mieleDevice+ ': [' + mieleDevice + '] *** Value: [' + JSON.stringify(devices[mieleDevice]) + ']');
+        if (devices[mieleDevice].ident.deviceIdentLabel.fabNumber === ''){
+            adapter.log.debug('Device: [' + mieleDevice + '] has no serial number/fabNumber. Taking DeviceNumber instead.');
+            devices[mieleDevice].ident.deviceIdentLabel.fabNumber = mieleDevice;
+        }
         parseMieleDevice(devices[mieleDevice]);
     }
 }
