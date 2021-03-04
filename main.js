@@ -739,6 +739,7 @@ function addMieleDeviceActions(path, DeviceType){
             break;
         case 17:
         case 18:
+            addPowerActionButtons(path);
             // addStopAction
             addStopActionButton(path);
             // addLightEnable
