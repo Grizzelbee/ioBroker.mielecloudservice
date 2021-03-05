@@ -725,20 +725,36 @@ function addMieleDeviceActions(path, DeviceType){
 
     // Add Actions depending on device type
     switch (DeviceType) {
-        case 1:
-        case 2:
-        case 7:
+        /* No actions defined
+            8 = DISHWASHER SEMI-PROF
+            14 = HOB HIGHLIGHT
+            15 = STEAM OVEN
+            16 = MICROWAVE
+            23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER
+            25 = DISH WARMER
+            27 = HOB INDUCTION
+            28 = HOB GAS
+            39 = DOUBLE OVEN
+            40 = DOUBLE STEAM OVEN
+            41 = DOUBLE STEAM OVEN COMBINATION
+            42 = DOUBLE MICROWAVE
+            43 = DOUBLE MICROWAVE OVEN
+            48 = VACUUM DRAWER
+         */
+        case 1: // 1 = WASHING MACHINE
+        case 2: // 2 = TUMBLE DRYER
+        case 7: // 7 = DISHWASHER
             addPowerActionButtons(path);
             addStartStopActionButtons(path);
             // addStartTimeAction
             break;
-        case 12:
-        case 13:
+        case 12: // 12 = OVEN
+        case 13: // 13 = OVEN MICROWAVE
             // addStopAction
             addStopActionButton(path);
             break;
-        case 17:
-        case 18:
+        case 17: // 17 = COFFEE SYSTEM
+        case 18: // 18 = HOOD
             addPowerActionButtons(path);
             // addStopAction
             addStopActionButton(path);
@@ -746,17 +762,17 @@ function addMieleDeviceActions(path, DeviceType){
             // addLightDisable
             addLightActionButtons(path);
             break;
-        case 19:
+        case 19: // 19 = FRIDGE
             // addStartSuperCoolingAction
             // addStopSuperCoolingAction
             addSupercoolingActionButtons(path);
             break;
-        case 20:
+        case 20: // 20 = FREEZER
             // addStartSuperFreezingAction
             // addStopSuperFreezingAction
             addSuperfreezingActionButtons(path);
             break;
-        case 21:
+        case 21: // 21 = FRIDGE-/FREEZER COMBINATION
             // addStartSuperCoolingAction
             // addStopSuperCoolingAction
             addSupercoolingActionButtons(path);
@@ -764,38 +780,38 @@ function addMieleDeviceActions(path, DeviceType){
             // addStopSuperFreezingAction
             addSuperfreezingActionButtons(path);
             break;
-        case 24:
+        case 24: // 24 = WASHER DRYER
             // addStopAction
             addStopActionButton(path);
             break;
-        case 31:
+        case 31: // 31 = STEAM OVEN COMBINATION
             // addStopAction
             addStopActionButton(path);
             break;
-        case 32:
+        case 32: // 32 = WINE CABINET
             // addLightEnable
             // addLightDisable
             addLightActionButtons(path);
             break;
-        case 33:
+        case 33: // 33 = WINE CONDITIONING UNIT
             // addLightEnable
             // addLightDisable
             addLightActionButtons(path);
             break;
-        case 34:
+        case 34: // 34 = WINE STORAGE CONDITIONING UNIT
             // addLightEnable
             // addLightDisable
             addLightActionButtons(path);
             break;
-        case 45:
+        case 45: // 45 = STEAM OVEN MICROWAVE COMBINATION
             // addStopAction
             addStopActionButton(path);
             break;
-        case 67:
+        case 67: // 67 = DIALOGOVEN
             // addStopAction
             addStopActionButton(path);
             break;
-        case 68:
+        case 68: // 68 = WINE CABINET FREEZER COMBINATION
             // addLightEnable
             // addLightDisable
             addLightActionButtons(path);
