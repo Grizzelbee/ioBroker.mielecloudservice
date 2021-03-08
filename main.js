@@ -964,7 +964,7 @@ async function APILogOff(auth, token_type) {
          .catch(error => {adapter.log.error('[APILogOff] ' + JSON.stringify(error) + ' Stack: '+error.stack)});
 }
 
-async function actionIsAllowedInCurrentState(auth, deviceId, action){
+async function actionIsAllowedInCurrentState(auth, deviceId, action, actionState){
     return new Promise( (resolve, reject) => {
         // Test action
         APISendRequest(auth, `v1/devices/${deviceId}/actions`, 'GET', action)
@@ -974,8 +974,18 @@ async function actionIsAllowedInCurrentState(auth, deviceId, action){
                         adapter.log.debug(`Action [${action}] is permitted in this device state.`);
                         resolve(true);
                     } else if ( ( (typeof result[action] === 'object') && (result[action].length > 0) ) ) {
-                        adapter.log.debug(`Action [${action}] seems to be permitted in this device state.`);
-                        resolve(true);
+                        if ( Array.isArray(result[action]) ){
+                            if ( result[action].includes(actionState) ){
+                                adapter.log.debug(`Action [${action}] is permitted in this device state.`);
+                                resolve(true);
+                            } else {
+                                reject(`Action [${action}] is not permitted in the current device state.` );
+                            }
+                        } else {
+                            // it's an object not an array
+                            adapter.log.debug(`Action-Object [${action}] seems to be permitted in this device state. Let's give it a try.`);
+                            resolve(true);
+                        }
                     } else {
                         reject(`Action [${action}] is not permitted in the current device state.` );
                     }
@@ -1021,7 +1031,7 @@ async function APIStartAction(auth, path, action, value) {
             break;
     }
     try {
-        if ( await actionIsAllowedInCurrentState(auth, device, Object.keys(currentAction)[0]) ){
+        if ( await actionIsAllowedInCurrentState(auth, device, Object.keys(currentAction)[0], currentAction[Object.keys(currentAction)[0]]) ){
             adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
             const result = await APISendRequest(auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
             await createString(currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
