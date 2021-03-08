@@ -324,10 +324,7 @@ function createEODeviceTypes(deviceTypeID){
 
     return deviceFolder;
 }
-/*
-* @param: mieleDevice
-* @param: mieleDevice.ident
-* */
+
 function splitMieleDevices(devices){
     // Splits the data-package returned by the API into single devices
     // and lets you iterate over each single device
@@ -342,14 +339,6 @@ function splitMieleDevices(devices){
     }
 }
 
-/*
-* @param mieleDevice
-* @param mieleDevice.ident
-* @param mieleDevice.ident.type
-* @param mieleDevice.ident.type.value_localized
-* @param mieleDevice.ident.type.value_raw
-* @param mieleDevice.ident.deviceIdentLabel.fabNumber
-* */
 function parseMieleDevice(mieleDevice){
     let deviceFolder;
     adapter.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
@@ -566,11 +555,6 @@ function createNumber(path, description, value, unit, role){
     });
 }
 
-
-/*
-* @param value
-* @param value[].value_localized
- */
 function createArray(path, description, value){
     // depending on the device we receive up to 3 values
     // there is a min of 1 and a max of 3 temps returned by the miele API
@@ -597,10 +581,6 @@ function addMieleDeviceIdent(path, currentDeviceIdent){
     createString(path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
 }
 
-/*
-* @param  path
-* @param  currentDeviceState
- */
 async function addMieleDeviceState(path, currentDeviceState){
     let now = new Date;
     let estimatedEndTime = new Date;
@@ -910,7 +890,6 @@ async function APIGetAccessToken() {
     }
 }
 
-
 async function APIRefreshToken(refresh_token) {
     adapter.log.debug('function APIGetAccessToken');
     const getNewAccessToken = oauth.client(axios.create(), {
@@ -979,7 +958,6 @@ async function actionIsAllowedInCurrentState(auth, deviceId, action, actionState
             });
     })
 }
-
 
 async function APIStartAction(auth, path, action, value) {
     let currentAction;
