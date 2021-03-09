@@ -3,28 +3,21 @@
 /* jshint strict:true */
 /* jslint esversion: 6 */
 /* jslint node: true */
-/**
-*
-* mieleCloudService Adapter for ioBroker
-*
-*/
 'use strict';
 
+/**
+*
+* mieleCloudService Adapter for ioBroker (main file)
+*
+*/
+
 // you have to require the utils module and call adapter function
-const BaseURL = 'https://api.mcs3.miele.com/';
 const adapterName = require('./package.json').name.split('.').pop();
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
-const axios = require('axios');
-const oauth = require('axios-oauth-client');
-const START = 1;
-const STOP  = 2;
-const PAUSE = 3;
-const START_SUPERFREEZING = 4;
-const STOP_SUPERFREEZING  = 5;
-const START_SUPERCOOLING  = 6;
-const STOP_SUPERCOOLING   = 7;
-const LIGHT_ON  = 1;
-const LIGHT_OFF = 2;
+const mieleAPIUtils = require('miele-apiTools.js');
+const mieleConst = require('miele-constants.js');
+const mieleTools = require('miele-Tools.js');
+
 // Global Variables
 let adapter;
 let auth;
@@ -47,10 +40,10 @@ function startadapter(options) {
                 adapter.unsubscribeStates('*');
                 adapter.setState('info.connection', false);
                 if (auth.refresh_token) {
-                    APILogOff(auth, "refresh_token")
+                    mieleAPIUtils.APILogOff(adapter, auth, "refresh_token")
                 }
                 if (auth.access_token) {
-                    APILogOff(auth, "access_token")
+                    mieleAPIUtils.APILogOff(adapter, auth, "access_token")
                 }
                 auth = undefined;
                 pollTimeout = null;
@@ -76,7 +69,7 @@ function startadapter(options) {
               // you can use the ack flag to detect if it is status (true) or command (false)
               adapter.log.debug('stateChange [' + id + '] [' + JSON.stringify(state)+']');
               let action = id.split('.').pop();
-              APIStartAction(auth, id, action, state.val);
+                mieleAPIUtils.APIStartAction(adapter, auth, id, action, state.val);
             }
           },
         // stateChange: function(id, state){
@@ -102,7 +95,7 @@ function startadapter(options) {
                 // The adapters config (in the instance object everything under the attribute "native") is accessible via
                 // adapter.config:
                 if ( adapterConfigIsValid() ) {
-                    decryptPasswords()
+                    mieleTools.decryptPasswords(adapter)
                         .then(() => {
                             main();
                         })
@@ -123,92 +116,17 @@ function startadapter(options) {
     return adapter;
 }
 
-async function decryptPasswords() {
-    return new Promise((resolve, reject) => {
-            if (adapter.supportsFeature && adapter.supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
-                adapter.getForeignObject('system.config', (err, obj) => {
-                    if (obj && obj.native && obj.native.secret) {
-                        //noinspection JSUnresolvedVariable
-                        adapter.config.Miele_pwd = adapter.decrypt(obj.native.secret, adapter.config.Miele_pwd);
-                        adapter.config.Client_secret = adapter.decrypt(obj.native.secret, adapter.config.Client_secret);
-                        resolve(true);
-                    } else {
-                        reject('Error during password decryption: ' + err);
-                    }
-                });
-            } else {
-                reject('This adapter requires at least js-controller V3.0.0. Your system is not compatible. Please update your system or use max. v2.0.3 of this adapter.');
-            }
-    })
-}
 
-function addActionButton(path, action, description, buttonType){
-   adapter.log.debug('addActionButton: Path['+ path +']');
-   buttonType = buttonType || "button";
-   createExtendObject(path + '.ACTIONS.' + action, {
-            type: 'state',
-            common: {"name": description,
-                "read": false,
-                "write": true,
-                "role": 'button',
-                "type": 'boolean'
-            },
-            native: {"type": buttonType // "button"
-            }
-        }
-    , () => {
-           adapter.subscribeStates(path + '.ACTIONS.' + action);
-       });
-}
 
-function adapterConfigIsValid() {
-        let configIsValid = true;
 
-        if ('' === adapter.config.Miele_account) {
-            adapter.log.warn('Miele account is missing.');
-            configIsValid = false;
-        }
-        if ('' === adapter.config.Miele_pwd) {
-            adapter.log.warn('Miele password is missing.');
-            configIsValid = false;
-        }
-        if ('' === adapter.config.Client_ID) {
-            adapter.log.warn('Miele API client ID is missing.');
-            configIsValid = false;
-        }
-        if ('' === adapter.config.Client_secret) {
-            adapter.log.warn('Miele API client secret is missing.');
-            configIsValid = false;
-        }
-        if ('' === adapter.config.locale) {
-            adapter.log.warn('Locale is missing.');
-            configIsValid = false;
-        }
-        if ('' === adapter.config.oauth2_vg) {
-            adapter.log.warn('OAuth2_vg is missing.');
-            configIsValid = false;
-        }
-        if ('' === adapter.config.pollinterval) {
-            adapter.log.warn('PollInterval is missing.');
-            configIsValid = false;
-        }
-        return configIsValid;
-}
 
-function createExtendObject(id, objData, callback) {
-    adapter.getObject(id, function (err, oldObj) {
-        if (!err && oldObj) {
-            adapter.extendObject(id, objData, callback);
-        } else {
-            adapter.setObjectNotExists(id, objData, callback);
-        }
-    });
-}
+
+
 
 function createEODeviceTypes(deviceTypeID){
 /* List of possible devicetypes:
-    2 = TUMBLE DRYER
     1 = WASHING MACHINE
+    2 = TUMBLE DRYER
     7 = DISHWASHER
     8 = DISHWASHER SEMI-PROF
     12 = OVEN
@@ -314,13 +232,14 @@ function createEODeviceTypes(deviceTypeID){
             break;
     }
 
-    createExtendObject(deviceFolder, {
+    mieleTools.createExtendObject(adapter, deviceFolder, {
         type: 'device',
         common: {
-            name: description
+            name: description,
+            icon : 'icons/00_genericappliance.svg'
         },
         native: {}
-    });
+    }, null);
 
     return deviceFolder;
 }
@@ -444,133 +363,6 @@ function addMieleDevice(path, mieleDevice){
     }
 }
 
-function createBool(path, description, value, role){
-    return new Promise(resolve => {
-        role = role || 'indicator';
-        adapter.log.debug('createBool: Path['+ path +'] Value[' + value + ']');
-        createExtendObject(path, {
-            type: 'state',
-            common: {"name": description,
-                "read": true,
-                "write":false,
-                "role": role,
-                "type": "boolean"
-            }
-        }, () => {
-            adapter.setState(path, value, true);
-        });
-        resolve(true);
-    })
-}
-
-function createString(path, description, value){
-    return new Promise(resolve => {
-        adapter.log.debug('createString: Path['+ path +'] Value[' + value + ']');
-        createExtendObject(path, {
-            type: 'state',
-            common: {"name": description,
-                "read":  true,
-                "write": false,
-                "role": "text",
-                "type": "string"
-            }
-        }, () => {
-            adapter.setState(path, value, true);
-        });
-        resolve(true);
-    })
-}
-
-function createStringAndRaw(path, description, key_localized, value_localized, value_raw, unit){
-    adapter.log.debug('createStringAndRaw: Path:[' + path + '] key_localized:[' + key_localized + '] value_localized[' + value_localized + '] value_raw[' + value_raw +'] unit[' + unit   +']' );
-    createExtendObject(path + '.' + key_localized +'_raw', {
-        type: 'state',
-        common: {"name":  description + ' (value raw)',
-            "read":  true,
-            "write": false,
-            "role": "value.raw",
-            "type": "number"
-        }
-    }, ()  => {
-        adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
-    });
-
-    createExtendObject(path + '.' + key_localized, {
-        type: 'state',
-        common: {"name":  description,
-            "read":  true,
-            "write": false,
-            "role": "text",
-            "type": "string"
-        }
-    }, () => {
-        adapter.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
-    });
-}
-
-function createTime(path, description, value, role){
-    role = role || 'text';
-    createExtendObject(path, {
-        type: 'state',
-        common: {"name": description,
-            "read": true,
-            "write":false,
-            "role": role,
-            "type": "string"
-        }
-    }, () => {
-        adapter.log.debug('createTime: Path:['+ path +'], value:['+ value +']');
-        let assembledValue = value[0] + ':' + (value[1]<10? '0': '') + value[1];
-        adapter.setState(path, assembledValue, true);
-    });
-}
-
-function createNumber(path, description, value, unit, role){
-    adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
-    // get back to calling function if there is no valid value given.
-    if ( !value || value === -32768 ) {
-        adapter.log.debug('[createNumber]: invalid value detected. Skipping...');
-        return;
-    }
-    role = role || 'value';
-
-    switch (unit){
-        case "Celsius" : unit = "°C";
-            break;
-        case "Fahrenheit" : unit = "°F";
-            break;
-    }
-    adapter.log.debug('createNumber: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
-    createExtendObject(path, {
-        type: 'state',
-        common: {"name": description,
-            "read": true,
-            "write":false,
-            "role": role,
-            "type": "number",
-            "unit": unit
-        }
-    }, () => {
-        adapter.setState(path, value, true);
-    });
-}
-
-function createArray(path, description, value){
-    // depending on the device we receive up to 3 values
-    // there is a min of 1 and a max of 3 temps returned by the miele API
-    let MyPath = path;
-    const items = Object.keys(value).length;
-    adapter.log.debug('Number of Items in Array: [' + items +']');
-    for (let n in value) {
-        if (items > 1){
-            MyPath = path + '_' + n;
-        }
-        adapter.log.debug('createArray: Path:['   + MyPath  + ']');
-        adapter.log.debug('createArray:  value:[' + JSON.stringify(value)   + ']');
-        adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
-        createNumber(MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
-    }
-}
 
 function addMieleDeviceIdent(path, currentDeviceIdent){
     adapter.log.debug('addMieleDeviceIdent: Path = [' + path + ']');
@@ -632,8 +424,8 @@ async function addMieleDeviceState(path, currentDeviceState){
 
 }
 
-function addDeviceNicknameAction(path, mieledevice) {
-    adapter.log.debug( 'addDeviceNicknameAction: Path:['+ path +'], mieledevice:['+JSON.stringify(mieledevice)+']' );
+function addDeviceNicknameAction(path, mieleDevice) {
+    adapter.log.debug( 'addDeviceNicknameAction: Path:['+ path +'], mieleDevice:['+JSON.stringify(mieleDevice)+']' );
     // addDeviceNicknameAction - suitable for each and every device
     createExtendObject(path + '.ACTIONS.Nickname', {
         type: 'state',
@@ -646,7 +438,7 @@ function addDeviceNicknameAction(path, mieledevice) {
         },
         native: {}
     }, () => {
-        adapter.setState(path + '.ACTIONS.Nickname', (mieledevice.ident.deviceName === '' ? mieledevice.ident.type.value_localized : mieledevice.ident.deviceName), true);
+        adapter.setState(path + '.ACTIONS.Nickname', (mieleDevice.ident.deviceName === '' ? mieleDevice.ident.type.value_localized : mieleDevice.ident.deviceName), true);
         adapter.subscribeStates(path + '.ACTIONS.Nickname');
     });
 }
@@ -786,23 +578,7 @@ function addMieleDeviceActions(path, DeviceType){
     }
 }
 
-/*
- * refreshMieleData
- *
- * @param Auth {object}  OAuth2 object containing required credentials
- * @returns    {void}    returns nothing
- */
-async function refreshMieleData(auth){
-    adapter.log.debug('refreshMieleData: get data from API');
-    try {
-        let result = await APISendRequest(auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
-        adapter.log.debug('refreshMieleData: handover all devices data to splitMieleDevices');
-        adapter.log.debug('refreshMieleData: data [' + JSON.stringify(result) + ']');
-        splitMieleDevices(result);
-    } catch(error) {
-        adapter.log.error('[refreshMieleData] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
-    }
-}
+
 
 /*
  *  Main function
@@ -828,258 +604,7 @@ async function main() {
 }//End Function main
 
 
-// API-Functions
-async function APIGetAccessToken() {
-    adapter.log.debug('function APIGetAccessToken');
-    const getOwnerCredentials = oauth.client(axios.create(), {
-        url: BaseURL + 'thirdparty/token/',
-        grant_type: 'password',
-        client_id: adapter.config.Client_ID,
-        client_secret: adapter.config.Client_secret,
-        username: adapter.config.Miele_account,
-        password: adapter.config.Miele_pwd,
-        vg: adapter.config.oauth2_vg
-    });
 
-    adapter.log.debug('Awaiting OAuth2 Token.');
-    adapter.log.debug('OAuth2 grant_type: [password]');
-    adapter.log.debug('options OAuth2-VG: [' + adapter.config.oauth2_vg + ']');
-    adapter.log.debug('config API Language: [' + adapter.config.locale + ']');
-    try {
-        const auth = await getOwnerCredentials();
-        expiryDate = new Date();
-        expiryDate.setSeconds(expiryDate.getSeconds() + auth.hasOwnProperty('expires_in') ? auth.expires_in : 0);
-        adapter.log.info('Access-Token expires at:  [' + expiryDate.toString() + ']');
-        adapter.setState('info.connection', true);
-        return auth;
-    } catch (error) {
-        adapter.log.error('OAuth2 returned an error during first login!');
-        if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            switch (error.response.status) {
-                case 401 : // unauthorized
-                    adapter.log.error('Error: Unable to authenticate user! Your credentials seem to be invalid. Please double check and fix them.');
-                    adapter.log.error('Credentials used for login:');
-                    adapter.log.error('options Miele_account: [' + adapter.config.Miele_account + ']');
-                    adapter.log.error('options Miele_Password: ['+ adapter.config.Miele_pwd     + ']');
-                    adapter.log.error('options Client_ID: ['     + adapter.config.Client_ID     + ']');
-                    adapter.log.error('options Client_Secret: [' + adapter.config.Client_secret + ']');
-                    adapter.log.error('options country: ['       + adapter.config.oauth2_vg     + ']');
-                    adapter.log.warn('IMPORTANT!! Mask/Delete your credentials when posting your log online!');
-                    adapter.terminate('Terminating adapter due to inability to authenticate.', 11);
-                    break;
-                case 429: // endpoint currently not available
-                    adapter.log.error('Error: Endpoint: [' + BaseURL + 'thirdparty/token/] is currently not available.');
-                default:
-                    adapter.log.error('[error.response.data]: ' + ((typeof error.response.data === 'object') ? stringify(error.response.data) : error.response.data));
-                    adapter.log.error('[error.response.status]: ' + ((typeof error.response.status === 'object') ? stringify(error.response.status) : error.response.status));
-                    adapter.log.error('[error.response.headers]: ' + ((typeof error.response.headers === 'object') ? stringify(error.response.headers) : error.response.headers));
-                    break;
-            }
-        } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            adapter.log.error('[error.request]: ' + ((typeof error.request === 'object') ? stringify(error.request) : error.request));
-        } else {
-            // Something happened in setting up the request that triggered an Error
-            adapter.log.error('[Error]: ' + error.message);
-        }
-        adapter.setState('info.connection', false);
-    }
-}
-
-async function APIRefreshToken(refresh_token) {
-    adapter.log.debug('function APIGetAccessToken');
-    const getNewAccessToken = oauth.client(axios.create(), {
-        url: BaseURL + 'thirdparty/token/',
-        grant_type: 'refresh_token',
-        client_id: adapter.config.Client_ID,
-        client_secret: adapter.config.Client_secret,
-        refresh_token: refresh_token,
-        vg: adapter.config.oauth2_vg
-    });
-
-    adapter.log.debug('Awaiting new OAuth2 Token.');
-    adapter.log.debug('OAuth2 grant_type: [refresh_token]');
-    adapter.log.debug('options OAuth2-VG: [' + adapter.config.oauth2_vg + ']');
-    adapter.log.debug('config API Language: [' + adapter.config.locale + ']');
-    try {
-        const auth = await getNewAccessToken();
-        expiryDate = new Date();
-        expiryDate.setSeconds(expiryDate.getSeconds() +  auth.hasOwnProperty('expires_in')?auth.expires_in:0 );
-        adapter.log.info('New Access-Token expires at:  [' + expiryDate.toString() + ']');
-        adapter.setState('info.connection', true);
-        return auth;
-    }  catch (error){
-        adapter.log.error('OAuth2 returned an error!');
-        adapter.log.error(error);
-        adapter.setState('info.connection', false);
-        // TODO Think about an error-counter and terminating the adapter on too many errors
-        // adapter.terminate('Terminating adapter due to error on token request.', 11);
-    }
-}
-
-async function APILogOff(auth, token_type) {
-    adapter.log.debug('[APILogOff]: Invalidating: '+token_type + ' ('+auth[token_type]+')');
-    await APISendRequest(auth, "thirdparty/logout/", "POST", "token: "+ auth[token_type] )
-         .catch(error => {adapter.log.error('[APILogOff] ' + JSON.stringify(error) + ' Stack: '+error.stack)});
-}
-
-async function actionIsAllowedInCurrentState(auth, deviceId, action, actionState){
-    return new Promise( (resolve, reject) => {
-        // Test action
-        APISendRequest(auth, `v1/devices/${deviceId}/actions`, 'GET', action)
-            .then( (result) => {
-                    adapter.log.debug(`All action-states: [${JSON.stringify(result)}].`);
-                    if ( ( (typeof result[action] === 'boolean') && (result[action]) ) ) {
-                        adapter.log.debug(`Action [${action}] is permitted in this device state.`);
-                        resolve(true);
-                    } else if ( ( (typeof result[action] === 'object') && (result[action].length > 0) ) ) {
-                        if ( Array.isArray(result[action]) ){
-                            if ( result[action].includes(actionState) ){
-                                adapter.log.debug(`Action [${action}] is permitted in this device state.`);
-                                resolve(true);
-                            } else {
-                                reject(`Action [${action}] is not permitted in the current device state.` );
-                            }
-                        } else {
-                            // it's an object not an array
-                            adapter.log.debug(`Action-Object [${action}] seems to be permitted in this device state. Let's give it a try.`);
-                            resolve(true);
-                        }
-                    } else {
-                        reject(`Action [${action}] is not permitted in the current device state.` );
-                    }
-            })
-            .catch( (error) => {
-                reject('An error occurred during a cloud API request: ' + JSON.stringify(error) );
-            });
-    })
-}
-
-async function APIStartAction(auth, path, action, value) {
-    let currentAction;
-    let paths = path.split('.');    // transform into array
-    paths.pop();                    // remove last element of path
-    let device = paths[3];          // device is the fourth element of the path array
-    let currentPath = paths.join('.');         // join all elements back together
-    adapter.log.debug("APIStartAction: received Action: ["+action+"] with value: ["+value+"] for device ["+device+"] / path:["+currentPath+"]");
-    switch (action) {
-        case 'Nickname': currentAction = {'deviceName':value};
-            break;
-        case 'Power_On': currentAction = {'powerOn':true};
-            break;
-        case 'Power_Off': currentAction = {'powerOff':true};
-            break;
-        case 'Start': currentAction = {'processAction':START};
-            break;
-        case 'Stop': currentAction = {'processAction':STOP};
-            break;
-        case 'Pause': currentAction = {'processAction':PAUSE};
-            break;
-        case 'Start_Superfreezing': currentAction = {'processAction':START_SUPERFREEZING};
-            break;
-        case 'Stop_Superfreezing': currentAction = {'processAction':STOP_SUPERFREEZING};
-            break;
-        case 'Start_Supercooling': currentAction = {'processAction':START_SUPERCOOLING};
-            break;
-        case 'Stop_Supercooling': currentAction = {'processAction':STOP_SUPERCOOLING};
-            break;
-        case 'Light_On': currentAction = {'light':LIGHT_ON};
-            break;
-        case 'Light_Off': currentAction = {'light':LIGHT_OFF};
-            break;
-    }
-    try {
-        if ( await actionIsAllowedInCurrentState(auth, device, Object.keys(currentAction)[0], currentAction[Object.keys(currentAction)[0]]) ){
-            adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
-            const result = await APISendRequest(auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
-            await createString(currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
-            await createBool(currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true );
-            adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
-            await refreshMieleData(auth);
-        }
-    } catch(err) {
-        await createBool(currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false);
-        await createString(currentPath + '.Action_information', 'Additional Information returned from API.', JSON.stringify(err));
-        adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
-    }
-}
-
-async function APISendRequest(auth, Endpoint, Method, actions) {
-    // build options object for axios
-    const options = {
-        url: BaseURL + Endpoint,
-        method: Method,
-        json: true,
-        dataType: "json",
-        headers: {
-            Authorization: 'Bearer ' + auth.access_token,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        data: actions
-    };
-
-    function verifyData(verifiedData){
-        return new Promise((resolve) => {
-            switch (verifiedData.status) {
-                case 202:
-                    verifiedData.data =  {"message": "Accepted, processing has not been completed."};
-                    break;
-                case 204: // OK, No Content
-                    verifiedData.data =  {"message": "OK"};
-                    break;
-            }
-            resolve(verifiedData);
-        })
-    }
-
-    adapter.log.debug('APISendRequest: Awaiting requested data.');
-    try {
-        const response = await axios(options);
-        const verifiedData = await verifyData(response);
-        adapter.log.debug('API returned Status: [' + verifiedData.status + ']');
-        return verifiedData.data;
-    } catch(error) {
-        adapter.log.debug('Given parameters:');
-        adapter.log.debug('Auth: [' + JSON.stringify(auth) + ']');
-        adapter.log.debug('Endpoint: [' + Endpoint + ']');
-        adapter.log.debug('Method: [' + Method + ']');
-        adapter.log.debug('Actions: [' + JSON.stringify(actions) + ']');
-        adapter.log.error('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
-        if (error.response) {
-            // Request made and server responded
-            adapter.log.error('Request made and server responded:');
-            adapter.log.error('Response.status:' + error.response.status);
-            adapter.log.error('Response.headers: ' + JSON.stringify(error.response.headers));
-            adapter.log.error('Response.data: ' + JSON.stringify(error.response.data));
-        } else if (error.request) {
-            // The request was made but no response was received
-            adapter.log.error('The request was made but no response was received:');
-            adapter.log.error(JSON.stringify(error.request));
-        } else {
-            // Something happened in setting up the request that triggered an Error
-            adapter.log.error('Something happened in setting up the request that triggered an Error:');
-            adapter.log.error('Error', error.message);
-        }
-        switch (error.response.status) {
-            case 401:
-                try {
-                    adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
-                    auth = APIRefreshToken(auth.refresh_token);
-                } catch (err) {
-                    adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
-                }
-                break;
-            case 504:
-                adapter.log.error('HTTP 504: Gateway Timeout! This error occured outside of this adapter. Please google it for possible reasons and solutions.');
-                break;
-        }
-    }
-}
 
 // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {
