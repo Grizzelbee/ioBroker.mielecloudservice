@@ -304,7 +304,7 @@ module.exports.createArray = function(adapter, path, description, value){
  * @param adapter {object} link to the adapter instance
  * @param id {string} id of the object in the device tree
  * @param objData {object} informational data with which attributes the object should be created
- * @param callback {callback} callback function
+ * @param callback {function} callback function
  *
  */
 module.exports.createExtendObject = function(adapter, id, objData, callback) {
