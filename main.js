@@ -14,7 +14,7 @@
 // you have to require the utils module and call adapter function
 const adapterName = require('./package.json').name.split('.').pop();
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
-const mieleAPIUtils = require('./miele-apiTools.js');
+const mieleAPITools = require('./miele-apiTools.js');
 const mieleTools = require('./miele-Tools.js');
 // const mieleConst = require('./miele-constants.js');
 
@@ -40,10 +40,10 @@ function startadapter(options) {
                 adapter.unsubscribeStates('*');
                 adapter.setState('info.connection', false);
                 if (auth.refresh_token) {
-                    await mieleAPIUtils.APILogOff(adapter, auth, "refresh_token")
+                    await mieleAPITools.APILogOff(adapter, auth, "refresh_token")
                 }
                 if (auth.access_token) {
-                    await mieleAPIUtils.APILogOff(adapter, auth, "access_token")
+                    await mieleAPITools.APILogOff(adapter, auth, "access_token")
                 }
                 auth = undefined;
                 pollTimeout = null;
@@ -69,7 +69,7 @@ function startadapter(options) {
               // you can use the ack flag to detect if it is status (true) or command (false)
               adapter.log.debug('stateChange [' + id + '] [' + JSON.stringify(state)+']');
               let action = id.split('.').pop();
-                await mieleAPIUtils.APIStartAction(adapter, auth, id, action, state.val);
+                await mieleAPITools.APIStartAction(adapter, auth, id, action, state.val);
             }
           },
         // stateChange: function(id, state){
@@ -579,13 +579,13 @@ function addMieleDeviceActions(path, DeviceType){
 async function main() {
     try {
         // todo: try 10 logins when it fails with a delay of 5 min each
-        auth = await mieleAPIUtils.APIGetAccessToken(adapter);
+        auth = await mieleAPITools.APIGetAccessToken(adapter);
         if (auth.hasOwnProperty('access_token') ) {
             adapter.log.info(`Starting poll timer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
             // start refresh scheduler with interval from adapters config
             pollTimeout= setTimeout(async function schedule() {
                 adapter.log.debug("Updating device states (polling API scheduled).");
-                const result = await mieleAPIUtils.refreshMieleData( adapter, auth );
+                const result = await mieleAPITools.refreshMieleData( adapter, auth );
                 await splitMieleDevices(result);
                 pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
             } , 100);

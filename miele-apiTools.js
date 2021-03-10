@@ -15,7 +15,7 @@ const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const {stringify} = require('flatted');
 const mieleConst = require('./miele-constants.js');
-const mieleTools = require('./miele-Tools.js');
+const mieleAPITools = require('./miele-apiTools.js');
 
 /**
  * Function APIGetAccessToken
@@ -249,14 +249,14 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         if ( await actionIsAllowedInCurrentState(adapter, auth, device, Object.keys(currentAction)[0], currentAction[Object.keys(currentAction)[0]]) ){
             adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
             const result = await APISendRequest(adapter, auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
-            await mieleTools.createString(currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
-            await mieleTools.createBool(currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true );
+            await mieleTools.createString(adapter, currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
+            await mieleTools.createBool(adapter, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
             adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
-            await mieleTools.refreshMieleData(auth);
+            await mieleAPITools.refreshMieleData(adapter, auth);
         }
     } catch(err) {
-        await mieleTools.createBool(currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false);
-        await mieleTools.createString(currentPath + '.Action_information', 'Additional Information returned from API.', JSON.stringify(err));
+        await mieleTools.createBool(adapter, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
+        await mieleTools.createString(adapter, currentPath + '.Action_information', 'Additional Information returned from API.', JSON.stringify(err));
         adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
     }
 }
@@ -280,11 +280,9 @@ module.exports.refreshMieleData = async function(adapter, auth){
 
     adapter.log.debug('refreshMieleData: get data from API');
     try {
-        let result = await APISendRequest(adapter, auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
+        const result = await APISendRequest(adapter, auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
         adapter.log.debug('refreshMieleData: handover all devices data to splitMieleDevices');
         adapter.log.debug('refreshMieleData: data [' + JSON.stringify(result) + ']');
-        // todo move splitMieleDevices to main.js and return here only the result dataset
-        // splitMieleDevices(result);
         return result;
     } catch(error) {
         adapter.log.error('[refreshMieleData] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));

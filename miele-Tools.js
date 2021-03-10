@@ -11,8 +11,7 @@
  */
 
 // required files to load
-// const mieleConst = require('./miele-constants.js');
-// const mieleAPIUtils = require('./miele-apiTools.js');
+const mieleTools = require('./miele-Tools.js');
 
 
 /**
@@ -62,7 +61,7 @@ module.exports.decryptPasswords = async function(adapter) {
 module.exports.addActionButton = function(adapter, path, action, description, buttonType){
     adapter.log.debug('addActionButton: Path['+ path +']');
     buttonType = buttonType || "button";
-    adapter.createExtendObject(adapter, path + '.ACTIONS.' + action, {
+    mieleTools.createExtendObject(adapter, path + '.ACTIONS.' + action, {
             type: 'state',
             common: {"name": description,
                 "read": false,
@@ -98,7 +97,7 @@ module.exports.createBool = function(adapter, path, description, value, role){
     return new Promise(resolve => {
         role = role || 'indicator';
         adapter.log.debug('createBool: Path['+ path +'] Value[' + value + ']');
-        adapter.createExtendObject(adapter, path, {
+        mieleTools.createExtendObject(adapter, path, {
             type: 'state',
             common: {"name": description,
                 "read": true,
@@ -130,7 +129,7 @@ module.exports.createBool = function(adapter, path, description, value, role){
 module.exports.createString = function(adapter, path, description, value){
     return new Promise(resolve => {
         adapter.log.debug('createString: Path['+ path +'] Value[' + value + ']');
-        adapter.createExtendObject(adapter, path, {
+        mieleTools.createExtendObject(adapter, path, {
             type: 'state',
             common: {"name": description,
                 "read":  true,
@@ -163,7 +162,7 @@ module.exports.createString = function(adapter, path, description, value){
  */
 module.exports.createStringAndRaw = function(adapter, path, description, key_localized, value_localized, value_raw, unit){
     adapter.log.debug('createStringAndRaw: Path:[' + path + '] key_localized:[' + key_localized + '] value_localized[' + value_localized + '] value_raw[' + value_raw +'] unit[' + unit   +']' );
-    adapter.createExtendObject(adapter, path + '.' + key_localized +'_raw', {
+    mieleTools.createExtendObject(adapter, path + '.' + key_localized +'_raw', {
         type: 'state',
         common: {"name":  description + ' (value raw)',
             "read":  true,
@@ -175,7 +174,7 @@ module.exports.createStringAndRaw = function(adapter, path, description, key_loc
         adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
     });
 
-    adapter.createExtendObject(adapter, path + '.' + key_localized, {
+    mieleTools.createExtendObject(adapter, path + '.' + key_localized, {
         type: 'state',
         common: {"name":  description,
             "read":  true,
@@ -204,7 +203,7 @@ module.exports.createStringAndRaw = function(adapter, path, description, key_loc
  */
 module.exports.createTime = function(adapter, path, description, value, role){
     role = role || 'text';
-    adapter.createExtendObject(adapter, path, {
+    mieleTools.createExtendObject(adapter, path, {
         type: 'state',
         common: {"name": description,
             "read": true,
@@ -251,7 +250,7 @@ module.exports.createNumber = function(adapter, path, description, value, unit, 
             break;
     }
     adapter.log.debug('createNumber: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
-    adapter.createExtendObject(adapter, path, {
+    mieleTools.createExtendObject(adapter, path, {
         type: 'state',
         common: {"name": description,
             "read": true,
@@ -291,7 +290,7 @@ module.exports.createArray = function(adapter, path, description, value){
         adapter.log.debug('createArray: Path:['   + MyPath  + ']');
         adapter.log.debug('createArray:  value:[' + JSON.stringify(value)   + ']');
         adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
-        adapter.createNumber(adapter, MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
+        mieleTools.createNumber(adapter, MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
     }
 }
 
