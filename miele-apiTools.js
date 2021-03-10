@@ -16,6 +16,7 @@ const oauth = require('axios-oauth-client');
 const {stringify} = require('flatted');
 const mieleConst = require('./miele-constants.js');
 const mieleAPITools = require('./miele-apiTools.js');
+const mieleTools = require('./miele-Tools.js');
 
 /**
  * Function APIGetAccessToken

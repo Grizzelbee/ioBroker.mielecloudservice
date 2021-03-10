@@ -339,31 +339,21 @@ async function addMieleDevice(path, mieleDevice){
     }, null);
 
     // add device specific actions
-    addMieleDeviceActions(newPath, mieleDevice.ident.type.value_raw);
-    addDeviceNicknameAction(newPath, mieleDevice);
+    mieleTools.addMieleDeviceActions(adapter, newPath, mieleDevice.ident.type.value_raw);
+    mieleTools.addDeviceNicknameAction(adapter, newPath, mieleDevice);
 
     // add device states and ident
     for (let deviceInfo in mieleDevice){
         adapter.log.debug('addMieleDevice:' + deviceInfo);
         switch (deviceInfo) {
             case 'ident':
-                await addMieleDeviceIdent(newPath, mieleDevice[deviceInfo]);
+                await mieleTools.addMieleDeviceIdent(adapter, newPath, mieleDevice[deviceInfo]);
                 break;
             case 'state':
                 await addMieleDeviceState(newPath, mieleDevice[deviceInfo]);
                 break;
         }
     }
-}
-
-
-async function addMieleDeviceIdent(path, currentDeviceIdent){
-    adapter.log.debug('addMieleDeviceIdent: Path = [' + path + ']');
-    await mieleTools.createString(adapter,path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
-    await mieleTools.createString(adapter,path + '.ComModTechType', "the technical type of the communication module", currentDeviceIdent.xkmIdentLabel.techType);
-    await mieleTools.createString(adapter,path + '.DeviceSerial', "the serial number of the device", currentDeviceIdent.deviceIdentLabel.fabNumber);
-    await mieleTools.createString(adapter,path + '.DeviceTechType', "the technical type of the device", currentDeviceIdent.deviceIdentLabel.techType);
-    await mieleTools.createString(adapter,path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
 }
 
 async function addMieleDeviceState(path, currentDeviceState){
@@ -417,162 +407,6 @@ async function addMieleDeviceState(path, currentDeviceState){
 
 }
 
-function addDeviceNicknameAction(path, mieleDevice) {
-    adapter.log.debug( 'addDeviceNicknameAction: Path:['+ path +'], mieleDevice:['+JSON.stringify(mieleDevice)+']' );
-    // addDeviceNicknameAction - suitable for each and every device
-    mieleTools.createExtendObject(adapter,path + '.ACTIONS.Nickname', {
-        type: 'state',
-        common: {
-            name: 'Nickname of your device. Can be edited in Miele APP or here!',
-            read: true,
-            write: true,
-            type: 'string',
-            role:'text'
-        },
-        native: {}
-    }, () => {
-        adapter.setState(path + '.ACTIONS.Nickname', (mieleDevice.ident.deviceName === '' ? mieleDevice.ident.type.value_localized : mieleDevice.ident.deviceName), true);
-        adapter.subscribeStates(path + '.ACTIONS.Nickname');
-    });
-}
-
-function addPowerActionButtons(path) {
-    // addPowerOnAction
-    mieleTools.addActionButton(adapter,path,'Power_On', 'Power the Device on.', '');
-    // addPowerOffAction
-    mieleTools.addActionButton(adapter,path,'Power_Off', 'Power the Device off.', '');
-}
-
-function addStartActionButton(path) {
-    // addStartAction
-    mieleTools.addActionButton(adapter,path,'Start', 'Starts the Device.', 'button.start');
-}
-
-function addStopActionButton(path) {
-    // addStopAction
-    mieleTools.addActionButton(adapter,path,'Stop', 'Stops the Device.', 'button.stop');
-}
-
-function addStartStopActionButtons(path) {
-    addStartActionButton(path);
-    addStopActionButton(path);
-}
-
-function addLightActionButtons(path) {
-    // addLightOnAction
-    mieleTools.addActionButton(adapter,path,'Light_On', 'Switches the lights of the Device on.', '');
-    // addLightOffAction
-    mieleTools.addActionButton(adapter,path,'Light_Off', 'Switches the lights of the Device off.', '');
-}
-
-function addSupercoolingActionButtons(path) {
-    // addLightOnAction
-    mieleTools.addActionButton(adapter,path,'Start_Supercooling', 'Brings the Device into Supercooling mode.', '');
-    // addLightOffAction
-    mieleTools.addActionButton(adapter,path,'Stop_Supercooling', 'Brings the Device out of Supercooling mode.', '');
-}
-
-function addSuperfreezingActionButtons(path) {
-    // addLightOnAction
-    mieleTools.addActionButton(adapter,path,'Start_Superfreezing', 'Brings the Device into Superfreezing mode.', '');
-    // addLightOffAction
-    mieleTools.addActionButton(adapter,path,'Stop_Superfreezing', 'Brings the Device out of Superfreezing mode.', '');
-}
-
-function addMieleDeviceActions(path, DeviceType){
-    adapter.log.debug(`addMieleDeviceActions: Path: [${path}]`);
-    // Create ACTIONS folder if not already existing
-    mieleTools.createExtendObject(adapter,path + '.ACTIONS', {
-        type: 'channel',
-        common: {name: 'Supported Actions for this device.', read: true, write: true},
-        native: {}
-    }, null);
-
-    // Add Actions depending on device type
-    switch (DeviceType) {
-        case 1:
-        case 2:
-        case 7:
-            addPowerActionButtons(path);
-            addStartStopActionButtons(path);
-            // addStartTimeAction
-            break;
-        case 12:
-        case 13:
-            // addStopAction
-            addStopActionButton(path);
-            break;
-        case 17:
-        case 18:
-            addPowerActionButtons(path);
-            // addStopAction
-            addStopActionButton(path);
-            // addLightEnable
-            // addLightDisable
-            addLightActionButtons(path);
-            break;
-        case 19:
-            // addStartSuperCoolingAction
-            // addStopSuperCoolingAction
-            addSupercoolingActionButtons(path);
-            break;
-        case 20:
-            // addStartSuperFreezingAction
-            // addStopSuperFreezingAction
-            addSuperfreezingActionButtons(path);
-            break;
-        case 21:
-            // addStartSuperCoolingAction
-            // addStopSuperCoolingAction
-            addSupercoolingActionButtons(path);
-            // addStartSuperFreezingAction
-            // addStopSuperFreezingAction
-            addSuperfreezingActionButtons(path);
-            break;
-        case 24:
-            // addStopAction
-            addStopActionButton(path);
-            break;
-        case 31:
-            // addStopAction
-            addStopActionButton(path);
-            break;
-        case 32:
-            // addLightEnable
-            // addLightDisable
-            addLightActionButtons(path);
-            break;
-        case 33:
-            // addLightEnable
-            // addLightDisable
-            addLightActionButtons(path);
-            break;
-        case 34:
-            // addLightEnable
-            // addLightDisable
-            addLightActionButtons(path);
-            break;
-        case 45:
-            // addStopAction
-            addStopActionButton(path);
-            break;
-        case 67:
-            // addStopAction
-            addStopActionButton(path);
-            break;
-        case 68:
-            // addLightEnable
-            // addLightDisable
-            addLightActionButtons(path);
-            // addStartSuperFreezingAction
-            // addStopSuperFreezingAction
-            addSuperfreezingActionButtons(path);
-            break;
-    }
-}
-
-
-
 /*
  *  Main function
  */
@@ -583,9 +417,11 @@ async function main() {
         if (auth.hasOwnProperty('access_token') ) {
             adapter.log.info(`Starting poll timer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
             // start refresh scheduler with interval from adapters config
+            // todo: do the first API call and setup all devices returned
             pollTimeout= setTimeout(async function schedule() {
                 adapter.log.debug("Updating device states (polling API scheduled).");
                 const result = await mieleAPITools.refreshMieleData( adapter, auth );
+                // todo: don't setup devices again - only set states
                 await splitMieleDevices(result);
                 pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
             } , 100);

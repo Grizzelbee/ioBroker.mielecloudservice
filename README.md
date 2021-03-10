@@ -45,8 +45,8 @@ Please mainly refer to the main API documentation published by Miele
 * [General Documentation](https://www.miele.com/developer/swagger-ui/index.html)
 * [Preconditions to perform an action on a device](https://www.miele.com/developer/swagger-ui/put_additional_info.html) 
 
-There are some datapoints available in 2 kinds. As a human-readable text and as a number.
-These numeric datafields belonging to a text field have the same name, but a "_raw" appended. 
+There are some data points available in 2 kinds. As a human-readable text and as a number.
+These numeric data fields belonging to a text field have the same name, but a "_raw" appended. 
 Those fields which have a general meaning are listed below.
 The fields which aren't listed vary in their meaning from device to device and are not documented by Miele.
 If you need to refer in scripts to these fields, always use the _raw values. 
@@ -163,6 +163,11 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
+### 3.5.0 (2021-03-xx)
+*  (grizzelbee) Upd: [85](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/85) full code refactoring and split into multiple files
+
+
+
 ### 3.0.2 (2021-03-05)
 *  (grizzelbee) Fix: [79](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/79) When a devices serial is missing, the identNumber is assigned instead.
 *  (grizzelbee) Upd: Changed folder name cooktops to hobs since this is the more common name
@@ -209,15 +214,15 @@ Here is a list of what these raw values stand for:
 * (grizzelbee) Fix: fixed error on logout while invalidating token
 
 ### 2.0.0 - Support for Miele API V1.0.3 (2020-08-25)
-Some breaking changes in this release. Some datapoints changed their type. May require fixes in scripts. **Update with care!**
-Due to the fix that datapoints with invalid values aren't created any longer, I recommend deleting all datapoints in Object view.
+Some breaking changes in this release. Some data points changed their type. May require fixes in scripts. **Update with care!**
+Due to the fix that data points with invalid values aren't created any longer, I recommend deleting all data points in Object view.
 * (grizzelbee) Change: New Icon
-* (grizzelbee) Fix: Number-datapoints are no longer created as strings due to their unit. They are correct numbers with units now.
+* (grizzelbee) Fix: Number-data points are no longer created as strings due to their unit. They are correct numbers with units now.
 * (grizzelbee) Fix: Unit °Celsius is now shown as °C - not longer °Celsius
 * (grizzelbee) New: Introduced support for °Fahrenheit
 * (grizzelbee) New: Introduced support for new Value "plateStep" for Hobs.
 * (grizzelbee) New: Performing a LogOut from Miele API on shutdown to invalidate the Auth-Tokens.
-* (grizzelbee) Fix: Datapoints with invalid values (null/-32768) are no longer created.
+* (grizzelbee) Fix: Data points with invalid values (null/-32768) are no longer created.
 
 ### 1.2.4 (2020-06-09)
 * (grizzelbee) Fix: fixed No-Data Bug (introduced in V1.2.3)
@@ -282,8 +287,8 @@ please refer to [Miele-Documentation](#documentation) for more Information on ac
 * (grizzelbee) Chg: removed Push-API checkbox (maybe introduced newly when API supports this)
 * (grizzelbee) Chg: New Icon
 * (grizzelbee) New: added support for non-german Miele-Accounts (ALL should be included)
-* (grizzelbee) Complete new layout of datapoints
-* (grizzelbee) Devicetypes are grouped now
+* (grizzelbee) Complete new layout of data points
+* (grizzelbee) Device types are grouped now
 
 ### 0.9.1 (2019-07-26)
 * (grizzelbee) Fix: Fixed small bug introduced in V0.9.0 throwing an exception in debugging code
@@ -294,7 +299,7 @@ please refer to [Miele-Documentation](#documentation) for more Information on ac
 * (grizzelbee) Fix: fixed ESLint config
 * (grizzelbee) Upd: Changed order of config fields in UI
 * (grizzelbee) New: Set 5 Minutes poll interval and english response language as default to get initial values
-* (grizzelbee) New: Parent-Datapoint of timevalues will be used to get a pretty readable time in the format h:mm. The deeper datapoints 0 and 1 will still be updated, but his will be removed in a future version to reduce workload.
+* (grizzelbee) New: Parent-Datapoint of time values will be used to get a pretty readable time in the format h:mm. The deeper datapoints 0 and 1 will still be updated, but his will be removed in a future version to reduce workload.
 
 ### 0.0.5 (2019-07-25)
 * (grizzelbee) Upd: some code maintenance

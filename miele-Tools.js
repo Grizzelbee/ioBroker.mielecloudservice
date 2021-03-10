@@ -364,3 +364,266 @@ module.exports.adapterConfigIsValid = function(adapter) {
 
 
 
+/**
+ * addMieleDeviceIdent
+ *
+ * add the ident data to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param currentDeviceIdent {object} ident data of the device
+ */
+module.exports.addMieleDeviceIdent = async function(adapter, path, currentDeviceIdent){
+    adapter.log.debug('addMieleDeviceIdent: Path = [' + path + ']');
+    await mieleTools.createString(adapter,path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
+    await mieleTools.createString(adapter,path + '.ComModTechType', "the technical type of the communication module", currentDeviceIdent.xkmIdentLabel.techType);
+    await mieleTools.createString(adapter,path + '.DeviceSerial', "the serial number of the device", currentDeviceIdent.deviceIdentLabel.fabNumber);
+    await mieleTools.createString(adapter,path + '.DeviceTechType', "the technical type of the device", currentDeviceIdent.deviceIdentLabel.techType);
+    await mieleTools.createString(adapter,path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
+}
+
+
+
+/**
+ * addDeviceNicknameAction
+ *
+ * add the nickname action to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param mieleDevice {object} ident data of the device
+ */
+module.exports.addDeviceNicknameAction = function(adapter, path, mieleDevice) {
+    adapter.log.debug( 'addDeviceNicknameAction: Path:['+ path +'], mieleDevice:['+JSON.stringify(mieleDevice)+']' );
+    // addDeviceNicknameAction - suitable for each and every device
+    mieleTools.createExtendObject(adapter,path + '.ACTIONS.Nickname', {
+        type: 'state',
+        common: {
+            name: 'Nickname of your device. Can be edited in Miele APP or here!',
+            read: true,
+            write: true,
+            type: 'string',
+            role:'text'
+        },
+        native: {}
+    }, () => {
+        adapter.setState(path + '.ACTIONS.Nickname', (mieleDevice.ident.deviceName === '' ? mieleDevice.ident.type.value_localized : mieleDevice.ident.deviceName), true);
+        adapter.subscribeStates(path + '.ACTIONS.Nickname');
+    });
+}
+
+
+
+/**
+ * addPowerActionButtons
+ *
+ * add the Power-button action to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+module.exports.addPowerActionButtons = function(adapter, path) {
+    // addPowerOnAction
+    mieleTools.addActionButton(adapter,path,'Power_On', 'Power the Device on.', '');
+    // addPowerOffAction
+    mieleTools.addActionButton(adapter,path,'Power_Off', 'Power the Device off.', '');
+}
+
+
+
+/**
+ * addStartActionButton
+ *
+ * add the Start-button action to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+module.exports.addStartActionButton = function(adapter, path) {
+    // addStartAction
+    mieleTools.addActionButton(adapter,path,'Start', 'Starts the Device.', 'button.start');
+}
+
+
+
+/**
+ * addStopActionButton
+ *
+ * add the Stop-button action to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+module.exports.addStopActionButton = function(adapter, path) {
+    // addStopAction
+    mieleTools.addActionButton(adapter,path,'Stop', 'Stops the Device.', 'button.stop');
+}
+
+
+
+/**
+ * addStartStopActionButtons
+ *
+ * add the Start+Stop-buttons action to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+module.exports.addStartStopActionButtons = function(adapter, path) {
+    mieleTools.addStartActionButton(adapter, path);
+    mieleTools.addStopActionButton(adapter, path);
+}
+
+
+
+/**
+ * addLightActionButtons
+ *
+ * add the Light-button actions to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+module.exports.addLightActionButtons = function(adapter, path) {
+    // addLightOnAction
+    mieleTools.addActionButton(adapter,path,'Light_On', 'Switches the lights of the Device on.', '');
+    // addLightOffAction
+    mieleTools.addActionButton(adapter,path,'Light_Off', 'Switches the lights of the Device off.', '');
+}
+
+
+
+/**
+ * addSupercoolingActionButtons
+ *
+ * add the Supercooling-button actions to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+module.exports.addSupercoolingActionButtons = function(adapter, path) {
+    // addLightOnAction
+    mieleTools.addActionButton(adapter,path,'Start_Supercooling', 'Brings the Device into Supercooling mode.', '');
+    // addLightOffAction
+    mieleTools.addActionButton(adapter,path,'Stop_Supercooling', 'Brings the Device out of Supercooling mode.', '');
+}
+
+
+
+/**
+ * addSuperfreezingActionButtons
+ *
+ * add the Superfreezing-button actions to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+module.exports.addSuperfreezingActionButtons = function(adapter, path) {
+    // addLightOnAction
+    mieleTools.addActionButton(adapter,path,'Start_Superfreezing', 'Brings the Device into Superfreezing mode.', '');
+    // addLightOffAction
+    mieleTools.addActionButton(adapter,path,'Stop_Superfreezing', 'Brings the Device out of Superfreezing mode.', '');
+}
+
+
+
+/**
+ * addMieleDeviceActions
+ *
+ * add all the actions to the device tree which are available for the given device type
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param DeviceType {string} type of the device to decide which actions needed to be added
+ */
+module.exports.addMieleDeviceActions = function(adapter, path, DeviceType){
+    adapter.log.debug(`addMieleDeviceActions: Path: [${path}]`);
+    // Create ACTIONS folder if not already existing
+    mieleTools.createExtendObject(adapter,path + '.ACTIONS', {
+        type: 'channel',
+        common: {name: 'Supported Actions for this device.', read: true, write: true},
+        native: {}
+    }, null);
+
+    // Add Actions depending on device type
+    switch (DeviceType) {
+        case 1:
+        case 2:
+        case 7:
+            mieleTools.addPowerActionButtons(adapter,path);
+            mieleTools.addStartStopActionButtons(adapter,path);
+            // addStartTimeAction
+            break;
+        case 12:
+        case 13:
+            // addStopAction
+            mieleTools.addStopActionButton(adapter,path);
+            break;
+        case 17:
+        case 18:
+            mieleTools.addPowerActionButtons(adapter,path);
+            // addStopAction
+            mieleTools.addStopActionButton(adapter,path);
+            // addLightEnable
+            // addLightDisable
+            mieleTools.addLightActionButtons(adapter,path);
+            break;
+        case 19:
+            // addStartSuperCoolingAction
+            // addStopSuperCoolingAction
+            mieleTools.addSupercoolingActionButtons(adapter,path);
+            break;
+        case 20:
+            // addStartSuperFreezingAction
+            // addStopSuperFreezingAction
+            mieleTools.addSuperfreezingActionButtons(adapter,path);
+            break;
+        case 21:
+            // addStartSuperCoolingAction
+            // addStopSuperCoolingAction
+            mieleTools.addSupercoolingActionButtons(adapter,path);
+            // addStartSuperFreezingAction
+            // addStopSuperFreezingAction
+            mieleTools.addSuperfreezingActionButtons(adapter,path);
+            break;
+        case 24:
+            // addStopAction
+            mieleTools.addStopActionButton(adapter,path);
+            break;
+        case 31:
+            // addStopAction
+            mieleTools.addStopActionButton(adapter,path);
+            break;
+        case 32:
+            // addLightEnable
+            // addLightDisable
+            mieleTools.addLightActionButtons(adapter,path);
+            break;
+        case 33:
+            // addLightEnable
+            // addLightDisable
+            mieleTools.addLightActionButtons(adapter,path);
+            break;
+        case 34:
+            // addLightEnable
+            // addLightDisable
+            mieleTools.addLightActionButtons(adapter,path);
+            break;
+        case 45:
+            // addStopAction
+            mieleTools.addStopActionButton(adapter,path);
+            break;
+        case 67:
+            // addStopAction
+            mieleTools.addStopActionButton(adapter,path);
+            break;
+        case 68:
+            // addLightEnable
+            // addLightDisable
+            mieleTools.addLightActionButtons(adapter,path);
+            // addStartSuperFreezingAction
+            // addStopSuperFreezingAction
+            mieleTools.addSuperfreezingActionButtons(adapter,path);
+            break;
+    }
+}
