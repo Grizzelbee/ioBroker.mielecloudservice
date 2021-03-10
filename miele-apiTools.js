@@ -3,7 +3,7 @@
 // jslint node: true
 'use strict';
 
-/*
+/**
  * Miele Cloud API-Functions
  *
  * This file contains all miele cloud API based functions
@@ -14,8 +14,8 @@
 const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const {stringify} = require('flatted');
-const mieleConst = require('miele-constants.js');
-const mieleTools = require('miele-Tools.js');
+const mieleConst = require('./miele-constants.js');
+const mieleTools = require('./miele-Tools.js');
 
 /**
  * Function APIGetAccessToken
@@ -87,6 +87,8 @@ module.exports.APIGetAccessToken = async function (adapter) {
     }
 }
 
+
+
 /**
  * Function APIRefreshToken
  *
@@ -128,6 +130,8 @@ async function APIRefreshToken(adapter, refresh_token) {
     }
 }
 
+
+
 /**
  * Function APILogOff
  *
@@ -145,6 +149,8 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
             adapter.log.error('[APILogOff] ' + JSON.stringify(error) + ' Stack: '+error.stack)
         });
 }
+
+
 
 /**
  * Function actionIsAllowedInCurrentState
@@ -191,6 +197,8 @@ async function actionIsAllowedInCurrentState(adapter, auth, deviceId, action, ac
             });
     })
 }
+
+
 
 /**
  * Function APIStartAction
@@ -276,7 +284,8 @@ module.exports.refreshMieleData = async function(adapter, auth){
         adapter.log.debug('refreshMieleData: handover all devices data to splitMieleDevices');
         adapter.log.debug('refreshMieleData: data [' + JSON.stringify(result) + ']');
         // todo move splitMieleDevices to main.js and return here only the result dataset
-        splitMieleDevices(result);
+        // splitMieleDevices(result);
+        return result;
     } catch(error) {
         adapter.log.error('[refreshMieleData] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
     }

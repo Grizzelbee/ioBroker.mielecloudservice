@@ -3,7 +3,7 @@
 // jslint node: true
 'use strict';
 
-/*
+/**
  * Miele Tools
  *
  * This file contains some tool functions needed for this adapter to work
@@ -11,8 +11,8 @@
  */
 
 // required files to load
-const mieleConst = require('miele-constants.js');
-const mieleAPIUtils = require('miele-apiTools.js');
+// const mieleConst = require('./miele-constants.js');
+// const mieleAPIUtils = require('./miele-apiTools.js');
 
 
 /**
@@ -62,7 +62,7 @@ module.exports.decryptPasswords = async function(adapter) {
 module.exports.addActionButton = function(adapter, path, action, description, buttonType){
     adapter.log.debug('addActionButton: Path['+ path +']');
     buttonType = buttonType || "button";
-    this.createExtendObject(path + '.ACTIONS.' + action, {
+    adapter.createExtendObject(adapter, path + '.ACTIONS.' + action, {
             type: 'state',
             common: {"name": description,
                 "read": false,
@@ -78,11 +78,27 @@ module.exports.addActionButton = function(adapter, path, action, description, bu
         });
 }
 
-module.exports.createBool = function(path, description, value, role){
+
+
+/**
+ * Function createBool
+ *
+ * Adds a boolean data point to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param value {boolean} value to set to the data point
+ * @param role {string} role of the data point (default: indicator)
+ *
+ * @returns promise {promise}
+ *
+ */
+module.exports.createBool = function(adapter, path, description, value, role){
     return new Promise(resolve => {
         role = role || 'indicator';
         adapter.log.debug('createBool: Path['+ path +'] Value[' + value + ']');
-        createExtendObject(path, {
+        adapter.createExtendObject(adapter, path, {
             type: 'state',
             common: {"name": description,
                 "read": true,
@@ -97,10 +113,24 @@ module.exports.createBool = function(path, description, value, role){
     })
 }
 
-module.exports.createString = function(path, description, value){
+
+
+/**
+ * Function createString
+ *
+ * Adds a string data point to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param value {string} value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createString = function(adapter, path, description, value){
     return new Promise(resolve => {
         adapter.log.debug('createString: Path['+ path +'] Value[' + value + ']');
-        createExtendObject(path, {
+        adapter.createExtendObject(adapter, path, {
             type: 'state',
             common: {"name": description,
                 "read":  true,
@@ -115,9 +145,25 @@ module.exports.createString = function(path, description, value){
     })
 }
 
-module.exports.createStringAndRaw = function(path, description, key_localized, value_localized, value_raw, unit){
+
+
+/**
+ * Function createStringAndRaw
+ *
+ * Adds a string data point to the device tree and in addition a raw data point containing a number representation of the string value
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param key_localized {string} localized key value (name) to set to the data point
+ * @param value_localized {string} localized string value to set to the data point
+ * @param value_raw {number} raw value to set to the data point
+ * @param unit {string} unit to set to the data point if applicable
+ *
+ */
+module.exports.createStringAndRaw = function(adapter, path, description, key_localized, value_localized, value_raw, unit){
     adapter.log.debug('createStringAndRaw: Path:[' + path + '] key_localized:[' + key_localized + '] value_localized[' + value_localized + '] value_raw[' + value_raw +'] unit[' + unit   +']' );
-    createExtendObject(path + '.' + key_localized +'_raw', {
+    adapter.createExtendObject(adapter, path + '.' + key_localized +'_raw', {
         type: 'state',
         common: {"name":  description + ' (value raw)',
             "read":  true,
@@ -129,7 +175,7 @@ module.exports.createStringAndRaw = function(path, description, key_localized, v
         adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
     });
 
-    createExtendObject(path + '.' + key_localized, {
+    adapter.createExtendObject(adapter, path + '.' + key_localized, {
         type: 'state',
         common: {"name":  description,
             "read":  true,
@@ -142,9 +188,23 @@ module.exports.createStringAndRaw = function(path, description, key_localized, v
     });
 }
 
-module.exports.createTime = function(path, description, value, role){
+
+
+/**
+ * Function createTime
+ *
+ * Adds a time data point to the device tree by a given array containing [hours, minutes]
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param value {array} value to set to the data point
+ * @param role {string} role to set to the data point (default: text)
+ *
+ */
+module.exports.createTime = function(adapter, path, description, value, role){
     role = role || 'text';
-    createExtendObject(path, {
+    adapter.createExtendObject(adapter, path, {
         type: 'state',
         common: {"name": description,
             "read": true,
@@ -159,7 +219,23 @@ module.exports.createTime = function(path, description, value, role){
     });
 }
 
-module.exports.createNumber = function(path, description, value, unit, role){
+
+
+/**
+ * Function createNumber
+ *
+ * Adds a number data point to the device tree
+ * Unit "Celsius" will be converted to "°C" and "Fahrenheit" to "°F"
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param value {number} value to set to the data point
+ * @param unit {string} unit to set to the data point
+ * @param role {string} role to set to the data point (default: text)
+ *
+ */
+module.exports.createNumber = function(adapter, path, description, value, unit, role){
     adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
     // get back to calling function if there is no valid value given.
     if ( !value || value === -32768 ) {
@@ -175,7 +251,7 @@ module.exports.createNumber = function(path, description, value, unit, role){
             break;
     }
     adapter.log.debug('createNumber: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
-    createExtendObject(path, {
+    adapter.createExtendObject(adapter, path, {
         type: 'state',
         common: {"name": description,
             "read": true,
@@ -189,7 +265,20 @@ module.exports.createNumber = function(path, description, value, unit, role){
     });
 }
 
-module.exports.createArray = function(path, description, value){
+
+
+/**
+ * Function createArray
+ *
+ * Adds a number data point to the device tree for each element in the given array
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param value {number} value to set to the data point
+ *
+ */
+module.exports.createArray = function(adapter, path, description, value){
     // depending on the device we receive up to 3 values
     // there is a min of 1 and a max of 3 temps returned by the miele API
     let MyPath = path;
@@ -202,9 +291,11 @@ module.exports.createArray = function(path, description, value){
         adapter.log.debug('createArray: Path:['   + MyPath  + ']');
         adapter.log.debug('createArray:  value:[' + JSON.stringify(value)   + ']');
         adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
-        createNumber(MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
+        adapter.createNumber(adapter, MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
     }
 }
+
+
 
 /**
  * createExtendObject
@@ -226,6 +317,8 @@ module.exports.createExtendObject = function(adapter, id, objData, callback) {
         }
     });
 }
+
+
 
 /**
  * adapterConfigIsValid

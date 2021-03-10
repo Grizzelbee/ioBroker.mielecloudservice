@@ -4,7 +4,7 @@
 /* jslint node: true */
 'use strict';
 
-/*
+/**
  * Miele constants
  *
  *  This file contains all constant values for this adapter to have all of them in one place

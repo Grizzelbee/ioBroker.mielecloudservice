@@ -14,9 +14,9 @@
 // you have to require the utils module and call adapter function
 const adapterName = require('./package.json').name.split('.').pop();
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
-const mieleAPIUtils = require('miele-apiTools.js');
-const mieleConst = require('miele-constants.js');
-const mieleTools = require('miele-Tools.js');
+const mieleAPIUtils = require('./miele-apiTools.js');
+const mieleTools = require('./miele-Tools.js');
+// const mieleConst = require('./miele-constants.js');
 
 // Global Variables
 let adapter;
@@ -30,7 +30,7 @@ function startadapter(options) {
         // name has to be set and has to be equal to adapters folder name and main file name excluding extension
         name: adapterName,
         // is called when adapter shuts down - callback has to be called under any circumstances!
-        unload: function (callback) {
+        unload: async function (callback) {
             try {
                 if (pollTimeout) {
                     adapter.log.info('Clearing Timeout: pollTimeout');
@@ -40,10 +40,10 @@ function startadapter(options) {
                 adapter.unsubscribeStates('*');
                 adapter.setState('info.connection', false);
                 if (auth.refresh_token) {
-                    mieleAPIUtils.APILogOff(adapter, auth, "refresh_token")
+                    await mieleAPIUtils.APILogOff(adapter, auth, "refresh_token")
                 }
                 if (auth.access_token) {
-                    mieleAPIUtils.APILogOff(adapter, auth, "access_token")
+                    await mieleAPIUtils.APILogOff(adapter, auth, "access_token")
                 }
                 auth = undefined;
                 pollTimeout = null;
@@ -62,14 +62,14 @@ function startadapter(options) {
         },
          */
         // is called if a subscribed state changes
-        stateChange: function (id, state) {
+        stateChange: async function (id, state) {
             // Warning, state can be null if it was deleted
             if (state && !state.ack) {
               adapter.log.debug('ack is not set!');
               // you can use the ack flag to detect if it is status (true) or command (false)
               adapter.log.debug('stateChange [' + id + '] [' + JSON.stringify(state)+']');
               let action = id.split('.').pop();
-                mieleAPIUtils.APIStartAction(adapter, auth, id, action, state.val);
+                await mieleAPIUtils.APIStartAction(adapter, auth, id, action, state.val);
             }
           },
         // stateChange: function(id, state){
@@ -91,10 +91,10 @@ function startadapter(options) {
         // is called when databases are connected and adapter received configuration.
         // start here!
         ready: async () => {
-                // Execute main after pwds have been decrypted
+                // Execute main after passwords have been decrypted
                 // The adapters config (in the instance object everything under the attribute "native") is accessible via
                 // adapter.config:
-                if ( adapterConfigIsValid() ) {
+                if ( mieleTools.adapterConfigIsValid(adapter) ) {
                     mieleTools.decryptPasswords(adapter)
                         .then(() => {
                             main();
@@ -116,15 +116,8 @@ function startadapter(options) {
     return adapter;
 }
 
-
-
-
-
-
-
-
 function createEODeviceTypes(deviceTypeID){
-/* List of possible devicetypes:
+/* List of possible device types:
     1 = WASHING MACHINE
     2 = TUMBLE DRYER
     7 = DISHWASHER
@@ -155,7 +148,7 @@ function createEODeviceTypes(deviceTypeID){
     43 = DOUBLE MICROWAVE OVEN
     45 = STEAM OVEN MICROWAVE COMBINATION
     48 = VACUUM DRAWER
-    67 = DIALOGOVEN
+    67 = DIALOG OVEN
     68 = WINE CABINET FREEZER COMBINATION
     */
 
@@ -244,7 +237,7 @@ function createEODeviceTypes(deviceTypeID){
     return deviceFolder;
 }
 
-function splitMieleDevices(devices){
+async function splitMieleDevices(devices){
     // Splits the data-package returned by the API into single devices
     // and lets you iterate over each single device
     adapter.log.debug('[splitMieleDevices] Splitting JSON to single devices.');
@@ -254,19 +247,19 @@ function splitMieleDevices(devices){
             adapter.log.debug('Device: [' + mieleDevice + '] has no serial number/fabNumber. Taking DeviceNumber instead.');
             devices[mieleDevice].ident.deviceIdentLabel.fabNumber = mieleDevice;
         }
-        parseMieleDevice(devices[mieleDevice]);
+        await parseMieleDevice(devices[mieleDevice]);
     }
 }
 
-function parseMieleDevice(mieleDevice){
+async function parseMieleDevice(mieleDevice){
     let deviceFolder;
     adapter.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
     deviceFolder = createEODeviceTypes(mieleDevice.ident.type.value_raw); // create folder for device
-    addMieleDevice(deviceFolder, mieleDevice);
+    await addMieleDevice(deviceFolder, mieleDevice);
 
-    // add special datapoints to devices
+    // add special data points to devices
     // Action required due to wet clothes, dry clothes, clean dishes, ...
-    // set to true when device has finished and door hasn't opend yet
+    // set to true when device has finished and door hasn't opened yet
     // set to false when device has finished and door is open
     // set to false when device has been started and door is closed
     switch (mieleDevice.ident.type.value_raw) {
@@ -274,24 +267,24 @@ function parseMieleDevice(mieleDevice){
         case  2: // Tumble dryer
         case  7: // Dishwasher
         case 12: // Washer dryer
-            // set to true when device has finished (Value_raw 7 => end programmed) and door hasn't opend yet
+            // set to true when device has finished (Value_raw 7 => end programmed) and door hasn't opened yet
             if (mieleDevice.state.status.value_raw === 7 && !mieleDevice.signalDoor) {
-                createBool(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', true);
+                await mieleTools.createBool(adapter,deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', true, '');
             }
             // set to false when device has finished and door is open
             if ( ((mieleDevice.state.status.value_raw === 7) || mieleDevice.state.status.value_raw === 1) && mieleDevice.signalDoor) {
-                createBool(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false);
+                await mieleTools.createBool(adapter,deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false, '');
             }
             // set to false when device has been started and door is closed
             if (mieleDevice.state.status.value_raw === 5 && !mieleDevice.signalDoor) {
-                createBool(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false);
+                await mieleTools.createBool(adapter,deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.signalActionRequired', 'Action required on device due to wet clothes, dry clothes, clean dishes, ...', false, '');
             }
     }
 
             // spinning speed
     switch (mieleDevice.ident.type.value_raw) {
         case  1: // Washing machine
-            createNumber(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.' + mieleDevice.state.spinningSpeed.key_localized,
+            mieleTools.createNumber(adapter,deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.' + mieleDevice.state.spinningSpeed.key_localized,
                     'Spinning speed of a washing machine.',
                               mieleDevice.state.spinningSpeed.value_localized,
                               mieleDevice.state.spinningSpeed.unit,
@@ -310,24 +303,24 @@ function parseMieleDevice(mieleDevice){
         case 31: // Steam oven combination
         case 43: // Steam oven microwave combination
         case 67: // DialogOven
-            createTime(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', mieleDevice.state.elapsedTime);
+            mieleTools.createTime(adapter,deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', mieleDevice.state.elapsedTime, '');
             break;
         case 18: // Hood
-            createStringAndRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for hoods.', mieleDevice.state.ventilationStep.key_localized, mieleDevice.state.ventilationStep.value_localized, mieleDevice.state.ventilationStep.value_raw, '');
+            mieleTools.createStringAndRaw(adapter,deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for hoods.', mieleDevice.state.ventilationStep.key_localized, mieleDevice.state.ventilationStep.value_localized, mieleDevice.state.ventilationStep.value_raw, '');
             break;
     }
     // dryingStep
     switch (mieleDevice.ident.type.value_raw) {
         case  2: // tumble dryer
         case 24: // washer dryer
-            createStringAndRaw(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for tumble dryers and washer-dryer combinations.', mieleDevice.state.dryingStep.key_localized, mieleDevice.state.dryingStep.value_localized, mieleDevice.state.dryingStep.value_raw, '');
+            mieleTools.createStringAndRaw(adapter,deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber, 'This field is only valid for tumble dryers and washer-dryer combinations.', mieleDevice.state.dryingStep.key_localized, mieleDevice.state.dryingStep.value_localized, mieleDevice.state.dryingStep.value_raw, '');
             break;
     }
     // PlateStep - occurs at Hobs
     switch (mieleDevice.ident.type.value_raw) {
         case 14: // Highlight Hob
         case 27: // Induction Hob
-            createArray(deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + mieleDevice.state.plateStep[0].key_localized,
+            mieleTools.createArray(adapter,deviceFolder + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber + mieleDevice.state.plateStep[0].key_localized,
                    'The plateStep object represents the selected cooking zone levels for a hob.',
                              mieleDevice.state.plateStep);
             break;
@@ -335,42 +328,42 @@ function parseMieleDevice(mieleDevice){
 
 }
 
-function addMieleDevice(path, mieleDevice){
+async function addMieleDevice(path, mieleDevice){
     let newPath = path + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber;
     adapter.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
 
-    createExtendObject(newPath, {
+    mieleTools.createExtendObject(adapter, newPath, {
         type: 'device',
         common: {name:   (mieleDevice.ident.deviceName === ''? mieleDevice.ident.type.value_localized: mieleDevice.ident.deviceName) , read: true, write: false},
         native: {}
-    });
+    }, null);
 
     // add device specific actions
     addMieleDeviceActions(newPath, mieleDevice.ident.type.value_raw);
     addDeviceNicknameAction(newPath, mieleDevice);
 
-    // add device states and idents
+    // add device states and ident
     for (let deviceInfo in mieleDevice){
         adapter.log.debug('addMieleDevice:' + deviceInfo);
         switch (deviceInfo) {
             case 'ident':
-                addMieleDeviceIdent(newPath, mieleDevice[deviceInfo]);
+                await addMieleDeviceIdent(newPath, mieleDevice[deviceInfo]);
                 break;
             case 'state':
-                addMieleDeviceState(newPath, mieleDevice[deviceInfo]);
+                await addMieleDeviceState(newPath, mieleDevice[deviceInfo]);
                 break;
         }
     }
 }
 
 
-function addMieleDeviceIdent(path, currentDeviceIdent){
+async function addMieleDeviceIdent(path, currentDeviceIdent){
     adapter.log.debug('addMieleDeviceIdent: Path = [' + path + ']');
-    createString(path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
-    createString(path + '.ComModTechType', "the technical type of the communication module", currentDeviceIdent.xkmIdentLabel.techType);
-    createString(path + '.DeviceSerial', "the serial number of the device", currentDeviceIdent.deviceIdentLabel.fabNumber);
-    createString(path + '.DeviceTechType', "the technical type of the device", currentDeviceIdent.deviceIdentLabel.techType);
-    createString(path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
+    await mieleTools.createString(adapter,path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
+    await mieleTools.createString(adapter,path + '.ComModTechType', "the technical type of the communication module", currentDeviceIdent.xkmIdentLabel.techType);
+    await mieleTools.createString(adapter,path + '.DeviceSerial', "the serial number of the device", currentDeviceIdent.deviceIdentLabel.fabNumber);
+    await mieleTools.createString(adapter,path + '.DeviceTechType', "the technical type of the device", currentDeviceIdent.deviceIdentLabel.techType);
+    await mieleTools.createString(adapter,path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
 }
 
 async function addMieleDeviceState(path, currentDeviceState){
@@ -378,48 +371,48 @@ async function addMieleDeviceState(path, currentDeviceState){
     let estimatedEndTime = new Date;
     adapter.log.debug('addMieleDeviceState: Path: [' + path + ']');
     // set the values for redundant state indicators
-    await createBool(path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
-    await createBool(path + '.signalInUse', 'Indicates whether the device is in use or switched off.', currentDeviceState.status.value_raw !== 1, 'indicator.InUse');
+    await mieleTools.createBool(adapter,path + '.Connected', 'Indicates whether the device is connected to WLAN or Gateway.', currentDeviceState.status.value_raw !== 255, 'indicator.reachable');
+    await mieleTools.createBool(adapter,path + '.signalInUse', 'Indicates whether the device is in use or switched off.', currentDeviceState.status.value_raw !== 1, 'indicator.InUse');
     // regular states
-    createStringAndRaw(path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw, '');
-    createStringAndRaw(path, 'ID of the running Program', currentDeviceState.ProgramID.key_localized, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw, '');
-    createStringAndRaw(path, 'programType of the running Program', currentDeviceState.programType.key_localized,  currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw, '');
-    createStringAndRaw(path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
-    createTime(path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime);
+    mieleTools.createStringAndRaw(adapter,path, 'main Device state', currentDeviceState.status.key_localized, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw, '');
+    mieleTools.createStringAndRaw(adapter,path, 'ID of the running Program', currentDeviceState.ProgramID.key_localized, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw, '');
+    mieleTools.createStringAndRaw(adapter,path, 'programType of the running Program', currentDeviceState.programType.key_localized,  currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw, '');
+    mieleTools.createStringAndRaw(adapter,path, 'phase of the running Program', currentDeviceState.programPhase.key_localized,  currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw, '');
+    mieleTools.createTime(adapter,path + '.remainingTime', 'The RemainingTime equals the relative remaining time', currentDeviceState.remainingTime, '');
     estimatedEndTime.setMinutes((now.getMinutes() + ((currentDeviceState.remainingTime[0]*60) + (currentDeviceState.remainingTime[1]*1))));
-    await createString(path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', estimatedEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    createTime(path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime);
-    createArray(path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
-    createArray(path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
-    await createBool(path + '.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo);
-    await createBool(path + '.signalFailure', 'The SignalFailure field indicates, if a failure is active for this Device.', currentDeviceState.signalFailure);
-    await createBool(path + '.signalDoor', 'The SignalDoor field indicates, if a door-open message is active for this Device.', currentDeviceState.signalDoor);
+    await mieleTools.createString(adapter,path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time.', estimatedEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    mieleTools.createTime(adapter,path + '.startTime', 'The StartTime equals the relative starting time', currentDeviceState.startTime, '');
+    mieleTools.createArray(adapter,path + '.targetTemperature', 'The TargetTemperature field contains information about one or multiple target temperatures of the process.', currentDeviceState.targetTemperature);
+    mieleTools.createArray(adapter,path + '.Temperature', 'The Temperature field contains information about one or multiple temperatures of the device.', currentDeviceState.temperature);
+    await mieleTools.createBool(adapter,path + '.signalInfo', 'The SignalInfo field indicates, if a notification is active for this Device.', currentDeviceState.signalInfo, '');
+    await mieleTools.createBool(adapter,path + '.signalFailure', 'The SignalFailure field indicates, if a failure is active for this Device.', currentDeviceState.signalFailure, '');
+    await mieleTools.createBool(adapter,path + '.signalDoor', 'The SignalDoor field indicates, if a door-open message is active for this Device.', currentDeviceState.signalDoor, '');
     // Light - create only if not null
     if (currentDeviceState.light) {
-        await createString(path + '.Light', 'The light field indicates the status of the device light.', currentDeviceState.light === 1 ? 'Enabled' : (currentDeviceState.light === 2 ? 'Disabled' : 'Invalid'));
+        await mieleTools.createString(adapter,path + '.Light', 'The light field indicates the status of the device light.', currentDeviceState.light === 1 ? 'Enabled' : (currentDeviceState.light === 2 ? 'Disabled' : 'Invalid'));
     }
     // NEW API 1.0.4 - ambientLight
     if (currentDeviceState.ambientLight) {
-        await createString(path + '.ambientLight', 'The ambientLight field indicates the status of the device ambient light.', currentDeviceState.ambientLight);
+        await mieleTools.createString(adapter,path + '.ambientLight', 'The ambientLight field indicates the status of the device ambient light.', currentDeviceState.ambientLight);
     }
-    await createBool(path + '.fullRemoteControl', 'The device can be controlled from remote.', currentDeviceState.remoteEnable.fullRemoteControl);
-    await createBool(path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid);
+    await mieleTools.createBool(adapter,path + '.fullRemoteControl', 'The device can be controlled from remote.', currentDeviceState.remoteEnable.fullRemoteControl, '');
+    await mieleTools.createBool(adapter,path + '.smartGrid', 'The device is set to Smart Grid mode.', currentDeviceState.remoteEnable.smartGrid, '');
     // NEW API 1.0.4 - ecoFeedback
     // the ecoFeedback object returns the amount of water and energy used by the current running program up to the present moment.
     // Furthermore it returns a forecast for water and energy consumption for a selected program.
     if (currentDeviceState.ecoFeedback){
         if (currentDeviceState.ecoFeedback.currentWaterConsumption){
-            createNumber(path + '.currentWaterConsumption', 'The amount of water used by the current running program up to the present moment.', currentDeviceState.ecoFeedback.currentWaterConsumption.value.valueOf(), currentDeviceState.ecoFeedback.currentWaterConsumption.unit.valueOf(), 'value');
-            createNumber(path + '.waterForecast', 'The relative water usage for the selected program from 0 to 100.', (currentDeviceState.ecoFeedback.waterForecast * 100), '%', 'value');
+            mieleTools.createNumber(adapter,path + '.currentWaterConsumption', 'The amount of water used by the current running program up to the present moment.', currentDeviceState.ecoFeedback.currentWaterConsumption.value.valueOf(), currentDeviceState.ecoFeedback.currentWaterConsumption.unit.valueOf(), 'value');
+            mieleTools.createNumber(adapter,path + '.waterForecast', 'The relative water usage for the selected program from 0 to 100.', (currentDeviceState.ecoFeedback.waterForecast * 100), '%', 'value');
         }
         if (currentDeviceState.ecoFeedback.currentEnergyConsumption) {
-            createNumber(path + '.currentEnergyConsumption', 'The amount of energy used by the current running program up to the present moment.', currentDeviceState.ecoFeedback.currentEnergyConsumption.value.valueOf(), currentDeviceState.ecoFeedback.currentEnergyConsumption.unit.valueOf(), 'value.power.consumption');
-            createNumber(path + '.energyForecast', 'The relative energy usage for the selected program from 0 to 100.', (currentDeviceState.ecoFeedback.energyForecast * 100), '%', 'value');
+            mieleTools.createNumber(adapter,path + '.currentEnergyConsumption', 'The amount of energy used by the current running program up to the present moment.', currentDeviceState.ecoFeedback.currentEnergyConsumption.value.valueOf(), currentDeviceState.ecoFeedback.currentEnergyConsumption.unit.valueOf(), 'value.power.consumption');
+            mieleTools.createNumber(adapter,path + '.energyForecast', 'The relative energy usage for the selected program from 0 to 100.', (currentDeviceState.ecoFeedback.energyForecast * 100), '%', 'value');
         }
     }
     // NEW API 1.0.4 - batteryLevel - create only if not null
     if (currentDeviceState.batteryLevel) {
-        createNumber(path + '.batteryLevel', 'The batteryLevel object returns the charging level of a builtin battery as a percentage value between 0 .. 100', currentDeviceState.batteryLevel, '%', 'value');
+        mieleTools.createNumber(adapter,path + '.batteryLevel', 'The batteryLevel object returns the charging level of a builtin battery as a percentage value between 0 .. 100', currentDeviceState.batteryLevel, '%', 'value');
     }
 
 }
@@ -427,7 +420,7 @@ async function addMieleDeviceState(path, currentDeviceState){
 function addDeviceNicknameAction(path, mieleDevice) {
     adapter.log.debug( 'addDeviceNicknameAction: Path:['+ path +'], mieleDevice:['+JSON.stringify(mieleDevice)+']' );
     // addDeviceNicknameAction - suitable for each and every device
-    createExtendObject(path + '.ACTIONS.Nickname', {
+    mieleTools.createExtendObject(adapter,path + '.ACTIONS.Nickname', {
         type: 'state',
         common: {
             name: 'Nickname of your device. Can be edited in Miele APP or here!',
@@ -445,19 +438,19 @@ function addDeviceNicknameAction(path, mieleDevice) {
 
 function addPowerActionButtons(path) {
     // addPowerOnAction
-    addActionButton(path,'Power_On', 'Power the Device on.');
+    mieleTools.addActionButton(adapter,path,'Power_On', 'Power the Device on.', '');
     // addPowerOffAction
-    addActionButton(path,'Power_Off', 'Power the Device off.');
+    mieleTools.addActionButton(adapter,path,'Power_Off', 'Power the Device off.', '');
 }
 
 function addStartActionButton(path) {
     // addStartAction
-    addActionButton(path,'Start', 'Starts the Device.', 'button.start');
+    mieleTools.addActionButton(adapter,path,'Start', 'Starts the Device.', 'button.start');
 }
 
 function addStopActionButton(path) {
     // addStopAction
-    addActionButton(path,'Stop', 'Stops the Device.', 'button.stop');
+    mieleTools.addActionButton(adapter,path,'Stop', 'Stops the Device.', 'button.stop');
 }
 
 function addStartStopActionButtons(path) {
@@ -467,33 +460,33 @@ function addStartStopActionButtons(path) {
 
 function addLightActionButtons(path) {
     // addLightOnAction
-    addActionButton(path,'Light_On', 'Switches the lights of the Device on.');
+    mieleTools.addActionButton(adapter,path,'Light_On', 'Switches the lights of the Device on.', '');
     // addLightOffAction
-    addActionButton(path,'Light_Off', 'Switches the lights of the Device off.');
+    mieleTools.addActionButton(adapter,path,'Light_Off', 'Switches the lights of the Device off.', '');
 }
 
 function addSupercoolingActionButtons(path) {
     // addLightOnAction
-    addActionButton(path,'Start_Supercooling', 'Brings the Device into Supercooling mode.');
+    mieleTools.addActionButton(adapter,path,'Start_Supercooling', 'Brings the Device into Supercooling mode.', '');
     // addLightOffAction
-    addActionButton(path,'Stop_Supercooling', 'Brings the Device out of Supercooling mode.');
+    mieleTools.addActionButton(adapter,path,'Stop_Supercooling', 'Brings the Device out of Supercooling mode.', '');
 }
 
 function addSuperfreezingActionButtons(path) {
     // addLightOnAction
-    addActionButton(path,'Start_Superfreezing', 'Brings the Device into Superfreezing mode.');
+    mieleTools.addActionButton(adapter,path,'Start_Superfreezing', 'Brings the Device into Superfreezing mode.', '');
     // addLightOffAction
-    addActionButton(path,'Stop_Superfreezing', 'Brings the Device out of Superfreezing mode.');
+    mieleTools.addActionButton(adapter,path,'Stop_Superfreezing', 'Brings the Device out of Superfreezing mode.', '');
 }
 
 function addMieleDeviceActions(path, DeviceType){
     adapter.log.debug(`addMieleDeviceActions: Path: [${path}]`);
     // Create ACTIONS folder if not already existing
-    createExtendObject(path + '.ACTIONS', {
+    mieleTools.createExtendObject(adapter,path + '.ACTIONS', {
         type: 'channel',
         common: {name: 'Supported Actions for this device.', read: true, write: true},
         native: {}
-    });
+    }, null);
 
     // Add Actions depending on device type
     switch (DeviceType) {
@@ -586,13 +579,14 @@ function addMieleDeviceActions(path, DeviceType){
 async function main() {
     try {
         // todo: try 10 logins when it fails with a delay of 5 min each
-        auth = await APIGetAccessToken();
+        auth = await mieleAPIUtils.APIGetAccessToken(adapter);
         if (auth.hasOwnProperty('access_token') ) {
-            adapter.log.info(`Starting Polltimer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
+            adapter.log.info(`Starting poll timer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
             // start refresh scheduler with interval from adapters config
-            pollTimeout= setTimeout(function schedule() {
+            pollTimeout= setTimeout(async function schedule() {
                 adapter.log.debug("Updating device states (polling API scheduled).");
-                refreshMieleData( auth );
+                const result = await mieleAPIUtils.refreshMieleData( adapter, auth );
+                await splitMieleDevices(result);
                 pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
             } , 100);
         } else {
