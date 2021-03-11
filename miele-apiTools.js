@@ -211,9 +211,10 @@ async function actionIsAllowedInCurrentState(adapter, auth, deviceId, action, ac
  * @param path {string} the device path from the device tree
  * @param action {string} action to be started
  * @param value {string} the value of the action to set
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  *
  */
-module.exports.APIStartAction = async function(adapter, auth, path, action, value) {
+module.exports.APIStartAction = async function(adapter, auth, path, action, value, setup) {
     let currentAction;
     let paths = path.split('.');    // transform into array
     paths.pop();                    // remove last element of path
@@ -250,14 +251,14 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         if ( await actionIsAllowedInCurrentState(adapter, auth, device, Object.keys(currentAction)[0], currentAction[Object.keys(currentAction)[0]]) ){
             adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
             const result = await APISendRequest(adapter, auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
-            await mieleTools.createString(adapter, currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
-            await mieleTools.createBool(adapter, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
+            await mieleTools.createString(adapter, setup,currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
+            await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
             adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
             await mieleAPITools.refreshMieleData(adapter, auth);
         }
     } catch(err) {
-        await mieleTools.createBool(adapter, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
-        await mieleTools.createString(adapter, currentPath + '.Action_information', 'Additional Information returned from API.', JSON.stringify(err));
+        await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
+        await mieleTools.createString(adapter, setup, currentPath + '.Action_information', 'Additional Information returned from API.', JSON.stringify(err));
         adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
     }
 }

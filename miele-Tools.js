@@ -85,6 +85,7 @@ module.exports.addActionButton = function(adapter, path, action, description, bu
  * Adds a boolean data point to the device tree
  *
  * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param description {string} description of the data point
  * @param value {boolean} value to set to the data point
@@ -93,21 +94,25 @@ module.exports.addActionButton = function(adapter, path, action, description, bu
  * @returns promise {promise}
  *
  */
-module.exports.createBool = function(adapter, path, description, value, role){
+module.exports.createBool = function(adapter, setup,path, description, value, role){
     return new Promise(resolve => {
         role = role || 'indicator';
         adapter.log.debug('createBool: Path['+ path +'] Value[' + value + ']');
-        mieleTools.createExtendObject(adapter, path, {
-            type: 'state',
-            common: {"name": description,
-                "read": true,
-                "write":false,
-                "role": role,
-                "type": "boolean"
-            }
-        }, () => {
+        if (setup) {
+            mieleTools.createExtendObject(adapter, path, {
+                type: 'state',
+                common: {"name": description,
+                    "read": true,
+                    "write":false,
+                    "role": role,
+                    "type": "boolean"
+                }
+            }, () => {
+                adapter.setState(path, value, true);
+            });
+        } else {
             adapter.setState(path, value, true);
-        });
+        }
         resolve(true);
     })
 }
@@ -120,26 +125,31 @@ module.exports.createBool = function(adapter, path, description, value, role){
  * Adds a string data point to the device tree
  *
  * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param description {string} description of the data point
  * @param value {string} value to set to the data point
  *
  * @returns promise {promise}
  */
-module.exports.createString = function(adapter, path, description, value){
+module.exports.createString = function(adapter, setup, path, description, value){
     return new Promise(resolve => {
         adapter.log.debug('createString: Path['+ path +'] Value[' + value + ']');
-        mieleTools.createExtendObject(adapter, path, {
-            type: 'state',
-            common: {"name": description,
-                "read":  true,
-                "write": false,
-                "role": "text",
-                "type": "string"
-            }
-        }, () => {
+        if (setup){
+            mieleTools.createExtendObject(adapter, path, {
+                type: 'state',
+                common: {"name": description,
+                    "read":  true,
+                    "write": false,
+                    "role": "text",
+                    "type": "string"
+                }
+            }, () => {
+                adapter.setState(path, value, true);
+            });
+        } else {
             adapter.setState(path, value, true);
-        });
+        }
         resolve(true);
     })
 }
@@ -152,6 +162,7 @@ module.exports.createString = function(adapter, path, description, value){
  * Adds a string data point to the device tree and in addition a raw data point containing a number representation of the string value
  *
  * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param description {string} description of the data point
  * @param key_localized {string} localized key value (name) to set to the data point
@@ -160,31 +171,36 @@ module.exports.createString = function(adapter, path, description, value){
  * @param unit {string} unit to set to the data point if applicable
  *
  */
-module.exports.createStringAndRaw = function(adapter, path, description, key_localized, value_localized, value_raw, unit){
+module.exports.createStringAndRaw = function(adapter, setup, path, description, key_localized, value_localized, value_raw, unit){
     adapter.log.debug('createStringAndRaw: Path:[' + path + '] key_localized:[' + key_localized + '] value_localized[' + value_localized + '] value_raw[' + value_raw +'] unit[' + unit   +']' );
-    mieleTools.createExtendObject(adapter, path + '.' + key_localized +'_raw', {
-        type: 'state',
-        common: {"name":  description + ' (value raw)',
-            "read":  true,
-            "write": false,
-            "role": "value.raw",
-            "type": "number"
-        }
-    }, ()  => {
-        adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
-    });
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.' + key_localized +'_raw', {
+            type: 'state',
+            common: {"name":  description + ' (value raw)',
+                "read":  true,
+                "write": false,
+                "role": "value.raw",
+                "type": "number"
+            }
+        }, ()  => {
+            adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
+        });
 
-    mieleTools.createExtendObject(adapter, path + '.' + key_localized, {
-        type: 'state',
-        common: {"name":  description,
-            "read":  true,
-            "write": false,
-            "role": "text",
-            "type": "string"
-        }
-    }, () => {
+        mieleTools.createExtendObject(adapter, path + '.' + key_localized, {
+            type: 'state',
+            common: {"name":  description,
+                "read":  true,
+                "write": false,
+                "role": "text",
+                "type": "string"
+            }
+        }, () => {
+            adapter.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
+        });
+    } else {
+        adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
         adapter.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
-    });
+    }
 }
 
 
@@ -195,27 +211,32 @@ module.exports.createStringAndRaw = function(adapter, path, description, key_loc
  * Adds a time data point to the device tree by a given array containing [hours, minutes]
  *
  * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param description {string} description of the data point
  * @param value {array} value to set to the data point
  * @param role {string} role to set to the data point (default: text)
  *
  */
-module.exports.createTime = function(adapter, path, description, value, role){
+module.exports.createTime = function(adapter, setup, path, description, value, role){
     role = role || 'text';
-    mieleTools.createExtendObject(adapter, path, {
-        type: 'state',
-        common: {"name": description,
-            "read": true,
-            "write":false,
-            "role": role,
-            "type": "string"
-        }
-    }, () => {
-        adapter.log.debug('createTime: Path:['+ path +'], value:['+ value +']');
-        let assembledValue = value[0] + ':' + (value[1]<10? '0': '') + value[1];
+    adapter.log.debug('createTime: Path:['+ path +'], value:['+ value +']');
+    let assembledValue = value[0] + ':' + (value[1]<10? '0': '') + value[1];
+    if (setup){
+        mieleTools.createExtendObject(adapter, path, {
+            type: 'state',
+            common: {"name": description,
+                "read": true,
+                "write":false,
+                "role": role,
+                "type": "string"
+            }
+        }, () => {
+            adapter.setState(path, assembledValue, true);
+        });
+    } else {
         adapter.setState(path, assembledValue, true);
-    });
+    }
 }
 
 
@@ -227,6 +248,7 @@ module.exports.createTime = function(adapter, path, description, value, role){
  * Unit "Celsius" will be converted to "°C" and "Fahrenheit" to "°F"
  *
  * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param description {string} description of the data point
  * @param value {number} value to set to the data point
@@ -234,7 +256,7 @@ module.exports.createTime = function(adapter, path, description, value, role){
  * @param role {string} role to set to the data point (default: text)
  *
  */
-module.exports.createNumber = function(adapter, path, description, value, unit, role){
+module.exports.createNumber = function(adapter, setup,  path, description, value, unit, role){
     adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
     // get back to calling function if there is no valid value given.
     if ( !value || value === -32768 ) {
@@ -250,18 +272,22 @@ module.exports.createNumber = function(adapter, path, description, value, unit, 
             break;
     }
     adapter.log.debug('createNumber: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
-    mieleTools.createExtendObject(adapter, path, {
-        type: 'state',
-        common: {"name": description,
-            "read": true,
-            "write":false,
-            "role": role,
-            "type": "number",
-            "unit": unit
-        }
-    }, () => {
+    if (setup){
+        mieleTools.createExtendObject(adapter, path, {
+            type: 'state',
+            common: {"name": description,
+                "read": true,
+                "write":false,
+                "role": role,
+                "type": "number",
+                "unit": unit
+            }
+        }, () => {
+            adapter.setState(path, value, true);
+        });
+    } else {
         adapter.setState(path, value, true);
-    });
+    }
 }
 
 
@@ -272,12 +298,13 @@ module.exports.createNumber = function(adapter, path, description, value, unit, 
  * Adds a number data point to the device tree for each element in the given array
  *
  * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param description {string} description of the data point
  * @param value {number} value to set to the data point
  *
  */
-module.exports.createArray = function(adapter, path, description, value){
+module.exports.createArray = function(adapter, setup, path, description, value){
     // depending on the device we receive up to 3 values
     // there is a min of 1 and a max of 3 temps returned by the miele API
     let MyPath = path;
@@ -290,7 +317,7 @@ module.exports.createArray = function(adapter, path, description, value){
         adapter.log.debug('createArray: Path:['   + MyPath  + ']');
         adapter.log.debug('createArray:  value:[' + JSON.stringify(value)   + ']');
         adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
-        mieleTools.createNumber(adapter, MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
+        mieleTools.createNumber(adapter, setup, MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
     }
 }
 
@@ -372,14 +399,15 @@ module.exports.adapterConfigIsValid = function(adapter) {
  * @param adapter {object} link to the adapter instance
  * @param path {string} path where the data point is going to be created
  * @param currentDeviceIdent {object} ident data of the device
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  */
-module.exports.addMieleDeviceIdent = async function(adapter, path, currentDeviceIdent){
+module.exports.addMieleDeviceIdent = async function(adapter, path, currentDeviceIdent, setup){
     adapter.log.debug('addMieleDeviceIdent: Path = [' + path + ']');
-    await mieleTools.createString(adapter,path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
-    await mieleTools.createString(adapter,path + '.ComModTechType', "the technical type of the communication module", currentDeviceIdent.xkmIdentLabel.techType);
-    await mieleTools.createString(adapter,path + '.DeviceSerial', "the serial number of the device", currentDeviceIdent.deviceIdentLabel.fabNumber);
-    await mieleTools.createString(adapter,path + '.DeviceTechType', "the technical type of the device", currentDeviceIdent.deviceIdentLabel.techType);
-    await mieleTools.createString(adapter,path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
+    await mieleTools.createString(adapter, setup, path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
+    await mieleTools.createString(adapter, setup,path + '.ComModTechType', "the technical type of the communication module", currentDeviceIdent.xkmIdentLabel.techType);
+    await mieleTools.createString(adapter, setup,path + '.DeviceSerial', "the serial number of the device", currentDeviceIdent.deviceIdentLabel.fabNumber);
+    await mieleTools.createString(adapter, setup,path + '.DeviceTechType', "the technical type of the device", currentDeviceIdent.deviceIdentLabel.techType);
+    await mieleTools.createString(adapter, setup,path + '.DeviceMatNumber', "the material number of the device", currentDeviceIdent.deviceIdentLabel.matNumber);
 }
 
 
