@@ -171,6 +171,7 @@ Here is a list of what these raw values stand for:
 *  (grizzelbee) Upd: Devices get fully created on startup and aren't modified afterwards - only updated
 *  (grizzelbee) Upd: New folder ecoFeedback to group ecoFeedback states 
 *  (grizzelbee) Upd: New folder IDENT to group ident states
+*  (grizzelbee) Upd: Removed signalActionRequired - since there is no signalDoor for washing machines this approach doesn't work
 
 
 ### 3.0.2 (2021-03-05)
