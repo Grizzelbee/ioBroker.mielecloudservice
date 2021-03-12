@@ -301,12 +301,12 @@ module.exports.createNumber = function(adapter, setup,  path, description, value
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param description {string} description of the data point
- * @param value {number} value to set to the data point
+ * @param value {object} array containing the value(s) to set to the data point(s)
  *
  */
 module.exports.createArray = function(adapter, setup, path, description, value){
     // depending on the device we receive up to 3 values
-    // there is a min of 1 and a max of 3 temps returned by the miele API
+    // there is a min of 1 and a max of 3 temperatures returned by the miele API
     let MyPath = path;
     const items = Object.keys(value).length;
     adapter.log.debug('Number of Items in Array: [' + items +']');
