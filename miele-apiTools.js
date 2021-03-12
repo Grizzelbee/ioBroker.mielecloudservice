@@ -224,6 +224,15 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
     switch (action) {
         case 'Nickname': currentAction = {'deviceName':value};
             break;
+        case 'Power':
+
+            if (value == 'On'){
+                currentAction = {'powerOn':true};
+            } else {
+                currentAction = {'powerOff':true};
+            }
+
+            break;
         case 'Power_On': currentAction = {'powerOn':true};
             break;
         case 'Power_Off': currentAction = {'powerOff':true};

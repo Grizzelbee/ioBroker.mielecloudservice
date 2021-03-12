@@ -345,7 +345,6 @@ async function addMieleDevice(path, mieleDevice, setup){
         native: {}
     }, null);
 
-    // todo: think about creating subchannels with icons here (Actions, IDENT)
     mieleTools.createChannelActions(adapter, newPath, setup) ;
     mieleTools.createChannelIdent(adapter, newPath, setup) ;
 
@@ -412,6 +411,9 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // actions
+                if (setup){
+                    mieleTools.addPowerSwitch(adapter, path);
+                }
                 break;
             case 2: // 2 = TUMBLE DRYER*
                 // setup ecoFeedback channel for this device if needed
