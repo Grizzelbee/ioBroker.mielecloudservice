@@ -25,7 +25,7 @@ const mieleTools = require('./miele-Tools.js');
  *  resolves to true if password has been decrypted
  *  rejects with error message
  */
-module.exports.decryptPasswords = async function(adapter) {
+module.exports.decryptPasswords = function(adapter) {
     return new Promise((resolve, reject) => {
         if (adapter.supportsFeature && adapter.supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
             adapter.getForeignObject('system.config', (err, obj) => {
@@ -214,7 +214,7 @@ module.exports.createStringAndRaw = function(adapter, setup, path, description, 
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param description {string} description of the data point
- * @param value {array} value to set to the data point
+ * @param value {object} array value to set to the data point
  * @param role {string} role to set to the data point (default: text)
  *
  */
@@ -255,39 +255,42 @@ module.exports.createTime = function(adapter, setup, path, description, value, r
  * @param unit {string} unit to set to the data point
  * @param role {string} role to set to the data point (default: text)
  *
+ * @returns {promise}
+ *
  */
 module.exports.createNumber = function(adapter, setup,  path, description, value, unit, role){
     adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
     // get back to calling function if there is no valid value given.
-    if ( !value || value === -32768 ) {
-        adapter.log.debug('[createNumber]: invalid value detected. Skipping...');
-        return;
-    }
-    role = role || 'value';
-
-    switch (unit){
-        case "Celsius" : unit = "°C";
-            break;
-        case "Fahrenheit" : unit = "°F";
-            break;
-    }
-    adapter.log.debug('createNumber: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
-    if (setup){
-        mieleTools.createExtendObject(adapter, path, {
-            type: 'state',
-            common: {"name": description,
-                "read": true,
-                "write":false,
-                "role": role,
-                "type": "number",
-                "unit": unit
+    return new Promise((resolve) => {
+        if ( !value || value === -32768 ) {
+            adapter.log.debug('[createNumber]: invalid value detected. Skipping...');
+        }
+        if (setup){
+            role = role || 'value';
+            switch (unit){
+                case "Celsius" : unit = "°C";
+                    break;
+                case "Fahrenheit" : unit = "°F";
+                    break;
             }
-        }, () => {
+            mieleTools.createExtendObject(adapter, path, {
+                type: 'state',
+                common: {"name": description,
+                    "read": true,
+                    "write":false,
+                    "role": role,
+                    "type": "number",
+                    "unit": unit
+                }
+            }, () => {
+                adapter.setState(path, value, true);
+                resolve(true);
+            });
+        } else {
             adapter.setState(path, value, true);
-        });
-    } else {
-        adapter.setState(path, value, true);
-    }
+            resolve(true);
+        }
+    })
 }
 
 
@@ -653,5 +656,713 @@ module.exports.addMieleDeviceActions = function(adapter, path, DeviceType){
             // addStopSuperFreezingAction
             mieleTools.addSuperfreezingActionButtons(adapter,path);
             break;
+    }
+}
+
+
+
+/**
+ * createStateConnected
+ *
+ * create the state that shows whether the device is connected to WLAN or Gateway.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateConnected = function(adapter, setup, path, value){
+    return mieleTools.createBool( adapter,
+                                  setup,
+                             path + '.Connected',
+                        'Indicates whether the device is connected to WLAN or Gateway.',
+                            value,
+                            'indicator.reachable');
+}
+
+
+
+/**
+ * createStateSignalInUse
+ *
+ * create the state that shows whether the device is connected to WLAN or Gateway.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateSignalInUse = function(adapter, setup, path, value){
+    return mieleTools.createBool( adapter,
+                                  setup,
+                             path + '.signalInUse',
+                        'Indicates whether the device is in use or switched off.',
+                             value,
+                              'indicator.InUse');
+}
+
+
+
+/**
+ * createStateSignalInfo
+ *
+ * create the state that shows whether a notification is active for this Device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateSignalInfo = function(adapter, setup, path, value){
+    return mieleTools.createBool( adapter,
+        setup,
+        path + '.signalInfo',
+        'Indicates whether a notification is active for this Device.',
+        value,
+        '');
+}
+
+
+
+/**
+ * createStateSmartGrid
+ *
+ * create the state that shows whether the device is set to Smart Grid mode
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateSmartGrid = function(adapter, setup, path, value){
+    return mieleTools.createBool( adapter,
+        setup,
+        path + '.smartGrid',
+        'Indicates whether the device is set to Smart Grid mode',
+        value,
+        '');
+}
+
+
+
+/**
+ * createStateFullRemoteControl
+ *
+ * create the state that shows whether the device can be controlled from remote.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateFullRemoteControl = function(adapter, setup, path, value){
+    return mieleTools.createBool( adapter,
+        setup,
+        path + '.signalInfo',
+        'Indicates whether the device can be controlled from remote.',
+        value,
+        '');
+}
+
+
+
+/**
+ * createStateSignalDoor
+ *
+ * create the state that shows whether a door-open message is active for this Device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateSignalDoor = function(adapter, setup, path, value){
+    return mieleTools.createBool( adapter,
+        setup,
+        path + '.signalDoor',
+        'Indicates whether a door-open message is active for this Device.',
+        value,
+        '');
+}
+
+
+
+/**
+ * createStateSignalFailure
+ *
+ * create the state that shows whether a failure message is active for this Device.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateSignalFailure = function(adapter, setup, path, value){
+    return mieleTools.createBool( adapter,
+        setup,
+        path + '.signalFailure',
+        'Indicates whether a failure message is active for this Device.',
+        value,
+        '');
+}
+
+
+
+/**
+ * createStateDeviceMainState
+ *
+ * create the state that shows the main state for this Device.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateDeviceMainState = async function(adapter, setup, path, value, value_raw){
+    await mieleTools.createNumber( adapter, setup, path + '_raw', 'Main state of the Device (raw-value)', value_raw, '', '');
+
+    return mieleTools.createString( adapter,
+        setup,
+        path,
+        'Main state of the Device',
+        value);
+}
+
+
+
+/**
+ * createStateProgramID
+ *
+ * create the state that shows the main state for this Device.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateProgramID = async function(adapter, setup, path, value, value_raw){
+    await mieleTools.createNumber( adapter, setup, path + '_raw', 'ID of the running Program (raw-value)', value_raw, '', '');
+
+    return mieleTools.createString( adapter,
+        setup,
+        path,
+        'ID of the running Program',
+        value);
+}
+
+
+
+/**
+ * createStateProgramType
+ *
+ * create the state that shows the Program type of the running Program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateProgramType = async function(adapter, setup, path, value, value_raw){
+    await mieleTools.createNumber( adapter, setup, path + '_raw', 'Program type of the running Program (raw-value)', value_raw, '', '');
+
+    return mieleTools.createString( adapter,
+        setup,
+        path,
+        'Program type of the running Program',
+        value);
+}
+
+
+
+/**
+ * createStateProgramPhase
+ *
+ * create the state that shows the Phase of the running program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateProgramPhase = async function(adapter, setup, path, value, value_raw){
+    await mieleTools.createNumber( adapter, setup, path + '_raw', 'Phase of the running program (raw-value)', value_raw, '', '');
+
+    return mieleTools.createString( adapter,
+        setup,
+        path,
+        'Phase of the running program',
+        value);
+}
+
+
+
+/**
+ * createStateVentilationStep
+ *
+ * create the state that shows the
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateVentilationStep = async function(adapter, setup, path, value, value_raw){
+    await mieleTools.createNumber( adapter, setup, path + '_raw', 'This field is only valid for hoods (raw-value)', value_raw, '', '');
+
+    return mieleTools.createString( adapter,
+        setup,
+        path,
+        'This field is only valid for hoods.',
+        value);
+}
+
+
+
+/**
+ * createStateDryingStep
+ *
+ * create the state that shows the
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateDryingStep = async function(adapter, setup, path, value, value_raw){
+    await mieleTools.createNumber( adapter, setup, path + '_raw', 'This field is only valid for hoods (raw-value)', value_raw, '', '');
+
+    return mieleTools.createString( adapter,
+        setup,
+        path,
+        'This field is only valid for hoods.',
+        value);
+}
+
+
+
+/**
+ * createStateEstimatedEndTime
+ *
+ * create the state that shows the estimated ending time of the current running program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param remainingTime {object} array that contains the remaining time in format [hours, minutes]
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateEstimatedEndTime = async function(adapter, setup, path, remainingTime){
+    let timeToShow = '';
+    if ( remainingTime[0]+remainingTime[1] ===0 ){
+        adapter.log.debug('No EstimatedEndTime to show!');
+    } else {
+        let now = new Date;
+        let estimatedEndTime = new Date;
+        estimatedEndTime.setMinutes((now.getMinutes() + ((remainingTime[0]*60) + (remainingTime[1]*1))));
+        timeToShow = estimatedEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    return mieleTools.createString(adapter,
+                                    setup,
+                                    path + '.estimatedEndTime',
+                          'The EstimatedEndTime is the current time plus remaining time of the running program.',
+                                    timeToShow
+    );
+}
+
+
+
+/**
+ * createStateAmbientLight
+ *
+ * create the state that shows the state of ambient light of the current device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {string}
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateAmbientLight = function(adapter, setup, path, value){
+    return mieleTools.createString(adapter,
+        setup,
+        path,
+        'The ambientLight field indicates the status of the device ambient light.',
+        value
+    );
+}
+
+
+
+/**
+ * createStateLight
+ *
+ * create the state that shows the state of light of the current device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} array that contains the remaining time in format [hours, minutes]
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateLight = function(adapter, setup, path, value){
+
+    //currentDeviceState.light === 1 ? 'Enabled' : (currentDeviceState.light === 2 ? 'Disabled' : 'Invalid'));
+
+    return mieleTools.createString(adapter,
+        setup,
+        path,
+        'The light field indicates the status of the device\'s light.',
+        value
+    );
+}
+
+
+
+/**
+ * createStateRemainingTime
+ *
+ * create the state that shows the remaining time of the running program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param remainingTime {object} array value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateRemainingTime = function(adapter, setup, path, remainingTime){
+    mieleTools.createTime(  adapter,
+                            setup,
+                       path + '.remainingTime',
+                  'The RemainingTime equals the relative remaining time',
+                             remainingTime,
+                        '');
+}
+
+
+
+/**
+ * createStateStartTime
+ *
+ * create the state that shows the start time of the running program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param startTime {object} array value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateStartTime = function(adapter, setup, path, startTime){
+    mieleTools.createTime(  adapter,
+        setup,
+        path + '.startTime',
+        'The StartTime equals the relative starting time',
+        startTime,
+        '');
+}
+
+
+/**
+ * createStateElapsedTime
+ *
+ * create the state that shows the elapsed time of the running program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {object} array value that represents a time value to set to the data point
+ *
+ */
+module.exports.createStateElapsedTime = function(adapter, setup, path, value){
+    mieleTools.createTime(  adapter,
+        setup,
+        path + '.elapsedTime',
+        'ElapsedTime since program start (only present for certain devices)',
+        value,
+        '');
+}
+
+
+
+/**
+ * createStateTargetTemperature
+ *
+ * create the state that shows information about one or multiple target temperatures of the process.
+ * API returns 1 to 3 values depending on the device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {object} array value to set to the data point
+ */
+module.exports.createStateTargetTemperature = function(adapter, setup, path, value){
+    mieleTools.createArray( adapter,
+                            setup,
+                       path + '.targetTemperature',
+                  'The TargetTemperature field contains information about one or multiple target temperatures of the process.',
+                             value);
+}
+
+
+
+/**
+ * createStateTemperature
+ *
+ * create the state that shows information about one or multiple temperatures of the device.
+ * API returns 1 to 3 values depending on the device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {object} array value to set to the data point
+ */
+module.exports.createStateTemperature = function(adapter, setup, path, value){
+    mieleTools.createArray( adapter,
+        setup,
+        path + '.Temperature',
+        'The Temperature field contains information about one or multiple target temperatures of the process.',
+        value);
+}
+
+
+
+/**
+ * createStatePlateStep
+ *
+ * create the state that shows the selected cooking zone levels for a hob
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {object} array value to set to the data point
+ */
+module.exports.createStatePlateStep = function(adapter, setup, path, value){
+    // PlateStep - occurs at Hobs
+    mieleTools.createArray( adapter,
+        setup,
+        path + '.PlateStep',
+        'The plateStep object represents the selected cooking zone levels for a hob.',
+        value);
+}
+
+/**
+ * createStateBatteryLevel
+ *
+ * create the state that shows the charging level of a builtin battery as a percentage value between 0 .. 100
+ * NEW API 1.0.4
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {number} value to set to the data point
+ */
+module.exports.createStateBatteryLevel = function(adapter, setup, path, value) {
+        mieleTools.createNumber(adapter,
+                                setup,
+                           path + '.batteryLevel',
+                      'The batteryLevel object returns the charging level of a builtin battery as a percentage value between 0 .. 100',
+                                 value,
+                            '%',
+                            'value');
+}
+
+
+
+/**
+ * createStateEcoFeedbackWater
+ *
+ * create the states that show
+ * NEW API 1.0.4
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param ecoFeedback {object} value to set to the data point
+ */
+module.exports.createStateEcoFeedbackWater = function(adapter, setup, path, ecoFeedback) {
+    mieleTools.createNumber(adapter,
+                            setup,
+                      path + '.EcoFeedback.currentWaterConsumption',
+                 'The amount of water used by the current running program up to the present moment.',
+                            (ecoFeedback===null? 0: ecoFeedback.currentWaterConsumption.value.valueOf()*1),
+                            (ecoFeedback===null? 0: ecoFeedback.currentWaterConsumption.unit.valueOf()),
+                      'value');
+    mieleTools.createNumber(adapter,
+                            setup,
+                       path + '.EcoFeedback.waterForecast',
+                  'The relative water usage for the selected program from 0 to 100.',
+                            (ecoFeedback===null? 0: ecoFeedback.waterForecast*100),
+                       '%',
+                       'value');
+}
+
+
+
+/**
+ * createStateEcoFeedbackEnergy
+ *
+ * create the states that show
+ * NEW API 1.0.4
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param ecoFeedback {object} value to set to the data point
+ */
+module.exports.createStateEcoFeedbackEnergy = function(adapter, setup, path, ecoFeedback) {
+    mieleTools.createNumber(adapter,
+        setup,
+        path + '.EcoFeedback.currentEnergyConsumption',
+        'The amount of energy used by the current running program up to the present moment.',
+        (ecoFeedback===null? 0: ecoFeedback.currentEnergyConsumption.value.valueOf()*1),
+        (ecoFeedback===null? 0: ecoFeedback.currentEnergyConsumption.unit.valueOf()),
+        'value'
+    );
+    mieleTools.createNumber(adapter,
+        setup,
+        path + '.EcoFeedback.EnergyForecast',
+        'The relative energy usage for the selected program from 0 to 100.',
+        (ecoFeedback===null? 0: ecoFeedback.energyForecast*100),
+        '%',
+        'value');
+}
+
+
+
+/**
+ * createStateSpinningSpeed
+ *
+ * create the states that show
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {number} value to set to the data point
+ * @param unit {string} unit the value is in
+ */
+module.exports.createStateSpinningSpeed = function(adapter, setup, path, value, unit) {
+    mieleTools.createNumber(adapter,
+        setup,
+        path,
+        'Spinning speed of a washing machine.',
+        value,
+        unit,
+        'value');
+}
+
+
+
+
+
+
+/**
+ * createChannelActions
+ *
+ * create the channel for Actions
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ */
+module.exports.createChannelActions = function(adapter, path, setup) {
+    if (setup){
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS', {
+            type: 'channel',
+            common: {
+                name: 'Actions which are available for this device',
+                read: true,
+                write: false,
+                icon: 'icons/cog.svg'
+            },
+            native: {}
+        }, null);
+    }
+}
+
+
+
+/**
+ * createChannelIdent
+ *
+ * create the channel for Ident-information
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ */
+module.exports.createChannelIdent = function(adapter, path, setup) {
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.IDENT', {
+            type: 'channel',
+            common: {
+                name: 'Ident information available for this device',
+                read: true,
+                write: false,
+                icon: 'icons/info.svg'
+            },
+            native: {}
+        }, null);
+    }
+}
+
+
+/**
+ * createChannelEcoFeedback
+ *
+ * create the channel for EcoFeedback-information
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ */
+module.exports.createChannelEcoFeedback = function(adapter, path, setup) {
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.EcoFeedback', {
+            type: 'channel',
+            common: {
+                name: 'EcoFeedback information available for this device',
+                read: true,
+                write: false,
+                icon: 'icons/eco.svg'
+            },
+            native: {}
+        }, null);
     }
 }
