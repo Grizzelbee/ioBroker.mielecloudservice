@@ -166,9 +166,11 @@ Here is a list of what these raw values stand for:
 ### 4.0.0 (2021-03-xx)
 *  (grizzelbee) Upd: [85](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/85) full code refactoring and split into multiple files. 
 *  (grizzelbee) Upd: [86](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/86) every folder and device now gets a nice little icon
+*  (grizzelbee) Upd: [83](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/83) estimatedEndTime isn't shown anymore after device has finisched
 *  (grizzelbee) Upd: Devices get fully created on startup and aren't modified afterwards - only updated
 *  (grizzelbee) Upd: New folder ecoFeedback to group ecoFeedback states 
 *  (grizzelbee) Upd: New folder IDENT to group ident states
+
 
 ### 3.0.2 (2021-03-05)
 *  (grizzelbee) Fix: [79](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/79) When a devices serial is missing, the identNumber is assigned instead.

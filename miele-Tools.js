@@ -1198,7 +1198,7 @@ module.exports.createStateBatteryLevel = function(adapter, setup, path, value) {
                                 setup,
                            path + '.batteryLevel',
                       'The batteryLevel object returns the charging level of a builtin battery as a percentage value between 0 .. 100',
-                                 value,
+                                 value==null?0:value,
                             '%',
                             'value');
 }
