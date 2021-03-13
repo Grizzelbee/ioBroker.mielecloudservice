@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "3.0.2",
+        "version": "4.0.0",
         "news": {
+            "4.0.0": {
+                "en": "Major Release - Update with care and read the change log!",
+                "de": "Hauptversion - Aktualisieren Sie sorgfältig und lesen Sie das Änderungsprotokoll!",
+                "ru": "Основной выпуск - обновляйте внимательно и читайте журнал изменений!",
+                "pt": "Versão principal - atualize com cuidado e leia o log de alterações!",
+                "nl": "Grote release - Update zorgvuldig en lees het wijzigingslogboek!",
+                "fr": "Version majeure - Mettez à jour avec soin et lisez le journal des modifications!",
+                "it": "Versione principale: aggiorna con attenzione e leggi il registro delle modifiche!",
+                "es": "Versión principal: actualice con cuidado y lea el registro de cambios.",
+                "pl": "Główne wydanie - aktualizuj uważnie i przeczytaj dziennik zmian!",
+                "zh-cn": "主要版本-谨慎更新并阅读更改日志！"
+            },
             "3.0.2": {
                 "en": "Maintenance release - Bugfixes and minor improvements.",
                 "de": "Wartungsversion - Bugfixes und kleinere Verbesserungen.",
