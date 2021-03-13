@@ -1281,7 +1281,7 @@ module.exports.createStateEcoFeedbackEnergy = function(adapter, setup, path, eco
         'The amount of energy used by the current running program up to the present moment.',
         (ecoFeedback===null? 0: ecoFeedback.currentEnergyConsumption.value.valueOf()*1),
         (ecoFeedback===null? 0: ecoFeedback.currentEnergyConsumption.unit.valueOf()),
-        'value'
+        'value.power.consumption'
     );
     mieleTools.createNumber(adapter,
         setup,

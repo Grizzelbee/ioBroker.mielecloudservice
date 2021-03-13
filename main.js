@@ -290,8 +290,8 @@ async function parseMieleDevice(mieleDevice, setup){
     if (setup) {
         _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber]=deviceObj;
         adapter.log.debug(`_knownDevices=${JSON.stringify(_knownDevices)}`)
-        await addMieleDevice(deviceObj.deviceFolder, mieleDevice, setup);
     }
+    await addMieleDevice(deviceObj.deviceFolder, mieleDevice, setup);
 }
 
 
@@ -321,11 +321,6 @@ async function addMieleDevice(path, mieleDevice, setup){
 
     mieleTools.createChannelActions(adapter, newPath, setup) ;
     mieleTools.createChannelIdent(adapter, newPath, setup) ;
-
-    // todo: add actions again
-    // add device specific actions
-    //    mieleTools.addMieleDeviceActions(adapter, newPath, mieleDevice.ident.type.value_raw);
-
     // add device states and ident
     for (let deviceInfo in mieleDevice){
         adapter.log.debug('addMieleDevice:' + deviceInfo);
@@ -340,6 +335,16 @@ async function addMieleDevice(path, mieleDevice, setup){
                 break;
         }
     }
+
+    // todo: add actions again
+    // add device specific actions
+    //    mieleTools.addMieleDeviceActions(adapter, newPath, mieleDevice.ident.type.value_raw);
+
+    // checkPermittedActions
+    const actions = mieleAPITools.getPermittedActions(adapter, _auth, mieleDevice.ident.deviceIdentLabel.fabNumber);
+
+
+
 }
 
 
@@ -405,7 +410,6 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
-                await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 break;
             case 24: // 24 = WASHER DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -543,22 +547,22 @@ async function main() {
         _auth = await mieleAPITools.APIGetAccessToken(adapter);
         if (_auth.hasOwnProperty('access_token') ) {
             adapter.log.info(`Setting up devices ...`);
-            // start refresh scheduler with interval from adapters config
-            // todo: do the first API call and setup all devices returned
+            // do the first API call and setup all devices returned
             const result = await mieleAPITools.refreshMieleData( adapter, _auth );
             await splitMieleDevices(result, true);
+            // start refresh scheduler with interval from adapters config
             adapter.log.info(`Starting poll timer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
             try {
                 _pollTimeout= setTimeout(async function schedule() {
                     adapter.log.debug("Updating device states (polling API scheduled).");
+                    // don't setup devices again - only set states
                     const result = await mieleAPITools.refreshMieleData( adapter, _auth );
-                    // todo: don't setup devices again - only set states
                     await splitMieleDevices(result, false);
                     _pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
                 } , 10);
 
             } catch(err){
-                adapter.log.error('Error during scheduled refresh. Error: ' + err.message + ', Stacktrace: ' + err.steck);
+                adapter.log.error('Error during scheduled refresh. Error: ' + err.message + ', Stacktrace: ' + err.stack);
             }
         } else {
             adapter.log.error('[main] APIGetAccessToken returned neither a token nor an errormessage. Returned value=[' + JSON.stringify(_auth)+']');
