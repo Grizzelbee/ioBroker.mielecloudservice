@@ -1403,7 +1403,7 @@ module.exports.createChannelEcoFeedback = function(adapter, path, setup) {
  *
  * @param adapter {object} link to the adapter instance
  * @param device {string} the path to the current device
- * @param powerOn {boolean} state of the powenOn action
+ * @param powerOn {boolean} state of the powerOn action
  * @param powerOff {boolean} state of the powerOff action
  */
 async function checkPowerAction(adapter, device, powerOn, powerOff) {
