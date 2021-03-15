@@ -392,6 +392,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 // actions
                 if (setup){
                     mieleTools.addPowerSwitch(adapter, path);
+                    mieleTools.addStartActionButton(adapter, path);
+                    mieleTools.addStopActionButton(adapter, path);
                 }
                 break;
             case 2: // 2 = TUMBLE DRYER*
@@ -412,6 +414,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 if (setup){
                     mieleTools.addPowerSwitch(adapter, path);
+                    mieleTools.addStartActionButton(adapter, path);
+                    mieleTools.addStopActionButton(adapter, path);
                 }
                 break;
             case 24: // 24 = WASHER DRYER*

@@ -107,6 +107,93 @@ module.exports.addPowerSwitch = function(adapter, path){
 }
 
 
+
+
+
+/**
+ * Function addStartButton
+ *
+ * Adds an start button to the given device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the action button is going to be created
+ *
+ */
+module.exports.addStartButton = function(adapter, path){
+    adapter.log.debug('addStartButton: Path['+ path +']');
+    mieleTools.createExtendObject(adapter, path + 'ACTIONS.Start_Button_Active', {
+        type: 'state',
+        common: {"name": 'True if the start action can be executed, false if not.',
+            "read": true,
+            "write": true,
+            "role": 'button',
+            "type": 'boolean'
+        },
+        native: {}
+    }, null);
+
+
+    mieleTools.createExtendObject(adapter, path + '.ACTIONS.Start' , {
+            type: 'state',
+            common: {"name": 'Starts the device',
+                "read": true,
+                "write": true,
+                "role": 'button',
+                "type": 'boolean'
+            },
+            native: {}
+        }
+        , () => {
+            adapter.subscribeStates(path + '.ACTIONS.Start');
+        });
+}
+
+
+
+
+
+/**
+ * Function addStopButton
+ *
+ * Adds a stop button to the given device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the action button is going to be created
+ *
+ */
+module.exports.addStopButton = function(adapter, path){
+    adapter.log.debug('addStopButton: Path['+ path +']');
+    mieleTools.createExtendObject(adapter, path + 'ACTIONS.Stop_Button_Active', {
+        type: 'state',
+        common: {"name": 'True if the stop action can be executed, false if not.',
+            "read": true,
+            "write": true,
+            "role": 'button',
+            "type": 'boolean'
+        },
+        native: {}
+    }, null);
+
+
+    mieleTools.createExtendObject(adapter, path + '.ACTIONS.Stop' , {
+            type: 'state',
+            common: {"name": 'Stops the device',
+                "read": true,
+                "write": true,
+                "role": 'button',
+                "type": 'boolean'
+            },
+            native: {}
+        }
+        , () => {
+            adapter.subscribeStates(path + '.ACTIONS.Stop');
+        });
+}
+
+
+
+
+
 /**
  * Function createBool
  *
@@ -1436,5 +1523,6 @@ async function checkPowerAction(adapter, device, powerOn, powerOff) {
 module.exports.checkPermittedActions = async function(adapter, device, actions) {
     adapter.log.debug(`[checkPermittedActions]: Miele device [${device}] permitted actions JSON: [${JSON.stringify(actions)}]`);
     await checkPowerAction(adapter, device, actions.powerOn, actions.powerOff);
+    await checkStartAction(adapter, device, actions.start);
 
 }
