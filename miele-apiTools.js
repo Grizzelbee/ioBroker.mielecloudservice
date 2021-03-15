@@ -209,13 +209,11 @@ async function actionIsAllowedInCurrentState(adapter, auth, deviceId, action, ac
  * @param adapter {object} link to the adapter instance
  * @param auth {object} OAuth2 token object
  * @param deviceId {string} the Id of the device the query is performed for
- * @param action {string} requested action to be tested
  *
- *
- * @returns promise {promise}
+ * @returns data {object} JSON structure with permitted actions for the given device in the current state
  */
 module.exports.getPermittedActions = async function (adapter, auth, deviceId){
-    return APISendRequest(adapter, auth, `v1/devices/${deviceId}/actions`, 'GET', {});
+    return await APISendRequest(adapter, auth, `v1/devices/${deviceId}/actions`, 'GET', '');
 }
 
 

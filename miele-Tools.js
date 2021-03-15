@@ -220,14 +220,15 @@ module.exports.createStringAndRaw = function(adapter, setup, path, description, 
                 "read":  true,
                 "write": false,
                 "role": "text",
-                "type": "string"
+                "type": "string",
+                "unit": unit
             }
         }, () => {
-            adapter.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
+            adapter.setState(path + '.' + key_localized, value_localized, true);
         });
     } else {
         adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
-        adapter.setState(path + '.' + key_localized, value_localized + ' ' + unit, true);
+        adapter.setState(path + '.' + key_localized, value_localized, true);
     }
 }
 
@@ -1317,9 +1318,6 @@ module.exports.createStateSpinningSpeed = function(adapter, setup, path, value, 
 
 
 
-
-
-
 /**
  * createChannelActions
  *
@@ -1396,6 +1394,7 @@ module.exports.createChannelEcoFeedback = function(adapter, path, setup) {
 }
 
 
+
 /**
  * checkPermittedActions
  *
@@ -1403,20 +1402,27 @@ module.exports.createChannelEcoFeedback = function(adapter, path, setup) {
  *
  * @param adapter {object} link to the adapter instance
  * @param device {string} the path to the current device
- * @param powerOn {boolean} state of the powerOn action
- * @param powerOff {boolean} state of the powerOff action
+ * @param powerOn {boolean} permission state of the powerOn action
+ * @param powerOff {boolean} permission state of the powerOff action
  */
 async function checkPowerAction(adapter, device, powerOn, powerOff) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         if ( powerOn && !powerOff ) {
-            adapter.setState(device, 'Off', true);
+            adapter.setState(device + '.ACTIONS.Power', 'Off', true);
+            adapter.log.debug(`[checkPowerAction]: Device [${device}]: PowerOn is permitted!`);
             resolve(true);
         } else if ( !powerOn && powerOff ) {
-            adapter.setState(device, 'On', true);
+            adapter.setState(device + '.ACTIONS.Power', 'On', true);
+            adapter.log.debug(`[checkPowerAction]: Device [${device}]: PowerOff is permitted!`);
             resolve(true);
+        } else {
+            adapter.log.warn(`[checkPowerAction]: Device [${device}]: PowerOn=${powerOn} and PowerOff=${powerOff}!! Don't know what to do!`);
+            reject(`[checkPowerAction]: Device [${device}]: PowerOn=${powerOn} and PowerOff=${powerOff}!! Don't know what to do!`);
         }
     })
 }
+
+
 
 /**
  * checkPermittedActions
@@ -1428,6 +1434,7 @@ async function checkPowerAction(adapter, device, powerOn, powerOff) {
  * @param actions {object} permittedActions-JSON provided by the Miele API
  */
 module.exports.checkPermittedActions = async function(adapter, device, actions) {
+    adapter.log.debug(`[checkPermittedActions]: Miele device [${device}] permitted actions JSON: [${JSON.stringify(actions)}]`);
     await checkPowerAction(adapter, device, actions.powerOn, actions.powerOff);
 
 }

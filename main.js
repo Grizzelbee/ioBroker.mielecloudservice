@@ -341,8 +341,8 @@ async function addMieleDevice(path, mieleDevice, setup){
     //    mieleTools.addMieleDeviceActions(adapter, newPath, mieleDevice.ident.type.value_raw);
 
     // checkPermittedActions
-    const actions = mieleAPITools.getPermittedActions(adapter, _auth, mieleDevice.ident.deviceIdentLabel.fabNumber);
-    mieleTools.checkPermittedActions(adapter, newPath, actions);
+    const actions = await mieleAPITools.getPermittedActions(adapter, _auth, mieleDevice.ident.deviceIdentLabel.fabNumber);
+    await mieleTools.checkPermittedActions(adapter, newPath, actions);
 
 
 }
@@ -410,6 +410,9 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
+                if (setup){
+                    mieleTools.addPowerSwitch(adapter, path);
+                }
                 break;
             case 24: // 24 = WASHER DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -429,6 +432,9 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
+                if (setup){
+                    mieleTools.addPowerSwitch(adapter, path);
+                }
                 break;
             case 7: // 7 = DISHWASHER*
             case 8: // 8 = DISHWASHER SEMI-PROF
