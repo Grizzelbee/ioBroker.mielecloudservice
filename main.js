@@ -342,7 +342,7 @@ async function addMieleDevice(path, mieleDevice, setup){
 
     // checkPermittedActions
     const actions = mieleAPITools.getPermittedActions(adapter, _auth, mieleDevice.ident.deviceIdentLabel.fabNumber);
-
+    mieleTools.checkPermittedActions(adapter, newPath, actions);
 
 
 }

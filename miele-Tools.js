@@ -1394,3 +1394,40 @@ module.exports.createChannelEcoFeedback = function(adapter, path, setup) {
         }, null);
     }
 }
+
+
+/**
+ * checkPermittedActions
+ *
+ * parses the permittedActions-JSON provided by the Miele API and sets action switches accordingly
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param device {string} the path to the current device
+ * @param powerOn {boolean} state of the powenOn action
+ * @param powerOff {boolean} state of the powerOff action
+ */
+async function checkPowerAction(adapter, device, powerOn, powerOff) {
+    return new Promise(resolve => {
+        if ( powerOn && !powerOff ) {
+            adapter.setState(device, 'Off', true);
+            resolve(true);
+        } else if ( !powerOn && powerOff ) {
+            adapter.setState(device, 'On', true);
+            resolve(true);
+        }
+    })
+}
+
+/**
+ * checkPermittedActions
+ *
+ * parses the permittedActions-JSON provided by the Miele API and sets action switches accordingly
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param device {string} the path to the current device
+ * @param actions {object} permittedActions-JSON provided by the Miele API
+ */
+module.exports.checkPermittedActions = async function(adapter, device, actions) {
+    await checkPowerAction(adapter, device, actions.powerOn, actions.powerOff);
+
+}
