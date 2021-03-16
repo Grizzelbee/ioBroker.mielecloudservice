@@ -193,13 +193,11 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'Nickname': currentAction = {'deviceName':value};
             break;
         case 'Power':
-
-            if (value == 'On'){
+            if (value === 'On'){
                 currentAction = {'powerOn':true};
             } else {
                 currentAction = {'powerOff':true};
             }
-
             break;
         case 'Start': currentAction = {'processAction':mieleConst.START};
             break;
