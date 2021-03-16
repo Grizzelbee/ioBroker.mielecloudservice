@@ -314,7 +314,7 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         adapter.log.debug('Auth: [' + JSON.stringify(auth) + ']');
         adapter.log.debug('Endpoint: [' + Endpoint + ']');
         adapter.log.debug('Method: [' + Method + ']');
-        adapter.log.debug('Actions: [' + JSON.stringify(actions) + ']');
+        adapter.log.debug('Payload: [' + JSON.stringify(payload) + ']');
         adapter.log.error('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
         if (error.response) {
             // Request made and server responded
