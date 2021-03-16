@@ -16,6 +16,7 @@ const adapterName = require('./package.json').name.split('.').pop();
 const utils = require('@iobroker/adapter-core'); // Get common adapter utils
 const mieleAPITools = require('./miele-apiTools.js');
 const mieleTools = require('./miele-Tools.js');
+const mieleConst = require('./miele-constants.js');
 
 // Global Variables
 let adapter;
@@ -335,16 +336,6 @@ async function addMieleDevice(path, mieleDevice, setup){
                 break;
         }
     }
-
-    // todo: add actions again
-    // add device specific actions
-    //    mieleTools.addMieleDeviceActions(adapter, newPath, mieleDevice.ident.type.value_raw);
-
-    // checkPermittedActions
-    const actions = await mieleAPITools.getPermittedActions(adapter, _auth, mieleDevice.ident.deviceIdentLabel.fabNumber);
-    await mieleTools.checkPermittedActions(adapter, newPath, actions);
-
-
 }
 
 
@@ -369,6 +360,10 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
     // nickname action is supported by all devices
     mieleTools.addDeviceNicknameAction(adapter, path, currentDevice);
 
+    // checkPermittedActions
+    const actions = await mieleAPITools.getPermittedActions(adapter, _auth, currentDevice.ident.deviceIdentLabel.fabNumber);
+    adapter.log.debug('CurrentlyPermittedActions: ' + JSON.stringify(actions));
+
     try{
         // set/create device dependant states
         switch (currentDevice.ident.type.value_raw) {
@@ -390,11 +385,9 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // actions
-                if (setup){
-                    mieleTools.addPowerSwitch(adapter, path);
-                    mieleTools.addStartActionButton(adapter, path);
-                    mieleTools.addStopActionButton(adapter, path);
-                }
+                mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
+                await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
             case 2: // 2 = TUMBLE DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -412,11 +405,10 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
-                if (setup){
-                    mieleTools.addPowerSwitch(adapter, path);
-                    mieleTools.addStartActionButton(adapter, path);
-                    mieleTools.addStopActionButton(adapter, path);
-                }
+                // Actions
+                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
+                await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
             case 24: // 24 = WASHER DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -436,9 +428,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
-                if (setup){
-                    mieleTools.addPowerSwitch(adapter, path);
-                }
+                // Actions
                 break;
             case 7: // 7 = DISHWASHER*
             case 8: // 8 = DISHWASHER SEMI-PROF
@@ -566,6 +556,7 @@ async function main() {
                 _pollTimeout= setTimeout(async function schedule() {
                     adapter.log.debug("Updating device states (polling API scheduled).");
                     // don't setup devices again - only set states
+                    // todo: refresh only states not ident
                     const result = await mieleAPITools.refreshMieleData( adapter, _auth );
                     await splitMieleDevices(result, false);
                     _pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
