@@ -154,54 +154,6 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
 
 
 /**
- * Function actionIsAllowedInCurrentState
- *
- * test whether a given action with a given actionState is permitted in the current state of the device
- *
- * @param adapter {object} link to the adapter instance
- * @param auth {object} OAuth2 token object
- * @param deviceId {string} the Id of the device the query is performed for
- * @param action {string} requested action to be tested
- * @param actionState {string} state of the action to be tested
- *
- *
- * @returns promise {promise}
- */
-async function actionIsAllowedInCurrentState(adapter, auth, deviceId, action, actionState){
-    return new Promise( (resolve, reject) => {
-        // Test action
-        APISendRequest(adapter, auth, `v1/devices/${deviceId}/actions`, 'GET', action)
-            .then( (result) => {
-                adapter.log.debug(`All action-states: [${JSON.stringify(result)}].`);
-                if ( ( (typeof result[action] === 'boolean') && (result[action]) ) ) {
-                    adapter.log.debug(`Action [${action}] is permitted in this device state.`);
-                    resolve(true);
-                } else if ( ( (typeof result[action] === 'object') && (result[action].length > 0) ) ) {
-                    if ( Array.isArray(result[action]) ){
-                        if ( result[action].includes(actionState) ){
-                            adapter.log.debug(`Action [${action}] is permitted in this device state.`);
-                            resolve(true);
-                        } else {
-                            reject(`Action [${action}] is not permitted in the current device state.` );
-                        }
-                    } else {
-                        // it's an object not an array
-                        adapter.log.debug(`Action-Object [${action}] seems to be permitted in this device state. Let's give it a try.`);
-                        resolve(true);
-                    }
-                } else {
-                    reject(`Action [${action}] is not permitted in the current device state.` );
-                }
-            })
-            .catch( (error) => {
-                reject('An error occurred during a cloud API request: ' + JSON.stringify(error) );
-            });
-    })
-}
-
-
-
-/**
  * Function getPermittedActions
  *
  *
@@ -249,10 +201,6 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             }
 
             break;
-        case 'Power_On': currentAction = {'powerOn':true};
-            break;
-        case 'Power_Off': currentAction = {'powerOff':true};
-            break;
         case 'Start': currentAction = {'processAction':mieleConst.START};
             break;
         case 'Stop': currentAction = {'processAction':mieleConst.STOP};
@@ -273,14 +221,12 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             break;
     }
     try {
-        if ( await actionIsAllowedInCurrentState(adapter, auth, device, Object.keys(currentAction)[0], currentAction[Object.keys(currentAction)[0]]) ){
-            adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
-            const result = await APISendRequest(adapter, auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
-            await mieleTools.createString(adapter, setup,currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
-            await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
-            adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
-            await mieleAPITools.refreshMieleData(adapter, auth);
-        }
+        adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
+        const result = await APISendRequest(adapter, auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
+        await mieleTools.createString(adapter, setup,currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
+        await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
+        adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
+        await mieleAPITools.refreshMieleData(adapter, auth);
     } catch(err) {
         await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
         await mieleTools.createString(adapter, setup, currentPath + '.Action_information', 'Additional Information returned from API.', JSON.stringify(err));
