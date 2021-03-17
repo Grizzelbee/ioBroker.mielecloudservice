@@ -1158,22 +1158,75 @@ module.exports.createStateElapsedTime = function(adapter, setup, path, value){
 
 
 /**
- * createStateTargetTemperature
+ * createStateTargetTemperatureFridge
  *
- * create the state that shows information about one or multiple target temperatures of the process.
- * API returns 1 to 3 values depending on the device
+ * create the state that shows information about the target temperature of the fridge
  *
  * @param adapter {object} link to the adapter instance
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param value {object} array value to set to the data point
  */
-module.exports.createStateTargetTemperature = function(adapter, setup, path, value){
-    mieleTools.createArray( adapter,
-                            setup,
-                       path + '.targetTemperature',
-                  'The TargetTemperature field contains information about one or multiple target temperatures of the process.',
-                             value);
+module.exports.createStateTargetTemperatureFridge = function(adapter, setup, path, value){
+    if (setup) {
+        mieleTools.createExtendObject(adapter,
+            '.ACTIONS.targetTemperatureFridge',
+            {
+                type: 'state',
+                common: {
+                    name: 'The target temperature of the fridge (1 to 9).',
+                    read: true,
+                    write: true,
+                    type: 'number',
+                    min: 1,
+                    max: 9,
+                    role: 'value.temperature'
+                },
+                native: {}
+            }, () => {
+                adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value, true);
+                adapter.subscribeStates(path + '.ACTIONS.targetTemperatureFridge');
+            });
+    } else {
+        adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value, true);
+    }
+}
+
+
+
+/**
+ * createStateTargetTemperatureFreezer
+ *
+ * create the state that shows information about the target temperature of the Freezer
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {object} array value to set to the data point
+ */
+module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, path, value){
+    if (setup) {
+        mieleTools.createExtendObject(adapter,
+            '.ACTIONS.targetTemperatureFreezer',
+            {
+                type: 'state',
+                common: {
+                    name: 'The target temperature of the Freezer (-16 to -26).',
+                    read: true,
+                    write: true,
+                    type: 'number',
+                    min: -26,
+                    max: -16,
+                    role: 'value.temperature'
+                },
+                native: {}
+            }, () => {
+                adapter.setState(path + '.ACTIONS.targetTemperatureFreezer', value, true);
+                adapter.subscribeStates(path + '.ACTIONS.targetTemperatureFreezer');
+            });
+    } else {
+        adapter.setState(path + '.ACTIONS.targetTemperatureFreezer', value, true);
+    }
 }
 
 
@@ -1268,7 +1321,6 @@ module.exports.createStateEcoFeedbackWater = function(adapter, setup, path, ecoF
                        '%',
                        'value');
 }
-
 
 
 /**

@@ -530,7 +530,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
-                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                await mieleTools.createStateTargetTemperatureFridge(adapter, setup, path, currentDeviceState.targetTemperature.zone[1].value);
+                await mieleTools.createStateTargetTemperatureFreezer(adapter, setup, path, currentDeviceState.targetTemperature.zone[2].value);
                 // Actions
                 await mieleTools.addSuperCoolingSwitch(adapter, setup, path, actions);
                 break;
@@ -540,10 +541,9 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
-                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                await mieleTools.createStateTargetTemperatureFridge(adapter, setup, path, currentDeviceState.targetTemperature.zone[1].value);
                 // Actions
                 await mieleTools.addSuperFreezingSwitch(adapter, setup, path, actions);
-                // targetTemperature
                 break;
             case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
                 await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
@@ -551,7 +551,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
-                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                await mieleTools.createStateTargetTemperatureFridge(adapter, setup, path, currentDeviceState.targetTemperature.zone[1].value);
+                await mieleTools.createStateTargetTemperatureFreezer(adapter, setup, path, currentDeviceState.targetTemperature.zone[2].value);
                 // Actions
                 await mieleTools.addSuperCoolingSwitch(adapter, setup, path, actions);
                 await mieleTools.addSuperFreezingSwitch(adapter, setup, path, actions);
@@ -565,10 +566,9 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
-                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                await mieleTools.createStateTargetTemperatureFridge(adapter, setup, path, currentDeviceState.targetTemperature.zone[1].value);
                 // Actions
                 await mieleTools.addLightSwitch(adapter, setup, path, actions);
-                // targetTemperature
                 break;
             case 28: // 28 = HOB GAS
                 break;
@@ -587,12 +587,12 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
-                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                await mieleTools.createStateTargetTemperatureFridge(adapter, setup, path, currentDeviceState.targetTemperature.zone[1].value);
+                await mieleTools.createStateTargetTemperatureFreezer(adapter, setup, path, currentDeviceState.targetTemperature.zone[2].value);
                 // Actions
                 await mieleTools.addSuperFreezingSwitch(adapter, setup, path, actions);
                 await mieleTools.addLightSwitch(adapter, setup, path, actions);
                 await mieleTools.addModeSwitch(adapter, setup, path, actions);
-                // targetTemperature
                 break;
             case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
                 mieleTools.createStateBatteryLevel(adapter, setup, path, currentDeviceState.batteryLevel);
