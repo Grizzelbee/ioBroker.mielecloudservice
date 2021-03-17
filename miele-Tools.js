@@ -12,6 +12,7 @@
 
 // required files to load
 const mieleTools = require('./miele-Tools.js');
+const mieleConst = require('./miele-constants.js');
 
 
 /**
@@ -115,6 +116,178 @@ module.exports.addPowerSwitch = function(adapter, setup, path, actions){
 
 
 
+/**
+ * Function addLightSwitch
+ *
+ * Adds a Light switch to the device tree and subscribes for changes to it
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicates whether the adapter is in setup mode
+ * @param path {string} path where the action button is going to be created
+ * @param actions {object} JSON containing the currently permitted actions
+ *
+ */
+module.exports.addLightSwitch = function(adapter, setup, path, actions){
+    adapter.log.debug('addLightSwitch: Path['+ path +']');
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.Light' , {
+                type: 'state',
+                common: {"name": 'Light switch of the device',
+                    "read": true,
+                    "write": true,
+                    "role": 'switch',
+                    "type": 'string',
+                    "states":{'On':'On', 'Off':'Off'}
+                },
+                native: {}
+            }
+            , (device) => {
+                adapter.subscribeStates(path + '.ACTIONS.Light');
+                checkLightAction(adapter, path, actions.light);
+            });
+    } else {
+        checkLightAction(adapter, path, actions.light);
+    }
+}
+
+
+
+/**
+ * Function addSuperCoolingSwitch
+ *
+ * Adds a SuperCooling switch to the device tree and subscribes for changes to it
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicates whether the adapter is in setup mode
+ * @param path {string} path where the action button is going to be created
+ * @param actions {object} JSON containing the currently permitted actions
+ *
+ */
+module.exports.addSuperCoolingSwitch = function(adapter, setup, path, actions){
+    adapter.log.debug('addSuperCoolingSwitch: Path['+ path +']');
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.SuperCooling' , {
+                type: 'state',
+                common: {"name": 'SuperCooling switch of the device',
+                    "read": true,
+                    "write": true,
+                    "role": 'switch',
+                    "type": 'string',
+                    "states":{'On':'On', 'Off':'Off'}
+                },
+                native: {}
+            }
+            , (device) => {
+                adapter.subscribeStates(path + '.ACTIONS.SuperCooling');
+                checkSuperCoolingAction(adapter, path, actions.processAction);
+            });
+    } else {
+        checkSuperCoolingAction(adapter, path, actions.processAction);
+    }
+}
+
+
+
+/**
+ * Function addVentilationStepSwitch
+ *
+ * Adds a VentilationStep switch to the device tree and subscribes for changes to it
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicates whether the adapter is in setup mode
+ * @param path {string} path where the action button is going to be created
+ *
+ */
+module.exports.addVentilationStepSwitch = function(adapter, setup, path){
+    adapter.log.debug('addVentilationStepSwitch: Path['+ path +']');
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.VentilationStep' , {
+                type: 'state',
+                common: {"name": 'VentilationStep switch of the device',
+                    "read": true,
+                    "write": true,
+                    "role": 'switch',
+                    "type": 'string',
+                    "states":{'Off':0, 'Step 1':1, 'Step 2':2, 'Step 3':3, 'Step 4':4 }
+                },
+                native: {}
+            }
+            , (device) => {
+                adapter.subscribeStates(path + '.ACTIONS.VentilationStep');
+            });
+    }
+}
+
+
+
+/**
+ * Function addModeSwitch
+ *
+ * Adds a Modes switch to the device tree and subscribes for changes to it
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicates whether the adapter is in setup mode
+ * @param path {string} path where the action button is going to be created
+ * @param actions {object} JSON containing the currently permitted actions
+ *
+ */
+module.exports.addModeSwitch = function(adapter, setup, path, actions){
+    adapter.log.debug('addModesSwitch: Path['+ path +']');
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.Mode' , {
+                type: 'state',
+                common: {"name": 'Modes switch of the device',
+                    "read": true,
+                    "write": true,
+                    "role": 'switch',
+                    "type": 'number',
+                    "states":{'Normal':0, 'Sabbath':1}
+                },
+                native: {}
+            }
+            , (device) => {
+                adapter.subscribeStates(path + '.ACTIONS.Mode');
+                checkModesAction(adapter, path, actions.modes);
+            });
+    } else {
+        checkModesAction(adapter, path, actions.modes);
+    }
+}
+
+
+/**
+ * Function addSuperFreezingSwitch
+ *
+ * Adds a SuperFreezing switch to the device tree and subscribes for changes to it
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicates whether the adapter is in setup mode
+ * @param path {string} path where the action button is going to be created
+ * @param actions {object} JSON containing the currently permitted actions
+ *
+ */
+module.exports.addSuperFreezingSwitch = function(adapter, setup, path, actions){
+    adapter.log.debug('addSuperFreezingSwitch: Path['+ path +']');
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.SuperFreezing' , {
+                type: 'state',
+                common: {"name": 'SuperFreezing switch of the device',
+                    "read": true,
+                    "write": true,
+                    "role": 'switch',
+                    "type": 'string',
+                    "states":{'On':'On', 'Off':'Off'}
+                },
+                native: {}
+            }
+            , (device) => {
+                adapter.subscribeStates(path + '.ACTIONS.SuperFreezing');
+                checkSuperFreezingAction(adapter, path, actions.processAction);
+            });
+    } else {
+        checkSuperFreezingAction(adapter, path, actions.processAction);
+    }
+}
 
 /**
  * Function addStartButton
@@ -210,6 +383,10 @@ module.exports.addStopButton = function(adapter, setup, path, actionState){
 
 
 
+
+
+
+
 /**
  * Function createBool
  *
@@ -283,56 +460,6 @@ module.exports.createString = function(adapter, setup, path, description, value)
         }
         resolve(true);
     })
-}
-
-
-
-/**
- * Function createStringAndRaw
- *
- * Adds a string data point to the device tree and in addition a raw data point containing a number representation of the string value
- *
- * @param adapter {object} link to the adapter instance
- * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
- * @param path {string} path where the data point is going to be created
- * @param description {string} description of the data point
- * @param key_localized {string} localized key value (name) to set to the data point
- * @param value_localized {string} localized string value to set to the data point
- * @param value_raw {number} raw value to set to the data point
- * @param unit {string} unit to set to the data point if applicable
- *
- */
-module.exports.createStringAndRaw = function(adapter, setup, path, description, key_localized, value_localized, value_raw, unit){
-    adapter.log.debug('createStringAndRaw: Path:[' + path + '] key_localized:[' + key_localized + '] value_localized[' + value_localized + '] value_raw[' + value_raw +'] unit[' + unit   +']' );
-    if (setup) {
-        mieleTools.createExtendObject(adapter, path + '.' + key_localized +'_raw', {
-            type: 'state',
-            common: {"name":  description + ' (value raw)',
-                "read":  true,
-                "write": false,
-                "role": "value.raw",
-                "type": "number"
-            }
-        }, ()  => {
-            adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
-        });
-
-        mieleTools.createExtendObject(adapter, path + '.' + key_localized, {
-            type: 'state',
-            common: {"name":  description,
-                "read":  true,
-                "write": false,
-                "role": "text",
-                "type": "string",
-                "unit": unit
-            }
-        }, () => {
-            adapter.setState(path + '.' + key_localized, value_localized, true);
-        });
-    } else {
-        adapter.setState(path + '.' + key_localized +'_raw', value_raw, true);
-        adapter.setState(path + '.' + key_localized, value_localized, true);
-    }
 }
 
 
@@ -573,57 +700,6 @@ module.exports.addDeviceNicknameAction = function(adapter, path, mieleDevice) {
         adapter.setState(path + '.ACTIONS.Nickname', (mieleDevice.ident.deviceName === '' ? mieleDevice.ident.type.value_localized : mieleDevice.ident.deviceName), true);
         adapter.subscribeStates(path + '.ACTIONS.Nickname');
     });
-}
-
-
-
-/**
- * addLightActionButtons
- *
- * add the Light-button actions to the device tree
- *
- * @param adapter {object} link to the adapter instance
- * @param path {string} path where the data point is going to be created
- */
-module.exports.addLightActionButtons = function(adapter, path) {
-    // addLightOnAction
-    mieleTools.addActionButton(adapter,path,'Light_On', 'Switches the lights of the Device on.', '');
-    // addLightOffAction
-    mieleTools.addActionButton(adapter,path,'Light_Off', 'Switches the lights of the Device off.', '');
-}
-
-
-
-/**
- * addSupercoolingActionButtons
- *
- * add the Supercooling-button actions to the device tree
- *
- * @param adapter {object} link to the adapter instance
- * @param path {string} path where the data point is going to be created
- */
-module.exports.addSupercoolingActionButtons = function(adapter, path) {
-    // addLightOnAction
-    mieleTools.addActionButton(adapter,path,'Start_Supercooling', 'Brings the Device into Supercooling mode.', '');
-    // addLightOffAction
-    mieleTools.addActionButton(adapter,path,'Stop_Supercooling', 'Brings the Device out of Supercooling mode.', '');
-}
-
-
-
-/**
- * addSuperfreezingActionButtons
- *
- * add the Superfreezing-button actions to the device tree
- *
- * @param adapter {object} link to the adapter instance
- * @param path {string} path where the data point is going to be created
- */
-module.exports.addSuperfreezingActionButtons = function(adapter, path) {
-    // addLightOnAction
-    mieleTools.addActionButton(adapter,path,'Start_Superfreezing', 'Brings the Device into Superfreezing mode.', '');
-    // addLightOffAction
-    mieleTools.addActionButton(adapter,path,'Stop_Superfreezing', 'Brings the Device out of Superfreezing mode.', '');
 }
 
 
@@ -898,18 +974,10 @@ module.exports.createStateProgramPhase = async function(adapter, setup, path, va
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param value {string} value to set to the data point
- * @param value_raw {number} value to set to the raw-data point
- *
- * @returns promise {promise}
  */
-module.exports.createStateVentilationStep = async function(adapter, setup, path, value, value_raw){
-    await mieleTools.createNumber( adapter, setup, path + '_raw', 'This field is only valid for hoods (raw-value)', value_raw, '', '');
-
-    return mieleTools.createString( adapter,
-        setup,
-        path,
-        'This field is only valid for hoods.',
-        value);
+module.exports.createStateVentilationStep = async function(adapter, setup, path, value){
+    await mieleTools.addVentilationStepSwitch(adapter, setup, path);
+    adapter.setState(path + 'ACTIONS.VentilationStep', value, true);
 }
 
 
@@ -1365,6 +1433,112 @@ async function checkPowerAction(adapter, device, powerOn, powerOff) {
 
 
 /**
+ * checkLightAction
+ *
+ * sets the Actions.Light-Switch according to it's current permitted action
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param device {string} the path to the current device
+ * @param light {object} permission state of the light action
+ *
+ * @returns {promise} resolves on either PowerOn=True or PowerOff=true; rejects if both have the same value
+ */
+async function checkLightAction(adapter, device, light) {
+    return new Promise((resolve) => {
+        if ( Array(light).includes(mieleConst.LIGHT_ON) ){
+            adapter.setState(device + '.ACTIONS.Light', 'Off', true);
+            adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_On is permitted!`);
+            resolve(true);
+        } else if ( Array(light).includes(mieleConst.LIGHT_OFF) ) {
+            adapter.setState(device + '.ACTIONS.Light', 'On', true);
+            adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_Off is permitted!`);
+            resolve(true);
+        }
+    })
+}
+
+
+
+/**
+ * checkSuperCoolingAction
+ *
+ * sets the Actions.SuperCooling-Switch according to it's current permitted action
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param device {string} the path to the current device
+ * @param actions {object} permission state of the light action
+ *
+ * @returns {promise} resolves on either PowerOn=True or PowerOff=true; rejects if both have the same value
+ */
+async function checkSuperCoolingAction(adapter, device, actions) {
+    return new Promise((resolve) => {
+        if ( Array(actions).includes(mieleConst.START_SUPERCOOLING) ){
+            adapter.setState(device + '.ACTIONS.SuperCooling', 'Off', true);
+            adapter.log.debug(`[checkSuperCoolingAction]: Device [${device}]: START_SUPERCOOLING is permitted!`);
+            resolve(true);
+        } else if ( Array(actions).includes(mieleConst.STOP_SUPERCOOLING) ) {
+            adapter.setState(device + '.ACTIONS.SuperCooling', 'On', true);
+            adapter.log.debug(`[checkSuperCoolingAction]: Device [${device}]: STOP_SUPERCOOLING is permitted!`);
+            resolve(true);
+        }
+    })
+}
+
+
+/**
+ * checkSuperFreezingAction
+ *
+ * sets the Actions.Light-Switch according to it's current permitted action
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param device {string} the path to the current device
+ * @param actions {object} permission state of the light action
+ *
+ * @returns {promise} resolves on either PowerOn=True or PowerOff=true; rejects if both have the same value
+ */
+async function checkSuperFreezingAction(adapter, device, actions) {
+    return new Promise((resolve) => {
+        if ( Array(actions).includes(mieleConst.START_SUPERFREEZING) ){
+            adapter.setState(device + '.ACTIONS.SuperFreezing', 'Off', true);
+            adapter.log.debug(`[checkSuperFreezingAction]: Device [${device}]: START_SUPERFREEZING is permitted!`);
+            resolve(true);
+        } else if ( Array(actions).includes(mieleConst.STOP_SUPERFREEZING) ) {
+            adapter.setState(device + '.ACTIONS.SuperFreezing', 'On', true);
+            adapter.log.debug(`[checkSuperFreezingAction]: Device [${device}]: STOP_SUPERFREEZING is permitted!`);
+            resolve(true);
+        }
+    })
+}
+
+
+/**
+ * checkModesAction
+ *
+ * sets the Actions.Modes-Switch according to it's current permitted action
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param device {string} the path to the current device
+ * @param modes {object} permission state of the Modes action
+ *
+ * @returns {promise} resolves on either PowerOn=True or PowerOff=true; rejects if both have the same value
+ */
+async function checkModesAction(adapter, device, modes) {
+    return new Promise((resolve) => {
+        if ( Array(modes).includes(mieleConst.MODE_NORMAL) ){
+            adapter.setState(device + '.ACTIONS.Mode', 1, true);
+            adapter.log.debug(`[checkModesAction]: Device [${device}]: MODE_NORMAL is permitted!`);
+            resolve(true);
+        } else if ( Array(modes).includes(mieleConst.MODE_SABBATH) ) {
+            adapter.setState(device + '.ACTIONS.Mode', 0, true);
+            adapter.log.debug(`[checkModesAction]: Device [${device}]: MODE_SABBATH is permitted!`);
+            resolve(true);
+        }
+    })
+}
+
+
+
+/**
  * checkStartAction
  *
  * sets the Actions.Start_Active-State according to it's current permitted action
@@ -1379,8 +1553,6 @@ async function checkStartAction(adapter, device, start) {
         resolve(true);
     })
 }
-
-
 
 
 
@@ -1402,19 +1574,3 @@ async function checkStopAction(adapter, device, stop) {
 
 
 
-/**
- * checkPermittedActions
- *
- * parses the permittedActions-JSON provided by the Miele API and sets action switches accordingly
- *
- * @param adapter {object} link to the adapter instance
- * @param device {string} the path to the current device
- * @param actions {object} permittedActions-JSON provided by the Miele API
- */
-module.exports.checkPermittedActions = async function(adapter, device, actions) {
-    adapter.log.debug(`[checkPermittedActions]: Miele device [${device}] permitted actions JSON: [${JSON.stringify(actions)}]`);
-    await checkPowerAction(adapter, device, actions.powerOn, actions.powerOff);
-    await checkStartAction(adapter, device, actions.start);
-    await checkStopAction(adapter, device, actions.stop);
-
-}

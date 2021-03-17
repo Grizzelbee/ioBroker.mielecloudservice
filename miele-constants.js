@@ -23,3 +23,5 @@ module.exports.START_SUPERCOOLING  = 6;
 module.exports.STOP_SUPERCOOLING   = 7;
 module.exports.LIGHT_ON  = 1;
 module.exports.LIGHT_OFF = 2;
+module.exports.MODE_NORMAL  = 0;
+module.exports.MODE_SABBATH = 1;

@@ -385,9 +385,10 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // actions
-                mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                // startTime
                 break;
             case 2: // 2 = TUMBLE DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -409,6 +410,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addPowerSwitch(adapter, setup, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                // startTime
                 break;
             case 24: // 24 = WASHER DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -429,6 +431,10 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // Actions
+                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
+                await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                // startTime
                 break;
             case 7: // 7 = DISHWASHER*
             case 8: // 8 = DISHWASHER SEMI-PROF
@@ -448,8 +454,31 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
+                // Actions
+                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
+                await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                // startTime
                 break;
             case 12: // 12 = OVEN*
+                await mieleTools.createStateProgramID(adapter, setup, `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
+                await mieleTools.createStateProgramType(adapter, setup, `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
+                await mieleTools.createStateProgramPhase(adapter, setup, `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
+                await mieleTools.createStateRemainingTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateStartTime(adapter, setup, path, currentDeviceState.startTime);
+                await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
+                await mieleTools.createStateSignalDoor(adapter, setup, path, currentDeviceState.signalDoor);
+                await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
+                await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
+                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                // Actions
+                await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                await mieleTools.addLightSwitch(adapter, setup, path, actions);
+                // startTime
+                break;
             case 13: // 13 = OVEN Microwave*
             case 15: // 15 = STEAM OVEN*
             case 16: // 16 = MICROWAVE*
@@ -469,6 +498,11 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                // Actions
+                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addLightSwitch(adapter, setup, path, actions);
+                await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                // startTime
                 break;
             case 14: // 14 = HOB HIGHLIGHT*
             case 27: // 27 = HOB INDUCTION*
@@ -480,16 +514,55 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
+                // Actions
+                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addLightSwitch(adapter, setup, path, actions);
                 break;
             case 18: // 18 = HOOD*
                 await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
-                await mieleTools.createStateVentilationStep(adapter, setup, `${path}.${currentDeviceState.ventilationStep.key_localized}`,currentDeviceState.ventilationStep.value_localized, currentDeviceState.ventilationStep.value_raw);
+                await mieleTools.createStateVentilationStep(adapter, setup, `${path}.${currentDeviceState.ventilationStep.key_localized}`,currentDeviceState.ventilationStep.value_localized);
+                // Actions
+                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addLightSwitch(adapter, setup, path, actions);
+                await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                await mieleTools.addVentilationStepSwitch(adapter, setup, path);
+                // colors
                 break;
             case 19: // 19 = FRIDGE*
+                await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
+                await mieleTools.createStateSignalDoor(adapter, setup, path, currentDeviceState.signalDoor);
+                await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
+                await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
+                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                // Actions
+                await mieleTools.addSuperCoolingSwitch(adapter, setup, path, actions);
+                break;
             case 20: // 20 = FREEZER*
+                await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
+                await mieleTools.createStateSignalDoor(adapter, setup, path, currentDeviceState.signalDoor);
+                await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
+                await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
+                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                // Actions
+                await mieleTools.addSuperFreezingSwitch(adapter, setup, path, actions);
+                // targetTemperature
+                break;
             case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
+                await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
+                await mieleTools.createStateSignalDoor(adapter, setup, path, currentDeviceState.signalDoor);
+                await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
+                await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
+                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                // Actions
+                await mieleTools.addSuperCoolingSwitch(adapter, setup, path, actions);
+                await mieleTools.addSuperFreezingSwitch(adapter, setup, path, actions);
+                // targetTemperature
+                break;
             case 32: // 32 = WINE CABINET*
             case 33: // 33 = WINE CONDITIONING UNIT
             case 34: // 34 = WINE STORAGE CONDITIONING UNIT
@@ -499,6 +572,9 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                // Actions
+                await mieleTools.addLightSwitch(adapter, setup, path, actions);
+                // targetTemperature
                 break;
             case 28: // 28 = HOB GAS
                 break;
@@ -518,12 +594,21 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
+                // Actions
+                await mieleTools.addSuperFreezingSwitch(adapter, setup, path, actions);
+                await mieleTools.addLightSwitch(adapter, setup, path, actions);
+                await mieleTools.addModeSwitch(adapter, setup, path, actions);
+                // targetTemperature
                 break;
             case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
                 mieleTools.createStateBatteryLevel(adapter, setup, path, currentDeviceState.batteryLevel);
+                // Actions
+                // programId
                 break;
             case 25: // 25 = DISH WARMER*
                 await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
+                // Actions
+                // programId
                 break;
             case 48: // 48 = VACUUM DRAWER
                 break;
