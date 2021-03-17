@@ -38,7 +38,9 @@ All currently supported and documented Actions for all devices are implemented (
 Please refer to [Miele-Documentation](#documentation) for more Information on actions.
 
 ## Known Issues
-* Action ambientLight introduced with API 1.0.4 is not implemented yet
+* Action colors aka. ambientLight introduced with API 1.0.4 is not implemented yet
+* Action programId (supported by Vacuum cleaners & Dish warmers) isn't implemented yet
+* Action targetTemperature isn't implemented yet
 
 ## Documentation
 Please mainly refer to the main API documentation published by Miele
@@ -163,11 +165,12 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
-### 4.0.0 (2021-03-xx)
+### 4.0.0 (2021-03-xx) (Symphony of life)
 > ***Hint:*** The adapter received a complete code refactoring! This means that most of the code has been changed and some parts are working now differently than ever before. Update with care and read the change log!
 *  (grizzelbee) Upd: [85](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/85) full code refactoring and split into multiple files. 
 *  (grizzelbee) Upd: [86](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/86) every folder and device now gets a nice little icon
 *  (grizzelbee) Upd: [83](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/83) estimatedEndTime isn't shown anymore after device has finisched
+*  (grizzelbee) Upd: [89](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/89) Washer dryers are fully supported now
 *  (grizzelbee) Upd: Devices get fully created on startup and aren't modified afterwards - only updated
 *  (grizzelbee) Upd: New folder ecoFeedback to group ecoFeedback states 
 *  (grizzelbee) Upd: New folder IDENT to group ident states

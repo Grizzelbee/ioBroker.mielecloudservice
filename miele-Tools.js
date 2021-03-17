@@ -486,12 +486,13 @@ module.exports.createTime = function(adapter, setup, path, description, value, r
             type: 'state',
             common: {"name": description,
                 "read": true,
-                "write":false,
+                "write": (path.split('.').pop() === 'startTime'? true : false),
                 "role": role,
                 "type": "string"
             }
         }, () => {
             adapter.setState(path, assembledValue, true);
+            adapter.subscribeStates(path);
         });
     } else {
         adapter.setState(path, assembledValue, true);

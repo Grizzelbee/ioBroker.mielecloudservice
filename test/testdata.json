@@ -1,953 +1,1144 @@
 {
-    "000140375979": {
+  "000140375979": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 2,
-                "value_localized": "Trockner"
-        },
-        "deviceName": "Herz aus Gold",
-            "deviceIdentLabel": {
-            "fabNumber": "000140375979",
-                "fabIndex": "10",
-                "techType": "TWJ680WP",
-                "matNumber": "10963760",
-                "swids": ["4422", "25030", "25029", "25002", "20456", "25213", "4426", "20445", "25234", "4174"]
-        },
-        "xkmIdentLabel": {
-            "techType": "EK037",
-                "releaseVersion": "03.82"
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 2,
+        "value_localized": "Trockner"
+      },
+      "deviceName": "Herz aus Gold",
+      "deviceIdentLabel": {
+        "fabNumber": "000140375979",
+        "fabIndex": "10",
+        "techType": "TWJ680WP",
+        "matNumber": "10963760",
+        "swids": [
+          "4422",
+          "25030",
+          "25029",
+          "25002",
+          "20456",
+          "25213",
+          "4426",
+          "20445",
+          "25234",
+          "4174"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "EK037",
+        "releaseVersion": "03.82"
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 0,
-                "value_localized": "",
-                "key_localized": "Programmbezeichnung"
+      "ProgramID": {
+        "value_raw": 0,
+        "value_localized": "",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 1,
+        "value_localized": "Aus",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 3,
+        "value_localized": "Reinigungs-/ Pflegeprogramm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 512,
+        "value_localized": "",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         },
-        "status": {
-            "value_raw": 1,
-                "value_localized": "Aus",
-                "key_localized": "Status"
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         },
-        "programType": {
-            "value_raw": 3,
-                "value_localized": "Reinigungs-/ Pflegeprogramm",
-                "key_localized": "Programmart"
-        },
-        "programPhase": {
-            "value_raw": 512,
-                "value_localized": "",
-                "key_localized": "Programmphase"
-        },
-        "remainingTime": [0, 0],
-            "startTime": [0, 0],
-            "targetTemperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "temperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      ],
+      "temperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": true,
-            "remoteEnable": {
-            "fullRemoteControl": true,
-                "smartGrid": false,
-                "mobileStart": false
-        },
-        "ambientLight": null,
-            "light": null,
-            "elapsedTime": [0, 0],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": null,
-                "value_localized": null,
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": 7,
-                "value_localized": "Glätten",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      ],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": true,
+      "remoteEnable": {
+        "fullRemoteControl": true,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": null,
+      "light": null,
+      "elapsedTime": [
+        0,
+        0
+      ],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": null,
+        "value_localized": null,
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": 7,
+        "value_localized": "Glätten",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-},
-    "000149137623": {
+  },
+  "000149137623": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 1,
-                "value_localized": "Waschmaschine"
-        },
-        "deviceName": "Marvin",
-            "deviceIdentLabel": {
-            "fabNumber": "000149137623",
-                "fabIndex": "11",
-                "techType": "WWE660",
-                "matNumber": "10691910",
-                "swids": ["4418", "20456", "25213"]
-        },
-        "xkmIdentLabel": {
-            "techType": "EK037",
-                "releaseVersion": "03.82"
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 1,
+        "value_localized": "Waschmaschine"
+      },
+      "deviceName": "Marvin",
+      "deviceIdentLabel": {
+        "fabNumber": "000149137623",
+        "fabIndex": "11",
+        "techType": "WWE660",
+        "matNumber": "10691910",
+        "swids": [
+          "4418",
+          "20456",
+          "25213"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "EK037",
+        "releaseVersion": "03.82"
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 0,
-                "value_localized": "",
-                "key_localized": "Programmbezeichnung"
+      "ProgramID": {
+        "value_raw": 0,
+        "value_localized": "",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 1,
+        "value_localized": "Aus",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 1,
+        "value_localized": "Eigenes Programm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 256,
+        "value_localized": "",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [
+        {
+          "value_raw": -32766,
+          "value_localized": -327.66,
+          "unit": "Celsius"
         },
-        "status": {
-            "value_raw": 1,
-                "value_localized": "Aus",
-                "key_localized": "Status"
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         },
-        "programType": {
-            "value_raw": 1,
-                "value_localized": "Eigenes Programm",
-                "key_localized": "Programmart"
-        },
-        "programPhase": {
-            "value_raw": 256,
-                "value_localized": "",
-                "key_localized": "Programmphase"
-        },
-        "remainingTime": [0, 0],
-            "startTime": [0, 0],
-            "targetTemperature": [{
-            "value_raw": -32766,
-            "value_localized": -327.66,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "temperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      ],
+      "temperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": true,
-            "remoteEnable": {
-            "fullRemoteControl": true,
-                "smartGrid": false,
-                "mobileStart": false
-        },
-        "ambientLight": null,
-            "light": null,
-            "elapsedTime": [0, 0],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": 0,
-                "value_localized": "0",
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      ],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": true,
+      "remoteEnable": {
+        "fullRemoteControl": true,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": null,
+      "light": null,
+      "elapsedTime": [
+        0,
+        0
+      ],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": 0,
+        "value_localized": "0",
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-},
-    "000703167977": {
+  },
+  "000703167977": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 17,
-                "value_localized": "Kaffeevollautomat"
-        },
-        "deviceName": "",
-            "deviceIdentLabel": {
-            "fabNumber": "000703167977",
-                "fabIndex": "15",
-                "techType": "CVA6805",
-                "matNumber": "09320400",
-                "swids": ["4210", "25053", "20263", "20153", "25098", "3464", "20251", "25086", "3358", "20177"]
-        },
-        "xkmIdentLabel": {
-            "techType": "XKM3100W",
-                "releaseVersion": "02.72"
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 17,
+        "value_localized": "Kaffeevollautomat"
+      },
+      "deviceName": "",
+      "deviceIdentLabel": {
+        "fabNumber": "000703167977",
+        "fabIndex": "15",
+        "techType": "CVA6805",
+        "matNumber": "09320400",
+        "swids": [
+          "4210",
+          "25053",
+          "20263",
+          "20153",
+          "25098",
+          "3464",
+          "20251",
+          "25086",
+          "3358",
+          "20177"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "XKM3100W",
+        "releaseVersion": "02.72"
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 0,
-                "value_localized": "",
-                "key_localized": "Programmbezeichnung"
-        },
-        "status": {
-            "value_raw": 1,
-                "value_localized": "Aus",
-                "key_localized": "Status"
-        },
-        "programType": {
-            "value_raw": 0,
-                "value_localized": "Programm",
-                "key_localized": "Programmart"
-        },
-        "programPhase": {
-            "value_raw": 4352,
-                "value_localized": "",
-                "key_localized": "Programmphase"
-        },
-        "remainingTime": [0, 0],
-            "startTime": [0, 0],
-            "targetTemperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      "ProgramID": {
+        "value_raw": 0,
+        "value_localized": "",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 1,
+        "value_localized": "Aus",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 0,
+        "value_localized": "Programm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 4352,
+        "value_localized": "",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "temperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      ],
+      "temperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": false,
-            "remoteEnable": {
-            "fullRemoteControl": true,
-                "smartGrid": false,
-                "mobileStart": false
-        },
-        "ambientLight": null,
-            "light": 2,
-            "elapsedTime": [],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": null,
-                "value_localized": null,
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      ],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": false,
+      "remoteEnable": {
+        "fullRemoteControl": true,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": null,
+      "light": 2,
+      "elapsedTime": [],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": null,
+        "value_localized": null,
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-},
-    "000139741963": {
+  },
+  "000139741963": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 2,
-                "value_localized": "Trockner"
-        },
-        "deviceName": "",
-            "deviceIdentLabel": {
-            "fabNumber": "000139741963",
-                "fabIndex": "10",
-                "techType": "TMV843WP",
-                "matNumber": "10499130",
-                "swids": ["3545", "25027", "25055", "20228", "3585", "20242", "25042", "25008", "25026"]
-        },
-        "xkmIdentLabel": {
-            "techType": "XKM3100W",
-                "releaseVersion": "02.72"
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 2,
+        "value_localized": "Trockner"
+      },
+      "deviceName": "",
+      "deviceIdentLabel": {
+        "fabNumber": "000139741963",
+        "fabIndex": "10",
+        "techType": "TMV843WP",
+        "matNumber": "10499130",
+        "swids": [
+          "3545",
+          "25027",
+          "25055",
+          "20228",
+          "3585",
+          "20242",
+          "25042",
+          "25008",
+          "25026"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "XKM3100W",
+        "releaseVersion": "02.72"
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 60,
-                "value_localized": "Lüften warm",
-                "key_localized": "Programmbezeichnung"
-        },
-        "status": {
-            "value_raw": 1,
-                "value_localized": "Aus",
-                "key_localized": "Status"
-        },
-        "programType": {
-            "value_raw": 2,
-                "value_localized": "Automatikprogramm",
-                "key_localized": "Programmart"
-        },
-        "programPhase": {
-            "value_raw": 522,
-                "value_localized": "Ende",
-                "key_localized": "Programmphase"
-        },
-        "remainingTime": [0, 0],
-            "startTime": [0, 0],
-            "targetTemperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      "ProgramID": {
+        "value_raw": 60,
+        "value_localized": "Lüften warm",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 1,
+        "value_localized": "Aus",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 2,
+        "value_localized": "Automatikprogramm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 522,
+        "value_localized": "Ende",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "temperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      ],
+      "temperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": false,
-            "remoteEnable": {
-            "fullRemoteControl": true,
-                "smartGrid": true,
-                "mobileStart": false
-        },
-        "ambientLight": null,
-            "light": null,
-            "elapsedTime": [0, 0],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": null,
-                "value_localized": null,
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      ],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": false,
+      "remoteEnable": {
+        "fullRemoteControl": true,
+        "smartGrid": true,
+        "mobileStart": false
+      },
+      "ambientLight": null,
+      "light": null,
+      "elapsedTime": [
+        0,
+        0
+      ],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": null,
+        "value_localized": null,
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-},
-    "mac-00124B0005AB4A68": {
+  },
+  "mac-00124B0005AB4A68": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 18,
-                "value_localized": "Dunstabzugshaube"
-        },
-        "deviceName": "",
-            "deviceIdentLabel": {
-            "fabNumber": "",
-                "fabIndex": "",
-                "techType": "",
-                "matNumber": "",
-                "swids": ["0", "3201"]
-        },
-        "xkmIdentLabel": {
-            "techType": "",
-                "releaseVersion": ""
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 18,
+        "value_localized": "Dunstabzugshaube"
+      },
+      "deviceName": "",
+      "deviceIdentLabel": {
+        "fabNumber": "",
+        "fabIndex": "",
+        "techType": "",
+        "matNumber": "",
+        "swids": [
+          "0",
+          "3201"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "",
+        "releaseVersion": ""
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 2449473536,
-                "value_localized": "",
-                "key_localized": "Programmbezeichnung"
-        },
-        "status": {
-            "value_raw": 1,
-                "value_localized": "Aus",
-                "key_localized": "Status"
-        },
-        "programType": {
-            "value_raw": 0,
-                "value_localized": "Programm",
-                "key_localized": "Programmart"
-        },
-        "programPhase": {
-            "value_raw": 271,
-                "value_localized": "Auffrischen + Befeuchten",
-                "key_localized": "Programmphase"
-        },
-        "remainingTime": [0, 0],
-            "startTime": [0, 0],
-            "targetTemperature": [],
-            "temperature": [],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": false,
-            "remoteEnable": {
-            "fullRemoteControl": false,
-                "smartGrid": false,
-                "mobileStart": false
-        },
-        "ambientLight": null,
-            "light": 2,
-            "elapsedTime": [],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": null,
-                "value_localized": null,
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": 0,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      "ProgramID": {
+        "value_raw": 2449473536,
+        "value_localized": "",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 1,
+        "value_localized": "Aus",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 0,
+        "value_localized": "Programm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 271,
+        "value_localized": "Auffrischen + Befeuchten",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [],
+      "temperature": [],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": false,
+      "remoteEnable": {
+        "fullRemoteControl": false,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": null,
+      "light": 2,
+      "elapsedTime": [],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": null,
+        "value_localized": null,
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": 0,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-},
-    "000127825412": {
+  },
+  "000127825412": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 31,
-                "value_localized": "Combi-Dampfgarer"
-        },
-        "deviceName": "",
-            "deviceIdentLabel": {
-            "fabNumber": "000127825412",
-                "fabIndex": "10",
-                "techType": "DGC6805   D",
-                "matNumber": "09505260",
-                "swids": ["3750", "25003", "20146", "3762", "20251", "25086"]
-        },
-        "xkmIdentLabel": {
-            "techType": "XKM3000Z",
-                "releaseVersion": "01.02"
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 31,
+        "value_localized": "Combi-Dampfgarer"
+      },
+      "deviceName": "",
+      "deviceIdentLabel": {
+        "fabNumber": "000127825412",
+        "fabIndex": "10",
+        "techType": "DGC6805   D",
+        "matNumber": "09505260",
+        "swids": [
+          "3750",
+          "25003",
+          "20146",
+          "3762",
+          "20251",
+          "25086"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "XKM3000Z",
+        "releaseVersion": "01.02"
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 0,
-                "value_localized": "",
-                "key_localized": "Programmbezeichnung"
+      "ProgramID": {
+        "value_raw": 0,
+        "value_localized": "",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 1,
+        "value_localized": "Aus",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 0,
+        "value_localized": "Programm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 7936,
+        "value_localized": "",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         },
-        "status": {
-            "value_raw": 1,
-                "value_localized": "Aus",
-                "key_localized": "Status"
-        },
-        "programType": {
-            "value_raw": 0,
-                "value_localized": "Programm",
-                "key_localized": "Programmart"
-        },
-        "programPhase": {
-            "value_raw": 7936,
-                "value_localized": "",
-                "key_localized": "Programmphase"
-        },
-        "remainingTime": [0, 0],
-            "startTime": [0, 0],
-            "targetTemperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": 0,
-            "value_localized": 0,
-            "unit": "Celsius"
+        {
+          "value_raw": 0,
+          "value_localized": 0,
+          "unit": "Celsius"
         }
-        ],
-            "temperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": 0,
-            "value_localized": 0,
-            "unit": "Celsius"
+      ],
+      "temperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": 0,
+          "value_localized": 0,
+          "unit": "Celsius"
         }
-        ],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": false,
-            "remoteEnable": {
-            "fullRemoteControl": true,
-                "smartGrid": false,
-                "mobileStart": false
-        },
-        "ambientLight": 2,
-            "light": null,
-            "elapsedTime": [0, 0],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": null,
-                "value_localized": null,
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      ],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": false,
+      "remoteEnable": {
+        "fullRemoteControl": true,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": 2,
+      "light": null,
+      "elapsedTime": [
+        0,
+        0
+      ],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": null,
+        "value_localized": null,
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-},
-    "000148400943": {
+  },
+  "000148400943": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 1,
-                "value_localized": "Waschmaschine"
-        },
-        "deviceName": "",
-            "deviceIdentLabel": {
-            "fabNumber": "000148400943",
-                "fabIndex": "14",
-                "techType": "WMV963",
-                "matNumber": "10499100",
-                "swids": ["3918", "25204", "25117", "20163", "3944", "20242", "25042", "25043", "25026", "2971", "20166"]
-        },
-        "xkmIdentLabel": {
-            "techType": "XKM3100W",
-                "releaseVersion": "02.72"
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 1,
+        "value_localized": "Waschmaschine"
+      },
+      "deviceName": "",
+      "deviceIdentLabel": {
+        "fabNumber": "000148400943",
+        "fabIndex": "14",
+        "techType": "WMV963",
+        "matNumber": "10499100",
+        "swids": [
+          "3918",
+          "25204",
+          "25117",
+          "20163",
+          "3944",
+          "20242",
+          "25042",
+          "25043",
+          "25026",
+          "2971",
+          "20166"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "XKM3100W",
+        "releaseVersion": "02.72"
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 1,
-                "value_localized": "Baumwolle",
-                "key_localized": "Programmbezeichnung"
-        },
-        "status": {
-            "value_raw": 1,
-                "value_localized": "Aus",
-                "key_localized": "Status"
-        },
-        "programType": {
-            "value_raw": 1,
-                "value_localized": "Eigenes Programm",
-                "key_localized": "Programmart"
-        },
-        "programPhase": {
-            "value_raw": 268,
-                "value_localized": "Ende",
-                "key_localized": "Programmphase"
-        },
-        "remainingTime": [0, 0],
-            "startTime": [0, 0],
-            "targetTemperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      "ProgramID": {
+        "value_raw": 1,
+        "value_localized": "Baumwolle",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 1,
+        "value_localized": "Aus",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 1,
+        "value_localized": "Eigenes Programm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 268,
+        "value_localized": "Ende",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "temperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      ],
+      "temperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": false,
-            "remoteEnable": {
-            "fullRemoteControl": false,
-                "smartGrid": false,
-                "mobileStart": false
-        },
-        "ambientLight": null,
-            "light": null,
-            "elapsedTime": [0, 0],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": 1600,
-                "value_localized": "1600",
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      ],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": false,
+      "remoteEnable": {
+        "fullRemoteControl": false,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": null,
+      "light": null,
+      "elapsedTime": [
+        0,
+        0
+      ],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": 1600,
+        "value_localized": "1600",
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-},
-    "mac-00124B000427E724": {
+  },
+  "mac-00124B000427E724": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 27,
-                "value_localized": "Kochfeld"
-        },
-        "deviceName": "",
-            "deviceIdentLabel": {
-            "fabNumber": "",
-                "fabIndex": "",
-                "techType": "",
-                "matNumber": "",
-                "swids": ["2979", "0"]
-        },
-        "xkmIdentLabel": {
-            "techType": "",
-                "releaseVersion": ""
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 27,
+        "value_localized": "Kochfeld"
+      },
+      "deviceName": "",
+      "deviceIdentLabel": {
+        "fabNumber": "",
+        "fabIndex": "",
+        "techType": "",
+        "matNumber": "",
+        "swids": [
+          "2979",
+          "0"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "",
+        "releaseVersion": ""
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 2600468480,
-                "value_localized": "",
-                "key_localized": "Programmbezeichnung"
+      "ProgramID": {
+        "value_raw": 2600468480,
+        "value_localized": "",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 1,
+        "value_localized": "Aus",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 0,
+        "value_localized": "Programm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 0,
+        "value_localized": "",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [],
+      "temperature": [],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": false,
+      "remoteEnable": {
+        "fullRemoteControl": false,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": null,
+      "light": null,
+      "elapsedTime": [],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": null,
+        "value_localized": null,
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [
+        {
+          "value_raw": 202,
+          "value_localized": "",
+          "key_localized": "Leistungsstufe"
         },
-        "status": {
-            "value_raw": 1,
-                "value_localized": "Aus",
-                "key_localized": "Status"
+        {
+          "value_raw": 202,
+          "value_localized": "",
+          "key_localized": "Leistungsstufe"
         },
-        "programType": {
-            "value_raw": 0,
-                "value_localized": "Programm",
-                "key_localized": "Programmart"
+        {
+          "value_raw": 0,
+          "value_localized": "0",
+          "key_localized": "Leistungsstufe"
         },
-        "programPhase": {
-            "value_raw": 0,
-                "value_localized": "",
-                "key_localized": "Programmphase"
+        {
+          "value_raw": 0,
+          "value_localized": "0",
+          "key_localized": "Leistungsstufe"
         },
-        "remainingTime": [0, 0],
-            "startTime": [0, 0],
-            "targetTemperature": [],
-            "temperature": [],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": false,
-            "remoteEnable": {
-            "fullRemoteControl": false,
-                "smartGrid": false,
-                "mobileStart": false
-        },
-        "ambientLight": null,
-            "light": null,
-            "elapsedTime": [],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": null,
-                "value_localized": null,
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [{
-            "value_raw": 202,
-            "value_localized": "",
-            "key_localized": "Leistungsstufe"
-        }, {
-            "value_raw": 202,
-            "value_localized": "",
-            "key_localized": "Leistungsstufe"
-        }, {
-            "value_raw": 0,
-            "value_localized": "0",
-            "key_localized": "Leistungsstufe"
-        }, {
-            "value_raw": 0,
-            "value_localized": "0",
-            "key_localized": "Leistungsstufe"
-        }, {
-            "value_raw": 0,
-            "value_localized": "0",
-            "key_localized": "Leistungsstufe"
+        {
+          "value_raw": 0,
+          "value_localized": "0",
+          "key_localized": "Leistungsstufe"
         }
-        ],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      ],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-},
-    "000136236548": {
+  },
+  "000136236548": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 12,
-                "value_localized": "Backofen"
-        },
-        "deviceName": "",
-            "deviceIdentLabel": {
-            "fabNumber": "",
-                "fabIndex": "",
-                "techType": "",
-                "matNumber": "",
-                "swids": []
-        },
-        "xkmIdentLabel": {
-            "techType": "",
-                "releaseVersion": ""
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 12,
+        "value_localized": "Backofen"
+      },
+      "deviceName": "",
+      "deviceIdentLabel": {
+        "fabNumber": "",
+        "fabIndex": "",
+        "techType": "",
+        "matNumber": "",
+        "swids": []
+      },
+      "xkmIdentLabel": {
+        "techType": "",
+        "releaseVersion": ""
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 0,
-                "value_localized": "",
-                "key_localized": "Programmbezeichnung"
+      "ProgramID": {
+        "value_raw": 0,
+        "value_localized": "",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 1,
+        "value_localized": "Aus",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 0,
+        "value_localized": "Programm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 3072,
+        "value_localized": "Abkühlphase",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         },
-        "status": {
-            "value_raw": 1,
-                "value_localized": "Aus",
-                "key_localized": "Status"
-        },
-        "programType": {
-            "value_raw": 0,
-                "value_localized": "Programm",
-                "key_localized": "Programmart"
-        },
-        "programPhase": {
-            "value_raw": 3072,
-                "value_localized": "Abkühlphase",
-                "key_localized": "Programmphase"
-        },
-        "remainingTime": [0, 0],
-            "startTime": [0, 0],
-            "targetTemperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": 0,
-            "value_localized": 0,
-            "unit": "Celsius"
+        {
+          "value_raw": 0,
+          "value_localized": 0,
+          "unit": "Celsius"
         }
-        ],
-            "temperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": 0,
-            "value_localized": 0,
-            "unit": "Celsius"
+      ],
+      "temperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": 0,
+          "value_localized": 0,
+          "unit": "Celsius"
         }
-        ],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": false,
-            "remoteEnable": {
-            "fullRemoteControl": true,
-                "smartGrid": false,
-                "mobileStart": false
-        },
-        "ambientLight": 2,
-            "light": null,
-            "elapsedTime": [0, 0],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": null,
-                "value_localized": null,
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      ],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": false,
+      "remoteEnable": {
+        "fullRemoteControl": true,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": 2,
+      "light": null,
+      "elapsedTime": [
+        0,
+        0
+      ],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": null,
+        "value_localized": null,
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-},
-    "000102577298": {
+  },
+  "000102577298": {
     "ident": {
-        "type": {
-            "key_localized": "Gerätetyp",
-                "value_raw": 7,
-                "value_localized": "Geschirrspüler"
-        },
-        "deviceName": "",
-            "deviceIdentLabel": {
-            "fabNumber": "000102577298",
-                "fabIndex": "63",
-                "techType": "G6995",
-                "matNumber": "09585720",
-                "swids": ["3530", "20201", "20124", "3533", "20220", "20203", "3273"]
-        },
-        "xkmIdentLabel": {
-            "techType": "XKM3100W",
-                "releaseVersion": "02.72"
-        }
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 7,
+        "value_localized": "Geschirrspüler"
+      },
+      "deviceName": "",
+      "deviceIdentLabel": {
+        "fabNumber": "000102577298",
+        "fabIndex": "63",
+        "techType": "G6995",
+        "matNumber": "09585720",
+        "swids": [
+          "3530",
+          "20201",
+          "20124",
+          "3533",
+          "20220",
+          "20203",
+          "3273"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "XKM3100W",
+        "releaseVersion": "02.72"
+      }
     },
     "state": {
-        "ProgramID": {
-            "value_raw": 9,
-                "value_localized": "Automatic",
-                "key_localized": "Programmbezeichnung"
-        },
-        "status": {
-            "value_raw": 5,
-                "value_localized": "In Betrieb",
-                "key_localized": "Status"
-        },
-        "programType": {
-            "value_raw": 2,
-                "value_localized": "Automatikprogramm",
-                "key_localized": "Programmart"
-        },
-        "programPhase": {
-            "value_raw": 1794,
-                "value_localized": "Vorspülen",
-                "key_localized": "Programmphase"
-        },
-        "remainingTime": [2, 11],
-            "startTime": [0, 0],
-            "targetTemperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      "ProgramID": {
+        "value_raw": 9,
+        "value_localized": "Automatic",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 5,
+        "value_localized": "In Betrieb",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 2,
+        "value_localized": "Automatikprogramm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 1794,
+        "value_localized": "Vorspülen",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        2,
+        11
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "temperature": [{
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
-        }, {
-            "value_raw": -32768,
-            "value_localized": null,
-            "unit": "Celsius"
+      ],
+      "temperature": [
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
         }
-        ],
-            "signalInfo": false,
-            "signalFailure": false,
-            "signalDoor": false,
-            "remoteEnable": {
-            "fullRemoteControl": true,
-                "smartGrid": false,
-                "mobileStart": false
-        },
-        "ambientLight": null,
-            "light": null,
-            "elapsedTime": [0, 5],
-            "spinningSpeed": {
-            "unit": "U/min",
-                "value_raw": null,
-                "value_localized": null,
-                "key_localized": "Schleuderdrehzahl"
-        },
-        "dryingStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Trockenstufe"
-        },
-        "ventilationStep": {
-            "value_raw": null,
-                "value_localized": "",
-                "key_localized": "Lüfterstufe"
-        },
-        "plateStep": [],
-            "ecoFeedback": null,
-            "batteryLevel": null
+      ],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": false,
+      "remoteEnable": {
+        "fullRemoteControl": true,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": null,
+      "light": null,
+      "elapsedTime": [
+        0,
+        5
+      ],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": null,
+        "value_localized": null,
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
     }
-}
+  }
 }

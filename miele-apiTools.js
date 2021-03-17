@@ -205,28 +205,46 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             break;
         case 'Pause': currentAction = {'processAction':mieleConst.PAUSE};
             break;
-        case 'Start_Superfreezing': currentAction = {'processAction':mieleConst.START_SUPERFREEZING};
+        case 'Supercooling':
+            if (value === 'On'){
+                currentAction = {'processAction':mieleConst.START_SUPERCOOLING};
+            } else {
+                currentAction = {'processAction':mieleConst.STOP_SUPERCOOLING};
+            }
             break;
-        case 'Stop_Superfreezing': currentAction = {'processAction':mieleConst.STOP_SUPERFREEZING};
+        case 'Superfreezing':
+            if (value === 'On'){
+                currentAction = {'processAction':mieleConst.START_SUPERFREEZING};
+            } else {
+                currentAction = {'processAction':mieleConst.STOP_SUPERFREEZING};
+            }
             break;
-        case 'Start_Supercooling': currentAction = {'processAction':mieleConst.START_SUPERCOOLING};
+        case 'ventilationStep':
+                currentAction = {'ventilationStep':value};
             break;
-        case 'Stop_Supercooling': currentAction = {'processAction':mieleConst.STOP_SUPERCOOLING};
+        case 'Light':
+            if (value === 'On'){
+                currentAction = {'light':mieleConst.LIGHT_ON};
+            } else {
+                currentAction = {'light':mieleConst.LIGHT_OFF};
+            }
             break;
-        case 'Light_On': currentAction = {'light':mieleConst.LIGHT_ON};
+        case 'startTime':
+            currentAction = {'startTime':value.split(':')};
             break;
-        case 'Light_Off': currentAction = {'light':mieleConst.LIGHT_OFF};
+        case 'Mode':
+            currentAction = {'modes':value};
             break;
     }
     try {
         adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
         const result = await APISendRequest(adapter, auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
         await mieleTools.createString(adapter, setup,currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
-        await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
+        // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
         adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
         await mieleAPITools.refreshMieleData(adapter, auth);
     } catch(err) {
-        await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
+        // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
         await mieleTools.createString(adapter, setup, currentPath + '.Action_information', 'Additional Information returned from API.', JSON.stringify(err));
         adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
     }
