@@ -1140,5 +1140,122 @@
       "ecoFeedback": null,
       "batteryLevel": null
     }
+  },
+  "12345678": {
+    "ident": {
+      "type": {
+        "key_localized": "Gerätetyp",
+        "value_raw": 20,
+        "value_localized": "Gefrierschrank"
+      },
+      "deviceName": "",
+      "deviceIdentLabel": {
+        "fabNumber": "12345678",
+        "fabIndex": "17",
+        "techType": "FN 29474 ws",
+        "matNumber": "11223344",
+        "swids": [
+          "33445566"
+        ]
+      },
+      "xkmIdentLabel": {
+        "techType": "EK042",
+        "releaseVersion": "31.17"
+      }
+    },
+    "state": {
+      "ProgramID": {
+        "value_raw": 0,
+        "value_localized": "",
+        "key_localized": "Programmbezeichnung"
+      },
+      "status": {
+        "value_raw": 5,
+        "value_localized": "In Betrieb",
+        "key_localized": "Status"
+      },
+      "programType": {
+        "value_raw": 0,
+        "value_localized": "Programm",
+        "key_localized": "Programmart"
+      },
+      "programPhase": {
+        "value_raw": 0,
+        "value_localized": "",
+        "key_localized": "Programmphase"
+      },
+      "remainingTime": [
+        0,
+        0
+      ],
+      "startTime": [
+        0,
+        0
+      ],
+      "targetTemperature": [
+        {
+          "value_raw": -2000,
+          "value_localized": -20,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        }
+      ],
+      "temperature": [
+        {
+          "value_raw": -2000,
+          "value_localized": -20,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        },
+        {
+          "value_raw": -32768,
+          "value_localized": null,
+          "unit": "Celsius"
+        }
+      ],
+      "signalInfo": false,
+      "signalFailure": false,
+      "signalDoor": false,
+      "remoteEnable": {
+        "fullRemoteControl": true,
+        "smartGrid": false,
+        "mobileStart": false
+      },
+      "ambientLight": null,
+      "light": null,
+      "elapsedTime": [],
+      "spinningSpeed": {
+        "unit": "U/min",
+        "value_raw": null,
+        "value_localized": null,
+        "key_localized": "Schleuderdrehzahl"
+      },
+      "dryingStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Trockenstufe"
+      },
+      "ventilationStep": {
+        "value_raw": null,
+        "value_localized": "",
+        "key_localized": "Lüfterstufe"
+      },
+      "plateStep": [],
+      "ecoFeedback": null,
+      "batteryLevel": null
+    }
   }
 }
