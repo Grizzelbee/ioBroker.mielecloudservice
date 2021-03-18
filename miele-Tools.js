@@ -383,10 +383,6 @@ module.exports.addStopButton = function(adapter, setup, path, actionState){
 
 
 
-
-
-
-
 /**
  * Function createBool
  *

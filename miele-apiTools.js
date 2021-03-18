@@ -232,8 +232,14 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
                 currentAction = {'processAction':mieleConst.STOP_SUPERFREEZING};
             }
             break;
+        case 'targetTemperatureFridge':
+            currentAction = {'targetTemperature':[{zone:1, value:value}]};
+            break;
+        case 'targetTemperatureFreezer':
+            currentAction = {'targetTemperature':[{zone:2, value:value}]};
+            break;
         case 'ventilationStep':
-                currentAction = {'ventilationStep':value};
+            currentAction = {'ventilationStep':value};
             break;
     }
     try {
