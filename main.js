@@ -617,8 +617,6 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
 /**
  *  Main
  *
- *  logs in into cloud API and starts polling
- *
  */
 async function main() {
     try {
