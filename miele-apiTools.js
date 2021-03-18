@@ -190,7 +190,19 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
     let currentPath = paths.join('.');         // join all elements back together
     adapter.log.debug("APIStartAction: received Action: ["+action+"] with value: ["+value+"] for device ["+device+"] / path:["+currentPath+"]");
     switch (action) {
+        case 'Light':
+            if (value === 'On'){
+                currentAction = {'light':mieleConst.LIGHT_ON};
+            } else {
+                currentAction = {'light':mieleConst.LIGHT_OFF};
+            }
+            break;
+        case 'Mode':
+            currentAction = {'modes':value};
+            break;
         case 'Nickname': currentAction = {'deviceName':value};
+            break;
+        case 'Pause': currentAction = {'processAction':mieleConst.PAUSE};
             break;
         case 'Power':
             if (value === 'On'){
@@ -201,9 +213,10 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             break;
         case 'Start': currentAction = {'processAction':mieleConst.START};
             break;
-        case 'Stop': currentAction = {'processAction':mieleConst.STOP};
+        case 'startTime':
+            currentAction = {'startTime':value.split(':')};
             break;
-        case 'Pause': currentAction = {'processAction':mieleConst.PAUSE};
+        case 'Stop': currentAction = {'processAction':mieleConst.STOP};
             break;
         case 'Supercooling':
             if (value === 'On'){
@@ -221,19 +234,6 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             break;
         case 'ventilationStep':
                 currentAction = {'ventilationStep':value};
-            break;
-        case 'Light':
-            if (value === 'On'){
-                currentAction = {'light':mieleConst.LIGHT_ON};
-            } else {
-                currentAction = {'light':mieleConst.LIGHT_OFF};
-            }
-            break;
-        case 'startTime':
-            currentAction = {'startTime':value.split(':')};
-            break;
-        case 'Mode':
-            currentAction = {'modes':value};
             break;
     }
     try {
