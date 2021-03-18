@@ -877,7 +877,7 @@ module.exports.createStateSmartGrid = function(adapter, setup, path, value){
 module.exports.createStateFullRemoteControl = function(adapter, setup, path, value){
     return mieleTools.createBool( adapter,
         setup,
-        path + '.signalInfo',
+        path + '.fullRemoteControl',
         'Indicates whether the device can be controlled from remote.',
         value,
         '');
