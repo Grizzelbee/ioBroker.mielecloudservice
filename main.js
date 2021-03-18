@@ -635,7 +635,6 @@ async function main() {
                 _pollTimeout= setTimeout(async function schedule() {
                     adapter.log.debug("Updating device states (polling API scheduled).");
                     // don't setup devices again - only set states
-                    // todo: refresh only states not ident
                     const result = await mieleAPITools.refreshMieleData( adapter, _auth );
                     await splitMieleDevices(result, false);
                     _pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );

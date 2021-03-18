@@ -271,7 +271,6 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
  * @param auth {object}  OAuth2 object containing required credentials
  */
 module.exports.refreshMieleData = async function(adapter, auth){
-    // todo: get setup and knownDevices as a parameter and depending on that refresh only the given device states not the ident
     adapter.log.debug('refreshMieleData: get data from API');
     try {
         const result = await APISendRequest(adapter, auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
