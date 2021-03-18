@@ -1223,6 +1223,27 @@ module.exports.createStateElapsedTime = function(adapter, setup, path, value){
 
 
 /**
+ * createStateTargetTemperature
+ *
+ * create the state that shows information about one or multiple target temperatures of the process.
+ * API returns 1 to 3 values depending on the device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {object} array value to set to the data point
+ */
+module.exports.createStateTargetTemperature = function(adapter, setup, path, value){
+    mieleTools.createArray( adapter,
+        setup,
+        path + '.targetTemperature',
+        'The TargetTemperature field contains information about one or multiple target temperatures of the process.',
+        value);
+}
+
+
+
+/**
  * createStateTargetTemperatureFridge
  *
  * create the state that shows information about the target temperature of the fridge
