@@ -33,13 +33,12 @@ To install, do the following:
 6. Fill in the client_secret and client_id received from Miele-developer Team and account-id and password from the App.
 
 ## Controlling your devices
-All currently supported and documented Actions for all devices are implemented (API V1.0.2).
+All currently supported and documented Actions for all devices are implemented (API V1.0.4).
 > Please remember that Actions will only work if you put your device into the appropriate state (e.g. Mobile Control, powerOn, ...).
 Please refer to [Miele-Documentation](#documentation) for more Information on actions.
 
 ## Known Issues
-* Action colors aka. ambientLight introduced with API 1.0.4 is not implemented yet
-* Action programId (supported by Vacuum cleaners & Dish warmers) isn't implemented yet
+* none
 
 ## Documentation
 Please mainly refer to the main API documentation published by Miele
@@ -166,6 +165,7 @@ Here is a list of what these raw values stand for:
 ## Changelog
 ### 4.0.0 (2021-03-18) (Symphony of life)
 > ***Hint:*** The adapter received a complete code refactoring! This means that most of the code has been changed and some parts are working now differently than ever before. Update with care and read the change log!
+*  (grizzelbee) New: FULL support of Miele cloud API v1.0.4
 *  (grizzelbee) Upd: [83](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/83) estimatedEndTime isn't shown anymore after the device has finished
 *  (grizzelbee) Upd: [85](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/85) full code refactoring and split into multiple files. 
 *  (grizzelbee) Upd: [86](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/86) every folder and device now gets a nice little icon
