@@ -190,6 +190,8 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
     let currentPath = paths.join('.');         // join all elements back together
     adapter.log.debug("APIStartAction: received Action: ["+action+"] with value: ["+value+"] for device ["+device+"] / path:["+currentPath+"]");
     switch (action) {
+        case 'colors': currentAction = {'colors':value};
+            break;
         case 'Light':
             if (value === 'On'){
                 currentAction = {'light':mieleConst.LIGHT_ON};
@@ -210,6 +212,8 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             } else {
                 currentAction = {'powerOff':true};
             }
+            break;
+        case 'programId': currentAction = {'programId':value};
             break;
         case 'Start': currentAction = {'processAction':mieleConst.START};
             break;
