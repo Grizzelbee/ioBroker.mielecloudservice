@@ -255,6 +255,7 @@ module.exports.addModeSwitch = function(adapter, setup, path, actions){
 }
 
 
+
 /**
  * Function addSuperFreezingSwitch
  *
@@ -288,6 +289,43 @@ module.exports.addSuperFreezingSwitch = function(adapter, setup, path, actions){
         checkSuperFreezingAction(adapter, path, actions.processAction);
     }
 }
+
+
+
+/**
+ * Function addprogramIdAction
+ *
+ * Adds programId action switch to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicates whether the adapter is in setup mode
+ * @param path {string} path where the action button is going to be created
+ * @param value {number} value containing the currently selected program
+ *
+ */
+module.exports.addProgramIdAction = function(adapter, setup, path, value){
+    adapter.log.debug('addProgramIdAction: Path['+ path +']');
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.programId' , {
+                type: 'state',
+                common: {"name": 'Program Id - to select a program. Values depend on your device. See Miele docs.',
+                    "read": true,
+                    "write": true,
+                    "role": 'switch',
+                    "type": 'integer'
+                },
+                native: {}
+            }
+            , (device) => {
+                adapter.subscribeStates(path + '.ACTIONS.programId');
+                adapter.setState(path + '.ACTIONS.programId', value, true);
+            });
+    } else {
+        adapter.setState(path + '.ACTIONS.programId', value, true);
+    }
+}
+
+
 
 /**
  * Function addStartButton

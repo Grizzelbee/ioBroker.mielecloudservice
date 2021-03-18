@@ -597,12 +597,12 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
             case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
                 mieleTools.createStateBatteryLevel(adapter, setup, path, currentDeviceState.batteryLevel);
                 // Actions
-                // programId
+                mieleTools.addProgramIdAction(adapter, setup, path, currentDeviceState.programId);
                 break;
             case 25: // 25 = DISH WARMER*
                 await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
                 // Actions
-                // programId
+                mieleTools.addProgramIdAction(adapter, setup, path, currentDeviceState.programId);
                 break;
             case 48: // 48 = VACUUM DRAWER
                 break;
