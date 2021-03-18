@@ -293,7 +293,7 @@ module.exports.addSuperFreezingSwitch = function(adapter, setup, path, actions){
 
 
 /**
- * Function addprogramIdAction
+ * Function addProgramIdAction
  *
  * Adds programId action switch to the device tree
  *
@@ -322,6 +322,37 @@ module.exports.addProgramIdAction = function(adapter, setup, path, value){
             });
     } else {
         adapter.setState(path + '.ACTIONS.programId', value, true);
+    }
+}
+
+
+
+/**
+ * Function addColorsAction
+ *
+ * Adds colors action switch to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicates whether the adapter is in setup mode
+ * @param path {string} path where the action button is going to be created
+  */
+module.exports.addColorsAction = function(adapter, setup, path){
+    if (setup) {
+        adapter.log.debug('addColorsAction: Path['+ path +']');
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.color' , {
+                type: 'state',
+                common: {"name": 'select ambient light color',
+                    "read": true,
+                    "write": true,
+                    "role": 'switch',
+                    "type": 'integer',
+                    states:{'white':'white', 'blue':'blue', 'red':'red', 'yellow':'yellow', 'orange':'orange', 'green':'green', 'pink':'pink', 'purple':'purple', 'turquoise':'turquoise'}
+                },
+                native: {}
+            }
+            , (device) => {
+                adapter.subscribeStates(path + '.ACTIONS.color');
+            });
     }
 }
 

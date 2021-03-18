@@ -522,6 +522,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addLightSwitch(adapter, setup, path, actions);
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 await mieleTools.addVentilationStepSwitch(adapter, setup, path);
+                await mieleTools.addColorsAction(adapter, setup, path);
                 // colors
                 break;
             case 19: // 19 = FRIDGE*
@@ -556,7 +557,6 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 // Actions
                 await mieleTools.addSuperCoolingSwitch(adapter, setup, path, actions);
                 await mieleTools.addSuperFreezingSwitch(adapter, setup, path, actions);
-                // targetTemperature
                 break;
             case 32: // 32 = WINE CABINET*
             case 33: // 33 = WINE CONDITIONING UNIT
