@@ -29,7 +29,7 @@ const mieleTools = require('./miele-Tools.js');
  */
 module.exports.APIGetAccessToken = async function (adapter) {
     adapter.log.debug('function APIGetAccessToken');
-    const getOwnerCredentials = oauth.client(axios.create(), {
+    const getOwnerCredentials = await oauth.client(await axios.create(), {
         url: mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN,
         grant_type: 'password',
         client_id: adapter.config.Client_ID,

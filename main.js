@@ -624,7 +624,7 @@ async function main() {
     try {
         // todo: try 10 logins when it fails with a delay of 5 min each
         _auth = await mieleAPITools.APIGetAccessToken(adapter);
-        if (_auth.hasOwnProperty('access_token') ) {
+        if (_auth && _auth.hasOwnProperty('access_token') ) {
             adapter.log.info(`Setting up devices ...`);
             // do the first API call and setup all devices returned
             const result = await mieleAPITools.refreshMieleData( adapter, _auth );
