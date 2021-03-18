@@ -164,7 +164,7 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
-### 4.0.0 (2021-03-xx) (Symphony of life)
+### 4.0.0 (2021-03-18) (Symphony of life)
 > ***Hint:*** The adapter received a complete code refactoring! This means that most of the code has been changed and some parts are working now differently than ever before. Update with care and read the change log!
 *  (grizzelbee) Upd: [85](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/85) full code refactoring and split into multiple files. 
 *  (grizzelbee) Upd: [86](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/86) every folder and device now gets a nice little icon
