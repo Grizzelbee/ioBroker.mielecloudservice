@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="0 0 610 610" version="1.1">
+  <g id="layer4" transform="translate(5 -397.36)">
+    <g id="g3854" transform="matrix(-1,0,0,1,600,0)">
+      <rect id="rect5840" stroke-linejoin="round" ry="1.5381" height="600" width="600" stroke="#4a0" y="402.36" x="0" stroke-width="10" fill="none"/>
+      <g id="g3062" transform="matrix(-1.0021 0 0 .90614 -100.87 93.713)" fill="#4a0" fill-opacity=".74173">
+        <path id="path4790" d="m-528.88 710.67c-30.46-56.988 2.184-116.51 38.904-151.14 37.497-35.36 88.212-34.913 128.92 11.028 45.041 50.837-1.0946 120.11 31.206 184.55 24.171 48.222 118.12 77.482 130.54 130.82 5.7228 24.567-9.1907 49.605-24.14 61.988-13.312 11.027-33.238 11.298-50.052 4.0644-38.104-16.392-63.499-69.822-97.641-100.01-48.758-43.111-126.83-83.469-157.74-141.3z"/>
+        <path id="path4792" transform="matrix(.34738 -.20513 .19157 .39979 183.81 293.39)" d="m-1497.6-392.16c0 72.526-35.042 131.32-78.268 131.32s-78.268-58.794-78.268-131.32 35.042-131.32 78.268-131.32 78.268 58.794 78.268 131.32z"/>
+        <path id="path4794" transform="matrix(.19564 -.12942 .11611 .25851 -146.5 394.4)" d="m-1487.6-392.16c0 72.526-39.527 131.32-88.285 131.32-48.759 0-88.285-58.794-88.285-131.32s39.527-131.32 88.285-131.32c48.759 0 88.285 58.794 88.285 131.32z"/>
+        <path id="path4796" transform="matrix(.17098 -.11310 .10148 .22593 -233.03 451.36)" d="m-1460.1-392.16c0 72.526-51.82 131.32-115.74 131.32-63.924 0-115.74-58.794-115.74-131.32s51.82-131.32 115.74-131.32c63.924 0 115.74 58.794 115.74 131.32z"/>
+        <path id="path4798" transform="matrix(.15865 -.10495 .094160 .20964 -283.73 516.4)" d="m-1470.6-392.16c0 72.526-47.132 131.32-105.27 131.32-58.14 0-105.27-58.794-105.27-131.32s47.132-131.32 105.27-131.32c58.14 0 105.27 58.794 105.27 131.32z"/>
+        <path id="path4800" transform="matrix(.11921 -.078855 .070748 .15752 -367.29 594.04)" d="m-1466.7-392.16c0 72.526-48.844 131.32-109.1 131.32-60.252 0-109.1-58.794-109.1-131.32s48.844-131.32 109.1-131.32c60.252 0 109.1 58.794 109.1 131.32z"/>
+      </g>
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>eco green carbon footprint icon</dc:title>
+        <dc:date>2012-06-05T17:33:47</dc:date>
+        <dc:description>CO2, carbon, clip art, clipart, co2, ecology, foot, footprint, green, humor, icon, print, </dc:description>
+        <dc:source>http://openclipart.org/detail/170434/eco-green-carbon-print-by-cybergedeon-170434</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>dominiquechappard</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>CO2</rdf:li>
+            <rdf:li>carbon</rdf:li>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>co2</rdf:li>
+            <rdf:li>ecology</rdf:li>
+            <rdf:li>foot</rdf:li>
+            <rdf:li>footprint</rdf:li>
+            <rdf:li>green</rdf:li>
+            <rdf:li>humor</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>print</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

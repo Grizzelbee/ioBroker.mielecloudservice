@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="0 0 610 610" version="1.1">
+  <g id="layer4" transform="translate(5 -397.36)">
+    <rect id="rect5840" stroke-linejoin="round" ry="1.5381" height="600" width="600" stroke="#4a0" y="402.36" x="0" stroke-width="10" fill="none"/>
+  </g>
+  <g id="layer1">
+    <g id="g5527" transform="matrix(8.2026 0 0 8.2088 -5143.4 -1542.1)">
+      <g id="g5517" transform="translate(39.643 1.0714)">
+        <path id="path5502" fill="#4a0" d="m648.01 238.22c0 9.6236-7.8015 17.425-17.425 17.425-9.6236 0-17.425-7.8015-17.425-17.425 0-14.044 10.074-12.374 17.678-35.103 1.4908-4.4564 17.551 23.838 17.173 35.103z"/>
+        <path id="path5515" d="m638.81 250.32s4.493-0.91483 6.5409-7.5041" stroke="#fff" stroke-linecap="round" stroke-width="1px" fill="none"/>
+      </g>
+      <g id="g5521" transform="matrix(.48770 0 0 .48770 340.19 95.598)">
+        <path id="path5523" fill="#4a0" d="m648.01 238.22c0 9.6236-7.8015 17.425-17.425 17.425-9.6236 0-17.425-7.8015-17.425-17.425 0-14.044 10.074-12.374 17.678-35.103 1.4908-4.4564 17.551 23.838 17.173 35.103z"/>
+        <path id="path5525" d="m638.81 250.32s4.493-0.91483 6.5409-7.5041" stroke="#fff" stroke-linecap="round" stroke-width="1px" fill="none"/>
+      </g>
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>eco green drop of water icon</dc:title>
+        <dc:date>2012-05-21T16:59:05</dc:date>
+        <dc:description>clip art, clipart, drop, ecology, green, icon, water, </dc:description>
+        <dc:source>http://openclipart.org/detail/170144/eco-drop-of-water-icon-by-cybergedeon</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>dominiquechappard</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>drop</rdf:li>
+            <rdf:li>ecology</rdf:li>
+            <rdf:li>green</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>water</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
