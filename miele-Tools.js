@@ -551,7 +551,7 @@ module.exports.createTime = function(adapter, setup, path, description, value, r
             type: 'state',
             common: {"name": description,
                 "read": true,
-                "write": (path.split('.').pop() === 'startTime'? true : false),
+                "write": (path.split('.').pop() === 'startTime'),
                 "role": role,
                 "type": "string"
             }
