@@ -105,7 +105,7 @@ module.exports.addPowerSwitch = function(adapter, setup, path, actions){
                 },
                 native: {}
             }
-            , (device) => {
+            , () => {
                 adapter.subscribeStates(path + '.ACTIONS.Power');
                 checkPowerAction(adapter, path, actions.powerOn, actions.powerOff);
             });
@@ -141,7 +141,7 @@ module.exports.addLightSwitch = function(adapter, setup, path, actions){
                 },
                 native: {}
             }
-            , (device) => {
+            , () => {
                 adapter.subscribeStates(path + '.ACTIONS.Light');
                 checkLightAction(adapter, path, actions.light);
             });
@@ -177,7 +177,7 @@ module.exports.addSuperCoolingSwitch = function(adapter, setup, path, actions){
                 },
                 native: {}
             }
-            , (device) => {
+            , () => {
                 adapter.subscribeStates(path + '.ACTIONS.SuperCooling');
                 checkSuperCoolingAction(adapter, path, actions.processAction);
             });
@@ -212,7 +212,7 @@ module.exports.addVentilationStepSwitch = function(adapter, setup, path){
                 },
                 native: {}
             }
-            , (device) => {
+            , () => {
                 adapter.subscribeStates(path + '.ACTIONS.VentilationStep');
             });
     }
@@ -245,7 +245,7 @@ module.exports.addModeSwitch = function(adapter, setup, path, actions){
                 },
                 native: {}
             }
-            , (device) => {
+            , () => {
                 adapter.subscribeStates(path + '.ACTIONS.Mode');
                 checkModesAction(adapter, path, actions.modes);
             });
@@ -281,7 +281,7 @@ module.exports.addSuperFreezingSwitch = function(adapter, setup, path, actions){
                 },
                 native: {}
             }
-            , (device) => {
+            , () => {
                 adapter.subscribeStates(path + '.ACTIONS.SuperFreezing');
                 checkSuperFreezingAction(adapter, path, actions.processAction);
             });
@@ -316,7 +316,7 @@ module.exports.addProgramIdAction = function(adapter, setup, path, value){
                 },
                 native: {}
             }
-            , (device) => {
+            , () => {
                 adapter.subscribeStates(path + '.ACTIONS.programId');
                 adapter.setState(path + '.ACTIONS.programId', value, true);
             });
@@ -350,7 +350,7 @@ module.exports.addColorsAction = function(adapter, setup, path){
                 },
                 native: {}
             }
-            , (device) => {
+            , () => {
                 adapter.subscribeStates(path + '.ACTIONS.color');
             });
     }
@@ -1674,42 +1674,3 @@ async function checkModesAction(adapter, device, modes) {
         }
     })
 }
-
-
-
-/**
- * checkStartAction
- *
- * sets the Actions.Start_Active-State according to it's current permitted action
- *
- * @param adapter {object} link to the adapter instance
- * @param device {string} the path to the current device
- * @param start {boolean} permission state of the start action
- */
-async function checkStartAction(adapter, device, start) {
-    return new Promise((resolve) => {
-        adapter.setState(device + '.ACTIONS.Start_Button_Active', start, true);
-        resolve(true);
-    })
-}
-
-
-
-/**
- * checkStopAction
- *
- * sets the Actions.Stop_Active-State according to it's current permitted action
- *
- * @param adapter {object} link to the adapter instance
- * @param device {string} the path to the current device
- * @param stop {boolean} permission state of the stop action
- */
-async function checkStopAction(adapter, device, stop) {
-    return new Promise((resolve) => {
-        adapter.setState(device + '.ACTIONS.Stop_Button_Active', stop, true);
-        resolve(true);
-    })
-}
-
-
-
