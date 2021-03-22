@@ -137,7 +137,7 @@ module.exports.addLightSwitch = function(adapter, setup, path, actions){
                     "write": true,
                     "role": 'switch',
                     "type": 'string',
-                    "states":{'On':'On', 'Off':'Off'}
+                    "states":{'On':'On', 'Off':'Off', 'None':'None'}
                 },
                 native: {}
             }
@@ -1637,6 +1637,10 @@ async function checkLightAction(adapter, device, light) {
         } else if ( Array(light).includes(mieleConst.LIGHT_OFF) ) {
             adapter.setState(device + '.ACTIONS.Light', 'On', true);
             adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_Off is permitted!`);
+            resolve(true);
+        } else {
+            adapter.setState(device + '.ACTIONS.Light', 'None', true);
+            adapter.log.debug(`[checkLightAction]: Device [${device}]: None is permitted!`);
             resolve(true);
         }
     })
