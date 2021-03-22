@@ -195,7 +195,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'Light':
             if (value === 'On'){
                 currentAction = {'light':mieleConst.LIGHT_ON};
-            } else {
+            } else if (value === 'Off'){
                 currentAction = {'light':mieleConst.LIGHT_OFF};
             }
             break;
