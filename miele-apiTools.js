@@ -25,7 +25,7 @@ const mieleTools = require('./miele-Tools.js');
  *
  * @param adapter {object} link to the adapter instance
  *
- * @returns OAuth2 token
+ * @returns {string} OAuth2 token
  */
 module.exports.APIGetAccessToken = async function (adapter) {
     adapter.log.debug('function APIGetAccessToken');
@@ -209,7 +209,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'Power':
             if (value === 'On'){
                 currentAction = {'powerOn':true};
-            } else {
+            } else if (value === 'Off'){
                 currentAction = {'powerOff':true};
             }
             break;

@@ -101,7 +101,7 @@ module.exports.addPowerSwitch = function(adapter, setup, path, actions){
                     "write": true,
                     "role": 'switch.power',
                     "type": 'string',
-                    "states":{'On':'On', 'Off':'Off'}
+                    "states":{'On':'On', 'Off':'Off', 'None':'None'}
                 },
                 native: {}
             }
@@ -1598,7 +1598,7 @@ module.exports.createChannelEcoFeedback = function(adapter, path, setup) {
  * @returns {promise} resolves on either PowerOn=True or PowerOff=true; rejects if both have the same value
  */
 async function checkPowerAction(adapter, device, powerOn, powerOff) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         if ( powerOn && !powerOff ) {
             adapter.setState(device + '.ACTIONS.Power', 'Off', true);
             adapter.log.debug(`[checkPowerAction]: Device [${device}]: PowerOn is permitted!`);
@@ -1608,8 +1608,9 @@ async function checkPowerAction(adapter, device, powerOn, powerOff) {
             adapter.log.debug(`[checkPowerAction]: Device [${device}]: PowerOff is permitted!`);
             resolve(true);
         } else {
-            adapter.log.debug(`[checkPowerAction]: Device [${device}]: PowerOn=${powerOn} and PowerOff=${powerOff}!! Don't know what to do!`);
-            reject(`[checkPowerAction]: Device [${device}]: PowerOn=${powerOn} and PowerOff=${powerOff}!! Don't know what to do!`);
+            adapter.log.debug(`[checkPowerAction]: Device [${device}]: PowerOn=${powerOn} and PowerOff=${powerOff}!! Setting to NONE.`);
+            adapter.setState(device + '.ACTIONS.Power', 'None', true);
+            resolve(true);
         }
     })
 }
