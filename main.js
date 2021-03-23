@@ -524,7 +524,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateVentilationStep(adapter, setup, `${path}.${currentDeviceState.ventilationStep.key_localized}`,currentDeviceState.ventilationStep.value_localized);
+                await mieleTools.createStateVentilationStep(adapter, setup, path,currentDeviceState.ventilationStep.value_localized);
                 // Actions
                 await mieleTools.addPowerSwitch(adapter, setup, path, actions);
                 await mieleTools.addLightSwitch(adapter, setup, path, actions);

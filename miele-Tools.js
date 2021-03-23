@@ -1076,7 +1076,7 @@ module.exports.createStateProgramPhase = async function(adapter, setup, path, va
 module.exports.createStateVentilationStep = async function(adapter, setup, path, value){
     adapter.log.debug(`createStateVentilationStep: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     await mieleTools.addVentilationStepSwitch(adapter, setup, path);
-    adapter.setState(path + 'ACTIONS.VentilationStep', value, true);
+    adapter.setState(path + '.ACTIONS.VentilationStep', value, true);
 }
 
 
