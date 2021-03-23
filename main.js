@@ -353,12 +353,13 @@ async function addMieleDevice(path, mieleDevice, setup){
 async function addMieleDeviceState(path, currentDevice, currentDeviceState, setup,){
     // create for ALL devices
     await mieleTools.createStateDeviceMainState(adapter, setup,  `${path}.${currentDeviceState.status.key_localized}`, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw);
-    mieleTools.createStateSignalFailure(adapter, setup, path, currentDeviceState.signalFailure);
+    await mieleTools.createStateSignalFailure(adapter, setup, path, currentDeviceState.signalFailure);
     // set the values for self designed redundant state indicators
     await mieleTools.createStateConnected(adapter, setup, path, currentDeviceState.status.value_raw !== 255);
     await mieleTools.createStateSignalInUse(adapter, setup, path, currentDeviceState.status.value_raw !== 1);
     // nickname action is supported by all devices
-    mieleTools.addDeviceNicknameAction(adapter, path, currentDevice);
+    await mieleTools.createStateActionsInformation(adapter, setup, path, '');
+    await mieleTools.addDeviceNicknameAction(adapter, path, currentDevice);
 
     // checkPermittedActions
     const actions = await mieleAPITools.getPermittedActions(adapter, _auth, currentDevice.ident.deviceIdentLabel.fabNumber);

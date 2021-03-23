@@ -772,6 +772,29 @@ module.exports.addDeviceNicknameAction = function(adapter, path, mieleDevice) {
 
 
 /**
+ * createStateActionsInformation
+ *
+ * create the state that shows additional information to the result of executed actions
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ *
+ * @returns promise {promise}
+ */
+module.exports.createStateActionsInformation = function(adapter, setup, path, value){
+    adapter.log.debug(`createStateActionsInformation: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    return mieleTools.createString( adapter,
+        setup,
+        path + '.ACTIONS.Action_Information',
+        'Additional information to the result of executed actions.',
+        value);
+}
+
+
+
+/**
  * createStateConnected
  *
  * create the state that shows whether the device is connected to WLAN or Gateway.
