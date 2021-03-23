@@ -392,7 +392,7 @@ module.exports.addColorsAction = function(adapter, setup, path){
                     "read": true,
                     "write": true,
                     "role": 'switch',
-                    "type": 'integer',
+                    "type": 'string',
                     states:{'white':'white', 'blue':'blue', 'red':'red', 'yellow':'yellow', 'orange':'orange', 'green':'green', 'pink':'pink', 'purple':'purple', 'turquoise':'turquoise'}
                 },
                 native: {}
