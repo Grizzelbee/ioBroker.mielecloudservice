@@ -387,7 +387,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // actions
-                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
@@ -409,7 +409,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // Actions
-                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
@@ -433,7 +433,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // Actions
-                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
@@ -457,7 +457,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // Actions
-                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
@@ -501,7 +501,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
                 // Actions
-                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addLightSwitch(adapter, setup, path, actions);
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
@@ -517,7 +517,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
                 // Actions
-                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addLightSwitch(adapter, setup, path, actions);
                 break;
             case 18: // 18 = HOOD*
@@ -527,7 +527,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
                 await mieleTools.createStateVentilationStep(adapter, setup, path,currentDeviceState.ventilationStep.value_localized);
                 // Actions
-                await mieleTools.addPowerSwitch(adapter, setup, path, actions);
+                await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addLightSwitch(adapter, setup, path, actions);
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 await mieleTools.addVentilationStepSwitch(adapter, setup, path);
