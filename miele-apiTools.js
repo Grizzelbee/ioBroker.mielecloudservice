@@ -249,13 +249,13 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
     try {
         adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
         const result = await APISendRequest(adapter, auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
-        await mieleTools.createString(adapter, setup,currentPath + '.Action_information', 'Additional Information returned from API.', action + ': ' + result.message);
+        await mieleTools.createString(adapter, setup,currentPath + '.Action_Information', 'Additional Information returned from API.', action + ': ' + result.message);
         // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
         adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
         await mieleAPITools.refreshMieleData(adapter, auth);
     } catch(err) {
         // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
-        await mieleTools.createString(adapter, setup, currentPath + '.Action_information', 'Additional Information returned from API.', JSON.stringify(err));
+        await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', JSON.stringify(err));
         adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
     }
 }
