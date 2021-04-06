@@ -256,7 +256,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
     } catch(err) {
         // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
         await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', JSON.stringify(err));
-        adapter.log.error('[APISendRequest] ' + JSON.stringify(err));
+        adapter.log.error('[APIStartAction] ' + JSON.stringify(err));
     }
 }
 
@@ -344,6 +344,7 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
             adapter.log.error('Response.status:' + error.response.status);
             adapter.log.error('Response.headers: ' + JSON.stringify(error.response.headers));
             adapter.log.error('Response.data: ' + JSON.stringify(error.response.data));
+            throw new Error('Bullshit!' + error.response.data.message);
         } else if (error.request) {
             // The request was made but no response was received
             adapter.log.error('The request was made but no response was received:');
