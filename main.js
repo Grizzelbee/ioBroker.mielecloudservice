@@ -362,7 +362,11 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
     await mieleTools.addDeviceNicknameAction(adapter, path, currentDevice);
 
     // checkPermittedActions
-    const actions = await mieleAPITools.getPermittedActions(adapter, _auth, currentDevice.ident.deviceIdentLabel.fabNumber);
+    try {
+        const actions = await mieleAPITools.getPermittedActions(adapter, _auth, currentDevice.ident.deviceIdentLabel.fabNumber);
+    } catch(err){
+        adapter.log.debug(`Could not query device actions. fabNumber seems to be invalid. Error: ${err.message}`);
+    }
     adapter.log.debug('CurrentlyPermittedActions: ' + JSON.stringify(actions));
 
     try{
