@@ -363,6 +363,9 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
                     adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
                 }
                 break;
+            case 404:
+                adapter.log.debug('Device/fabNumber is unknown. Disabling all actions.');
+                return( {"processAction":[],"light":[],"ambientLight":[],"startTime":[],"ventilationStep":[],"programId":[],"targetTemperature":[],"deviceName":false,"powerOn":false,"powerOff":false,"colors":[],"modes":[]} );
             case 504:
                 adapter.log.error('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
                 break;

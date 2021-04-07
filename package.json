@@ -1,15 +1,15 @@
 {
   "name": "iobroker.mielecloudservice",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Integrates your MieleCloudService (aka Miele@Home) Devices to ioBroker",
   "author": {
     "name": "grizzelbee",
-    "email": "hanjo@hingsen.de"
+    "email": "open.source@hingsen.de"
   },
   "contributors": [
     {
       "name": "grizzelbee",
-      "email": "hanjo@hingsen.de"
+      "email": "open.source@hingsen.de"
     }
   ],
   "homepage": "https://github.com/Grizzelbee/ioBroker.mielecloudservice",
