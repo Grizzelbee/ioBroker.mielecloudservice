@@ -270,7 +270,7 @@ async function splitMieleDevices(devices, setup){
             adapter.log.debug('Device: [' + mieleDevice + '] has no serial number/fabNumber. Taking DeviceNumber instead.');
             devices[mieleDevice].ident.deviceIdentLabel.fabNumber = mieleDevice;
         }
-        await parseMieleDevice(devices[mieleDevice], setup);
+        await parseMieleDevice(devices[mieleDevice], setup, mieleDevice);
     }
 }
 
@@ -283,13 +283,15 @@ async function splitMieleDevices(devices, setup){
  *
  * @param mieleDevice {object} the JSON for a single device
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param API_Id {string} the API-ID for the current device
  */
-async function parseMieleDevice(mieleDevice, setup){
+async function parseMieleDevice(mieleDevice, setup, API_Id){
     adapter.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
 
     const deviceObj = getDeviceObj(mieleDevice.ident.type.value_raw); // create folder for device
     if (setup) {
         _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber]=deviceObj;
+        _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].API_Id = API_Id;
         adapter.log.debug(`_knownDevices=${JSON.stringify(_knownDevices)}`)
     }
     await addMieleDevice(deviceObj.deviceFolder, mieleDevice, setup);
@@ -362,7 +364,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
     await mieleTools.addDeviceNicknameAction(adapter, path, currentDevice);
 
     // checkPermittedActions
-    const actions = await mieleAPITools.getPermittedActions(adapter, _auth, currentDevice.ident.deviceIdentLabel.fabNumber);
+    const actions = await mieleAPITools.getPermittedActions(adapter, _auth,  _knownDevices[currentDevice.ident.deviceIdentLabel.fabNumber].API_Id );
     adapter.log.debug('CurrentlyPermittedActions: ' + JSON.stringify(actions));
 
     try{

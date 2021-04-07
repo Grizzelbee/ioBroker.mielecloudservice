@@ -17,6 +17,7 @@ const {stringify} = require('flatted');
 const mieleConst = require('./miele-constants.js');
 const mieleAPITools = require('./miele-apiTools.js');
 const mieleTools = require('./miele-Tools.js');
+const {_knownDevices} = require('./main.js');
 
 /**
  * Function APIGetAccessToken
@@ -248,7 +249,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
     }
     try {
         adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
-        const result = await APISendRequest(adapter, auth, 'v1/devices/' + device + '/actions', 'PUT', currentAction);
+        const result = await APISendRequest(adapter, auth, 'v1/devices/' +  _knownDevices[device].API_Id + '/actions', 'PUT', currentAction);
         await mieleTools.createString(adapter, setup,currentPath + '.Action_Information', 'Additional Information returned from API.', action + ': ' + result.message);
         // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
         adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
@@ -344,7 +345,7 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
             adapter.log.error('Response.status:' + error.response.status);
             adapter.log.error('Response.headers: ' + JSON.stringify(error.response.headers));
             adapter.log.error('Response.data: ' + JSON.stringify(error.response.data));
-            throw new Error('Bullshit!' + error.response.data.message);
+            throw new Error(error.response.data.message);
         } else if (error.request) {
             // The request was made but no response was received
             adapter.log.error('The request was made but no response was received:');

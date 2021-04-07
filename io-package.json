@@ -1,21 +1,9 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "4.0.2",
+        "version": "4.0.3",
         "news": {
-            "4.0.2": {
-                "en": "Bugfix Release - see changelog for details!",
-                "de": "Bugfix Release - Details siehe Changelog!",
-                "ru": "Выпуск исправления ошибок - подробности см. В журнале изменений!",
-                "pt": "Versão de correção de bug - veja o changelog para detalhes!",
-                "nl": "Bugfix Release - zie changelog voor details!",
-                "fr": "Bugfix Release - voir le journal des modifications pour plus de détails!",
-                "it": "Bugfix Release - vedi changelog per i dettagli!",
-                "es": "Versión de corrección de errores: consulte el registro de cambios para obtener más detalles.",
-                "pl": "Wydanie poprawek - szczegóły w dzienniku zmian!",
-                "zh-cn": "错误修正版本-有关详细信息，请参见更改日志！"
-            },
-            "4.0.1": {
+            "4.0.3": {
                 "en": "Bugfix Release - see changelog for details!",
                 "de": "Bugfix Release - Details siehe Changelog!",
                 "ru": "Выпуск исправления ошибок - подробности см. В журнале изменений!",
