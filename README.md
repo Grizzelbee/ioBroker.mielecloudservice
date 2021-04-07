@@ -163,6 +163,9 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
+### 4.0.4 (2021-04-07) (Wastelands)
+*  (grizzelbee) Fix: fixes ventilation step switch for hoods
+
 ### 4.0.3 (2021-04-07) (The raven child)
 *  (grizzelbee) Fix: [109](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/109) fixes 404 error when querying possible actions for device.
 *  (grizzelbee) Fix: fixes errors when executing actions on devices with API-Id!=fabNumber

@@ -139,34 +139,6 @@ module.exports.addPowerSwitch = async function(adapter, path, actions){
 
 
 /**
- * getLightState
- *
- * sets the Actions.Light-Switch according to it's current permitted action
- *
- * @param adapter {object} link to the adapter instance
- * @param device {string} the path to the current device
- * @param light {object} permission state of the light action
- *
- * @returns {promise} resolves on either PowerOn=True or PowerOff=true; rejects if both have the same value
- */
-async function getLightState(adapter, device, light) {
-    return new Promise((resolve) => {
-        if ( Array(light).includes(mieleConst.LIGHT_ON) ){
-            adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_On is permitted!`);
-            resolve('Off');
-        } else if ( Array(light).includes(mieleConst.LIGHT_OFF) ) {
-            adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_Off is permitted!`);
-            resolve('On');
-        } else {
-            adapter.log.debug(`[checkLightAction]: Device [${device}]: None is permitted!`);
-            resolve('None');
-        }
-    })
-}
-
-
-
-/**
  * Function addLightSwitch
  *
  * Adds a Light switch to the device tree and subscribes for changes to it
@@ -253,8 +225,8 @@ module.exports.addVentilationStepSwitch = function(adapter, setup, path){
                 common: {"name": 'VentilationStep switch of the device',
                     "read": true,
                     "write": true,
-                    "role": 'switch',
-                    "type": 'string',
+                    "role": 'level',
+                    "type": 'number',
                     "states":{'Off':0, 'Step 1':1, 'Step 2':2, 'Step 3':3, 'Step 4':4 }
                 },
                 native: {}
@@ -1143,7 +1115,7 @@ module.exports.createStateProgramPhase = async function(adapter, setup, path, va
  * @param path {string} path where the data point is going to be created
  * @param value {string} value to set to the data point
  */
-module.exports.createStateVentilationStep = async function(adapter, setup, path, value){
+ module.exports.createStateVentilationStep = async function(adapter, setup, path, value){
     adapter.log.debug(`createStateVentilationStep: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     await mieleTools.addVentilationStepSwitch(adapter, setup, path);
     adapter.setState(path + '.ACTIONS.VentilationStep', value, true);
