@@ -139,6 +139,34 @@ module.exports.addPowerSwitch = async function(adapter, path, actions){
 
 
 /**
+ * getLightState
+ *
+ * sets the Actions.Light-Switch according to it's current permitted action
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param device {string} the path to the current device
+ * @param light {object} permission state of the light action
+ *
+ * @returns {promise} resolves on either PowerOn=True or PowerOff=true; rejects if both have the same value
+ */
+async function getLightState(adapter, device, light) {
+    return new Promise((resolve) => {
+        if ( Array(light).includes(mieleConst.LIGHT_ON) ){
+            adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_On is permitted!`);
+            resolve('Off');
+        } else if ( Array(light).includes(mieleConst.LIGHT_OFF) ) {
+            adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_Off is permitted!`);
+            resolve('On');
+        } else {
+            adapter.log.debug(`[checkLightAction]: Device [${device}]: None is permitted!`);
+            resolve('None');
+        }
+    })
+}
+
+
+
+/**
  * Function addLightSwitch
  *
  * Adds a Light switch to the device tree and subscribes for changes to it
@@ -150,7 +178,7 @@ module.exports.addPowerSwitch = async function(adapter, path, actions){
  */
 module.exports.addLightSwitch = async function(adapter, path, actions){
     adapter.log.debug('addLightSwitch: Path['+ path +']');
-    const state = await getPowerState(adapter, path, actions);
+    const state = await getLightState(adapter, path, actions);
     adapter.log.debug('addLightSwitch: result from getLightState: ['+ state +']');
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.Light' , {
                 type: 'state',
