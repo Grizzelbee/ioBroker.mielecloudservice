@@ -523,18 +523,18 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addLightSwitch(adapter, path, actions);
                 break;
             case 18: // 18 = HOOD*
+                // States
+                await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
+                await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
+                await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
+                await mieleTools.createStateVentilationStep(adapter, setup, path, currentDeviceState.ventilationStep.value_raw);
                 // Actions
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addLightSwitch(adapter, path, actions);
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 await mieleTools.addVentilationStepSwitch(adapter, setup, path);
                 await mieleTools.addColorsAction(adapter, setup, path);
-                // States
-                await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
-                await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
-                await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
-                await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateVentilationStep(adapter, setup, path,currentDeviceState.ventilationStep.value_localized);
                 // colors
                 break;
             case 19: // 19 = FRIDGE*
