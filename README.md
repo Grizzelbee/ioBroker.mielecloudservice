@@ -165,6 +165,7 @@ Here is a list of what these raw values stand for:
 ## Changelog
 ### V4.0.5 (2021-04-08) (The haunting)
 *  (grizzelbee) Fix: fixes ventilation step switch for hoods (attempt 2)
+*  (grizzelbee) Fix: fixes error on creating TragetTemperature data points
 
 ### V4.0.4 (2021-04-07) (Wastelands)
 *  (grizzelbee) Fix: fixes ventilation step switch for hoods

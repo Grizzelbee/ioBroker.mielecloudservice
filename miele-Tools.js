@@ -1399,7 +1399,7 @@ module.exports.createStateTargetTemperatureFridge = function(adapter, setup, pat
  * @param value {object} array value to set to the data point
  */
 module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
+    adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], path: [${path}], value: [${ JSON.stringify(value)}]`);
     if (setup) {
         mieleTools.createExtendObject(adapter,
             '.ACTIONS.targetTemperatureFreezer',
