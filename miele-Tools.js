@@ -254,8 +254,8 @@ module.exports.addVentilationStepSwitch = function(adapter, setup, path){
                     "read": true,
                     "write": true,
                     "role": 'level',
-                    "type": 'number',
-                    "states":{'Off':0, 'Step 1':1, 'Step 2':2, 'Step 3':3, 'Step 4':4 }
+                    "type": 'string',
+                    "states":{'Off':'0', 'Step 1':'1', 'Step 2':'2', 'Step 3':'3', 'Step 4':'4' }
                 },
                 native: {}
             }

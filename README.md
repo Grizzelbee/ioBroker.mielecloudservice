@@ -163,6 +163,9 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
+### V4.0.5 (2021-04-08) (The haunting)
+*  (grizzelbee) Fix: fixes ventilation step switch for hoods (attempt 2)
+
 ### V4.0.4 (2021-04-07) (Wastelands)
 *  (grizzelbee) Fix: fixes ventilation step switch for hoods
 *  (grizzelbee) Fix: fixed missing getLightState
