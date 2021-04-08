@@ -254,8 +254,8 @@ module.exports.addVentilationStepSwitch = function(adapter, setup, path){
                     "read": true,
                     "write": true,
                     "role": 'level',
-                    "type": 'number',
-                    "states":{'Off':0, 'Step 1':1, 'Step 2':2, 'Step 3':3, 'Step 4':4 }
+                    "type": 'string',
+                    "states":{'Off':'0', 'Step 1':'1', 'Step 2':'2', 'Step 3':'3', 'Step 4':'4' }
                 },
                 native: {}
             }
@@ -1399,7 +1399,7 @@ module.exports.createStateTargetTemperatureFridge = function(adapter, setup, pat
  * @param value {object} array value to set to the data point
  */
 module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
+    adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], path: [${path}], value: [${ JSON.stringify(value)}]`);
     if (setup) {
         mieleTools.createExtendObject(adapter,
             '.ACTIONS.targetTemperatureFreezer',
