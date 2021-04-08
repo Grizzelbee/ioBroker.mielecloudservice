@@ -145,16 +145,16 @@ module.exports.addPowerSwitch = async function(adapter, path, actions){
  *
  * @param adapter {object} link to the adapter instance
  * @param device {string} the path to the current device
- * @param light {object} permission state of the light action
+ * @param actions {object} permission state of the light action
  *
  * @returns {promise} resolves on either PowerOn=True or PowerOff=true; rejects if both have the same value
  */
-async function getLightState(adapter, device, light) {
+async function getLightState(adapter, device, actions) {
     return new Promise((resolve) => {
-        if ( Array(light).includes(mieleConst.LIGHT_ON) ){
+        if ( actions.light.includes(mieleConst.LIGHT_ON) ){
             adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_On is permitted!`);
             resolve('Off');
-        } else if ( Array(light).includes(mieleConst.LIGHT_OFF) ) {
+        } else if ( actions.light.includes(mieleConst.LIGHT_OFF) ) {
             adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_Off is permitted!`);
             resolve('On');
         } else {
@@ -254,8 +254,8 @@ module.exports.addVentilationStepSwitch = function(adapter, setup, path){
                     "read": true,
                     "write": true,
                     "role": 'level',
-                    "type": 'string',
-                    "states":{'Off':'0', 'Step 1':'1', 'Step 2':'2', 'Step 3':'3', 'Step 4':'4' }
+                    "type": 'integer',
+                    "states":{0:'Off', 1:'Step 1', 2:'Step 2', 3:'Step 3', 4:'Step 4'}
                 },
                 native: {}
             }
