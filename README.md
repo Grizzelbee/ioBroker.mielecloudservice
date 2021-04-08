@@ -163,6 +163,8 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
+### V4.0.7 (2021-04-08) (Lost in space)
+
 ### V4.0.6 (2021-04-08) (The great mystery)
 *  (grizzelbee) Fix: fixes Light switch for hoods and other devices supporting light
 *  (grizzelbee) Fix: fixes ventilation step switch for hoods (attempt 3)
