@@ -163,9 +163,13 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
+### V4.0.6 (2021-04-08) (The great mystery)
+*  (grizzelbee) Fix: fixes Light switch for hoods and other devices supporting light
+*  (grizzelbee) Fix: fixes ventilation step switch for hoods (attempt 3)
+
 ### V4.0.5 (2021-04-08) (The haunting)
 *  (grizzelbee) Fix: fixes ventilation step switch for hoods (attempt 2)
-*  (grizzelbee) Fix: fixes error on creating TragetTemperature data points
+*  (grizzelbee) Fix: fixes error on creating TargetTemperature data points
 
 ### V4.0.4 (2021-04-07) (Wastelands)
 *  (grizzelbee) Fix: fixes ventilation step switch for hoods
