@@ -243,7 +243,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'targetTemperatureFreezer':
             currentAction = {'targetTemperature':[{zone:2, value:value}]};
             break;
-        case 'ventilationStep':
+        case 'VentilationStep':
             currentAction = {'ventilationStep':value};
             break;
     }
