@@ -1359,21 +1359,22 @@ module.exports.createStateTargetTemperature = function(adapter, setup, path, val
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
  * @param value {object} array value to set to the data point
+ * @param action {object} action-abject to set to the data point
  */
-module.exports.createStateTargetTemperatureFridge = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateTargetTemperatureFridge: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
+module.exports.createStateTargetTemperatureFridge = function(adapter, setup, path, value, action){
+    adapter.log.debug(`createStateTargetTemperatureFridge: Path[${path}], setup: [${setup}], action: [${JSON.stringify(action)}], value: [${JSON.stringify(value)}]`);
     if (setup) {
         mieleTools.createExtendObject(adapter,
-            '.ACTIONS.targetTemperatureFridge',
+            path + '.ACTIONS.targetTemperatureFridge',
             {
                 type: 'state',
                 common: {
-                    name: 'The target temperature of the fridge (1 to 9).',
+                    name: `The target temperature of the fridge (${action.min} to ${action.max}).`,
                     read: true,
                     write: true,
                     type: 'number',
-                    min: 1,
-                    max: 9,
+                    min: action.min,
+                    max: action.max,
                     role: 'value.temperature'
                 },
                 native: {}
@@ -1396,22 +1397,23 @@ module.exports.createStateTargetTemperatureFridge = function(adapter, setup, pat
  * @param adapter {object} link to the adapter instance
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
- * @param value {object} array value to set to the data point
+ * @param value {object} array - value to set to the data point
+ * @param action {object} action-abject to set to the data point
  */
-module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], path: [${path}], value: [${ JSON.stringify(value)}]`);
+module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, path, value, action){
+    adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], action: [${JSON.stringify(action)}], value: [${ JSON.stringify(value)}]`);
     if (setup) {
         mieleTools.createExtendObject(adapter,
-            '.ACTIONS.targetTemperatureFreezer',
+            path + '.ACTIONS.targetTemperatureFreezer',
             {
                 type: 'state',
                 common: {
-                    name: 'The target temperature of the Freezer (-16 to -26).',
+                    name: `The target temperature of the Freezer (${action.min} to ${action.max}).`,
                     read: true,
                     write: true,
                     type: 'number',
-                    min: -26,
-                    max: -16,
+                    min: action.min,
+                    max: action.max,
                     role: 'value.temperature'
                 },
                 native: {}
