@@ -163,6 +163,9 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
+### V4.0.8 (2021-04-09) (The seven angels)
+
+
 ### V4.0.7 (2021-04-09) (Lost in space)
 *  (grizzelbee) Fix: [90](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/90) added missing path to object ID; data point will be created in the correct place now
 *  (grizzelbee) New: targetTemp min and max values are now taken from API - no constant values anymore
