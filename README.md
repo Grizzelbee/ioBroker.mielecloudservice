@@ -164,7 +164,8 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 ### V4.0.8 (2021-04-09) (The seven angels)
-
+*  (grizzelbee) Fix: fixed datatype of VentilationStep data point
+*  (grizzelbee) Fix: fixed ventilation step switch for hoods (attempt 4)
 
 ### V4.0.7 (2021-04-09) (Lost in space)
 *  (grizzelbee) Fix: [90](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/90) added missing path to object ID; data point will be created in the correct place now
