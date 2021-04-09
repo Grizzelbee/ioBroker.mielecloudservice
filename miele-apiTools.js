@@ -256,8 +256,8 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         await mieleAPITools.refreshMieleData(adapter, auth);
     } catch(err) {
         // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
-        await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', JSON.stringify(err));
-        adapter.log.error('[APIStartAction] ' + JSON.stringify(err));
+        await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', err.message);
+        adapter.log.error('[APIStartAction] ' + err.message);
     }
 }
 
