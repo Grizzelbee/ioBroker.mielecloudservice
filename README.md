@@ -163,6 +163,9 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
+### V4.0.10 (2021-04-09) ()
+
+
 ### V4.0.9 (2021-04-09) (Farewell)
 *  (grizzelbee) Fix: Errors during action execution will be shown correctly
 *  (grizzelbee) Fix: Actions will be executed correctly
