@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "4.0.8",
+        "version": "4.0.9",
         "news": {
-            "4.0.8": {
+            "4.0.9": {
                 "en": "Bugfix Release - see changelog for details!",
                 "de": "Bugfix Release - Details siehe Changelog!",
                 "ru": "Выпуск исправления ошибок - подробности см. В журнале изменений!",
