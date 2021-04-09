@@ -66,11 +66,11 @@ function startadapter(options) {
         stateChange: async function (id, state) {
             // Warning, state can be null if it was deleted
             if (state && !state.ack) {
-              adapter.log.debug('ack is not set!');
+              // adapter.log.debug('ack is not set!');
               // you can use the ack flag to detect if it is status (true) or command (false)
               adapter.log.debug('stateChange [' + id + '] [' + JSON.stringify(state)+']');
               let action = id.split('.').pop();
-                await mieleAPITools.APIStartAction(adapter, _auth, id, action, state.val, false);
+                await mieleAPITools.APIStartAction(adapter, _auth, id, action, state.val, false, _knownDevices);
             }
           },
         // stateChange: function(id, state){

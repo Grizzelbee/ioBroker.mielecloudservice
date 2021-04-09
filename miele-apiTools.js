@@ -17,7 +17,6 @@ const {stringify} = require('flatted');
 const mieleConst = require('./miele-constants.js');
 const mieleAPITools = require('./miele-apiTools.js');
 const mieleTools = require('./miele-Tools.js');
-const {_knownDevices} = require('./main.js');
 
 /**
  * Function APIGetAccessToken
@@ -181,9 +180,10 @@ module.exports.getPermittedActions = async function (adapter, auth, deviceId){
  * @param action {string} action to be started
  * @param value {string} the value of the action to set
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param knownDevices {object} list of known devices with a reference from their serial to the API_Id
  *
  */
-module.exports.APIStartAction = async function(adapter, auth, path, action, value, setup) {
+module.exports.APIStartAction = async function(adapter, auth, path, action, value, setup, knownDevices) {
     let currentAction;
     let paths = path.split('.');    // transform into array
     paths.pop();                    // remove last element of path
@@ -249,7 +249,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
     }
     try {
         adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
-        const result = await APISendRequest(adapter, auth, 'v1/devices/' +  _knownDevices[device].API_Id + '/actions', 'PUT', currentAction);
+        const result = await APISendRequest(adapter, auth, 'v1/devices/' +  knownDevices[device].API_Id + '/actions', 'PUT', currentAction);
         await mieleTools.createString(adapter, setup,currentPath + '.Action_Information', 'Additional Information returned from API.', action + ': ' + result.message);
         // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
         adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
