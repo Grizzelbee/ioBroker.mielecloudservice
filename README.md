@@ -163,6 +163,9 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
+
+### V4.0.11 (2021-04-10) (Cry just a little)
+
 ### V4.0.10 (2021-04-10) (Another angel down)
 *  (grizzelbee) Fix: targetTemp min and max values are now taken from API - no constant values anymore
 
