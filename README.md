@@ -164,6 +164,9 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
+### V4.0.12 (2021-04-12) (Promised land)
+*  (grizzelbee) Fix: [90](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/90) targetTemp addresses zones for fridges and freezers dynamically now
+
 ### V4.0.11 (2021-04-11) (Cry just a little)
 *  (grizzelbee) Fix: targetTemp min and max values are now taken from API - no constant values anymore
 
