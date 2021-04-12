@@ -207,24 +207,35 @@ function getDeviceObj(deviceTypeID){
             deviceObj.deviceFolder = 'Fridges';
             deviceObj.name  = 'Fridges reported by Miele@Home API';
             deviceObj.icon = 'icons/19_fridge.svg'
+            deviceObj.fridgeZone = 1;
             break;
         case 20: // 20 = FREEZER*
             deviceObj.deviceFolder = 'Freezers';
             deviceObj.name  = 'Freezers reported by Miele@Home API';
             deviceObj.icon = 'icons/20_freezer.svg'
+            deviceObj.freezerZone = 1;
             break;
         case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
             deviceObj.deviceFolder = 'Fridge/Freezer_Combination';
             deviceObj.name  = 'Fridge/Freezer combinations reported by Miele@Home API';
             deviceObj.icon = 'icons/21_fridgefreezer.svg'
+            deviceObj.fridgeZone = 1;
+            deviceObj.freezerZone = 2;
             break;
         case 32: // 32 = WINE CABINET*
         case 33: // 33 = WINE CONDITIONING UNIT
         case 34: // 34 = WINE STORAGE CONDITIONING UNIT
+            deviceObj.deviceFolder = 'Wine_cabinets';
+            deviceObj.name  = 'Wine cabinets reported by Miele@Home API';
+            deviceObj.icon = 'icons/32_winecabinet.svg'
+            deviceObj.fridgeZone = 1;
+            break;
         case 68: // 68 = WINE CABINET FREEZER COMBINATION
             deviceObj.deviceFolder = 'Wine_cabinets';
             deviceObj.name  = 'Wine cabinets reported by Miele@Home API';
             deviceObj.icon = 'icons/32_winecabinet.svg'
+            deviceObj.fridgeZone = 1;
+            deviceObj.freezerZone = 2;
             break;
         case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
             deviceObj.deviceFolder = 'Vacuum_cleaners';
