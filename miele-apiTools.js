@@ -238,10 +238,10 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             }
             break;
         case 'targetTemperatureFridge':
-            currentAction = {'targetTemperature':[{zone:knownDevices[device].freezerZone, value:value}]};
+            currentAction = {'targetTemperature':[{zone:knownDevices[device].fridgeZone, value:value}]};
             break;
         case 'targetTemperatureFreezer':
-            currentAction = {'targetTemperature':[{zone:knownDevices[device].fridgeZone, value:value}]};
+            currentAction = {'targetTemperature':[{zone:knownDevices[device].freezerZone, value:value}]};
             break;
         case 'VentilationStep':
             currentAction = {'ventilationStep':value};
