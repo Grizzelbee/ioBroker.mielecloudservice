@@ -164,6 +164,9 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
+### V4.0.13 (2021-04-12) (The toy master)
+*  (grizzelbee) Fix: [90](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/90) targetTemp addresses zones for fridges and freezers dynamically now
+
 ### V4.0.12 (2021-04-12) (Promised land)
 *  (grizzelbee) Fix: [90](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/90) targetTemp addresses zones for fridges and freezers dynamically now
 
