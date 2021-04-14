@@ -180,10 +180,11 @@ module.exports.getPermittedActions = async function (adapter, auth, deviceId){
  * @param action {string} action to be started
  * @param value {string} the value of the action to set
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
- * @param knownDevices {object} list of known devices with a reference from their serial to the API_Id
+ * @param knownDevices {object} Array of known devices with a reference from their serial to the API_Id
+ * @param actions {object} JSON structure with all currently permitted actions for the given device
  *
  */
-module.exports.APIStartAction = async function(adapter, auth, path, action, value, setup, knownDevices) {
+module.exports.APIStartAction = async function(adapter, auth, path, action, value, setup, knownDevices, actions) {
     let currentAction;
     let paths = path.split('.');    // transform into array
     paths.pop();                    // remove last element of path
@@ -251,11 +252,9 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
         const result = await APISendRequest(adapter, auth, 'v1/devices/' +  knownDevices[device].API_Id + '/actions', 'PUT', currentAction);
         await mieleTools.createString(adapter, setup,currentPath + '.Action_Information', 'Additional Information returned from API.', action + ': ' + result.message);
-        // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', true, '');
         adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
         await mieleAPITools.refreshMieleData(adapter, auth);
     } catch(err) {
-        // await mieleTools.createBool(adapter, setup, currentPath + '.Action_successful', 'Indicator whether last executed Action has been successful.', false, '');
         await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', err.message);
         adapter.log.error('[APIStartAction] ' + err.message);
     }
@@ -300,16 +299,16 @@ module.exports.refreshMieleData = async function(adapter, auth){
 async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
     // build options object for axios
     const options = {
-        url: mieleConst.BASE_URL + Endpoint,
-        method: Method,
-        json: true,
-        dataType: "json",
         headers: {
             Authorization: 'Bearer ' + auth.access_token,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         },
-        data: payload
+        method: Method,
+        data: payload,
+        dataType: 'json',
+        json: true,
+        url: mieleConst.BASE_URL + Endpoint
     };
 
     function verifyData(verifiedData){
