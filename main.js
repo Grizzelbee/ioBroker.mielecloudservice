@@ -66,11 +66,14 @@ function startadapter(options) {
         stateChange: async function (id, state) {
             // Warning, state can be null if it was deleted
             if (state && !state.ack) {
-              // adapter.log.debug('ack is not set!');
-              // you can use the ack flag to detect if it is status (true) or command (false)
-              adapter.log.debug('stateChange [' + id + '] [' + JSON.stringify(state)+']');
-              let action = id.split('.').pop();
-                await mieleAPITools.APIStartAction(adapter, _auth, id, action, state.val, false, _knownDevices);
+                // you can use the ack flag to detect if it is status (true) or command (false)
+                adapter.log.debug('stateChange: [' + id + '] [' + JSON.stringify(state)+']');
+                const action = id.split('.').pop();
+                const deviceId = id.split('.', 4).pop();
+                adapter.log.debug(`stateChange: DeviceId [${deviceId}], requested action [${action}], state [${state.val}]`);
+                const actions = await mieleAPITools.getPermittedActions(adapter, _auth,  _knownDevices[deviceId].API_Id );
+                adapter.log.debug(`stateChange: permitted actions for device [${deviceId}]->[${JSON.stringify(actions)}]`);
+                await mieleAPITools.APIStartAction(adapter, _auth, id, action, state.val, false, _knownDevices, actions);
             }
           },
         // stateChange: function(id, state){
