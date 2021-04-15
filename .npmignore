@@ -9,3 +9,7 @@ node_modules
 test
 .travis.yml
 appveyor.yml
+
+# CorelDraw files
+*.cdr
+*.bak
