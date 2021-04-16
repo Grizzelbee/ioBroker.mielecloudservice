@@ -327,9 +327,12 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
 
     adapter.log.debug('APISendRequest: Awaiting requested data.');
     try {
+        adapter.log.debug('axios options: [' +JSON.stringify(options) + ']');
         const response = await axios(options);
+        adapter.log.debug('API returned Status: [' + response.status + ']');
+        adapter.log.debug('API returned Information: [' + response.data.message + ']');
         const verifiedData = await verifyData(response);
-        adapter.log.debug('API returned Status: [' + verifiedData.status + ']');
+        adapter.log.debug('verifiedData: [' + verifiedData.data.message + ']');
         return verifiedData.data;
     } catch(error) {
         adapter.log.debug('Given parameters:');
