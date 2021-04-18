@@ -1380,11 +1380,11 @@ module.exports.createStateTargetTemperatureFridge = function(adapter, setup, pat
                 },
                 native: {}
             }, () => {
-                adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value, true);
+                adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value.value, true);
                 adapter.subscribeStates(path + '.ACTIONS.targetTemperatureFridge');
             });
     } else {
-        adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value, true);
+        adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value.value, true);
     }
 }
 
