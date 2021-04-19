@@ -634,7 +634,7 @@ module.exports.createNumber = function(adapter, setup,  path, description, value
     adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
     // get back to calling function if there is no valid value given.
     return new Promise((resolve) => {
-        if ( !value || value === -32768 ) {
+        if ( !value || value === -32768) {
             adapter.log.debug('[createNumber]: invalid value detected. Skipping...');
         }
         if (setup){
@@ -1358,13 +1358,20 @@ module.exports.createStateTargetTemperature = function(adapter, setup, path, val
  * @param adapter {object} link to the adapter instance
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
- * @param value {object} array value to set to the data point
+ * @param value {number} value to set to the data point
  * @param min {number} minimum temp of the freezer
  * @param max {number} maximum temp of the freezer
+ * @param unit {string} temperature unit
  */
-module.exports.createStateTargetTemperatureFridge = function(adapter, setup, path, value, min, max){
-    adapter.log.debug(`createStateTargetTemperatureFridge: Path[${path}], setup: [${setup}], min: [${min}], max: [${max}], value: [${JSON.stringify(value)}]`);
+module.exports.createStateTargetTemperatureFridge = function(adapter, setup, path, value, min, max, unit){
+    adapter.log.debug(`createStateTargetTemperatureFridge: Path[${path}], setup: [${setup}], min: [${min}], max: [${max}], value: [${value}]`);
     if (setup) {
+        switch (unit){
+            case 'Celsius' : unit = '°C';
+                break;
+            case 'Fahrenheit' : unit = '°F';
+                break;
+        }
         mieleTools.createExtendObject(adapter,
             path + '.ACTIONS.targetTemperatureFridge',
             {
@@ -1376,15 +1383,16 @@ module.exports.createStateTargetTemperatureFridge = function(adapter, setup, pat
                     type: 'number',
                     min: min,
                     max: max,
+                    unit : unit,
                     role: 'value.temperature'
                 },
                 native: {}
             }, () => {
-                adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value.value, true);
+                adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value, true);
                 adapter.subscribeStates(path + '.ACTIONS.targetTemperatureFridge');
             });
     } else {
-        adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value.value, true);
+        adapter.setState(path + '.ACTIONS.targetTemperatureFridge', value, true);
     }
 }
 
@@ -1398,13 +1406,20 @@ module.exports.createStateTargetTemperatureFridge = function(adapter, setup, pat
  * @param adapter {object} link to the adapter instance
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
- * @param value {object} array - value to set to the data point
+ * @param value {number} value to set to the data point
  * @param min {number} minimum temp of the freezer
  * @param max {number} maximum temp of the freezer
+ * @param unit {string} temperature unit
  */
-module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, path, value, min, max){
-    adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], min: [${min}], max: [${max}], value: [${ JSON.stringify(value)}]`);
+module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, path, value, min, max, unit){
+    adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], min: [${min}], max: [${max}], value: [${value}]`);
     if (setup) {
+        switch (unit){
+            case 'Celsius' : unit = '°C';
+                break;
+            case 'Fahrenheit' : unit = '°F';
+                break;
+        }
         mieleTools.createExtendObject(adapter,
             path + '.ACTIONS.targetTemperatureFreezer',
             {
@@ -1416,15 +1431,16 @@ module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, pa
                     type: 'number',
                     min: min,
                     max: max,
+                    unit: unit,
                     role: 'value.temperature'
                 },
                 native: {}
             }, () => {
-                adapter.setState(path + '.ACTIONS.targetTemperatureFreezer', value.value, true);
+                adapter.setState(path + '.ACTIONS.targetTemperatureFreezer', value, true);
                 adapter.subscribeStates(path + '.ACTIONS.targetTemperatureFreezer');
             });
     } else {
-        adapter.setState(path + '.ACTIONS.targetTemperatureFreezer', value.value, true);
+        adapter.setState(path + '.ACTIONS.targetTemperatureFreezer', value, true);
     }
 }
 

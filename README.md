@@ -164,6 +164,9 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
+### V4.0.15 (2021-04-19) (Moonglow)
+*  (grizzelbee) Fix: [130](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/130) targetTemp for fridges and freezers will now correctly been updated in action section with current values
+
 ### V4.0.14 (2021-04-18) (Alchemy)
 *  (grizzelbee) Fix: [127](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/127) targetTemp for fridges caused exception and crash of adapter
 
