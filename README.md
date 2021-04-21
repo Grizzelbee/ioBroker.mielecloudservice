@@ -95,7 +95,7 @@ Here is a list of what these raw values stand for:
 
  | Raw value | State|
  |----------|-------|
-|1| OFF|
+ |1|   OFF|
  |2|   STAND_BY|
  |3|   PROGRAMMED|
  |4|   PROGRAMMED_WAITING_TO_START|
@@ -136,33 +136,46 @@ Here is a list of what these raw values stand for:
  |5 |   Hand iron level 2|
  |6 |   Machine iron|
 
-### ProgramBezeichnung
+### Programmbezeichnung
 
-| Raw value | State| avaliable for |
-|----------|-------|---------------|
-|  1 | "Baumwolle" / "Cotton"  | Washing Machine |
-| 23 | "Oberhemden" /  | Washing Machine |
-| 27 | "Imprägnieren"  /     | Washing Machine |
-| 48 | "Flusen ausspülen"| Washer Dryer |
-| 50 | "Dunkle Wäsche" / | Washer Dryer |
-| 122 | "Express 20" / | Washer Dryer |
-| 123 | "Dunkles / Jeans"  |   Washing Machine |
+| Raw value | State                   | available for   |
+|-----------|-------------------------|-----------------|
+|         1 | "Baumwolle" / "Cotton"  | Washing Machine |
+|         3 | "Pflegeleicht"          | Washing Machine |
+|         4 | "Feinwäsche"            | Washing Machine |
+|         8 | "Wolle"                 | Washing Machine |
+|         9 | "Seide"                 | Washing Machine |
+|        21 | "Pumpen/Schleudern"     | Washing Machine |
+|        23 | "Oberhemden"            | Washing Machine |
+|        27 | "Imprägnieren"          | Washing Machine |
+|        29 | "Sportwäsche"           | Washing Machine |
+|        31 | "Automatic plus"        | Washing Machine |
+|        37 | "Outdoor"               | Washing Machine |
+|        48 | "Flusen ausspülen"      | Washer Dryer    |
+|        50 | "Dunkle Wäsche"         | Washer Dryer    |
+|        52 | "Nur Spülen/Stärken"    | Washing Machine |
+|       122 | "Express 20"            | Washer Dryer    |
+|       123 | "Dunkles/Jeans"         | Washing Machine |
 
 ### ProgramPhase
 
-| Raw value | State| avaliable for |
+| Raw value | State| available for |
 |----------|-------|---------------|
 |260 | "Waschen" / "Washing"  | Washing Machine |
 |261 | "Spülen"  / "Rinse"    | Washing Machine |
-|266 | "Schleudern" / "Spinning"| Washing Machine |
-|267 | "Knitterschutz" / ""| Washing Machine |
-|268 |  "Ende" / "End"| Most devices |
+|265 | "Pumpen" | Washing Machine |
+|266 | "Schleudern" / "Spinning" | Washing Machine |
+|267 | "Knitterschutz" / "" | Washing Machine |
+|268 | "Ende" / "End" | Most devices |
 |256 | "Vorbügeln" | Washing Machine |
 |514 | "Trocknen" | Washer Dryer |
 |519 | "Abkühlen" | Washer Dryer |
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
+
+### V4.0.16 (2021-04-21) (Black Orchid)
+*  (grizzelbee) Fix: Units for EcoFeedback will be shown now, even machine is not running during setup
 
 ### V4.0.15 (2021-04-19) (Moonglow)
 *  (grizzelbee) Fix: [130](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/130) targetTemp for fridges and freezers will now correctly been updated in action section with current values

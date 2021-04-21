@@ -1530,7 +1530,7 @@ module.exports.createStateEcoFeedbackWater = function(adapter, setup, path, ecoF
                       path + '.EcoFeedback.currentWaterConsumption',
                  'The amount of water used by the current running program up to the present moment.',
                             (ecoFeedback===null? 0: ecoFeedback.currentWaterConsumption.value.valueOf()*1),
-                            (ecoFeedback===null? 0: ecoFeedback.currentWaterConsumption.unit.valueOf()),
+                            ecoFeedback===null? 'l': ecoFeedback.currentWaterConsumption.unit,
                       'value');
     mieleTools.createNumber(adapter,
                             setup,
@@ -1560,7 +1560,7 @@ module.exports.createStateEcoFeedbackEnergy = function(adapter, setup, path, eco
         path + '.EcoFeedback.currentEnergyConsumption',
         'The amount of energy used by the current running program up to the present moment.',
         (ecoFeedback===null? 0: ecoFeedback.currentEnergyConsumption.value.valueOf()*1),
-        (ecoFeedback===null? 0: ecoFeedback.currentEnergyConsumption.unit.valueOf()),
+        ecoFeedback===null? 'kWh': ecoFeedback.currentEnergyConsumption.unit,
         'value.power.consumption'
     );
     mieleTools.createNumber(adapter,

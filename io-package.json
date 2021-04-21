@@ -1,19 +1,19 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "4.0.15",
+        "version": "4.0.16",
         "news": {
-            "4.0.15": {
-                "en": "Bugfix Release - see changelog for details!",
-                "de": "Bugfix Release - Details siehe Changelog!",
-                "ru": "Выпуск исправления ошибок - подробности см. В журнале изменений!",
-                "pt": "Versão de correção de bug - veja o changelog para detalhes!",
-                "nl": "Bugfix Release - zie changelog voor details!",
-                "fr": "Bugfix Release - voir le journal des modifications pour plus de détails!",
-                "it": "Bugfix Release - vedi changelog per i dettagli!",
-                "es": "Versión de corrección de errores: consulte el registro de cambios para obtener más detalles.",
-                "pl": "Wydanie poprawek - szczegóły w dzienniku zmian!",
-                "zh-cn": "错误修正版本-有关详细信息，请参见更改日志！"
+            "4.0.16": {
+                "en": "Bugfix Release - see full changelog since your last version for details!",
+                "de": "Bugfix Release - Bitte sehen Sie sich das vollständige Änderungsprotokoll seit Ihrer aktuell eingesetzten Version an!",
+                "ru": "Выпуск Bugfix - подробности смотрите в полном журнале изменений с момента выхода последней версии!",
+                "pt": "Versão de correção de bug - veja o changelog completo desde sua última versão para detalhes!",
+                "nl": "Bugfix Release - zie het volledige log met wijzigingen sinds uw laatste versie voor details!",
+                "fr": "Bugfix Release - voir le journal des modifications complet depuis votre dernière version pour plus de détails!",
+                "it": "Rilascio bugfix: guarda il log delle modifiche completo dall'ultima versione per i dettagli!",
+                "es": "Versión de corrección de errores: consulte el registro de cambios completo desde su última versión para obtener más detalles.",
+                "pl": "Wydanie poprawek - zobacz pełną listę zmian od ostatniej wersji, aby uzyskać szczegółowe informacje!",
+                "zh-cn": "错误修正版本-自上一版本以来，查看完整的变更日志以获取详细信息！"
             },
             "4.0.0": {
                 "en": "Major Release - Update with care and read the change log!",
