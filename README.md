@@ -164,6 +164,9 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
+### V4.0.16 (2021-04-21) (Black Orchid)
+*  (grizzelbee) Fix: Units for EcoFeedback will be shown now, even machine is not running during setup
+
 ### V4.0.15 (2021-04-19) (Moonglow)
 *  (grizzelbee) Fix: [130](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/130) targetTemp for fridges and freezers will now correctly been updated in action section with current values
 
