@@ -17,7 +17,7 @@ Regardless if they are connected directly via Wi-Fi or XGW3000 Gateway. It imple
 ## sentry.io
 This adapter uses sentry.io to collect details on crashes and report it automated to the author. The [ioBroker.sentry](https://github.com/ioBroker/plugin-sentry) 
 plugin is used for it. Please refer to the [plugin homepage](https://github.com/ioBroker/plugin-sentry) for detailed information
-on what the plugin does, which information is collected and how to disable it, if don't like to support the author with 
+on what the plugin does, which information is collected and how to disable it, if you don't like to support the author with 
 you're information on crashes.
 
 
