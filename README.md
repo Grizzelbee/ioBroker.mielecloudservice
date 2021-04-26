@@ -14,6 +14,13 @@
 This adapter is for retrieving information about all your Miele@Home devices from the official Miele 3rd-party API. 
 Regardless if they are connected directly via Wi-Fi or XGW3000 Gateway. It implements the **Miele 3rd Party API V1.0.4**
 
+## sentry.io
+This adapter uses sentry.io to collect details on crashes and report it automated to the author. The [ioBroker.sentry](https://github.com/ioBroker/plugin-sentry) 
+plugin is used for it. Please refer to the [plugin homepage](https://github.com/ioBroker/plugin-sentry) for detailed information
+on what the plugin does, which information is collected and how to disable it, if don't like to support the author with 
+you're information on crashes.
+
+
 ## Prerequisites
 * Miele@Home User (Smartphone App)
 * Miele@Home Password (Smartphone App)
