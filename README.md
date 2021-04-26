@@ -174,6 +174,10 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
+### V4.0.17 (2021-04-25) (Black Orchid)
+* (grizzelbee) New: Added ioBroker sentry plugin to report issues automatically
+* (grizzelbee) New: Added Light-Switch to Tumble Dryers and Dish washers
+
 ### V4.0.16 (2021-04-21) (Black Orchid)
 * (grizzelbee) Fix: Units for EcoFeedback will be shown now, even machine is not running during setup
 * (stan23)     New: added new program states
