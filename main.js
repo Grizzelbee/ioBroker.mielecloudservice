@@ -406,6 +406,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 2: // 2 = TUMBLE DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -428,6 +429,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 24: // 24 = WASHER DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -452,6 +454,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 7: // 7 = DISHWASHER*
             case 8: // 8 = DISHWASHER SEMI-PROF
@@ -476,6 +479,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 12: // 12 = OVEN*
                 await mieleTools.createStateProgramID(adapter, setup, `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
@@ -494,7 +498,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
                 // Actions
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
-                await mieleTools.addLightSwitch(adapter, path, actions);
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 13: // 13 = OVEN Microwave*
             case 15: // 15 = STEAM OVEN*
@@ -518,7 +522,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
                 // Actions
                 await mieleTools.addPowerSwitch(adapter, path, actions);
-                await mieleTools.addLightSwitch(adapter, path, actions);
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
             case 14: // 14 = HOB HIGHLIGHT*
@@ -534,7 +538,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
                 // Actions
                 await mieleTools.addPowerSwitch(adapter, path, actions);
-                await mieleTools.addLightSwitch(adapter, path, actions);
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 18: // 18 = HOOD*
                 // States
@@ -545,7 +549,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateVentilationStep(adapter, setup, path, currentDeviceState.ventilationStep.value_raw);
                 // Actions
                 await mieleTools.addPowerSwitch(adapter, path, actions);
-                await mieleTools.addLightSwitch(adapter, path, actions);
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 await mieleTools.addVentilationStepSwitch(adapter, setup, path);
                 await mieleTools.addColorsAction(adapter, setup, path);
@@ -597,7 +601,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
                 await mieleTools.createStateTargetTemperatureFridge(adapter, setup, path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
                 // Actions
-                await mieleTools.addLightSwitch(adapter, path, actions);
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 28: // 28 = HOB GAS
                 break;
@@ -621,7 +625,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateTargetTemperatureFreezer(adapter, setup, path, currentDeviceState.targetTemperature[1].value_localized, actions.targetTemperature[1].min, actions.targetTemperature[1].max, currentDeviceState.targetTemperature[1].unit);
                 // Actions
                 await mieleTools.addSuperFreezingSwitch(adapter, setup, path, actions);
-                await mieleTools.addLightSwitch(adapter, path, actions);
+                await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 await mieleTools.addModeSwitch(adapter, setup, path, actions);
                 break;
             case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*

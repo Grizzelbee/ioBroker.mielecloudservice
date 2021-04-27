@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "4.0.16",
+        "version": "4.0.17",
         "news": {
-            "4.0.16": {
+            "4.0.17": {
                 "en": "Bugfix Release - see full changelog since your last version for details!",
                 "de": "Bugfix Release - Bitte sehen Sie sich das vollständige Änderungsprotokoll seit Ihrer aktuell eingesetzten Version an!",
                 "ru": "Выпуск Bugfix - подробности смотрите в полном журнале изменений с момента выхода последней версии!",
@@ -187,7 +187,12 @@
         ],
         "license": "MIT",
         "messagebox": true,
-        "subscribe": "messagebox"
+        "subscribe": "messagebox",
+        "plugins": {
+            "sentry": {
+                "dsn": "https://bb362bebab074bcd8b8f821a070f6662@o505019.ingest.sentry.io/5735758"
+            }
+        }
     },
     "native": {
         "Client_secret": "",

@@ -153,13 +153,13 @@ async function getLightState(adapter, device, actions) {
     return new Promise((resolve) => {
         if ( actions.light.includes(mieleConst.LIGHT_ON) ){
             adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_On is permitted!`);
-            resolve('Off');
+            resolve(2);
         } else if ( actions.light.includes(mieleConst.LIGHT_OFF) ) {
             adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_Off is permitted!`);
-            resolve('On');
+            resolve(1);
         } else {
             adapter.log.debug(`[checkLightAction]: Device [${device}]: None is permitted!`);
-            resolve('None');
+            resolve(0);
         }
     })
 }
@@ -174,9 +174,10 @@ async function getLightState(adapter, device, actions) {
  * @param adapter {object} link to the adapter instance
  * @param path {string} path where the action button is going to be created
  * @param actions {object} JSON containing the currently permitted actions
+ * @param value {number} current value of this state - not the abilities of the switch
  *
  */
-module.exports.addLightSwitch = async function(adapter, path, actions){
+module.exports.addLightSwitch = async function(adapter, path, actions, value){
     adapter.log.debug('addLightSwitch: Path['+ path +']');
     const state = await getLightState(adapter, path, actions);
     adapter.log.debug('addLightSwitch: result from getLightState: ['+ state +']');
@@ -184,16 +185,16 @@ module.exports.addLightSwitch = async function(adapter, path, actions){
                 type: 'state',
                 common: {"name": 'Light switch of the device',
                     "read": true,
-                    "write": state !== 'None',
+                    "write": state !== 0,
                     "role": 'switch',
                     "type": 'string',
-                    "states":{'On':'On', 'Off':'Off', 'None':'None'}
+                    "states":{0:'None', 1:'On', 2:'Off'}
                 },
                 native: {}
             }
             , () => {
                 adapter.subscribeStates(path + '.ACTIONS.Light');
-                adapter.setState(path + '.ACTIONS.Light', state, true);
+                adapter.setState(path + '.ACTIONS.Light', (value !== null? value : state), true);
             });
 }
 
