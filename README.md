@@ -181,9 +181,15 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
-### V4.0.17 (2021-04-25) (Black Orchid)
+### V4.0.17 (2021-04-27) (Ghost in the moon)
 * (grizzelbee) New: Added ioBroker sentry plugin to report issues automatically
-* (grizzelbee) New: Added Light-Switch to Tumble Dryers and Dish washers
+* (grizzelbee) New: Added Light-Switch to washing machines, Tumble Dryers, Washer dryers and Dish washers
+
+> **Hint:** 
+> The behavior of the light-switch has slightly changed with this release. It not only tests the action capabilities of 
+> the device but also shows the state of the light state delivered by the API. If no actions are reported by the API, the 
+> switch will be without function and only show the current state. If actions have been reported the switch will work as you expect.
+> If your device reports no light state and no actions the switch will show 'None' and won't do anything.
 
 ### V4.0.16 (2021-04-21) (Black Orchid)
 * (grizzelbee) Fix: Units for EcoFeedback will be shown now, even machine is not running during setup
