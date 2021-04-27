@@ -184,6 +184,7 @@ Here is a list of what these raw values stand for:
 ### V4.0.17 (2021-04-27) (Ghost in the moon)
 * (grizzelbee) New: Added ioBroker sentry plugin to report issues automatically
 * (grizzelbee) New: Added Light-Switch to washing machines, Tumble Dryers, Washer dryers and Dish washers
+* (grizzelbee) Upd: Updated dependencies
 
 > **Hint:** 
 > The behavior of the light-switch has slightly changed with this release. It not only tests the action capabilities of 
