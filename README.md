@@ -181,6 +181,9 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
+### V4.0.18 (2021-04-28) (Ghostlights)
+* (grizzelbee) Fix: Fixed light switch bug causing an exception when switching 
+
 ### V4.0.17 (2021-04-27) (Ghost in the moon)
 * (grizzelbee) New: Added ioBroker sentry plugin to report issues automatically
 * (grizzelbee) New: Added Light-Switch to washing machines, Tumble Dryers, Washer dryers and Dish washers
