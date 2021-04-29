@@ -325,7 +325,8 @@ async function parseMieleDevice(mieleDevice, setup, API_Id){
 async function addMieleDevice(path, mieleDevice, setup){
     let newPath = path + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber;
     adapter.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
-
+    let icon = 'icons/0_genericappiance.svg';
+    if ( mieleDevice.ident.deviceIdentLabel.fabNumber  && _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].icon) icon=_knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].icon;
     mieleTools.createExtendObject(adapter, newPath, {
         type: 'device',
         common: {name:   (mieleDevice.ident.deviceName === ''? mieleDevice.ident.type.value_localized: mieleDevice.ident.deviceName),
