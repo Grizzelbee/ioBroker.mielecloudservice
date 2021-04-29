@@ -153,10 +153,10 @@ async function getLightState(adapter, device, actions) {
     return new Promise((resolve) => {
         if ( actions.light.includes(mieleConst.LIGHT_ON) ){
             adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_On is permitted!`);
-            resolve(2);
+            resolve(mieleConst.LIGHT_OFF);
         } else if ( actions.light.includes(mieleConst.LIGHT_OFF) ) {
             adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_Off is permitted!`);
-            resolve(1);
+            resolve(mieleConst.LIGHT_ON);
         } else {
             adapter.log.debug(`[checkLightAction]: Device [${device}]: None is permitted!`);
             resolve(0);

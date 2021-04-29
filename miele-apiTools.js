@@ -195,9 +195,9 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'colors': currentAction = {'colors':value};
             break;
         case 'Light':
-            if (value === 'On'){
+            if (value === mieleConst.LIGHT_ON){
                 currentAction = {'light':mieleConst.LIGHT_ON};
-            } else if (value === 'Off'){
+            } else if (value === mieleConst.LIGHT_OFF){
                 currentAction = {'light':mieleConst.LIGHT_OFF};
             }
             break;
