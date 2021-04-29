@@ -181,6 +181,10 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
+### V4.0.19 (2021-04-29) (The scarecrow)
+* (grizzelbee) Fix: Fixed light switch bug causing an exception when switching - 2nd attempt
+* (grizzelbee) Fix: Fixed No-Icon Bug when appliance is unknown
+
 ### V4.0.18 (2021-04-28) (Ghostlights)
 * (grizzelbee) Fix: Fixed light switch bug causing an exception when switching 
 

@@ -195,9 +195,12 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'colors': currentAction = {'colors':value};
             break;
         case 'Light':
-            if (value === mieleConst.LIGHT_ON){
+            if (Number.parseInt(value) === 0){
+                adapter.log.warn('You cannot switch light to state "none". That\'s senseless.');
+                return;
+            } else if (Number.parseInt(value) === mieleConst.LIGHT_ON){
                 currentAction = {'light':mieleConst.LIGHT_ON};
-            } else if (value === mieleConst.LIGHT_OFF){
+            } else if (Number.parseInt(value) === mieleConst.LIGHT_OFF){
                 currentAction = {'light':mieleConst.LIGHT_OFF};
             }
             break;
