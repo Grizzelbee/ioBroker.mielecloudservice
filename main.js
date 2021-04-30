@@ -73,7 +73,7 @@ function startadapter(options) {
                 adapter.log.debug(`stateChange: DeviceId [${deviceId}], requested action [${action}], state [${state.val}]`);
                 const actions = await mieleAPITools.getPermittedActions(adapter, _auth,  _knownDevices[deviceId].API_Id );
                 adapter.log.debug(`stateChange: permitted actions for device [${deviceId}]->[${JSON.stringify(actions)}]`);
-                await mieleAPITools.APIStartAction(adapter, _auth, id, action, state.val, false, _knownDevices, actions);
+                await mieleAPITools.APIStartAction(adapter, _auth, id, action, state.val, false, _knownDevices);
             }
           },
         // stateChange: function(id, state){
@@ -400,7 +400,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
                 await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
-                await mieleTools.createStateSpinningSpeed(adapter, setup, `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
+                await mieleTools.createStateSpinAPIStartActionningSpeed(adapter, setup, `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // actions
