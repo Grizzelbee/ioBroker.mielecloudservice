@@ -39,7 +39,7 @@ function startadapter(options) {
                 }
                 adapter.unsubscribeObjects('*');
                 adapter.unsubscribeStates('*');
-                adapter.setState('info.connection', false);
+                adapter.setState('info.connection', false, true);
                 if (_auth.refresh_token) {
                     await mieleAPITools.APILogOff(adapter, _auth, "refresh_token")
                 }
@@ -108,7 +108,7 @@ function startadapter(options) {
                         });
                 } else {
                     adapter.log.warn('Adapter config is invalid. Please fix.');
-                    adapter.setState('info.connection', false);
+                    adapter.setState('info.connection', false, true);
                     adapter.terminate('Invalid Configuration.', 11);
                 }
         }
@@ -332,7 +332,7 @@ async function addMieleDevice(path, mieleDevice, setup){
         common: {name:   (mieleDevice.ident.deviceName === ''? mieleDevice.ident.type.value_localized: mieleDevice.ident.deviceName),
             read: true,
             write: false,
-            icon: _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].icon
+            icon: icon
         },
         native: {}
     }, null);
@@ -681,7 +681,7 @@ async function main() {
         }
     } catch(err) {
         adapter.log.error('[main] :' + err.message + ', Stacktrace:' + err.stack);
-        adapter.setState('info.connection', false);
+        adapter.setState('info.connection', false, true);
     }
 }//End Function main
 
