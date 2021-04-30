@@ -187,7 +187,7 @@ module.exports.addLightSwitch = async function(adapter, path, actions, value){
                     "read": true,
                     "write": state !== 0,
                     "role": 'switch',
-                    "type": 'string',
+                    "type": 'number',
                     "states":{0:'None', 1:'On', 2:'Off'}
                 },
                 native: {}
