@@ -48,7 +48,7 @@ module.exports.APIGetAccessToken = async function (adapter) {
         adapter.expiryDate = new Date();
         adapter.expiryDate.setSeconds(adapter.expiryDate.getSeconds() + auth.hasOwnProperty('expires_in') ? auth.expires_in : 0);
         adapter.log.info('Access-Token expires at:  [' + adapter.expiryDate.toString() + ']');
-        adapter.setState('info.connection', true);
+        adapter.setState('info.connection', true, true);
         return auth;
     } catch (error) {
         adapter.log.error('OAuth2 returned an error during first login!');
@@ -181,10 +181,9 @@ module.exports.getPermittedActions = async function (adapter, auth, deviceId){
  * @param value {string} the value of the action to set
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param knownDevices {object} Array of known devices with a reference from their serial to the API_Id
- * @param actions {object} JSON structure with all currently permitted actions for the given device
  *
  */
-module.exports.APIStartAction = async function(adapter, auth, path, action, value, setup, knownDevices, actions) {
+module.exports.APIStartAction = async function(adapter, auth, path, action, value, setup, knownDevices) {
     let currentAction;
     let paths = path.split('.');    // transform into array
     paths.pop();                    // remove last element of path
@@ -197,6 +196,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'Light':
             if (Number.parseInt(value) === 0){
                 adapter.log.warn('You cannot switch light to state "none". That\'s senseless.');
+                adapter.setState(currentPath + '.Action_Information', 'You cannot switch light to state "none". That\'s senseless.', true);
                 return;
             } else if (Number.parseInt(value) === mieleConst.LIGHT_ON){
                 currentAction = {'light':mieleConst.LIGHT_ON};
