@@ -257,7 +257,7 @@ function getDeviceObj(deviceTypeID){
             break;
     }
     mieleTools.createExtendObject(adapter, deviceObj.deviceFolder, {
-        type: 'channel',
+        type: 'folder',
         common: deviceObj,
         native: {}
     }, null);
