@@ -187,7 +187,7 @@ module.exports.addLightSwitch = async function(adapter, path, actions, value){
                     "read": true,
                     "write": state !== 0,
                     "role": 'switch',
-                    "type": 'string',
+                    "type": 'number',
                     "states":{0:'None', 1:'On', 2:'Off'}
                 },
                 native: {}
@@ -1583,7 +1583,7 @@ module.exports.createStateEcoFeedbackEnergy = function(adapter, setup, path, eco
  * @param adapter {object} link to the adapter instance
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
- * @param value {number} value to set to the data point
+ * @param value {string} value to set to the data point
  * @param unit {string} unit the value is in
  */
 module.exports.createStateSpinningSpeed = function(adapter, setup, path, value, unit) {
@@ -1592,7 +1592,7 @@ module.exports.createStateSpinningSpeed = function(adapter, setup, path, value, 
         setup,
         path,
         'Spinning speed of a washing machine.',
-        value,
+        Number.parseInt(value),
         unit,
         'value');
 }

@@ -39,7 +39,7 @@ function startadapter(options) {
                 }
                 adapter.unsubscribeObjects('*');
                 adapter.unsubscribeStates('*');
-                adapter.setState('info.connection', false);
+                adapter.setState('info.connection', false, true);
                 if (_auth.refresh_token) {
                     await mieleAPITools.APILogOff(adapter, _auth, "refresh_token")
                 }
@@ -73,7 +73,7 @@ function startadapter(options) {
                 adapter.log.debug(`stateChange: DeviceId [${deviceId}], requested action [${action}], state [${state.val}]`);
                 const actions = await mieleAPITools.getPermittedActions(adapter, _auth,  _knownDevices[deviceId].API_Id );
                 adapter.log.debug(`stateChange: permitted actions for device [${deviceId}]->[${JSON.stringify(actions)}]`);
-                await mieleAPITools.APIStartAction(adapter, _auth, id, action, state.val, false, _knownDevices, actions);
+                await mieleAPITools.APIStartAction(adapter, _auth, id, action, state.val, false, _knownDevices);
             }
           },
         // stateChange: function(id, state){
@@ -108,7 +108,7 @@ function startadapter(options) {
                         });
                 } else {
                     adapter.log.warn('Adapter config is invalid. Please fix.');
-                    adapter.setState('info.connection', false);
+                    adapter.setState('info.connection', false, true);
                     adapter.terminate('Invalid Configuration.', 11);
                 }
         }
@@ -257,7 +257,7 @@ function getDeviceObj(deviceTypeID){
             break;
     }
     mieleTools.createExtendObject(adapter, deviceObj.deviceFolder, {
-        type: 'channel',
+        type: 'folder',
         common: deviceObj,
         native: {}
     }, null);
@@ -332,7 +332,7 @@ async function addMieleDevice(path, mieleDevice, setup){
         common: {name:   (mieleDevice.ident.deviceName === ''? mieleDevice.ident.type.value_localized: mieleDevice.ident.deviceName),
             read: true,
             write: false,
-            icon: _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].icon
+            icon: icon
         },
         native: {}
     }, null);
@@ -400,7 +400,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
                 await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
-                await mieleTools.createStateSpinningSpeed(adapter, setup, `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
+                await mieleTools.createStateSpinAPIStartActionningSpeed(adapter, setup, `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
                 // actions
@@ -681,7 +681,7 @@ async function main() {
         }
     } catch(err) {
         adapter.log.error('[main] :' + err.message + ', Stacktrace:' + err.stack);
-        adapter.setState('info.connection', false);
+        adapter.setState('info.connection', false, true);
     }
 }//End Function main
 
