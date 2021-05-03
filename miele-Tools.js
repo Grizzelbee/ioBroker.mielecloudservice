@@ -694,7 +694,7 @@ module.exports.createArray = function(adapter, setup, path, description, value){
         adapter.log.debug('createArray: Path:['   + MyPath  + ']');
         adapter.log.debug('createArray:  value:[' + JSON.stringify(value)   + ']');
         adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
-        mieleTools.createNumber(adapter, setup, MyPath, description, value[n].value_localized, value[n].unit, 'value.temperature')
+        mieleTools.createNumber(adapter, setup, MyPath, description, Number.parseInt(value[n].value_localized), value[n].unit, 'value.temperature')
     }
 }
 
