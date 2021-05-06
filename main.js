@@ -403,6 +403,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateSpinningSpeed(adapter, setup, `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
+                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
                 // actions
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
@@ -426,6 +427,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
+                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
                 // Actions
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));

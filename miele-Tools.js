@@ -691,10 +691,14 @@ module.exports.createArray = function(adapter, setup, path, description, value){
         if (items > 1){
             MyPath = path + '_' + n;
         }
-        adapter.log.debug('createArray: Path:['   + MyPath  + ']');
-        adapter.log.debug('createArray:  value:[' + JSON.stringify(value)   + ']');
-        adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
-        mieleTools.createNumber(adapter, setup, MyPath, description, Number.parseInt(value[n].value_localized), value[n].unit, 'value.temperature')
+        if (value[n].value_localized !== null){
+            adapter.log.debug('createArray: Path:['   + MyPath  + ']');
+            adapter.log.debug('createArray:  value:[' + JSON.stringify(value)   + ']');
+            adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
+            mieleTools.createNumber(adapter, setup, MyPath, description, Number.parseInt(value[n].value_localized), value[n].unit, 'value.temperature')
+        } else {
+            adapter.log.debug('createArray: Invalid values detected. Skipped creating this data point.');
+        }
     }
 }
 
