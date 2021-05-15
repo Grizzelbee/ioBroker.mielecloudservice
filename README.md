@@ -181,6 +181,10 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
+### V4.1.0 (2021-05-15) (Twisted mind)
+* (grizzelbee) New: [149](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/149) Adding support (Start, Stop, Pause) for Miele Scout RX2 vacuum cleaner robots
+
+
 ### V4.0.22 (2021-05-06) (Twisted mind)
 * (grizzelbee) Fix: [142](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/142) Reintroduced TargetTemp for washing machines
 

@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "4.0.22",
+        "version": "4.1.0",
         "news": {
+            "4.1.0": {
+                "en": "Adding support for Miele RX2 vacuum cleaner robots (Start, Stop, Pause).",
+                "de": "Unterstützung für Miele RX2-Staubsaugerroboter hinzugefügt (Start, Stopp, Pause).",
+                "ru": "Добавлена ​​поддержка роботов-пылесосов Miele RX2 (Start, Stop, Pause).",
+                "pt": "Adicionando suporte para robôs de aspirador de pó Miele RX2 (Iniciar, Parar, Pausar).",
+                "nl": "Ondersteuning toevoegen voor Miele RX2-stofzuigerrobots (Start, Stop, Pause).",
+                "fr": "Ajout de la prise en charge des robots aspirateurs Miele RX2 (Start, Stop, Pause).",
+                "it": "Aggiunta del supporto per i robot aspirapolvere Miele RX2 (Start, Stop, Pause).",
+                "es": "Adición de soporte para robots aspiradores Miele RX2 (Inicio, Detención, Pausa).",
+                "pl": "Dodanie obsługi robotów odkurzających Miele RX2 (Start, Stop, Pauza).",
+                "zh-cn": "增加了对Miele RX2吸尘器机器人的支持（启动，停止，暂停）。"
+            },
             "4.0.22": {
                 "en": "Bugfix Release - see full changelog since your last version for details!",
                 "de": "Bugfix Release - Bitte sehen Sie sich das vollständige Änderungsprotokoll seit Ihrer aktuell eingesetzten Version an!",
