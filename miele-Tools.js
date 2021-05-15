@@ -501,6 +501,53 @@ module.exports.addStopButton = function(adapter, setup, path, actionState){
 
 
 /**
+ * Function addPauseButton
+ *
+ * Adds a pause button to the given device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param path {string} path where the action button is going to be created
+ * @param actionState {boolean} permission state of the action
+ *
+ */
+module.exports.addPauseButton = function(adapter, setup, path, actionState){
+    adapter.log.debug('addPauseButton: Path['+ path +']');
+    if (setup) {
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.Pause_Button_Active', {
+            type: 'state',
+            common: {"name": 'True if the pause action can be executed, false if not.',
+                "read": true,
+                "write": false,
+                "role": 'state',
+                "type": 'boolean'
+            },
+            native: {}
+        }, () => {
+            adapter.setState(path + '.ACTIONS.Pause_Button_Active', actionState, true)
+        });
+
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.Pause' , {
+                type: 'state',
+                common: {"name": 'Pauses the device',
+                    "read": true,
+                    "write": true,
+                    "role": 'button',
+                    "type": 'boolean'
+                },
+                native: {buttonType:'button.pause'}
+            }
+            , () => {
+                adapter.subscribeStates(path + '.ACTIONS.Pause');
+            });
+    } else {
+        adapter.setState(path + '.ACTIONS.Pause_Button_Active', actionState, true);
+    }
+}
+
+
+
+/**
  * Function createBool
  *
  * Adds a boolean data point to the device tree

@@ -635,6 +635,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 mieleTools.createStateBatteryLevel(adapter, setup, path, currentDeviceState.batteryLevel);
                 // Actions
                 mieleTools.addProgramIdAction(adapter, setup, path, currentDeviceState.programId);
+                await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
+                await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
             case 25: // 25 = DISH WARMER*
                 await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
