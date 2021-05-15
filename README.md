@@ -168,6 +168,7 @@ Here is a list of what these raw values stand for:
 
 | Raw value | State| available for |
 |----------|-------|---------------|
+|258 | "Einweichen"           | Washing Machine | 
 |260 | "Waschen" / "Washing"  | Washing Machine |
 |261 | "Spülen"  / "Rinse"    | Washing Machine |
 |265 | "Pumpen" | Washing Machine |
