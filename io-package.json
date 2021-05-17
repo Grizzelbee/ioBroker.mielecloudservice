@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "4.1.0",
+        "version": "4.2.0",
         "news": {
+            "4.2.0": {
+                "en": "Adding Pause action to dish washers",
+                "de": "Hinzufügen der Pause-Aktion zu Geschirrspülern",
+                "ru": "Добавление действия паузы в посудомоечные машины",
+                "pt": "Adicionar ação de pausa às máquinas de lavar louça",
+                "nl": "Een pauze-actie toevoegen aan vaatwassers",
+                "fr": "Ajout d'une action Pause aux lave-vaisselle",
+                "it": "Aggiunta dell'azione Pausa alle lavastoviglie",
+                "es": "Adición de la acción de pausa a los lavavajillas",
+                "pl": "Dodanie akcji Pauza do zmywarek",
+                "zh-cn": "为洗碗机增加暂停功能"
+            },
             "4.1.0": {
                 "en": "Adding support for Miele RX2 vacuum cleaner robots (Start, Stop, Pause).",
                 "de": "Unterstützung für Miele RX2-Staubsaugerroboter hinzugefügt (Start, Stopp, Pause).",

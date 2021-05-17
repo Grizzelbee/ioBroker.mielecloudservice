@@ -482,6 +482,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                await mieleTools.addPauseButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.PAUSE));
                 await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 12: // 12 = OVEN*
@@ -637,6 +638,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 mieleTools.addProgramIdAction(adapter, setup, path, currentDeviceState.programId);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                await mieleTools.addPauseButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.PAUSE));
                 break;
             case 25: // 25 = DISH WARMER*
                 await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
