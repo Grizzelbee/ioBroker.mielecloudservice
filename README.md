@@ -182,6 +182,10 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
+### V4.3.0 (2021-05-28) ()
+* (grizzelbee) New: [154](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/154) Reintroduced TargetTemp to washer dryers
+
+
 ### V4.2.0 (2021-05-17) (A new Dimension)
 * (grizzelbee) New: Adding Pause action to dish washers
 
