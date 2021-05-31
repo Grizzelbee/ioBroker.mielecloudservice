@@ -1,8 +1,10 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "4.2.0",
+        "version": "4.3.0",
         "news": {
+            "4.3.0": {
+                "en": "Switched from data polling to server sent events"},
             "4.2.0": {
                 "en": "Adding Pause action to dish washers",
                 "de": "Hinzufügen der Pause-Aktion zu Geschirrspülern",
@@ -202,7 +204,7 @@
         "loglevel": "info",
         "type": "household",
         "connectionType": "cloud",
-        "dataSource": "poll",
+        "dataSource": "push",
         "dependencies": [
             {
                 "js-controller": ">=3.0.0",

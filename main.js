@@ -24,6 +24,7 @@ let _auth;
 let _pollTimeout;
 let _expiryDate;
 let _knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
+let _sse;
 
 function startadapter(options) {
     options = options || {};
@@ -49,6 +50,7 @@ function startadapter(options) {
                 _auth = undefined;
                 _pollTimeout = null;
                 _expiryDate = null;
+                _sse.close();
                 adapter.log.info('Unloading MieleCloudService...');
                 callback();
             } catch (e) {
@@ -271,8 +273,9 @@ function getDeviceObj(deviceTypeID){
  *
  * splits the json data received from cloud API into separate device
  *
- * @param devices {object} the whole JSON which needs to be split into devices
- * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param {object} devices The whole JSON which needs to be split into devices
+ * @param {string} devices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
+ * @param {boolean} setup  indicator whether the devices need to setup or only states are to be updated
  */
 async function splitMieleDevices(devices, setup){
     // Splits the data-package returned by the API into single devices
@@ -295,9 +298,12 @@ async function splitMieleDevices(devices, setup){
  *
  * parses the JSON of each single device and creates the needed states
  *
- * @param mieleDevice {object} the JSON for a single device
- * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
- * @param API_Id {string} the API-ID for the current device
+ * @param {object} mieleDevice the JSON for a single device
+ * @param {string} mieleDevice.ident.type.value_localized
+ * @param {number} mieleDevice.ident.type.value_raw
+ * @param {string} mieleDevice.ident.deviceIdentLabel.fabNumber SerialNumber of the device
+ * @param {boolean} setup  indicator whether the devices need to setup or only states are to be updated
+ * @param {string} API_Id  the API-ID for the current device
  */
 async function parseMieleDevice(mieleDevice, setup, API_Id){
     adapter.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
@@ -670,16 +676,40 @@ async function main() {
             const result = await mieleAPITools.refreshMieleData( adapter, _auth );
             await splitMieleDevices(result, true);
             // start refresh scheduler with interval from adapters config
-            adapter.log.info(`Starting poll timer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
-            try {
-                _pollTimeout= setTimeout(async function schedule() {
-                    adapter.log.debug("Updating device states (polling API scheduled).");
-                    // don't setup devices again - only set states
-                    const result = await mieleAPITools.refreshMieleData( adapter, _auth );
-                    await splitMieleDevices(result, false);
-                    _pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
-                } , 10);
+            adapter.log.info(`Registering for appliance events at Miele API.`);
+            _sse = mieleAPITools.APIregisterForEvents(adapter, _auth);
 
+            // adapter.log.info(`Starting poll timer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
+            try {
+                _sse.addEventListener( 'devices', function(result) {
+                    adapter.log.info('SSE received devices: ' + JSON.stringify(result));
+                    splitMieleDevices(JSON.parse(result.data), false);
+                });
+                _sse.addEventListener( 'actions', function(result) {
+                    adapter.log.info('EL: Actions: '+ JSON.stringify(result));
+                });
+                _sse.onopen = function(result) {
+                    adapter.log.info('Server Sent Events-Connection has been established @Miele-API.');
+                };
+                _sse.onerror = function (err) {
+                    if (err) {
+                        if (err.status === 401 || err.status === 403) {
+                            adapter.log.error('not authorized');
+                        } else  if (err.status) adapter.log.error( JSON.stringify(err));
+                    }
+                };
+
+
+
+                /*
+                                _pollTimeout= setTimeout(async function schedule() {
+                                    adapter.log.debug("Updating device states (polling API scheduled).");
+                                    // don't setup devices again - only set states
+                                    const result = await mieleAPITools.refreshMieleData( adapter, _auth );
+                                    await splitMieleDevices(result, false);
+                                    _pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
+                                } , 10);
+                */
             } catch(err){
                 adapter.log.error('Error during scheduled refresh. Error: ' + err.message + ', Stacktrace: ' + err.stack);
             }

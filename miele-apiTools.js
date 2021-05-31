@@ -17,6 +17,7 @@ const {stringify} = require('flatted');
 const mieleConst = require('./miele-constants.js');
 const mieleAPITools = require('./miele-apiTools.js');
 const mieleTools = require('./miele-Tools.js');
+const EventSource = require('eventsource');
 
 /**
  * Function APIGetAccessToken
@@ -379,5 +380,32 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
     }
 }
 
+/**
+ *  Eventing
+ The eventing of the Miele 3rd Party API is based on the concept of Server-Sent-Events (SSE).
+ The API supports two event types:
+ All Appliances events - If any of the connected appliances changes it state, an event will be sent.
+ The All Appliances Events subscription will return the content of a GET /devices request.
+ *
+ * APIregisterForEvents
+ *
+ * @param {object} adapter
+ * @param {object} auth
+ * @param {string} auth.access_token
+ * @constructor
+ */
+module.exports.APIregisterForEvents = function (adapter, auth){
+/*
+* All Appliances Events
+* curl -H "Accept:text/event-stream" -H "Accept-Language: {{de-DE||en-GB}}" -H "Authorization: Bearer {{access_token}}" https://api.mcs3.miele.com/v1/devices/all/events
+* */
+    // build options object for axios
 
 
+    const eventSourceInitDict  = { headers:
+        { Authorization: 'Bearer ' + auth.access_token,
+          'Accept' : 'text/event-stream',
+          'Accept-Language' : adapter.config.locale }
+    };
+    return new EventSource(mieleConst.BASE_URL + 'v1/devices/all/events', eventSourceInitDict );
+}
