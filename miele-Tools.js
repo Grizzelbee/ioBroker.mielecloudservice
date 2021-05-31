@@ -1392,7 +1392,7 @@ module.exports.createStateElapsedTime = function(adapter, setup, path, value){
  * @param value {object} array value to set to the data point
  */
 module.exports.createStateTargetTemperature = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateTargetTemperature: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
+    adapter.log.debug(`createStateTargetTemperature: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(value)}]`);
     mieleTools.createArray( adapter,
         setup,
         path + '.targetTemperature',
