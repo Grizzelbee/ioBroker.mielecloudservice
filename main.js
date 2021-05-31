@@ -682,11 +682,11 @@ async function main() {
             // adapter.log.info(`Starting poll timer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
             try {
                 _sse.addEventListener( 'devices', function(result) {
-                    adapter.log.info('SSE received devices: ' + JSON.stringify(result));
+                    //adapter.log.info('SSE received devices: ' + JSON.stringify(result));
                     splitMieleDevices(JSON.parse(result.data), false);
                 });
                 _sse.addEventListener( 'actions', function(result) {
-                    adapter.log.info('EL: Actions: '+ JSON.stringify(result));
+                   // adapter.log.info('EL: Actions: '+ JSON.stringify(result));
                 });
                 _sse.onopen = function(result) {
                     adapter.log.info('Server Sent Events-Connection has been established @Miele-API.');
