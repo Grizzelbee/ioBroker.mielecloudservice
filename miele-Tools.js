@@ -1229,19 +1229,21 @@ module.exports.createStateDryingStep = async function(adapter, setup, path, valu
  * @param adapter {object} link to the adapter instance
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
- * @param remainingTime {object} array that contains the remaining time in format [hours, minutes]
+ * @param currentDeviceState {object} array that contains the remaining time in format [hours, minutes]
+ * @param currentDeviceState.remainingTime {string} array that contains the remaining time in format [hours, minutes]
+ * @param currentDeviceState.status.value_raw {number} current state of the device
  *
  * @returns promise {promise}
  */
-module.exports.createStateEstimatedEndTime = async function(adapter, setup, path, remainingTime){
+module.exports.createStateEstimatedEndTime = async function(adapter, setup, path, currentDeviceState){
     adapter.log.debug(`createStateEstimatedEndTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${remainingTime.toString()}]`);
     let timeToShow = '';
-    if ( remainingTime[0]+remainingTime[1] ===0 ){
+    if ( parseInt(currentDeviceState.status.value_raw) < 2 || currentDeviceState.remainingTime[0] + currentDeviceState.remainingTime[1] === 0 ){
         adapter.log.debug('No EstimatedEndTime to show!');
     } else {
         let now = new Date;
         let estimatedEndTime = new Date;
-        estimatedEndTime.setMinutes((now.getMinutes() + ((remainingTime[0]*60) + (remainingTime[1]*1))));
+        estimatedEndTime.setMinutes((now.getMinutes() + ((currentDeviceState.remainingTime[0]*60) + (currentDeviceState.remainingTime[1]*1))));
         timeToShow = estimatedEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 

@@ -312,6 +312,7 @@ async function parseMieleDevice(mieleDevice, setup, API_Id){
     if (setup) {
         _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber]=deviceObj;
         _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].API_Id = API_Id;
+        _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].deviceType=mieleDevice.ident.type.value_raw;
         adapter.log.debug(`_knownDevices=${JSON.stringify(_knownDevices)}`)
     }
     await addMieleDevice(deviceObj.deviceFolder, mieleDevice, setup);
@@ -394,7 +395,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
             case 1 : // 1 = WASHING MACHINE*
                 // setup ecoFeedback channel for this device if needed
                 mieleTools.createChannelEcoFeedback(adapter, path, setup) ;
-                // states
+                // states the device is known to support
                 await mieleTools.createStateProgramID(adapter, setup, `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
                 await mieleTools.createStateProgramType(adapter, setup, `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
                 await mieleTools.createStateProgramPhase(adapter, setup, `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
@@ -678,41 +679,23 @@ async function main() {
             // start refresh scheduler with interval from adapters config
             adapter.log.info(`Registering for appliance events at Miele API.`);
             _sse = mieleAPITools.APIregisterForEvents(adapter, _auth);
-
-            // adapter.log.info(`Starting poll timer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
-            try {
-                _sse.addEventListener( 'devices', function(result) {
-                    //adapter.log.info('SSE received devices: ' + JSON.stringify(result));
-                    splitMieleDevices(JSON.parse(result.data), false);
-                });
-                _sse.addEventListener( 'actions', function(result) {
-                   // adapter.log.info('EL: Actions: '+ JSON.stringify(result));
-                });
-                _sse.onopen = function(result) {
-                    adapter.log.info('Server Sent Events-Connection has been established @Miele-API.');
-                };
-                _sse.onerror = function (err) {
-                    if (err) {
-                        if (err.status === 401 || err.status === 403) {
-                            adapter.log.error('not authorized');
-                        } else  if (err.status) adapter.log.error( JSON.stringify(err));
-                    }
-                };
-
-
-
-                /*
-                                _pollTimeout= setTimeout(async function schedule() {
-                                    adapter.log.debug("Updating device states (polling API scheduled).");
-                                    // don't setup devices again - only set states
-                                    const result = await mieleAPITools.refreshMieleData( adapter, _auth );
-                                    await splitMieleDevices(result, false);
-                                    _pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
-                                } , 10);
-                */
-            } catch(err){
-                adapter.log.error('Error during scheduled refresh. Error: ' + err.message + ', Stacktrace: ' + err.stack);
-            }
+            _sse.addEventListener( 'devices', function(result) {
+                adapter.log.debug('Received devices message by SSE: ' + JSON.stringify(result));
+                splitMieleDevices(JSON.parse(result.data), false);
+            });
+            _sse.addEventListener( 'actions', function(result) {
+               // adapter.log.info('EL: Actions: '+ JSON.stringify(result));
+            });
+            _sse.onopen = function() {
+                adapter.log.info('Server Sent Events-Connection has been established @Miele-API.');
+            };
+            _sse.onerror = function (err) {
+                if (err) {
+                    if (err.status === 401 || err.status === 403) {
+                        adapter.log.error('not authorized');
+                    } else  if (err.status) adapter.log.error( JSON.stringify(err));
+                }
+            };
         } else {
             adapter.log.error('[main] APIGetAccessToken returned neither a token nor an errormessage. Returned value=[' + JSON.stringify(_auth)+']');
         }
