@@ -1236,7 +1236,7 @@ module.exports.createStateDryingStep = async function(adapter, setup, path, valu
  * @returns promise {promise}
  */
 module.exports.createStateEstimatedEndTime = async function(adapter, setup, path, currentDeviceState){
-    adapter.log.debug(`createStateEstimatedEndTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${remainingTime.toString()}]`);
+    adapter.log.debug(`createStateEstimatedEndTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(currentDeviceState)}]`);
     let timeToShow = '';
     if ( parseInt(currentDeviceState.status.value_raw) < 2 || currentDeviceState.remainingTime[0] + currentDeviceState.remainingTime[1] === 0 ){
         adapter.log.debug('No EstimatedEndTime to show!');

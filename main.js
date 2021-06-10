@@ -405,7 +405,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateSpinningSpeed(adapter, setup, `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
@@ -430,7 +430,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
@@ -454,7 +454,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateSpinningSpeed(adapter, setup, `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
@@ -482,7 +482,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
@@ -504,7 +504,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
@@ -528,7 +528,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
@@ -687,7 +687,7 @@ async function main() {
                // adapter.log.info('EL: Actions: '+ JSON.stringify(result));
             });
             _sse.onopen = function() {
-                adapter.log.info('Server Sent Events-Connection has been established @Miele-API.');
+                adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');
             };
             _sse.onerror = function (err) {
                 if (err) {
