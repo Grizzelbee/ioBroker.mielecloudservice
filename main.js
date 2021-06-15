@@ -669,8 +669,15 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
  */
 async function main() {
     try {
-        // todo: try 10 logins when it fails with a delay of 5 min each
-        _auth = await mieleAPITools.APIGetAccessToken(adapter);
+        let n=1;
+        do {
+            adapter.log.info(`Login attempt #${n} @Miele-API`);
+            _auth = await mieleAPITools.APIGetAccessToken(adapter);
+            if (!_auth){
+                let timeHandler = setTimeout(function (){ n++; },60000);
+                clearTimeout(timeHandler);
+            }
+        } while (!_auth);
         if (_auth && _auth.hasOwnProperty('access_token') ) {
             adapter.log.info(`Setting up devices ...`);
             // do the first API call and setup all devices returned
