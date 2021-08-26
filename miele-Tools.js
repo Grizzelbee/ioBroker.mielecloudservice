@@ -924,6 +924,7 @@ module.exports.createStateConnected = function(adapter, setup, path, value){
  */
 module.exports.createStateSignalInUse = function(adapter, setup, path, value){
     adapter.log.debug(`createStateSignalInUse: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
                                   setup,
                              path + '.signalInUse',
@@ -948,6 +949,7 @@ module.exports.createStateSignalInUse = function(adapter, setup, path, value){
  */
 module.exports.createStateSignalInfo = function(adapter, setup, path, value){
     adapter.log.debug(`createStateSignalInfo: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
         setup,
         path + '.signalInfo',
@@ -1068,6 +1070,7 @@ module.exports.createStateSignalDoor = function(adapter, setup, path, value){
  */
 module.exports.createStateSignalFailure = function(adapter, setup, path, value){
     adapter.log.debug(`createStateSignalFailure: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
         setup,
         path + '.signalFailure',
