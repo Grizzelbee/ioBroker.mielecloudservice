@@ -13,6 +13,7 @@
 // required files to load
 const mieleTools = require('./miele-Tools.js');
 const mieleConst = require('./miele-constants.js');
+const mieleAPITools = require("./miele-apiTools");
 
 
 /**
@@ -1052,6 +1053,25 @@ module.exports.createStateSignalDoor = function(adapter, setup, path, value){
         'Indicates whether a door-open message is active for this Device.',
         value,
         '');
+}
+
+
+/**
+ * addPrograms
+ *
+ * adds the available programs for the given device to the object tree
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {boolean} setup indicator whether the devices need to setup or only states are to be updated
+ * @param {string} path path where the data point is going to be created
+ * @param {string} device The device to query the programs for
+ *
+ * @returns promise {promise}
+ */
+module.exports.addPrograms = async function(adapter, setup, _auth, path, device){
+    adapter.log.debug(`addPrograms: Path[${path}], setup: [${setup}], path: [${path}], device: ${device}`);
+    const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
+    adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
 }
 
 

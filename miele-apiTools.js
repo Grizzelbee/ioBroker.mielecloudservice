@@ -169,6 +169,20 @@ module.exports.getPermittedActions = async function (adapter, auth, deviceId){
     return await APISendRequest(adapter, auth, `v1/devices/${deviceId}/actions`, 'GET', '');
 }
 
+/**
+ * Function getAvailablePrograms
+ *
+ *
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param auth {object} OAuth2 token object
+ * @param deviceId {string} the Id of the device the query is performed for
+ *
+ * @returns data {object} JSON structure with permitted actions for the given device in the current state
+ */
+module.exports.getAvailablePrograms = async function (adapter, auth, deviceId){
+    return await APISendRequest(adapter, auth, `v1/devices/${deviceId}/programs`, 'GET', '');
+}
 
 /**
  * Function APIStartAction
@@ -349,9 +363,10 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
             // Request made and server responded
             adapter.log.error('Request made and server responded:');
             adapter.log.error('Response.status:' + error.response.status);
+            adapter.log.error('Response.data.message: ' + JSON.stringify(error.response.data.message));
             adapter.log.error('Response.headers: ' + JSON.stringify(error.response.headers));
             adapter.log.error('Response.data: ' + JSON.stringify(error.response.data));
-            throw new Error(error.response.data.message);
+            // throw new Error(error.response.data.message);
         } else if (error.request) {
             // The request was made but no response was received
             adapter.log.error('The request was made but no response was received:');

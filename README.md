@@ -12,13 +12,13 @@
 
 ## Description
 This adapter is for retrieving information about all your Miele@Home devices from the official Miele 3rd-party API. 
-Regardless if they are connected directly via Wi-Fi or XGW3000 Gateway. It implements the **Miele 3rd Party API V1.0.4**
+Regardless if they are connected directly via Wi-Fi or XGW3000 Gateway. It implements the **Miele 3rd Party API V1.0.5**
 
 ## sentry.io
 This adapter uses sentry.io to collect details on crashes and report it automated to the author. The [ioBroker.sentry](https://github.com/ioBroker/plugin-sentry) 
 plugin is used for it. Please refer to the [plugin homepage](https://github.com/ioBroker/plugin-sentry) for detailed information
 on what the plugin does, which information is collected and how to disable it, if you don't like to support the author with 
-you're information on crashes.
+your information on crashes.
 
 
 ## Prerequisites
@@ -40,7 +40,7 @@ To install, do the following:
 6. Fill in the client_secret and client_id received from Miele-developer Team and account-id and password from the App.
 
 ## Controlling your devices
-All currently supported and documented Actions for all devices are implemented (API V1.0.4).
+All currently supported and documented Actions for all devices are implemented (API V1.0.5).
 > Please remember that Actions will only work if you put your device into the appropriate state (e.g. Mobile Control, powerOn, ...).
 Please refer to [Miele-Documentation](#documentation) for more Information on actions.
 
@@ -182,15 +182,20 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 
-### V4.5.0 (2021-05-31) (Invincible)
+### V4.5.0 (2021-09-01) (Invincible)
+* (grizzelbee) New: [164](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/164) fixed bug in SignalFailure and signalInfo when havin no value
 * (grizzelbee) New: [155](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/155) fixed >missing object< bug on arrays 
 * (grizzelbee) New: [154](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/154) Reintroduced TargetTemp to washer dryers
 * (grizzelbee) New: [140](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/140) Switched from data polling to server sent events (push data)
 * (grizzelbee) New: [71](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/71) If there is no internet connection on startup retry connecting until connection is established 
 * (grizzelbee) Fix: estimatedEndTime won't be shown anymore when device is off
+* (grizzelbee) Fix: Don't rethrowing errors in APISendRequest anymore
+* (grizzelbee) Upd: Updated dependencies
+* (grizzelbee) New: Added some additional API languages newly supported by Miele
+* (grizzelbee) New: Added support for Miele API V1.0.5
 
 ### V4.2.0 (2021-05-17) (A new Dimension)
-* (grizzelbee) New: Adding Pause action to dish washers
+* (grizzelbee) New: Adding Pause action to dish-washers
 
 ### V4.1.0 (2021-05-15) (Carry me over)
 * (grizzelbee) New: [149](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/149) Adding support (Start, Stop, Pause) for Miele Scout RX2 vacuum cleaner robots

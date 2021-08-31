@@ -416,6 +416,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                // programs
+                // await mieleTools.addPrograms(adapter, setup, _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
                 break;
             case 2: // 2 = TUMBLE DRYER*
                 // setup ecoFeedback channel for this device if needed
