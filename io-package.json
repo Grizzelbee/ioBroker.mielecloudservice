@@ -164,6 +164,7 @@
             }
         ],
         "license": "MIT",
+        "tier": 2,
         "messagebox": true,
         "subscribe": "messagebox",
         "plugins": {
