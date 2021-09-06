@@ -70,6 +70,7 @@ module.exports.APIGetAccessToken = async function (adapter) {
                     break;
                 case 429: // endpoint currently not available
                     adapter.log.error('Error: Endpoint: [' + mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN + '] is currently not available.');
+                    break;
                 default:
                     adapter.log.error('[error.response.data]: ' + ((typeof error.response.data === 'object') ? stringify(error.response.data) : error.response.data));
                     adapter.log.error('[error.response.status]: ' + ((typeof error.response.status === 'object') ? stringify(error.response.status) : error.response.status));
@@ -85,7 +86,7 @@ module.exports.APIGetAccessToken = async function (adapter) {
             // Something happened in setting up the request that triggered an Error
             adapter.log.error('[Error]: ' + error.message);
         }
-        adapter.setState('info.connection', false);
+        adapter.setState('info.connection', false, true);
     }
 }
 
@@ -121,12 +122,12 @@ async function APIRefreshToken(adapter, refresh_token) {
         adapter.expiryDate = new Date();
         adapter.expiryDate.setSeconds(adapter.expiryDate.getSeconds() +  auth.hasOwnProperty('expires_in')?auth.expires_in:0 );
         adapter.log.info('New Access-Token expires at:  [' + adapter.expiryDate.toString() + ']');
-        adapter.setState('info.connection', true);
+        adapter.setState('info.connection', true, true);
         return auth;
     }  catch (error){
         adapter.log.error('OAuth2 returned an error!');
         adapter.log.error(error);
-        adapter.setState('info.connection', false);
+        adapter.setState('info.connection', false, true);
         // TODO Think about an error-counter and terminating the adapter on too many errors
         // adapter.terminate('Terminating adapter due to error on token request.', 11);
     }
@@ -233,6 +234,9 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
                 currentAction = {'powerOff':true};
             }
             break;
+        case 'Program': currentAction = {'programId':value};
+        // todo For programs with extended information like time this needs to be extended
+            break;
         case 'programId': currentAction = {'programId':value};
             break;
         case 'Start': currentAction = {'processAction':mieleConst.START};
@@ -267,8 +271,14 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             break;
     }
     try {
+        let endpoint;
+        if (action === 'Program'){
+            endpoint = '/programs'
+        } else {
+            endpoint = '/actions'
+        }
         adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
-        const result = await APISendRequest(adapter, auth, 'v1/devices/' +  knownDevices[device].API_Id + '/actions', 'PUT', currentAction);
+        const result = await APISendRequest(adapter, auth, 'v1/devices/' +  knownDevices[device].API_Id + endpoint, 'PUT', currentAction);
         await mieleTools.createString(adapter, setup,currentPath + '.Action_Information', 'Additional Information returned from API.', action + ': ' + result.message);
         adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
         await mieleAPITools.refreshMieleData(adapter, auth);
@@ -358,15 +368,32 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         adapter.log.debug('Endpoint: [' + Endpoint + ']');
         adapter.log.debug('Method: [' + Method + ']');
         adapter.log.debug('Payload: [' + JSON.stringify(payload) + ']');
-        adapter.log.error('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
+        adapter.log.debug('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
         if (error.response) {
+            switch (error.response.status) {
+                case 400: adapter.log.info(`The API returned http-error 400: ${error.response.data.message}.`);
+                    return;
+                case 401:
+                    try {
+                        adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
+                        auth = APIRefreshToken(adapter, auth.refresh_token);
+                    } catch (err) {
+                        adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
+                    }
+                    return;
+                case 404:
+                    adapter.log.debug('Device/fabNumber is unknown. Disabling all actions.');
+                    return( {"processAction":[],"light":[],"ambientLight":[],"startTime":[],"ventilationStep":[],"programId":[],"targetTemperature":[],"deviceName":false,"powerOn":false,"powerOff":false,"colors":[],"modes":[]} );
+                case 504:
+                    adapter.log.error('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
+                    return;
+            }
             // Request made and server responded
             adapter.log.error('Request made and server responded:');
             adapter.log.error('Response.status:' + error.response.status);
             adapter.log.error('Response.data.message: ' + JSON.stringify(error.response.data.message));
             adapter.log.error('Response.headers: ' + JSON.stringify(error.response.headers));
             adapter.log.error('Response.data: ' + JSON.stringify(error.response.data));
-            // throw new Error(error.response.data.message);
         } else if (error.request) {
             // The request was made but no response was received
             adapter.log.error('The request was made but no response was received:');
@@ -375,22 +402,6 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
             // Something happened in setting up the request that triggered an Error
             adapter.log.error('Something happened in setting up the request that triggered an Error:');
             adapter.log.error('Error', error.message);
-        }
-        switch (error.response.status) {
-            case 401:
-                try {
-                    adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
-                    auth = APIRefreshToken(adapter, auth.refresh_token);
-                } catch (err) {
-                    adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
-                }
-                break;
-            case 404:
-                adapter.log.debug('Device/fabNumber is unknown. Disabling all actions.');
-                return( {"processAction":[],"light":[],"ambientLight":[],"startTime":[],"ventilationStep":[],"programId":[],"targetTemperature":[],"deviceName":false,"powerOn":false,"powerOff":false,"colors":[],"modes":[]} );
-            case 504:
-                adapter.log.error('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
-                break;
         }
     }
 }

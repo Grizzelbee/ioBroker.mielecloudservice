@@ -14,7 +14,6 @@
 const mieleTools = require('./miele-Tools.js');
 const mieleConst = require('./miele-constants.js');
 const mieleAPITools = require("./miele-apiTools.js");
-const {createExtendObject} = require("./miele-Tools");
 
 
 /**
@@ -805,10 +804,12 @@ module.exports.adapterConfigIsValid = function(adapter) {
         adapter.log.warn('OAuth2_vg is missing.');
         configIsValid = false;
     }
+    /*
     if ('' === adapter.config.pollinterval) {
         adapter.log.warn('PollInterval is missing.');
         configIsValid = false;
     }
+    */
     return configIsValid;
 }
 
@@ -1063,6 +1064,7 @@ module.exports.createStateSignalDoor = function(adapter, setup, path, value){
  * adds the available programs for the given device to the object tree
  *
  * @param {object} adapter link to the adapter instance
+ * @param {object} _auth Object with authorization information for Miele API
  * @param {boolean} setup indicator whether the devices need to setup or only states are to be updated
  * @param {string} path path where the data point is going to be created
  * @param {string} device The device to query the programs for
@@ -1072,29 +1074,33 @@ module.exports.createStateSignalDoor = function(adapter, setup, path, value){
 module.exports.addPrograms = async function(adapter, setup, _auth, path, device){
     adapter.log.debug(`addPrograms: Path[${path}], setup: [${setup}], path: [${path}], device: ${device}`);
     const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
-    // const programs = [{"programId":24002,"program":"coffee"},{"programId":24004,"program":"cappuccino"},{"programId":24009,"program":"Caffè latte"},{"programId":24001,"program":"espresso"},{"programId":24000,"program":"Ristretto"},{"programId":24006,"program":"Latte macchiato"},{"programId":24007,"program":"Espresso macchiato"},{"programId":24008,"program":"Cafe au lait"},{"programId":24003,"program":"Long coffee"},{"programId":24005,"program":"Cappuccino Italiano"},{"programId":24012,"program":"Flat white"},{"programId":24018,"program":"herbal tea"},{"programId":24019,"program":"Fruit tea"},{"programId":24020,"program":"Green tea"},{"programId":24017,"program":"Black tea"},{"programId":24021,"program":"White tea"},{"programId":24022,"program":"Japan tea"},{"programId":24015,"program":"Hot milk"},{"programId":24016,"program":"Milk foam"},{"programId":24014,"program":"Hot water"},{"programId":24013,"program":"Hot water"}]
     adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
-
     if (typeof programs === 'undefined') {
         return;
     } else {
         let result = {};
-        for (const prog in programs){
+        for (const prog in programs) {
             adapter.log.warn(`Prog: ${JSON.stringify(programs[prog])}`);
-            if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')){
-                result[programs[prog].programId]=programs[prog].program;
+            if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')) {
+                result[programs[prog].programId] = programs[prog].program;
                 adapter.log.warn(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
             }
-
         }
-        adapter.log.warn(`Resulting Progs: ${JSON.stringify(result)}`);
-        createExtendObject(adapter, `${path}.Actions.programs`,  )
-
-
+        adapter.log.debug(`Resulting Progs: ${JSON.stringify(result)}`);
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.Program', {
+            type: 'state',
+            common: {
+                "name": 'List of all supported programs.',
+                "read": true,
+                "write": true,
+                "role": 'state',
+                "type": 'number',
+                "states": result
+            },
+            native: {}
+        }, null);
+        adapter.subscribeStates(path + '.ACTIONS.Program');
     }
-
-
-
 }
 
 
