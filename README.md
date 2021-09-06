@@ -176,8 +176,11 @@ Here is a list of what these raw values stand for:
 |267 | "Knitterschutz" / "" | Washing Machine |
 |268 | "Ende" / "End" | Most devices |
 |256 | "Vorbügeln" | Washing Machine |
-|514 | "Trocknen" | Washer Dryer |
+|512 | "Ende" / "End" | Tumble dryers |
+|514 | "Trocknen" / "Drying"| Washer Dryer |
 |519 | "Abkühlen" | Washer Dryer |
+|521 | "Trocknen" / "Drying" | Tumble dryer |
+|522 | "Knitterschutz" / "" | Tumble dryer |
 |532 | "Flusen ausspülen" | Washer Dryer |
 
 ## Changelog
@@ -193,6 +196,8 @@ Here is a list of what these raw values stand for:
 * (grizzelbee) Upd: Updated dependencies
 * (grizzelbee) New: Added some additional API languages newly supported by Miele
 * (grizzelbee) New: Added support for Miele API V1.0.5
+* (grizzelbee) New: Added correct tier of adapter to io-package
+* (grizzelbee) New: Added more program phases for tumble dryers
 
 ### V4.2.0 (2021-05-17) (A new Dimension)
 * (grizzelbee) New: Adding Pause action to dish-washers

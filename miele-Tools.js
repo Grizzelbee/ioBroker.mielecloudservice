@@ -13,7 +13,8 @@
 // required files to load
 const mieleTools = require('./miele-Tools.js');
 const mieleConst = require('./miele-constants.js');
-const mieleAPITools = require("./miele-apiTools");
+const mieleAPITools = require("./miele-apiTools.js");
+const {createExtendObject} = require("./miele-Tools");
 
 
 /**
@@ -1066,12 +1067,34 @@ module.exports.createStateSignalDoor = function(adapter, setup, path, value){
  * @param {string} path path where the data point is going to be created
  * @param {string} device The device to query the programs for
  *
- * @returns promise {promise}
+ * @returns {object} common.states object to configure the available programs for a device
  */
 module.exports.addPrograms = async function(adapter, setup, _auth, path, device){
     adapter.log.debug(`addPrograms: Path[${path}], setup: [${setup}], path: [${path}], device: ${device}`);
     const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
+    // const programs = [{"programId":24002,"program":"coffee"},{"programId":24004,"program":"cappuccino"},{"programId":24009,"program":"Caffè latte"},{"programId":24001,"program":"espresso"},{"programId":24000,"program":"Ristretto"},{"programId":24006,"program":"Latte macchiato"},{"programId":24007,"program":"Espresso macchiato"},{"programId":24008,"program":"Cafe au lait"},{"programId":24003,"program":"Long coffee"},{"programId":24005,"program":"Cappuccino Italiano"},{"programId":24012,"program":"Flat white"},{"programId":24018,"program":"herbal tea"},{"programId":24019,"program":"Fruit tea"},{"programId":24020,"program":"Green tea"},{"programId":24017,"program":"Black tea"},{"programId":24021,"program":"White tea"},{"programId":24022,"program":"Japan tea"},{"programId":24015,"program":"Hot milk"},{"programId":24016,"program":"Milk foam"},{"programId":24014,"program":"Hot water"},{"programId":24013,"program":"Hot water"}]
     adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
+
+    if (typeof programs === 'undefined') {
+        return;
+    } else {
+        let result = {};
+        for (const prog in programs){
+            adapter.log.warn(`Prog: ${JSON.stringify(programs[prog])}`);
+            if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')){
+                result[programs[prog].programId]=programs[prog].program;
+                adapter.log.warn(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
+            }
+
+        }
+        adapter.log.warn(`Resulting Progs: ${JSON.stringify(result)}`);
+        createExtendObject(adapter, `${path}.Actions.programs`,  )
+
+
+    }
+
+
+
 }
 
 
