@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "4.2.0",
+        "version": "4.5.0",
         "news": {
+            "4.5.0": {
+                "en": "Switched from data polling to server sent events and implemented changes for API 1.0.5",
+                "de": "Wechsel von Datenabfrage zu vom Server gesendeten Ereignissen und Änderungen für API 1.0.5 implementiert.",
+                "ru": "Перешел с опроса данных на отправленные сервером события и внесены изменения в API 1.0.5.",
+                "pt": "Mudou de sondagem de dados para eventos enviados pelo servidor e implementou mudanças para API 1.0.5",
+                "nl": "Overgeschakeld van datapolling naar door de server verzonden gebeurtenissen en wijzigingen doorgevoerd voor API 1.0.5",
+                "fr": "Passage de l'interrogation des données aux événements envoyés par le serveur et mise en œuvre des modifications pour l'API 1.0.5",
+                "it": "Passato dal polling dei dati agli eventi inviati dal server e implementato le modifiche per l'API 1.0.5",
+                "es": "Pasó del sondeo de datos a eventos enviados por el servidor e implementó cambios para API 1.0.5",
+                "pl": "Przejście z odpytywania danych na zdarzenia wysyłane przez serwer i zaimplementowane zmiany dla API 1.0.5",
+                "zh-cn": "从数据轮询切换到服务器发送事件并实现 API 1.0.5 的更改"
+            },
             "4.2.0": {
                 "en": "Adding Pause action to dish washers",
                 "de": "Hinzufügen der Pause-Aktion zu Geschirrspülern",
@@ -98,66 +110,6 @@
                 "es": "Se agregó código de depuración y se corrigieron algunos errores menores.",
                 "pl": "Dodano kod debugowania i naprawiono kilka drobnych błędów.",
                 "zh-cn": "添加了调试代码并修复了一些小错误。"
-            },
-            "2.0.0": {
-                "en": "Support for Miele API V1.0.3 - Update with care due to breaking changes - Read Changelog!",
-                "de": "Unterstützung für Miele API V1.0.3 - Mit Vorsicht aktualisieren aufgrund wesentlicher Änderungen - Lies das Changelog!",
-                "ru": "Поддержка Miele API V1.0.3 - Обновление с осторожностью из-за критических изменений - Прочтите журнал изменений!",
-                "pt": "Suporte para Miele API V1.0.3 - Atualize com cuidado devido a alterações importantes - Leia o registro de alterações!",
-                "nl": "Ondersteuning voor Miele API V1.0.3 - Update met zorg vanwege het breken van wijzigingen - Lees Changelog!",
-                "fr": "Prise en charge de l'API Miele V1.0.3 - Mise à jour avec précaution en raison de modifications importantes - Lisez le journal des modifications!",
-                "it": "Supporto per Miele API V1.0.3 - Aggiorna con cura a causa di modifiche di rilievo - Leggi il log delle modifiche!",
-                "es": "Soporte para Miele API V1.0.3 - Actualice con cuidado debido a cambios importantes - ¡Lea el registro de cambios!",
-                "pl": "Wsparcie dla Miele API V1.0.3 - Aktualizuj ostrożnie ze względu na istotne zmiany - Przeczytaj Changelog!",
-                "zh-cn": "支持Miele API V1.0.3-重大更改请谨慎更新-阅读Changelog！"
-            },
-            "1.2.4": {
-                "en": "Fixed No-Data-Bug which was introduced in V1.2.3",
-                "de": "No-Data-Bug behoben, der in V1.2.3 eingeführt wurde",
-                "ru": "Исправлена ​​ошибка No-Data-Bug, которая была представлена ​​в V1.2.3",
-                "pt": "Corrigido o erro sem dados, que foi introduzido na V1.2.3",
-                "nl": "Fixed No-Data-Bug die werd geïntroduceerd in V1.2.3",
-                "fr": "Correction de No-Data-Bug qui a été introduit dans V1.2.3",
-                "it": "Fixato No-Data-Bug che fu introdotto in V1.2.3",
-                "es": "Se corrigió el error Sin datos que se introdujo en V1.2.3",
-                "pl": "Naprawiono błąd braku danych, który został wprowadzony w wersji 1.2.3",
-                "zh-cn": "修复了V1.2.3中引入的No-Data-Bug"
-            },
-            "1.2.2": {
-                "en": "Improved error handling, ",
-                "de": "Verbesserte Fehlerbehandlung,",
-                "ru": "Улучшена обработка ошибок,",
-                "pt": "Manipulação de erro aprimorada,",
-                "nl": "Verbeterde foutafhandeling,",
-                "fr": "Amélioration de la gestion des erreurs,",
-                "it": "Gestione degli errori migliorata,",
-                "es": "Manejo mejorado de errores,",
-                "pl": "Poprawiona obsługa błędów,",
-                "zh-cn": "改进的错误处理，"
-            },
-            "1.2.1": {
-                "en": "New: SignalActionRequired, Updated Documentation on github, Fixes for js-Controller 3",
-                "de": "Neu: SignalActionRequired, Aktualisierte Dokumentation auf Github, Korrekturen für js-Controller 3",
-                "ru": "Новое: SignalActionRequired, обновленная документация по github, исправления для js-Controller 3",
-                "pt": "Novo: SignalActionRequired, documentação atualizada no github, correções para js-Controller 3",
-                "nl": "Nieuw: SignalActionRequired, bijgewerkte documentatie op github, fixes voor js-Controller 3",
-                "fr": "Nouveau: SignalActionRequired, documentation mise à jour sur github, correctifs pour js-Controller 3",
-                "it": "Novità: SignalActionRequired, documentazione aggiornata su github, correzioni per js-Controller 3",
-                "es": "Nuevo: SignalActionRequired, documentación actualizada en github, correcciones para js-Controller 3",
-                "pl": "Nowość: SignalActionRequired, zaktualizowana dokumentacja github, poprawki dla js-Controller 3",
-                "zh-cn": "新增内容：SignalActionRequired，github上更新的文档，js-Controller 3的修复"
-            },
-            "1.2.0": {
-                "en": "Switched to AXIOS http-client and added two new (redundant) states (connected and signalInUse) for convenience purposes in VIS.",
-                "de": "Zu AXIOS http-client gewechselt und zwei neue (redundante) Zustände (verbunden und signalInUse) hinzugefügt, um die Arbeit in VIS zu vereinfachen.",
-                "ru": "Переключился на http-client AXIOS и добавил два новых (избыточных) состояния (подключен и signalInUse) для удобства в VIS.",
-                "pt": "Alternou para o AXIOS http-client e adicionou dois novos estados (redundantes) (conectado e signalInUse) para fins de conveniência no VIS.",
-                "nl": "Overgeschakeld naar AXIOS http-client en twee nieuwe (redundante) statussen (verbonden en signalInUse) toegevoegd voor het gemak in VIS.",
-                "fr": "Passé à AXIOS http-client et ajouté deux nouveaux états (redondants) (connectés et signalInUse) à des fins de commodité dans VIS.",
-                "it": "Passato a AXIOS http-client e aggiunto due nuovi stati (ridondanti) (connesso e signalInUse) per motivi di praticità in VIS.",
-                "es": "Cambió a AXIOS http-client y agregó dos nuevos estados (redundantes) (conectado y signalInUse) para fines de conveniencia en VIS.",
-                "pl": "Przełączono na http-client AXIOS i dodano dwa nowe (redundantne) stany (podłączony i signalInUse) dla wygody w VIS.",
-                "zh-cn": "切换到AXIOS http-client并添加了两个新的（冗余）状态（connected和signalInUse），以便在VIS中使用。"
             }
         },
         "title": "Miele CloudService",
@@ -193,7 +145,9 @@
         "compact": true,
         "icon": "mielecloudservice.svg",
         "extIcon": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/admin/mielecloudservice.svg",
-        "materialize": true,
+        "adminUI": {
+            "config": "materialize"
+        },
         "enabled": true,
         "keywords": [
             "MieleCloudService"
@@ -202,7 +156,7 @@
         "loglevel": "info",
         "type": "household",
         "connectionType": "cloud",
-        "dataSource": "poll",
+        "dataSource": "push",
         "dependencies": [
             {
                 "js-controller": ">=3.0.0",
@@ -210,6 +164,7 @@
             }
         ],
         "license": "MIT",
+        "tier": 2,
         "messagebox": true,
         "subscribe": "messagebox",
         "plugins": {

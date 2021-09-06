@@ -24,6 +24,7 @@ let _auth;
 let _pollTimeout;
 let _expiryDate;
 let _knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
+let _sse;
 
 function startadapter(options) {
     options = options || {};
@@ -49,6 +50,7 @@ function startadapter(options) {
                 _auth = undefined;
                 _pollTimeout = null;
                 _expiryDate = null;
+                _sse.close();
                 adapter.log.info('Unloading MieleCloudService...');
                 callback();
             } catch (e) {
@@ -271,8 +273,9 @@ function getDeviceObj(deviceTypeID){
  *
  * splits the json data received from cloud API into separate device
  *
- * @param devices {object} the whole JSON which needs to be split into devices
- * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
+ * @param {object} devices The whole JSON which needs to be split into devices
+ * @param {string} devices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
+ * @param {boolean} setup  indicator whether the devices need to setup or only states are to be updated
  */
 async function splitMieleDevices(devices, setup){
     // Splits the data-package returned by the API into single devices
@@ -295,9 +298,12 @@ async function splitMieleDevices(devices, setup){
  *
  * parses the JSON of each single device and creates the needed states
  *
- * @param mieleDevice {object} the JSON for a single device
- * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
- * @param API_Id {string} the API-ID for the current device
+ * @param {object} mieleDevice the JSON for a single device
+ * @param {string} mieleDevice.ident.type.value_localized
+ * @param {number} mieleDevice.ident.type.value_raw
+ * @param {string} mieleDevice.ident.deviceIdentLabel.fabNumber SerialNumber of the device
+ * @param {boolean} setup  indicator whether the devices need to setup or only states are to be updated
+ * @param {string} API_Id  the API-ID for the current device
  */
 async function parseMieleDevice(mieleDevice, setup, API_Id){
     adapter.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
@@ -306,6 +312,7 @@ async function parseMieleDevice(mieleDevice, setup, API_Id){
     if (setup) {
         _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber]=deviceObj;
         _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].API_Id = API_Id;
+        _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].deviceType=mieleDevice.ident.type.value_raw;
         adapter.log.debug(`_knownDevices=${JSON.stringify(_knownDevices)}`)
     }
     await addMieleDevice(deviceObj.deviceFolder, mieleDevice, setup);
@@ -388,7 +395,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
             case 1 : // 1 = WASHING MACHINE*
                 // setup ecoFeedback channel for this device if needed
                 mieleTools.createChannelEcoFeedback(adapter, path, setup) ;
-                // states
+                // states the device is known to support
                 await mieleTools.createStateProgramID(adapter, setup, `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
                 await mieleTools.createStateProgramType(adapter, setup, `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
                 await mieleTools.createStateProgramPhase(adapter, setup, `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
@@ -398,7 +405,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateSpinningSpeed(adapter, setup, `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
@@ -409,6 +416,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                // programs
+                await mieleTools.addPrograms(adapter, setup, _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
                 break;
             case 2: // 2 = TUMBLE DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -423,7 +432,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
@@ -433,6 +442,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                // programs
+                await mieleTools.addPrograms(adapter, setup, _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
                 break;
             case 24: // 24 = WASHER DRYER*
                 // setup ecoFeedback channel for this device if needed
@@ -447,12 +458,13 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateSpinningSpeed(adapter, setup, `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
                 await mieleTools.createStateDryingStep(adapter, setup, `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
+                await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
                 // Actions
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
@@ -474,7 +486,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateEcoFeedbackEnergy(adapter, setup, path, currentDeviceState.ecoFeedback);
                 await mieleTools.createStateEcoFeedbackWater(adapter, setup, path, currentDeviceState.ecoFeedback);
@@ -496,13 +508,15 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
                 // Actions
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                // programs
+                await mieleTools.addPrograms(adapter, setup, _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
                 break;
             case 13: // 13 = OVEN Microwave*
             case 15: // 15 = STEAM OVEN*
@@ -520,7 +534,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.createStateFullRemoteControl(adapter, setup, path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await mieleTools.createStateSmartGrid(adapter, setup, path, currentDeviceState.remoteEnable.smartGrid);
                 await mieleTools.createStateMobileStart(adapter, setup, path, currentDeviceState.remoteEnable.mobileStart);
-                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState.remainingTime);
+                await mieleTools.createStateEstimatedEndTime(adapter, setup, path, currentDeviceState);
                 await mieleTools.createStateElapsedTime(adapter, setup, path, currentDeviceState.elapsedTime);
                 await mieleTools.createStateTemperature(adapter, setup, path, currentDeviceState.temperature);
                 await mieleTools.createStateTargetTemperature(adapter, setup, path, currentDeviceState.targetTemperature);
@@ -528,6 +542,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
+                // programs
+                await mieleTools.addPrograms(adapter, setup, _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
                 break;
             case 14: // 14 = HOB HIGHLIGHT*
             case 27: // 27 = HOB INDUCTION*
@@ -543,6 +559,8 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 // Actions
                 await mieleTools.addPowerSwitch(adapter, path, actions);
                 await mieleTools.addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                // programs
+                await mieleTools.addPrograms(adapter, setup, _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
                 break;
             case 18: // 18 = HOOD*
                 // States
@@ -661,27 +679,43 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
  */
 async function main() {
     try {
-        // todo: try 10 logins when it fails with a delay of 5 min each
-        _auth = await mieleAPITools.APIGetAccessToken(adapter);
+        let n=1;
+        do {
+            adapter.log.info(`Login attempt #${n} @Miele-API`);
+            _auth = await mieleAPITools.APIGetAccessToken(adapter);
+            if (!_auth){
+                adapter.log.info(`Login attempt wasn't successful. Trying again in 60 Seconds.`);
+                let timeHandler = setTimeout(function (){ n++; },60000);
+                clearTimeout(timeHandler);
+            }
+        } while (!_auth);
         if (_auth && _auth.hasOwnProperty('access_token') ) {
             adapter.log.info(`Setting up devices ...`);
             // do the first API call and setup all devices returned
             const result = await mieleAPITools.refreshMieleData( adapter, _auth );
             await splitMieleDevices(result, true);
             // start refresh scheduler with interval from adapters config
-            adapter.log.info(`Starting poll timer with a [${adapter.config.pollinterval}] ${ adapter.config.pollUnit===1? 'Second(s)':'Minute(s)'} interval.`);
-            try {
-                _pollTimeout= setTimeout(async function schedule() {
-                    adapter.log.debug("Updating device states (polling API scheduled).");
-                    // don't setup devices again - only set states
-                    const result = await mieleAPITools.refreshMieleData( adapter, _auth );
-                    await splitMieleDevices(result, false);
-                    _pollTimeout= setTimeout(schedule , (adapter.config.pollinterval * 1000 * adapter.config.pollUnit) );
-                } , 10);
-
-            } catch(err){
-                adapter.log.error('Error during scheduled refresh. Error: ' + err.message + ', Stacktrace: ' + err.stack);
-            }
+            adapter.log.info(`Registering for appliance events at Miele API.`);
+            _sse = mieleAPITools.APIregisterForEvents(adapter, _auth);
+            _sse.addEventListener( 'devices', function(result) {
+                adapter.log.info('Received DEVICES message by SSE.');
+                adapter.log.debug('Received devices message by SSE: ' + JSON.stringify(result));
+                splitMieleDevices(JSON.parse(result.data), false);
+            });
+            _sse.addEventListener( 'actions', function(result) {
+                adapter.log.info('Received ACTIONS message by SSE.');
+               // adapter.log.info('EL: Actions: '+ JSON.stringify(result));
+            });
+            _sse.onopen = function() {
+                adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');
+            };
+            _sse.onerror = function (err) {
+                if (err) {
+                    if (err.status === 401 || err.status === 403) {
+                        adapter.log.error('not authorized');
+                    } else  if (err.status) adapter.log.error( JSON.stringify(err));
+                }
+            };
         } else {
             adapter.log.error('[main] APIGetAccessToken returned neither a token nor an errormessage. Returned value=[' + JSON.stringify(_auth)+']');
         }

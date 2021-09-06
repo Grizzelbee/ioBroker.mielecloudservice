@@ -13,6 +13,7 @@
 // required files to load
 const mieleTools = require('./miele-Tools.js');
 const mieleConst = require('./miele-constants.js');
+const mieleAPITools = require("./miele-apiTools.js");
 
 
 /**
@@ -738,14 +739,7 @@ module.exports.createArray = function(adapter, setup, path, description, value){
         if (items > 1){
             MyPath = path + '_' + n;
         }
-        if (value[n].value_localized !== null){
-            adapter.log.debug('createArray: Path:['   + MyPath  + ']');
-            adapter.log.debug('createArray:  value:[' + JSON.stringify(value)   + ']');
-            adapter.log.debug('createArray:  OrgUnit: [' + value[n].unit + ']');
-            mieleTools.createNumber(adapter, setup, MyPath, description, Number.parseInt(value[n].value_localized), value[n].unit, 'value.temperature')
-        } else {
-            adapter.log.debug('createArray: Invalid values detected. Skipped creating this data point.');
-        }
+        mieleTools.createNumber(adapter, setup, MyPath, description, Number.parseInt(value[n].value_localized), value[n].unit, 'value.temperature')
     }
 }
 
@@ -810,10 +804,12 @@ module.exports.adapterConfigIsValid = function(adapter) {
         adapter.log.warn('OAuth2_vg is missing.');
         configIsValid = false;
     }
+    /*
     if ('' === adapter.config.pollinterval) {
         adapter.log.warn('PollInterval is missing.');
         configIsValid = false;
     }
+    */
     return configIsValid;
 }
 
@@ -931,6 +927,7 @@ module.exports.createStateConnected = function(adapter, setup, path, value){
  */
 module.exports.createStateSignalInUse = function(adapter, setup, path, value){
     adapter.log.debug(`createStateSignalInUse: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
                                   setup,
                              path + '.signalInUse',
@@ -955,6 +952,7 @@ module.exports.createStateSignalInUse = function(adapter, setup, path, value){
  */
 module.exports.createStateSignalInfo = function(adapter, setup, path, value){
     adapter.log.debug(`createStateSignalInfo: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
         setup,
         path + '.signalInfo',
@@ -1060,6 +1058,52 @@ module.exports.createStateSignalDoor = function(adapter, setup, path, value){
 }
 
 
+/**
+ * addPrograms
+ *
+ * adds the available programs for the given device to the object tree
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {object} _auth Object with authorization information for Miele API
+ * @param {boolean} setup indicator whether the devices need to setup or only states are to be updated
+ * @param {string} path path where the data point is going to be created
+ * @param {string} device The device to query the programs for
+ *
+ * @returns {object} common.states object to configure the available programs for a device
+ */
+module.exports.addPrograms = async function(adapter, setup, _auth, path, device){
+    adapter.log.debug(`addPrograms: Path[${path}], setup: [${setup}], path: [${path}], device: ${device}`);
+    const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
+    adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
+    if (typeof programs === 'undefined') {
+        return;
+    } else {
+        let result = {};
+        for (const prog in programs) {
+            adapter.log.warn(`Prog: ${JSON.stringify(programs[prog])}`);
+            if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')) {
+                result[programs[prog].programId] = programs[prog].program;
+                adapter.log.warn(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
+            }
+        }
+        adapter.log.debug(`Resulting Progs: ${JSON.stringify(result)}`);
+        mieleTools.createExtendObject(adapter, path + '.ACTIONS.Program', {
+            type: 'state',
+            common: {
+                "name": 'List of all supported programs.',
+                "read": true,
+                "write": true,
+                "role": 'state',
+                "type": 'number',
+                "states": result
+            },
+            native: {}
+        }, null);
+        adapter.subscribeStates(path + '.ACTIONS.Program');
+    }
+}
+
+
 
 /**
  * createStateSignalFailure
@@ -1075,6 +1119,7 @@ module.exports.createStateSignalDoor = function(adapter, setup, path, value){
  */
 module.exports.createStateSignalFailure = function(adapter, setup, path, value){
     adapter.log.debug(`createStateSignalFailure: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
         setup,
         path + '.signalFailure',
@@ -1236,19 +1281,21 @@ module.exports.createStateDryingStep = async function(adapter, setup, path, valu
  * @param adapter {object} link to the adapter instance
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  * @param path {string} path where the data point is going to be created
- * @param remainingTime {object} array that contains the remaining time in format [hours, minutes]
+ * @param currentDeviceState {object} array that contains the remaining time in format [hours, minutes]
+ * @param currentDeviceState.remainingTime {string} array that contains the remaining time in format [hours, minutes]
+ * @param currentDeviceState.status.value_raw {number} current state of the device
  *
  * @returns promise {promise}
  */
-module.exports.createStateEstimatedEndTime = async function(adapter, setup, path, remainingTime){
-    adapter.log.debug(`createStateEstimatedEndTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${remainingTime.toString()}]`);
+module.exports.createStateEstimatedEndTime = async function(adapter, setup, path, currentDeviceState){
+    adapter.log.debug(`createStateEstimatedEndTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(currentDeviceState)}]`);
     let timeToShow = '';
-    if ( remainingTime[0]+remainingTime[1] ===0 ){
+    if ( parseInt(currentDeviceState.status.value_raw) < 2 || currentDeviceState.remainingTime[0] + currentDeviceState.remainingTime[1] === 0 ){
         adapter.log.debug('No EstimatedEndTime to show!');
     } else {
         let now = new Date;
         let estimatedEndTime = new Date;
-        estimatedEndTime.setMinutes((now.getMinutes() + ((remainingTime[0]*60) + (remainingTime[1]*1))));
+        estimatedEndTime.setMinutes((now.getMinutes() + ((currentDeviceState.remainingTime[0]*60) + (currentDeviceState.remainingTime[1]*1))));
         timeToShow = estimatedEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
@@ -1392,7 +1439,7 @@ module.exports.createStateElapsedTime = function(adapter, setup, path, value){
  * @param value {object} array value to set to the data point
  */
 module.exports.createStateTargetTemperature = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateTargetTemperature: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
+    adapter.log.debug(`createStateTargetTemperature: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(value)}]`);
     mieleTools.createArray( adapter,
         setup,
         path + '.targetTemperature',
