@@ -165,6 +165,7 @@
         ],
         "license": "MIT",
         "tier": 2,
+        "materialize": true,
         "messagebox": true,
         "subscribe": "messagebox",
         "plugins": {
