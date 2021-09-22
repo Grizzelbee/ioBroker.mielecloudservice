@@ -1080,10 +1080,10 @@ module.exports.addPrograms = async function(adapter, setup, _auth, path, device)
     } else {
         let result = {};
         for (const prog in programs) {
-            adapter.log.warn(`Prog: ${JSON.stringify(programs[prog])}`);
+            adapter.log.debug(`Prog: ${JSON.stringify(programs[prog])}`);
             if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')) {
                 result[programs[prog].programId] = programs[prog].program;
-                adapter.log.warn(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
+                adapter.log.debug(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
             }
         }
         adapter.log.debug(`Resulting Progs: ${JSON.stringify(result)}`);
