@@ -126,14 +126,14 @@ module.exports.addPowerSwitch = async function(adapter, path, actions){
                 "read": true,
                 "write": state !== 'None',
                 "role": 'switch.power',
-                "type": 'string',
-                "states":{'On':'On', 'Off':'Off', 'None':'None'}
+                "type": 'boolean',
+                "states":{true:'On', false:'Off'}
             },
             native: {}
         }
         , () => {
             adapter.subscribeStates(path + '.ACTIONS.Power');
-            adapter.setState(path + '.ACTIONS.Power', state, true);
+            adapter.setState(path + '.ACTIONS.Power', state==='On', true);
         });
 }
 
