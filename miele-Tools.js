@@ -1075,9 +1075,7 @@ module.exports.addPrograms = async function(adapter, setup, _auth, path, device)
     adapter.log.debug(`addPrograms: Path[${path}], setup: [${setup}], path: [${path}], device: ${device}`);
     const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
     adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
-    if (typeof programs === 'undefined') {
-        return;
-    } else {
+    if (typeof programs !== 'undefined') {
         let result = {};
         for (const prog in programs) {
             adapter.log.debug(`Prog: ${JSON.stringify(programs[prog])}`);
