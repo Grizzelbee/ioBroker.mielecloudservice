@@ -228,9 +228,9 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'Pause': currentAction = {'processAction':mieleConst.PAUSE};
             break;
         case 'Power':
-            if (value ){
+            if (value === 'true'){
                 currentAction = {'powerOn':true};
-            } else {
+            } else if (value === 'false'){
                 currentAction = {'powerOff':true};
             }
             break;
@@ -278,6 +278,10 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             endpoint = '/actions'
         }
         adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
+        if (typeof currentAction === 'undefined'){
+            adapter.log.warn('No action defined to execute. NOT executing hence this will cause an error.');
+            return;
+        }
         const result = await APISendRequest(adapter, auth, 'v1/devices/' +  knownDevices[device].API_Id + endpoint, 'PUT', currentAction);
         await mieleTools.createString(adapter, setup,currentPath + '.Action_Information', 'Additional Information returned from API.', action + ': ' + result.message);
         adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
