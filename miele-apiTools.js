@@ -228,9 +228,9 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'Pause': currentAction = {'processAction':mieleConst.PAUSE};
             break;
         case 'Power':
-            if (value === 'On'){
+            if (value ){
                 currentAction = {'powerOn':true};
-            } else if (value === 'Off'){
+            } else {
                 currentAction = {'powerOff':true};
             }
             break;
