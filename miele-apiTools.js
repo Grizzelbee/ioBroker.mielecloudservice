@@ -228,9 +228,9 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'Pause': currentAction = {'processAction':mieleConst.PAUSE};
             break;
         case 'Power':
-            if (value === 'true'){
+            if (value === true || value === 'true') {
                 currentAction = {'powerOn':true};
-            } else if (value === 'false'){
+            } else if (value === false || value === 'false'){
                 currentAction = {'powerOff':true};
             }
             break;
@@ -287,8 +287,8 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
         await mieleAPITools.refreshMieleData(adapter, auth);
     } catch(err) {
-        await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', err.message);
-        adapter.log.error('[APIStartAction] ' + err.message);
+        await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', err.hasOwnProperty('message')?err.message:err);
+        adapter.log.error('[APIStartAction] ' + err.hasOwnProperty('message')?err.message:err);
     }
 }
 
