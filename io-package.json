@@ -144,7 +144,7 @@
         "mode": "daemon",
         "compact": true,
         "icon": "mielecloudservice.svg",
-        "extIcon": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/admin/mielecloudservice.svg",
+        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.svg",
         "adminUI": {
             "config": "materialize"
         },
@@ -152,7 +152,7 @@
         "keywords": [
             "MieleCloudService"
         ],
-        "readme": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/README.md",
+        "readme": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/README.md",
         "loglevel": "info",
         "type": "household",
         "connectionType": "cloud",
