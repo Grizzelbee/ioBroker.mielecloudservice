@@ -93,10 +93,10 @@ function getPowerState(adapter, path, actions){
     return new Promise(resolve => {
         if ( actions.powerOn && !actions.powerOff ) {
             adapter.log.debug(`[checkPowerAction]: Device [${path}]: PowerOn is permitted!`);
-            resolve('Off');
+            resolve(false);
         } else if ( !actions.powerOn && actions.powerOff ) {
             adapter.log.debug(`[checkPowerAction]: Device [${path}]: PowerOff is permitted!`);
-            resolve('On');
+            resolve(true);
         } else {
             adapter.log.debug(`[checkPowerAction]: Device [${path}]: PowerOn=${actions.powerOn} and PowerOff=${actions.powerOff}!! Setting to NONE.`);
             resolve('None');
@@ -133,7 +133,7 @@ module.exports.addPowerSwitch = async function(adapter, path, actions){
         }
         , () => {
             adapter.subscribeStates(path + '.ACTIONS.Power');
-            adapter.setState(path + '.ACTIONS.Power',  Boolean(state).toString(), true);
+            adapter.setState(path + '.ACTIONS.Power',  state, true);
         });
 }
 
