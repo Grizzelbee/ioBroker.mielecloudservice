@@ -407,7 +407,7 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         } else {
             // Something happened in setting up the request that triggered an Error
             adapter.log.error('Something happened in setting up the request that triggered an Error:');
-            adapter.log.error('Error', error.message);
+            adapter.log.error(`Error: [${ error.hasOwnProperty(message) ? error.message : JSON.stringify(error) }]`);
         }
     }
 }
