@@ -371,7 +371,10 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         adapter.log.debug('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
         if (error.response) {
             switch (error.response.status) {
-                case 400: adapter.log.info(`The API returned http-error 400: ${error.response.data.message}.`);
+                case 400: {
+                    const device = Endpoint.split('/', 3).pop();
+                    adapter.log.info(`The API returned http-error 400: ${error.response.data.message} for device: [${device}].`);
+                }
                     return;
                 case 401:
                     try {
@@ -385,7 +388,7 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
                     adapter.log.warn('Device/fabNumber is unknown. Disabling all actions.');
                     return( {"processAction":[],"light":[],"ambientLight":[],"startTime":[],"ventilationStep":[],"programId":[],"targetTemperature":[],"deviceName":false,"powerOn":false,"powerOff":false,"colors":[],"modes":[]} );
                 case 500:
-                    adapter.log.warn('HTTP 500: Internal Server Error @Miele-API servers. There is nothing you can do but waiting if if solves itself or get in contact with miele.');
+                    adapter.log.warn('HTTP 500: Internal Server Error @Miele-API servers. There is nothing you can do but waiting if if solves itself or get in contact with Miele.');
                     return;
                 case 504:
                     adapter.log.warn('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');

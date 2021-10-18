@@ -1068,36 +1068,37 @@ module.exports.createStateSignalDoor = function(adapter, setup, path, value){
  * @param {boolean} setup indicator whether the devices need to setup or only states are to be updated
  * @param {string} path path where the data point is going to be created
  * @param {string} device The device to query the programs for
+ * @param {string} programs[].program name of the program
  *
  * @returns {object} common.states object to configure the available programs for a device
  */
 module.exports.addPrograms = async function(adapter, setup, _auth, path, device){
     adapter.log.debug(`addPrograms: Path[${path}], setup: [${setup}], path: [${path}], device: ${device}`);
-    const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
-    adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
-    if (typeof programs !== 'undefined') {
-        let result = {};
-        for (const prog in programs) {
-            adapter.log.debug(`Prog: ${JSON.stringify(programs[prog])}`);
-            if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')) {
-                result[programs[prog].programId] = programs[prog].program;
-                adapter.log.debug(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
+    if (setup) {
+        const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
+        adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
+        if (typeof programs !== 'undefined') {
+            // let result = {};
+            for (const prog in programs) {
+                adapter.log.debug(`Prog: ${JSON.stringify(programs[prog])}`);
+                if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')) {
+                    // result[programs[prog].programId] = programs[prog].program;
+                    adapter.log.debug(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
+                    mieleTools.createExtendObject(adapter, path + '.ACTIONS.' + programs[prog].program.replace( ' ', '_') , {
+                        type: 'state',
+                        common: {
+                            "name": programs[prog].program,
+                            "read": true,
+                            "write": true,
+                            "role": 'button',
+                            "type": 'boolean'
+                        },
+                        native: {"progId": programs[prog].programId}
+                    }, null);
+                    adapter.subscribeStates(path + '.ACTIONS.Program');
+                }
             }
         }
-        adapter.log.debug(`Resulting Progs: ${JSON.stringify(result)}`);
-        mieleTools.createExtendObject(adapter, path + '.ACTIONS.Program', {
-            type: 'state',
-            common: {
-                "name": 'List of all supported programs.',
-                "read": true,
-                "write": true,
-                "role": 'state',
-                "type": 'number',
-                "states": result
-            },
-            native: {}
-        }, null);
-        adapter.subscribeStates(path + '.ACTIONS.Program');
     }
 }
 
