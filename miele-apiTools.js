@@ -382,10 +382,13 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
                     }
                     return;
                 case 404:
-                    adapter.log.debug('Device/fabNumber is unknown. Disabling all actions.');
+                    adapter.log.warn('Device/fabNumber is unknown. Disabling all actions.');
                     return( {"processAction":[],"light":[],"ambientLight":[],"startTime":[],"ventilationStep":[],"programId":[],"targetTemperature":[],"deviceName":false,"powerOn":false,"powerOff":false,"colors":[],"modes":[]} );
+                case 500:
+                    adapter.log.warn('HTTP 500: Internal Server Error @Miele-API servers. There is nothing you can do but waiting if if solves itself or get in contact with miele.');
+                    return;
                 case 504:
-                    adapter.log.error('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
+                    adapter.log.warn('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
                     return;
             }
             // Request made and server responded
