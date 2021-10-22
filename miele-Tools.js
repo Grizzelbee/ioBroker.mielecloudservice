@@ -199,6 +199,47 @@ module.exports.addLightSwitch = async function(adapter, path, actions, value){
             });
 }
 
+/**
+ * getStartTimeFormatted
+ * returns a 00:00 formatted version of the given start time
+ *
+ * @param {object} starttime the start time array as given by miele API
+ */
+module.exports.getStartTimeFormatted = function(starttime){
+    const hours   = parseInt(starttime[0]);
+    const minutes = parseInt(starttime[1]);
+    return `${hours<10 ? '0' + hours : hours}:${minutes<10 ? '0' + minutes : minutes}`
+}
+
+
+/**
+ * Function addStartTimeAction
+ *
+ * Adds
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the action button is going to be created
+ * @param actions {object} JSON containing the currently permitted actions
+ * @param value {string} A hours:minutes formatted time string
+ *
+ */
+module.exports.addStartTimeAction = async function(adapter, path, actions, value){
+    adapter.log.debug('addStartTimeAction: Path['+ path +']');
+    mieleTools.createExtendObject(adapter, path + '.ACTIONS.StartTime' , {
+            type: 'state',
+            common: {"name": 'relative start time of the device',
+                "read": true,
+                "write": true,
+                "role": 'switch',
+                "type": 'string'
+            },
+            native: {}
+        }
+        , () => {
+            adapter.subscribeStates(path + '.ACTIONS.StartTime');
+            adapter.setState(path + '.ACTIONS.StartTime', value , true);
+        });
+}
 
 
 /**
@@ -1399,7 +1440,7 @@ module.exports.createStateStartTime = function(adapter, setup, path, startTime){
         path + '.startTime',
         'The StartTime equals the relative starting time',
         startTime,
-        '');
+        'value');
 }
 
 
