@@ -71,7 +71,7 @@ function startadapter(options) {
                 // you can use the ack flag to detect if it is status (true) or command (false)
                 adapter.log.debug('stateChange: [' + id + '] [' + JSON.stringify(state)+']');
                 const action = id.split('.').pop();
-                const deviceId = id.split('.', 4).pop();
+                const deviceId = id.split('.', 3).pop();
                 adapter.log.debug(`stateChange: DeviceId [${deviceId}], requested action [${action}], state [${state.val}]`);
                 const actions = await mieleAPITools.getPermittedActions(adapter, _auth,  _knownDevices[deviceId].API_Id );
                 adapter.log.debug(`stateChange: permitted actions for device [${deviceId}]->[${JSON.stringify(actions)}]`);
@@ -125,150 +125,6 @@ function startadapter(options) {
 
 
 /**
- * Function getDeviceObj
- *
- * generates the deviceObj with specific information for this individual device type
- *
- * @param deviceTypeID {number} Miele device type ID which indicates the current device type
- */
-function getDeviceObj(deviceTypeID){
-    let deviceObj = {deviceFolder:'', name:'', icon:''};
-    switch (deviceTypeID) {
-        case 1 : // 1 = WASHING MACHINE*
-            deviceObj.deviceFolder = 'Washing_machines';
-            deviceObj.name  = 'Washing machines reported by Miele@Home API';
-            deviceObj.icon = 'icons/01_washingmachine.svg'
-            break;
-        case 2: // 2 = TUMBLE DRYER*
-            deviceObj.deviceFolder = 'Tumble_dryers';
-            deviceObj.name  = 'Tumble dryers reported by Miele@Home API';
-            deviceObj.icon = 'icons/02_dryer.svg'
-            break;
-        case 24: // 24 = WASHER DRYER*
-            deviceObj.deviceFolder = 'Washer_Dryers';
-            deviceObj.name  = 'Washer dryers reported by Miele@Home API';
-            deviceObj.icon = 'icons/24_washerdryer.svg'
-            break;
-        case 7: // 7 = DISHWASHER*
-        case 8: // 8 = DISHWASHER SEMI-PROF
-            deviceObj.deviceFolder = 'Dishwashers';
-            deviceObj.name  = 'Dishwashers reported by Miele@Home API';
-            deviceObj.icon = 'icons/07_dishwasher.svg'
-            break;
-        case 12: // 12 = OVEN*
-        case 39: // 39 = DOUBLE OVEN
-        case 40: // 40 = DOUBLE STEAM OVEN
-        case 41: // 41 = DOUBLE STEAM OVEN COMBINATION
-        case 43: // 43 = DOUBLE MICROWAVE OVEN
-        case 45: // 45 = STEAM OVEN MICROWAVE COMBINATION*
-            deviceObj.deviceFolder = 'Ovens';
-            deviceObj.description  = 'Ovens reported by Miele@Home API';
-            deviceObj.icon = 'icons/12_oven.svg'
-            break;
-        case 13: // 13 = OVEN MICROWAVE*
-            deviceObj.deviceFolder = 'Ovens';
-            deviceObj.description  = 'Ovens reported by Miele@Home API';
-            deviceObj.icon = 'icons/13_ovenmicrowave.svg'
-            break;
-        case 15: // 15 = STEAM OVEN*
-            deviceObj.deviceFolder = 'Ovens';
-            deviceObj.description  = 'Ovens reported by Miele@Home API';
-            deviceObj.icon = 'icons/15_steamoven.svg'
-            break;
-        case 31: // 31 = STEAM OVEN COMBINATION*
-            deviceObj.deviceFolder = 'Ovens';
-            deviceObj.description  = 'Ovens reported by Miele@Home API';
-            deviceObj.icon = 'icons/31_steamovencombination.svg'
-            break;
-        case 67: // 67 = DIALOG OVEN*
-            deviceObj.deviceFolder = 'Ovens';
-            deviceObj.description  = 'Ovens reported by Miele@Home API';
-            deviceObj.icon = 'icons/67_dialogoven.svg'
-            break;
-        case 14: // 14 = HOB HIGHLIGHT*
-        case 27: // 27 = HOB INDUCTION*
-        case 28: // 28 = HOB GAS
-            deviceObj.deviceFolder = 'Hobs';
-            deviceObj.name  = 'Hobs reported by Miele@Home API';
-            deviceObj.icon = 'icons/14_hobhighlight.svg'
-            break;
-        case 16: // 16 = MICROWAVE*
-        case 42: // 42 = DOUBLE MICROWAVE
-            deviceObj.deviceFolder = 'Microwaves';
-            deviceObj.name  = 'Microwaves reported by Miele@Home API';
-            deviceObj.icon = 'icons/16_microwave.svg'
-            break;
-        case 17: // 17 = COFFEE SYSTEM*
-            deviceObj.deviceFolder = 'Coffee_Systems';
-            deviceObj.name  = 'Coffee Systems reported by Miele@Home API';
-            deviceObj.icon = 'icons/17_coffeesystem.svg'
-            break;
-        case 18: // 18 = HOOD*
-            deviceObj.deviceFolder = 'Hoods';
-            deviceObj.name  = 'Hoods reported by Miele@Home API';
-            deviceObj.icon = 'icons/18_hood.svg'
-            break;
-        case 19: // 19 = FRIDGE*
-            deviceObj.deviceFolder = 'Fridges';
-            deviceObj.name  = 'Fridges reported by Miele@Home API';
-            deviceObj.icon = 'icons/19_fridge.svg'
-            deviceObj.fridgeZone = 1;
-            break;
-        case 20: // 20 = FREEZER*
-            deviceObj.deviceFolder = 'Freezers';
-            deviceObj.name  = 'Freezers reported by Miele@Home API';
-            deviceObj.icon = 'icons/20_freezer.svg'
-            deviceObj.freezerZone = 1;
-            break;
-        case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
-            deviceObj.deviceFolder = 'Fridge/Freezer_Combination';
-            deviceObj.name  = 'Fridge/Freezer combinations reported by Miele@Home API';
-            deviceObj.icon = 'icons/21_fridgefreezer.svg'
-            deviceObj.fridgeZone = 1;
-            deviceObj.freezerZone = 2;
-            break;
-        case 32: // 32 = WINE CABINET*
-        case 33: // 33 = WINE CONDITIONING UNIT
-        case 34: // 34 = WINE STORAGE CONDITIONING UNIT
-            deviceObj.deviceFolder = 'Wine_cabinets';
-            deviceObj.name  = 'Wine cabinets reported by Miele@Home API';
-            deviceObj.icon = 'icons/32_winecabinet.svg'
-            deviceObj.fridgeZone = 1;
-            break;
-        case 68: // 68 = WINE CABINET FREEZER COMBINATION
-            deviceObj.deviceFolder = 'Wine_cabinets';
-            deviceObj.name  = 'Wine cabinets reported by Miele@Home API';
-            deviceObj.icon = 'icons/32_winecabinet.svg'
-            deviceObj.fridgeZone = 1;
-            deviceObj.freezerZone = 2;
-            break;
-        case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
-            deviceObj.deviceFolder = 'Vacuum_cleaners';
-            deviceObj.name  = 'Vacuum cleaners reported by Miele@Home API';
-            deviceObj.icon = 'icons/23_roboticvacuumcleaner.svg'
-            break;
-        case 25: // 25 = DISH WARMER*
-            deviceObj.deviceFolder = 'Dish_warmers';
-            deviceObj.name  = 'Dish warmers reported by Miele@Home API';
-            deviceObj.icon = 'icons/25_dishwarmer.svg'
-            break;
-        case 48: // 48 = VACUUM DRAWER
-            deviceObj.deviceFolder = 'Vacuum_drawers';
-            deviceObj.name  = 'Vacuum drawers reported by Miele@Home API';
-            deviceObj.icon = 'icons/00_genericappliance.svg'
-            break;
-    }
-    mieleTools.createExtendObject(adapter, deviceObj.deviceFolder, {
-        type: 'folder',
-        common: deviceObj,
-        native: {}
-    }, null);
-    return deviceObj;
-}
-
-
-
-/**
  * Function splitMieleDevices
  *
  * splits the json data received from cloud API into separate device
@@ -294,28 +150,131 @@ async function splitMieleDevices(devices, setup){
 
 
 /**
+ * Function getDeviceObj
+ *
+ * generates the deviceObj with specific information for this individual device type
+ *
+ * @param deviceTypeID {number} Miele device type ID which indicates the current device type
+ */
+function getDeviceObj(deviceTypeID){
+    let deviceObj = {name:'', icon:''};
+    switch (deviceTypeID) {
+        case 1 : // 1 = WASHING MACHINE*
+            deviceObj.icon = 'icons/01_washingmachine.svg'
+            break;
+        case 2: // 2 = TUMBLE DRYER*
+            deviceObj.icon = 'icons/02_dryer.svg'
+            break;
+        case 24: // 24 = WASHER DRYER*
+            deviceObj.icon = 'icons/24_washerdryer.svg'
+            break;
+        case 7: // 7 = DISHWASHER*
+        case 8: // 8 = DISHWASHER SEMI-PROF
+            deviceObj.icon = 'icons/07_dishwasher.svg'
+            break;
+        case 12: // 12 = OVEN*
+        case 39: // 39 = DOUBLE OVEN
+        case 40: // 40 = DOUBLE STEAM OVEN
+        case 41: // 41 = DOUBLE STEAM OVEN COMBINATION
+        case 43: // 43 = DOUBLE MICROWAVE OVEN
+        case 45: // 45 = STEAM OVEN MICROWAVE COMBINATION*
+            deviceObj.icon = 'icons/12_oven.svg'
+            break;
+        case 13: // 13 = OVEN MICROWAVE*
+            deviceObj.icon = 'icons/13_ovenmicrowave.svg'
+            break;
+        case 15: // 15 = STEAM OVEN*
+            deviceObj.icon = 'icons/15_steamoven.svg'
+            break;
+        case 31: // 31 = STEAM OVEN COMBINATION*
+            deviceObj.icon = 'icons/31_steamovencombination.svg'
+            break;
+        case 67: // 67 = DIALOG OVEN*
+            deviceObj.icon = 'icons/67_dialogoven.svg'
+            break;
+        case 14: // 14 = HOB HIGHLIGHT*
+        case 27: // 27 = HOB INDUCTION*
+        case 28: // 28 = HOB GAS
+            deviceObj.icon = 'icons/14_hobhighlight.svg'
+            break;
+        case 16: // 16 = MICROWAVE*
+        case 42: // 42 = DOUBLE MICROWAVE
+            deviceObj.icon = 'icons/16_microwave.svg'
+            break;
+        case 17: // 17 = COFFEE SYSTEM*
+            deviceObj.icon = 'icons/17_coffeesystem.svg'
+            break;
+        case 18: // 18 = HOOD*
+            deviceObj.icon = 'icons/18_hood.svg'
+            break;
+        case 19: // 19 = FRIDGE*
+            deviceObj.icon = 'icons/19_fridge.svg'
+            deviceObj.fridgeZone = 1;
+            break;
+        case 20: // 20 = FREEZER*
+            deviceObj.icon = 'icons/20_freezer.svg'
+            deviceObj.freezerZone = 1;
+            break;
+        case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
+            deviceObj.icon = 'icons/21_fridgefreezer.svg'
+            deviceObj.fridgeZone = 1;
+            deviceObj.freezerZone = 2;
+            break;
+        case 32: // 32 = WINE CABINET*
+        case 33: // 33 = WINE CONDITIONING UNIT
+        case 34: // 34 = WINE STORAGE CONDITIONING UNIT
+            deviceObj.icon = 'icons/32_winecabinet.svg'
+            deviceObj.fridgeZone = 1;
+            break;
+        case 68: // 68 = WINE CABINET FREEZER COMBINATION
+            deviceObj.icon = 'icons/32_winecabinet.svg'
+            deviceObj.fridgeZone = 1;
+            deviceObj.freezerZone = 2;
+            break;
+        case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
+            deviceObj.icon = 'icons/23_roboticvacuumcleaner.svg'
+            break;
+        case 25: // 25 = DISH WARMER*
+            deviceObj.icon = 'icons/25_dishwarmer.svg'
+            break;
+        case 48: // 48 = VACUUM DRAWER
+            deviceObj.icon = 'icons/00_genericappliance.svg'
+            break;
+        default: deviceObj.icon =  'icons/0_genericappiance.svg';
+    }
+    return deviceObj;
+}
+
+
+/**
  * Function parseMieleDevice
  *
  * parses the JSON of each single device and creates the needed states
  *
  * @param {object} mieleDevice the JSON for a single device
- * @param {string} mieleDevice.ident.type.value_localized
- * @param {number} mieleDevice.ident.type.value_raw
+ * @param {string} mieleDevice.ident the ident number of the device
+ * @param {string} mieleDevice.ident.deviceName the nickname of the device
+ * @param {string} mieleDevice.ident.type.value_localized localized name of the device type
+ * @param {number} mieleDevice.ident.type.value_raw numerical representation of the device type
  * @param {string} mieleDevice.ident.deviceIdentLabel.fabNumber SerialNumber of the device
  * @param {boolean} setup  indicator whether the devices need to setup or only states are to be updated
  * @param {string} API_Id  the API-ID for the current device
  */
 async function parseMieleDevice(mieleDevice, setup, API_Id){
     adapter.log.debug('This is a ' + mieleDevice.ident.type.value_localized );
-
     const deviceObj = getDeviceObj(mieleDevice.ident.type.value_raw); // create folder for device
     if (setup) {
         _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber]=deviceObj;
+        if (mieleDevice.ident.deviceName === '') {
+            _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].name = mieleDevice.ident.type.value_localized;
+        } else {
+            _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].name = mieleDevice.ident.deviceName;
+        }
         _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].API_Id = API_Id;
         _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].deviceType=mieleDevice.ident.type.value_raw;
         adapter.log.debug(`_knownDevices=${JSON.stringify(_knownDevices)}`)
     }
-    await addMieleDevice(deviceObj.deviceFolder, mieleDevice, setup);
+    await addMieleDevice(mieleDevice, setup);
 }
 
 
@@ -325,21 +284,18 @@ async function parseMieleDevice(mieleDevice, setup, API_Id){
  *
  * adds the current miele device to the device tree beneath it's device type folder (channel)
  *
- * @param path {string} path where the device is to be created (aka deviceFolder)
  * @param mieleDevice {object} the JSON for a single device
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  */
-async function addMieleDevice(path, mieleDevice, setup){
-    let newPath = path + '.' + mieleDevice.ident.deviceIdentLabel.fabNumber;
+async function addMieleDevice(mieleDevice, setup){
+    let newPath = mieleDevice.ident.deviceIdentLabel.fabNumber;
     adapter.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
-    let icon = 'icons/0_genericappiance.svg';
-    if ( mieleDevice.ident.deviceIdentLabel.fabNumber  && _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].icon) icon=_knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].icon;
     mieleTools.createExtendObject(adapter, newPath, {
         type: 'device',
-        common: {name:   (mieleDevice.ident.deviceName === ''? mieleDevice.ident.type.value_localized: mieleDevice.ident.deviceName),
+        common: {name:   _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].name,
             read: true,
             write: false,
-            icon: icon
+            icon: _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].icon
         },
         native: {}
     }, null);
@@ -387,7 +343,6 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
 
     // checkPermittedActions
     const actions = await mieleAPITools.getPermittedActions(adapter, _auth,  _knownDevices[currentDevice.ident.deviceIdentLabel.fabNumber].API_Id );
-    adapter.log.debug('CurrentlyPermittedActions: ' + JSON.stringify(actions));
     // programs
     await mieleTools.addPrograms(adapter, setup, _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
 

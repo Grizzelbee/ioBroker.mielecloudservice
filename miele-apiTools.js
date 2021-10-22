@@ -203,7 +203,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
     let currentAction;
     let paths = path.split('.');    // transform into array
     paths.pop();                    // remove last element of path
-    let device = paths[3];          // device is the fourth element of the path array
+    let device = paths[2];          // device is the fourth element of the path array
     let currentPath = paths.join('.');         // join all elements back together
     adapter.log.debug("APIStartAction: received Action: ["+action+"] with value: ["+value+"] for device ["+device+"] / path:["+currentPath+"]");
     switch (action) {
@@ -228,9 +228,9 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         case 'Pause': currentAction = {'processAction':mieleConst.PAUSE};
             break;
         case 'Power':
-            if (value === 'On'){
+            if (value === true || value === 'true') {
                 currentAction = {'powerOn':true};
-            } else if (value === 'Off'){
+            } else if (value === false || value === 'false'){
                 currentAction = {'powerOff':true};
             }
             break;
@@ -278,13 +278,17 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             endpoint = '/actions'
         }
         adapter.log.debug("APIStartAction: Executing Action: [" +JSON.stringify(currentAction) +"]");
+        if (typeof currentAction === 'undefined'){
+            adapter.log.warn('No action defined to execute. NOT executing hence this will cause an error.');
+            return;
+        }
         const result = await APISendRequest(adapter, auth, 'v1/devices/' +  knownDevices[device].API_Id + endpoint, 'PUT', currentAction);
-        await mieleTools.createString(adapter, setup,currentPath + '.Action_Information', 'Additional Information returned from API.', action + ': ' + result.message);
-        adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result.message)}]`);
+        await mieleTools.createString(adapter, setup,currentPath + '.Action_Information', 'Additional Information returned from API.', action + ': ' + result);
+        adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result)}]`);
         await mieleAPITools.refreshMieleData(adapter, auth);
     } catch(err) {
-        await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', err.message);
-        adapter.log.error('[APIStartAction] ' + err.message);
+        await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', err.hasOwnProperty('message')?err.message:err);
+        adapter.log.error('[APIStartAction] ' + err.hasOwnProperty('message')?err.message:err);
     }
 }
 
@@ -339,29 +343,25 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         url: mieleConst.BASE_URL + Endpoint
     };
 
-    function verifyData(verifiedData){
-        return new Promise((resolve) => {
-            switch (verifiedData.status) {
-                case 202:
-                    verifiedData.data =  {"message": "Accepted, processing has not been completed."};
-                    break;
-                case 204: // OK, No Content
-                    verifiedData.data =  {"message": "OK"};
-                    break;
-            }
-            resolve(verifiedData);
-        })
-    }
-
     adapter.log.debug('APISendRequest: Awaiting requested data.');
     try {
         adapter.log.debug('axios options: [' +JSON.stringify(options) + ']');
         const response = await axios(options);
         adapter.log.debug('API returned Status: [' + response.status + ']');
-        adapter.log.debug('API returned Information: [' + response.data.message + ']');
-        const verifiedData = await verifyData(response);
-        adapter.log.debug('verifiedData: [' + verifiedData.data.message + ']');
-        return verifiedData.data;
+        adapter.log.debug('API returned Information: [' +  (response.data.hasOwnProperty('message')? JSON.stringify(response.data.message) : JSON.stringify(response.data)) + ']');
+        if ( response.hasOwnProperty('data')) {
+            if (response.data.hasOwnProperty('message')){
+                return response.data.message;
+            } else {
+                switch (response.status) {
+                    case 202:
+                        return  "Accepted, processing has not been completed.";
+                    case 204: // OK, No Content
+                        return "OK, no content.";
+                    default: return  response.data;
+                }
+            }
+        }
     } catch(error) {
         adapter.log.debug('Given parameters:');
         adapter.log.debug('Auth: [' + JSON.stringify(auth) + ']');
@@ -371,7 +371,10 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         adapter.log.debug('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
         if (error.response) {
             switch (error.response.status) {
-                case 400: adapter.log.info(`The API returned http-error 400: ${error.response.data.message}.`);
+                case 400: {
+                    const device = Endpoint.split('/', 3).pop();
+                    adapter.log.info(`The API returned http-error 400: ${error.response.data.message} for device: [${device}].`);
+                }
                     return;
                 case 401:
                     try {
@@ -382,10 +385,13 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
                     }
                     return;
                 case 404:
-                    adapter.log.debug('Device/fabNumber is unknown. Disabling all actions.');
+                    adapter.log.warn('Device/fabNumber is unknown. Disabling all actions.');
                     return( {"processAction":[],"light":[],"ambientLight":[],"startTime":[],"ventilationStep":[],"programId":[],"targetTemperature":[],"deviceName":false,"powerOn":false,"powerOff":false,"colors":[],"modes":[]} );
+                case 500:
+                    adapter.log.warn('HTTP 500: Internal Server Error @Miele-API servers. There is nothing you can do but waiting if if solves itself or get in contact with Miele.');
+                    return;
                 case 504:
-                    adapter.log.error('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
+                    adapter.log.warn('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
                     return;
             }
             // Request made and server responded
@@ -401,7 +407,7 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         } else {
             // Something happened in setting up the request that triggered an Error
             adapter.log.error('Something happened in setting up the request that triggered an Error:');
-            adapter.log.error('Error', error.message);
+            adapter.log.error(`Error: [${ error.hasOwnProperty(message) ? error.message : JSON.stringify(error) }]`);
         }
     }
 }
