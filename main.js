@@ -645,7 +645,7 @@ async function main() {
             adapter.log.info(`Registering for appliance events at Miele API.`);
             _sse = mieleAPITools.APIregisterForEvents(adapter, _auth);
             _sse.addEventListener( 'devices', function(result) {
-                adapter.log.info('Received DEVICES message by SSE.');
+                // adapter.log.info('Received DEVICES message by SSE.');
                 adapter.log.debug('Received devices message by SSE: ' + JSON.stringify(result));
                 splitMieleDevices(JSON.parse(result.data), false);
             });
