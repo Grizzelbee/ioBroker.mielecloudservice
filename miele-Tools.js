@@ -66,7 +66,7 @@ module.exports.addActionButton = function(adapter, path, action, description, bu
     mieleTools.createExtendObject(adapter, path + '.ACTIONS.' + action, {
             type: 'state',
             common: {"name": description,
-                "read": false,
+                "read": true,
                 "write": true,
                 "role": 'button',
                 "type": 'boolean'
@@ -80,9 +80,9 @@ module.exports.addActionButton = function(adapter, path, action, description, bu
 }
 
 /**
- * Function addPowerSwitch
+ * Function getPowerState
  *
- * Adds an Power switch to the device tree and subscribes for changes to it
+ *
  *
  * @param adapter {object} link to the adapter instance
  * @param path {string} path where the action button is going to be created
@@ -133,7 +133,7 @@ module.exports.addPowerSwitch = async function(adapter, path, actions){
         }
         , () => {
             adapter.subscribeStates(path + '.ACTIONS.Power');
-            adapter.setState(path + '.ACTIONS.Power',  state, true);
+            adapter.setState(path + '.ACTIONS.Power',  state==='true', true);
         });
 }
 
