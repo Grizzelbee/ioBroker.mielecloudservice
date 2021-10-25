@@ -650,8 +650,8 @@ async function main() {
                 splitMieleDevices(JSON.parse(result.data), false);
             });
             _sse.addEventListener( 'actions', function(result) {
-                adapter.log.info('Received ACTIONS message by SSE.');
-               // adapter.log.info('EL: Actions: '+ JSON.stringify(result));
+                // adapter.log.info('Received ACTIONS message by SSE.');
+                // adapter.log.info('EL: Actions: '+ JSON.stringify(result));
             });
             _sse.onopen = function() {
                 adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');
