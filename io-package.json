@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "5.0.0",
+        "version": "5.0.1",
         "news": {
+            "5.0.1": {
+                "en": "Bugfix Release\nFixed some minor bugs.",
+                "de": "Bugfix Release\n Einige kleinere Fehler behoben.",
+                "ru": "Выпуск Bugfix \n Исправлены мелкие ошибки.",
+                "pt": "Lançamento de correção de bug \n Corrigido alguns pequenos bugs.",
+                "nl": "Bugfix-release\n Enkele kleine bugs verholpen.",
+                "fr": "Bugfix Release \n Correction de quelques bugs mineurs.",
+                "it": "Rilascio bugfix\nRisolti alcuni bug minori.",
+                "es": "Versión de corrección de errores \n Se corrigieron algunos errores menores.",
+                "pl": "Bugfix Release\n Naprawiono kilka drobnych błędów.",
+                "zh-cn": "错误修正发布\n修正了一些小错误。"
+            },
             "5.0.0": {
                 "en": "BREAKING CHANGE: removed grouping folders\nSwitched from data polling to server sent events and implemented changes for API 1.0.5\nMany fixes - see changelog for details",
                 "de": "BREAKING CHANGE: Gruppierungsordner entfernt\nUmgestellt von Datenabfrage auf vom Server gesendete Ereignisse und Änderungen für API 1.0.5 implementiert\nViele Fixes – siehe Änderungsprotokoll für Details",
