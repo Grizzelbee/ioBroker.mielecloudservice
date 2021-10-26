@@ -69,7 +69,7 @@ function getPowerState(adapter, path, actions){
             resolve(true);
         } else {
             adapter.log.debug(`[checkPowerAction]: Device [${path}]: PowerOn=${actions.powerOn} and PowerOff=${actions.powerOff}!! Setting to NONE.`);
-            resolve(false);
+            resolve(null);
         }
     })
 }
@@ -1082,7 +1082,7 @@ module.exports.addPrograms = async function(adapter, setup, _auth, path, device)
     if (setup) {
         const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
         adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
-        if (typeof programs !== 'undefined') {
+        if (typeof programs !== 'undefined' && programs != 'Error 500: Internal Server Error.') {
             // let result = {};
             for (const prog in programs) {
                 adapter.log.debug(`Prog: ${JSON.stringify(programs[prog])}`);

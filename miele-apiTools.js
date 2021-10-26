@@ -296,7 +296,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         const result = await APISendRequest(adapter, auth, 'v1/devices/' +  knownDevices[device].API_Id + endpoint, 'PUT', currentAction);
         await mieleTools.createString(adapter, setup,currentPath + '.Action_Information', 'Additional Information returned from API.', action + ': ' + result);
         adapter.log.debug(`Result returned from Action(${action})-execution: [${JSON.stringify(result)}]`);
-        await mieleAPITools.refreshMieleData(adapter, auth);
+        await mieleAPITools.refreshMieleData(adapter, auth, device);
     } catch(err) {
         await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', err.hasOwnProperty('message')?err.message:err);
         adapter.log.error('[APIStartAction] ' + err.hasOwnProperty('message')?err.message:err);
@@ -312,11 +312,13 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
  *
  * @param adapter {object} link to the adapter instance
  * @param auth {object}  OAuth2 object containing required credentials
+ * @param {string} device the id of the device to refresh - if empty all devices will be queried
  */
-module.exports.refreshMieleData = async function(adapter, auth){
+module.exports.refreshMieleData = async function(adapter, auth, device){
     adapter.log.debug('refreshMieleData: get data from API');
+    const endpoint = `v1/devices/${device===''?'':device+'/'}?language=${adapter.config.locale}`;
     try {
-        const result = await APISendRequest(adapter, auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
+        const result = await APISendRequest(adapter, auth, endpoint, 'GET', '');
         adapter.log.debug('refreshMieleData: handover all devices data to splitMieleDevices');
         adapter.log.debug('refreshMieleData: data [' + JSON.stringify(result) + ']');
         return result;
@@ -396,13 +398,13 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
                     }
                     return 'Error 401: Authorization failed.';
                 case 404:
-                    adapter.log.warn('Device/fabNumber is unknown. Disabling all actions.');
+                    adapter.log.info('Device/fabNumber is unknown. Disabling all actions.');
                     return( {"processAction":[],"light":[],"ambientLight":[],"startTime":[],"ventilationStep":[],"programId":[],"targetTemperature":[],"deviceName":false,"powerOn":false,"powerOff":false,"colors":[],"modes":[]} );
                 case 500:
-                    adapter.log.warn('HTTP 500: Internal Server Error @Miele-API servers. There is nothing you can do but waiting if if solves itself or get in contact with Miele.');
+                    adapter.log.info('HTTP 500: Internal Server Error @Miele-API servers. There is nothing you can do but waiting if if solves itself or get in contact with Miele.');
                     return 'Error 500: Internal Server Error.';
                 case 504:
-                    adapter.log.warn('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
+                    adapter.log.info('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
                     return 'Error 504: Gateway timeout';
             }
             // Request made and server responded

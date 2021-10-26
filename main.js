@@ -639,7 +639,7 @@ async function main() {
         if (_auth && _auth.hasOwnProperty('access_token') ) {
             adapter.log.info(`Setting up devices ...`);
             // do the first API call and setup all devices returned
-            const result = await mieleAPITools.refreshMieleData( adapter, _auth );
+            const result = await mieleAPITools.refreshMieleData( adapter, _auth, '' );
             await splitMieleDevices(result, true);
             // start refresh scheduler with interval from adapters config
             adapter.log.info(`Registering for appliance events at Miele API.`);
