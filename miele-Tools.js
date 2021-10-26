@@ -1104,6 +1104,8 @@ module.exports.addPrograms = async function(adapter, setup, _auth, path, device)
                     adapter.log.debug(`Subscribed to program: ${path + '.ACTIONS.' + programs[prog].program.replace( ' ', '_')}`);
                 }
             }
+        } else {
+            adapter.log.info(`Sorry. No programs to add for device: ${device}.`);
         }
     }
 }
