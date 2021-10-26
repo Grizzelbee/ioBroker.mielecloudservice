@@ -49,37 +49,6 @@ module.exports.decryptPasswords = function(adapter) {
 
 
 /**
- * Function addActionButton
- *
- * Adds an action button to the device tree and subscribes for changes to it
- *
- * @param adapter {object} link to the adapter instance
- * @param path {string} path where the action button is going to be created
- * @param action {string} name of the action button
- * @param description {string} description of the action button
- * @param buttonType {string} type of the action button (default: button)
- *
- */
-module.exports.addActionButton = function(adapter, path, action, description, buttonType){
-    adapter.log.debug('addActionButton: Path['+ path +']');
-    buttonType = buttonType || "button";
-    mieleTools.createExtendObject(adapter, path + '.ACTIONS.' + action, {
-            type: 'state',
-            common: {"name": description,
-                "read": true,
-                "write": true,
-                "role": 'button',
-                "type": 'boolean'
-            },
-            native: {"type": buttonType // "button"
-            }
-        }
-        , () => {
-            adapter.subscribeStates(path + '.ACTIONS.' + action);
-        });
-}
-
-/**
  * Function getPowerState
  *
  *
@@ -87,6 +56,7 @@ module.exports.addActionButton = function(adapter, path, action, description, bu
  * @param adapter {object} link to the adapter instance
  * @param path {string} path where the action button is going to be created
  * @param actions {object} JSON containing the currently permitted actions
+ * @returns {promise<boolean>} whether power action is permitted or not
  *
  */
 function getPowerState(adapter, path, actions){
@@ -99,7 +69,7 @@ function getPowerState(adapter, path, actions){
             resolve(true);
         } else {
             adapter.log.debug(`[checkPowerAction]: Device [${path}]: PowerOn=${actions.powerOn} and PowerOff=${actions.powerOff}!! Setting to NONE.`);
-            resolve('None');
+            resolve(false);
         }
     })
 }
@@ -133,7 +103,7 @@ module.exports.addPowerSwitch = async function(adapter, path, actions){
         }
         , () => {
             adapter.subscribeStates(path + '.ACTIONS.Power');
-            adapter.setState(path + '.ACTIONS.Power',  state==='true', true);
+            adapter.setState(path + '.ACTIONS.Power',  state, true);
         });
 }
 
@@ -153,13 +123,13 @@ module.exports.addPowerSwitch = async function(adapter, path, actions){
 async function getLightState(adapter, device, actions) {
     return new Promise((resolve) => {
         if ( actions.light.includes(mieleConst.LIGHT_ON) ){
-            adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_On is permitted!`);
+            //adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_On is permitted!`);
             resolve(mieleConst.LIGHT_OFF);
         } else if ( actions.light.includes(mieleConst.LIGHT_OFF) ) {
-            adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_Off is permitted!`);
+            //adapter.log.debug(`[checkLightAction]: Device [${device}]: Light_Off is permitted!`);
             resolve(mieleConst.LIGHT_ON);
         } else {
-            adapter.log.debug(`[checkLightAction]: Device [${device}]: None is permitted!`);
+            //adapter.log.debug(`[checkLightAction]: Device [${device}]: None is permitted!`);
             resolve(0);
         }
     })
@@ -179,9 +149,9 @@ async function getLightState(adapter, device, actions) {
  *
  */
 module.exports.addLightSwitch = async function(adapter, path, actions, value){
-    adapter.log.debug('addLightSwitch: Path['+ path +']');
+    //adapter.log.debug('addLightSwitch: Path['+ path +']');
     const state = await getLightState(adapter, path, actions);
-    adapter.log.debug('addLightSwitch: result from getLightState: ['+ state +']');
+    //adapter.log.debug('addLightSwitch: result from getLightState: ['+ state +']');
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.Light' , {
                 type: 'state',
                 common: {"name": 'Light switch of the device',
@@ -254,7 +224,7 @@ module.exports.addStartTimeAction = async function(adapter, path, actions, value
  *
  */
 module.exports.addSuperCoolingSwitch = function(adapter, setup, path, actions){
-    adapter.log.debug('addSuperCoolingSwitch: Path['+ path +']');
+    //adapter.log.debug('addSuperCoolingSwitch: Path['+ path +']');
     if (setup) {
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.SuperCooling' , {
                 type: 'state',
@@ -289,7 +259,7 @@ module.exports.addSuperCoolingSwitch = function(adapter, setup, path, actions){
  *
  */
 module.exports.addVentilationStepSwitch = function(adapter, setup, path){
-    adapter.log.debug('addVentilationStepSwitch: Path['+ path +']');
+    //adapter.log.debug('addVentilationStepSwitch: Path['+ path +']');
     if (setup) {
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.VentilationStep' , {
                 type: 'state',
@@ -322,7 +292,7 @@ module.exports.addVentilationStepSwitch = function(adapter, setup, path){
  *
  */
 module.exports.addModeSwitch = function(adapter, setup, path, actions){
-    adapter.log.debug('addModesSwitch: Path['+ path +']');
+    //adapter.log.debug('addModesSwitch: Path['+ path +']');
     if (setup) {
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.Mode' , {
                 type: 'state',
@@ -358,7 +328,7 @@ module.exports.addModeSwitch = function(adapter, setup, path, actions){
  *
  */
 module.exports.addSuperFreezingSwitch = function(adapter, setup, path, actions){
-    adapter.log.debug('addSuperFreezingSwitch: Path['+ path +']');
+    //adapter.log.debug('addSuperFreezingSwitch: Path['+ path +']');
     if (setup) {
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.SuperFreezing' , {
                 type: 'state',
@@ -394,7 +364,7 @@ module.exports.addSuperFreezingSwitch = function(adapter, setup, path, actions){
  *
  */
 module.exports.addProgramIdAction = function(adapter, setup, path, value){
-    adapter.log.debug('addProgramIdAction: Path['+ path +']');
+    //adapter.log.debug('addProgramIdAction: Path['+ path +']');
     if (setup) {
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.programId' , {
                 type: 'state',
@@ -460,7 +430,7 @@ module.exports.addColorsAction = function(adapter, setup, path){
  *
  */
 module.exports.addStartButton = function(adapter, setup, path, actionState){
-    adapter.log.debug(`addStartButton: Path[${path}], setup: [${setup}], path: [${path}], actionState: [${actionState}]`);
+    //adapter.log.debug(`addStartButton: Path[${path}], setup: [${setup}], path: [${path}], actionState: [${actionState}]`);
     if (setup) {
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.Start_Button_Active', {
             type: 'state',
@@ -507,7 +477,7 @@ module.exports.addStartButton = function(adapter, setup, path, actionState){
  *
  */
 module.exports.addStopButton = function(adapter, setup, path, actionState){
-    adapter.log.debug('addStopButton: Path['+ path +']');
+    //adapter.log.debug('addStopButton: Path['+ path +']');
     if (setup) {
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.Stop_Button_Active', {
             type: 'state',
@@ -554,7 +524,7 @@ module.exports.addStopButton = function(adapter, setup, path, actionState){
  *
  */
 module.exports.addPauseButton = function(adapter, setup, path, actionState){
-    adapter.log.debug('addPauseButton: Path['+ path +']');
+    //adapter.log.debug('addPauseButton: Path['+ path +']');
     if (setup) {
         mieleTools.createExtendObject(adapter, path + '.ACTIONS.Pause_Button_Active', {
             type: 'state',
@@ -607,7 +577,7 @@ module.exports.addPauseButton = function(adapter, setup, path, actionState){
 module.exports.createBool = function(adapter, setup,path, description, value, role){
     return new Promise(resolve => {
         role = role || 'indicator';
-        adapter.log.debug('createBool: Path['+ path +'] Value[' + value + ']');
+        //adapter.log.debug('createBool: Path['+ path +'] Value[' + value + ']');
         if (setup) {
             mieleTools.createExtendObject(adapter, path, {
                 type: 'state',
@@ -644,7 +614,7 @@ module.exports.createBool = function(adapter, setup,path, description, value, ro
  */
 module.exports.createString = function(adapter, setup, path, description, value){
     return new Promise(resolve => {
-        adapter.log.debug('createString: Path['+ path +'] Value[' + value + ']');
+        //adapter.log.debug('createString: Path['+ path +'] Value[' + value + ']');
         if (setup){
             mieleTools.createExtendObject(adapter, path, {
                 type: 'state',
@@ -681,7 +651,7 @@ module.exports.createString = function(adapter, setup, path, description, value)
  */
 module.exports.createTime = function(adapter, setup, path, description, value, role){
     role = role || 'text';
-    adapter.log.debug('createTime: Path:['+ path +'], value:['+ value +']');
+    //adapter.log.debug('createTime: Path:['+ path +'], value:['+ value +']');
     let assembledValue = value[0] + ':' + (value[1]<10? '0': '') + value[1];
     if (setup){
         mieleTools.createExtendObject(adapter, path, {
@@ -721,11 +691,12 @@ module.exports.createTime = function(adapter, setup, path, description, value, r
  *
  */
 module.exports.createNumber = function(adapter, setup,  path, description, value, unit, role){
-    adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
+    //adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
     // get back to calling function if there is no valid value given.
     return new Promise((resolve) => {
         if ( !value || value === -32768) {
-            adapter.log.debug('[createNumber]: invalid value detected. Skipping...');
+            //adapter.log.debug('[createNumber]: invalid value detected. Skipping...');
+            resolve(false);
         }
         if (setup){
             role = role || 'value';
@@ -772,10 +743,10 @@ module.exports.createNumber = function(adapter, setup,  path, description, value
 module.exports.createArray = function(adapter, setup, path, description, value){
     // depending on the device we receive up to 3 values
     // there is a min of 1 and a max of 3 temperatures returned by the miele API
-    adapter.log.debug(`createArray: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createArray: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     let MyPath = path;
     const items = Object.keys(value).length;
-    adapter.log.debug('Number of Items in Array: [' + items +']');
+    //adapter.log.debug('Number of Items in Array: [' + items +']');
     for (let n in value) {
         if (items > 1){
             MyPath = path + '_' + n;
@@ -845,12 +816,6 @@ module.exports.adapterConfigIsValid = function(adapter) {
         adapter.log.warn('OAuth2_vg is missing.');
         configIsValid = false;
     }
-    /*
-    if ('' === adapter.config.pollinterval) {
-        adapter.log.warn('PollInterval is missing.');
-        configIsValid = false;
-    }
-    */
     return configIsValid;
 }
 
@@ -867,7 +832,7 @@ module.exports.adapterConfigIsValid = function(adapter) {
  * @param setup {boolean} indicator whether the devices need to setup or only states are to be updated
  */
 module.exports.addMieleDeviceIdent = async function(adapter, path, currentDeviceIdent, setup){
-    adapter.log.debug('addMieleDeviceIdent: Path = [' + path + ']');
+    //adapter.log.debug('addMieleDeviceIdent: Path = [' + path + ']');
     await mieleTools.createString(adapter, setup, path + '.ComModFirmware', "the release version of the communication module", currentDeviceIdent.xkmIdentLabel.releaseVersion);
     await mieleTools.createString(adapter, setup,path + '.ComModTechType', "the technical type of the communication module", currentDeviceIdent.xkmIdentLabel.techType);
     await mieleTools.createString(adapter, setup,path + '.DeviceSerial', "the serial number of the device", currentDeviceIdent.deviceIdentLabel.fabNumber);
@@ -887,7 +852,7 @@ module.exports.addMieleDeviceIdent = async function(adapter, path, currentDevice
  * @param mieleDevice {object} ident data of the device
  */
 module.exports.addDeviceNicknameAction = function(adapter, path, mieleDevice) {
-    adapter.log.debug( 'addDeviceNicknameAction: Path:['+ path +'], mieleDevice:['+JSON.stringify(mieleDevice)+']' );
+    //adapter.log.debug( 'addDeviceNicknameAction: Path:['+ path +'], mieleDevice:['+JSON.stringify(mieleDevice)+']' );
     // addDeviceNicknameAction - suitable for each and every device
     mieleTools.createExtendObject(adapter,path + '.ACTIONS.Nickname', {
         type: 'state',
@@ -920,7 +885,7 @@ module.exports.addDeviceNicknameAction = function(adapter, path, mieleDevice) {
  * @returns promise {promise}
  */
 module.exports.createStateActionsInformation = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateActionsInformation: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateActionsInformation: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     return mieleTools.createString( adapter,
         setup,
         path + '.ACTIONS.Action_Information',
@@ -943,7 +908,7 @@ module.exports.createStateActionsInformation = function(adapter, setup, path, va
  * @returns promise {promise}
  */
 module.exports.createStateConnected = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateConnected: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateConnected: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     return mieleTools.createBool( adapter,
                                   setup,
                              path + '.Connected',
@@ -967,7 +932,7 @@ module.exports.createStateConnected = function(adapter, setup, path, value){
  * @returns promise {promise}
  */
 module.exports.createStateSignalInUse = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateSignalInUse: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateSignalInUse: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
                                   setup,
@@ -992,7 +957,7 @@ module.exports.createStateSignalInUse = function(adapter, setup, path, value){
  * @returns promise {promise}
  */
 module.exports.createStateSignalInfo = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateSignalInfo: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateSignalInfo: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
         setup,
@@ -1017,7 +982,7 @@ module.exports.createStateSignalInfo = function(adapter, setup, path, value){
  * @returns promise {promise}
  */
 module.exports.createStateSmartGrid = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateSmartGrid: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateSmartGrid: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     return mieleTools.createBool( adapter,
         setup,
         path + '.smartGrid',
@@ -1041,7 +1006,7 @@ module.exports.createStateSmartGrid = function(adapter, setup, path, value){
  * @returns promise {promise}
  */
 module.exports.createStateMobileStart = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateMobileStart: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateMobileStart: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     return mieleTools.createBool( adapter,
         setup,
         path + '.mobileStart',
@@ -1065,7 +1030,7 @@ module.exports.createStateMobileStart = function(adapter, setup, path, value){
  * @returns promise {promise}
  */
 module.exports.createStateFullRemoteControl = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateFullRemoteControl: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateFullRemoteControl: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     return mieleTools.createBool( adapter,
         setup,
         path + '.fullRemoteControl',
@@ -1089,7 +1054,7 @@ module.exports.createStateFullRemoteControl = function(adapter, setup, path, val
  * @returns promise {promise}
  */
 module.exports.createStateSignalDoor = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateSignalDoor: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateSignalDoor: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     return mieleTools.createBool( adapter,
         setup,
         path + '.signalDoor',
@@ -1109,7 +1074,6 @@ module.exports.createStateSignalDoor = function(adapter, setup, path, value){
  * @param {boolean} setup indicator whether the devices need to setup or only states are to be updated
  * @param {string} path path where the data point is going to be created
  * @param {string} device The device to query the programs for
- * @param {string} programs[].program name of the program
  *
  * @returns {object} common.states object to configure the available programs for a device
  */
@@ -1136,7 +1100,8 @@ module.exports.addPrograms = async function(adapter, setup, _auth, path, device)
                         },
                         native: {"progId": programs[prog].programId}
                     }, null);
-                    adapter.subscribeStates(path + '.ACTIONS.Program');
+                    adapter.subscribeStates(path + '.ACTIONS.' + programs[prog].program.replace( ' ', '_'));
+                    adapter.log.debug(`Subscribed to program: ${path + '.ACTIONS.' + programs[prog].program.replace( ' ', '_')}`);
                 }
             }
         }
@@ -1158,7 +1123,7 @@ module.exports.addPrograms = async function(adapter, setup, _auth, path, device)
  * @returns promise {promise}
  */
 module.exports.createStateSignalFailure = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateSignalFailure: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateSignalFailure: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
         setup,
@@ -1184,7 +1149,7 @@ module.exports.createStateSignalFailure = function(adapter, setup, path, value){
  * @returns promise {promise}
  */
 module.exports.createStateDeviceMainState = async function(adapter, setup, path, value, value_raw){
-    adapter.log.debug(`createStateDeviceMainState: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateDeviceMainState: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     await mieleTools.createNumber( adapter, setup, path + '_raw', 'Main state of the Device (raw-value)', value_raw, '', '');
     return mieleTools.createString( adapter,
         setup,
@@ -1209,7 +1174,7 @@ module.exports.createStateDeviceMainState = async function(adapter, setup, path,
  * @returns promise {promise}
  */
 module.exports.createStateProgramID = async function(adapter, setup, path, value, value_raw){
-    adapter.log.debug(`createStateProgramID: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateProgramID: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     await mieleTools.createNumber( adapter, setup, path + '_raw', 'ID of the running Program (raw-value)', value_raw, '', '');
     return mieleTools.createString( adapter,
         setup,
@@ -1234,7 +1199,7 @@ module.exports.createStateProgramID = async function(adapter, setup, path, value
  * @returns promise {promise}
  */
 module.exports.createStateProgramType = async function(adapter, setup, path, value, value_raw){
-    adapter.log.debug(`createStateProgramType: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateProgramType: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     await mieleTools.createNumber( adapter, setup, path + '_raw', 'Program type of the running Program (raw-value)', value_raw, '', '');
     return mieleTools.createString( adapter,
         setup,
@@ -1259,7 +1224,7 @@ module.exports.createStateProgramType = async function(adapter, setup, path, val
  * @returns promise {promise}
  */
 module.exports.createStateProgramPhase = async function(adapter, setup, path, value, value_raw){
-    adapter.log.debug(`createStateProgramPhase: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateProgramPhase: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     await mieleTools.createNumber( adapter, setup, path + '_raw', 'Phase of the running program (raw-value)', value_raw, '', '');
     return mieleTools.createString( adapter,
         setup,
@@ -1281,7 +1246,7 @@ module.exports.createStateProgramPhase = async function(adapter, setup, path, va
  * @param value {string} value to set to the data point
  */
  module.exports.createStateVentilationStep = async function(adapter, setup, path, value){
-    adapter.log.debug(`createStateVentilationStep: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateVentilationStep: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     await mieleTools.addVentilationStepSwitch(adapter, setup, path);
     adapter.setState(path + '.ACTIONS.VentilationStep', value, true);
 }
@@ -1302,7 +1267,7 @@ module.exports.createStateProgramPhase = async function(adapter, setup, path, va
  * @returns promise {promise}
  */
 module.exports.createStateDryingStep = async function(adapter, setup, path, value, value_raw){
-    adapter.log.debug(`createStateDryingStep: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateDryingStep: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     await mieleTools.createNumber( adapter, setup, path + '_raw', 'This field is only valid for hoods (raw-value)', value_raw, '', '');
     return mieleTools.createString( adapter,
         setup,
@@ -1328,7 +1293,7 @@ module.exports.createStateDryingStep = async function(adapter, setup, path, valu
  * @returns promise {promise}
  */
 module.exports.createStateEstimatedEndTime = async function(adapter, setup, path, currentDeviceState){
-    adapter.log.debug(`createStateEstimatedEndTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(currentDeviceState)}]`);
+    //adapter.log.debug(`createStateEstimatedEndTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(currentDeviceState)}]`);
     let timeToShow = '';
     if ( parseInt(currentDeviceState.status.value_raw) < 2 || currentDeviceState.remainingTime[0] + currentDeviceState.remainingTime[1] === 0 ){
         adapter.log.debug('No EstimatedEndTime to show!');
@@ -1362,7 +1327,7 @@ module.exports.createStateEstimatedEndTime = async function(adapter, setup, path
  * @returns promise {promise}
  */
 module.exports.createStateAmbientLight = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateAmbientLight: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateAmbientLight: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     return mieleTools.createString(adapter,
         setup,
         path,
@@ -1386,7 +1351,7 @@ module.exports.createStateAmbientLight = function(adapter, setup, path, value){
  * @returns promise {promise}
  */
 module.exports.createStateLight = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateLight: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateLight: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     return mieleTools.createString(adapter,
         setup,
         path,
@@ -1410,7 +1375,7 @@ module.exports.createStateLight = function(adapter, setup, path, value){
  * @returns promise {promise}
  */
 module.exports.createStateRemainingTime = function(adapter, setup, path, remainingTime){
-    adapter.log.debug(`createStateRemainingTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${remainingTime.toString()}]`);
+    //adapter.log.debug(`createStateRemainingTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${remainingTime.toString()}]`);
     mieleTools.createTime(  adapter,
                             setup,
                        path + '.remainingTime',
@@ -1434,7 +1399,7 @@ module.exports.createStateRemainingTime = function(adapter, setup, path, remaini
  * @returns promise {promise}
  */
 module.exports.createStateStartTime = function(adapter, setup, path, startTime){
-    adapter.log.debug(`createStateStartTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${startTime.toString()}]`);
+    //adapter.log.debug(`createStateStartTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${startTime.toString()}]`);
     mieleTools.createTime(  adapter,
         setup,
         path + '.startTime',
@@ -1456,7 +1421,7 @@ module.exports.createStateStartTime = function(adapter, setup, path, startTime){
  *
  */
 module.exports.createStateElapsedTime = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateElapsedTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
+    //adapter.log.debug(`createStateElapsedTime: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
     mieleTools.createTime(  adapter,
         setup,
         path + '.elapsedTime',
@@ -1479,7 +1444,7 @@ module.exports.createStateElapsedTime = function(adapter, setup, path, value){
  * @param value {object} array value to set to the data point
  */
 module.exports.createStateTargetTemperature = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateTargetTemperature: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(value)}]`);
+    //adapter.log.debug(`createStateTargetTemperature: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(value)}]`);
     mieleTools.createArray( adapter,
         setup,
         path + '.targetTemperature',
@@ -1503,7 +1468,7 @@ module.exports.createStateTargetTemperature = function(adapter, setup, path, val
  * @param unit {string} temperature unit
  */
 module.exports.createStateTargetTemperatureFridge = function(adapter, setup, path, value, min, max, unit){
-    adapter.log.debug(`createStateTargetTemperatureFridge: Path[${path}], setup: [${setup}], min: [${min}], max: [${max}], value: [${value}]`);
+    //adapter.log.debug(`createStateTargetTemperatureFridge: Path[${path}], setup: [${setup}], min: [${min}], max: [${max}], value: [${value}]`);
     if (setup) {
         switch (unit){
             case 'Celsius' : unit = '°C';
@@ -1551,7 +1516,7 @@ module.exports.createStateTargetTemperatureFridge = function(adapter, setup, pat
  * @param unit {string} temperature unit
  */
 module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, path, value, min, max, unit){
-    adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], min: [${min}], max: [${max}], value: [${value}]`);
+    //adapter.log.debug(`createStateTargetTemperatureFreezer: Path[${path}], setup: [${setup}], min: [${min}], max: [${max}], value: [${value}]`);
     if (setup) {
         switch (unit){
             case 'Celsius' : unit = '°C';
@@ -1597,7 +1562,7 @@ module.exports.createStateTargetTemperatureFreezer = function(adapter, setup, pa
  * @param value {object} array value to set to the data point
  */
 module.exports.createStateTemperature = function(adapter, setup, path, value){
-    adapter.log.debug(`createStateTemperature: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
+    //adapter.log.debug(`createStateTemperature: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
     mieleTools.createArray( adapter,
         setup,
         path + '.Temperature',
@@ -1619,7 +1584,7 @@ module.exports.createStateTemperature = function(adapter, setup, path, value){
  */
 module.exports.createStatePlateStep = function(adapter, setup, path, value){
     // PlateStep - occurs at Hobs
-    adapter.log.debug(`createStatePlateStep: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
+    //adapter.log.debug(`createStatePlateStep: Path[${path}], setup: [${setup}], path: [${path}], value: [${value.toString()}]`);
     mieleTools.createArray( adapter,
         setup,
         path + '.PlateStep',
@@ -1639,7 +1604,7 @@ module.exports.createStatePlateStep = function(adapter, setup, path, value){
  * @param value {number} value to set to the data point
  */
 module.exports.createStateBatteryLevel = function(adapter, setup, path, value) {
-    adapter.log.debug(`createStateBatteryLevel: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateBatteryLevel: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     mieleTools.createNumber(adapter,
                             setup,
                        path + '.batteryLevel',
@@ -1663,7 +1628,7 @@ module.exports.createStateBatteryLevel = function(adapter, setup, path, value) {
  * @param ecoFeedback {object} value to set to the data point
  */
 module.exports.createStateEcoFeedbackWater = function(adapter, setup, path, ecoFeedback) {
-    adapter.log.debug(`createStateEcoFeedbackWater: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(ecoFeedback)}]`);
+    //adapter.log.debug(`createStateEcoFeedbackWater: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(ecoFeedback)}]`);
     mieleTools.createNumber(adapter,
                             setup,
                       path + '.EcoFeedback.currentWaterConsumption',
@@ -1693,7 +1658,7 @@ module.exports.createStateEcoFeedbackWater = function(adapter, setup, path, ecoF
  * @param ecoFeedback {object} value to set to the data point
  */
 module.exports.createStateEcoFeedbackEnergy = function(adapter, setup, path, ecoFeedback) {
-    adapter.log.debug(`createStateEcoFeedbackEnergy: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(ecoFeedback)}]`);
+    //adapter.log.debug(`createStateEcoFeedbackEnergy: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(ecoFeedback)}]`);
     mieleTools.createNumber(adapter,
         setup,
         path + '.EcoFeedback.currentEnergyConsumption',
@@ -1725,7 +1690,7 @@ module.exports.createStateEcoFeedbackEnergy = function(adapter, setup, path, eco
  * @param unit {string} unit the value is in
  */
 module.exports.createStateSpinningSpeed = function(adapter, setup, path, value, unit) {
-    adapter.log.debug(`createStateSpinningSpeed: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    //adapter.log.debug(`createStateSpinningSpeed: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
     mieleTools.createNumber(adapter,
         setup,
         path,
@@ -1829,11 +1794,11 @@ async function checkSuperCoolingAction(adapter, device, actions) {
     return new Promise((resolve) => {
         if ( Array(actions).includes(mieleConst.START_SUPERCOOLING) ){
             adapter.setState(device + '.ACTIONS.SuperCooling', 'Off', true);
-            adapter.log.debug(`[checkSuperCoolingAction]: Device [${device}]: START_SUPERCOOLING is permitted!`);
+            //adapter.log.debug(`[checkSuperCoolingAction]: Device [${device}]: START_SUPERCOOLING is permitted!`);
             resolve(true);
         } else if ( Array(actions).includes(mieleConst.STOP_SUPERCOOLING) ) {
             adapter.setState(device + '.ACTIONS.SuperCooling', 'On', true);
-            adapter.log.debug(`[checkSuperCoolingAction]: Device [${device}]: STOP_SUPERCOOLING is permitted!`);
+            //adapter.log.debug(`[checkSuperCoolingAction]: Device [${device}]: STOP_SUPERCOOLING is permitted!`);
             resolve(true);
         }
     })
@@ -1855,11 +1820,11 @@ async function checkSuperFreezingAction(adapter, device, actions) {
     return new Promise((resolve) => {
         if ( Array(actions).includes(mieleConst.START_SUPERFREEZING) ){
             adapter.setState(device + '.ACTIONS.SuperFreezing', 'Off', true);
-            adapter.log.debug(`[checkSuperFreezingAction]: Device [${device}]: START_SUPERFREEZING is permitted!`);
+            //adapter.log.debug(`[checkSuperFreezingAction]: Device [${device}]: START_SUPERFREEZING is permitted!`);
             resolve(true);
         } else if ( Array(actions).includes(mieleConst.STOP_SUPERFREEZING) ) {
             adapter.setState(device + '.ACTIONS.SuperFreezing', 'On', true);
-            adapter.log.debug(`[checkSuperFreezingAction]: Device [${device}]: STOP_SUPERFREEZING is permitted!`);
+            //dapter.log.debug(`[checkSuperFreezingAction]: Device [${device}]: STOP_SUPERFREEZING is permitted!`);
             resolve(true);
         }
     })
@@ -1881,11 +1846,11 @@ async function checkModesAction(adapter, device, modes) {
     return new Promise((resolve) => {
         if ( Array(modes).includes(mieleConst.MODE_NORMAL) ){
             adapter.setState(device + '.ACTIONS.Mode', 1, true);
-            adapter.log.debug(`[checkModesAction]: Device [${device}]: MODE_NORMAL is permitted!`);
+            //adapter.log.debug(`[checkModesAction]: Device [${device}]: MODE_NORMAL is permitted!`);
             resolve(true);
         } else if ( Array(modes).includes(mieleConst.MODE_SABBATH) ) {
             adapter.setState(device + '.ACTIONS.Mode', 0, true);
-            adapter.log.debug(`[checkModesAction]: Device [${device}]: MODE_SABBATH is permitted!`);
+            //adapter.log.debug(`[checkModesAction]: Device [${device}]: MODE_SABBATH is permitted!`);
             resolve(true);
         }
     })
