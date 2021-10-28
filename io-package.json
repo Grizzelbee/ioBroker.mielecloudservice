@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "5.0.1",
+        "version": "5.0.2",
         "news": {
+            "5.0.2": {
+                "en": "Added event listener for errors and trying to reconnect if connection is lost.",
+                "de": "Ereignis-Listener für Fehler hinzugefügt und versucht, eine Verbindung wiederherzustellen, wenn die Verbindung verloren geht.",
+                "ru": "Добавлен прослушиватель событий для ошибок и попыток переподключения, если соединение потеряно.",
+                "pt": "Adicionado ouvinte de eventos para erros e tentativa de reconectar se a conexão for perdida.",
+                "nl": "Gebeurtenislistener toegevoegd voor fouten en proberen opnieuw verbinding te maken als de verbinding is verbroken.",
+                "fr": "Ajout d'un écouteur d'événements pour les erreurs et tentative de reconnexion si la connexion est perdue.",
+                "it": "Aggiunto listener di eventi per errori e tentativo di riconnessione in caso di perdita della connessione.",
+                "es": "Se agregó un detector de eventos para detectar errores e intentar volver a conectarse si se pierde la conexión.",
+                "pl": "Dodano detektor zdarzeń dla błędów i próby ponownego połączenia w przypadku utraty połączenia.",
+                "zh-cn": "添加了错误事件侦听器，并在连接丢失时尝试重新连接。"
+            },
             "5.0.1": {
                 "en": "Bugfix Release\nFixed some minor bugs.",
                 "de": "Bugfix Release\n Einige kleinere Fehler behoben.",
