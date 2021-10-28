@@ -657,7 +657,9 @@ async function main() {
                 adapter.log.info('Received an error message by SSE.');
                 adapter.log.debug('Received error message by SSE: ' + JSON.stringify(event));
                 if (event.readyState === EventSource.CLOSED) {
-                    adapter.log.info('The connection has been closed.');
+                    adapter.log.info('The connection has been closed. Trying to reconnect.');
+                    adapter.setState('info.connection', false, true);
+                    _sse = mieleAPITools.APIregisterForEvents(adapter, _auth);
                 }
             });
             _sse.onopen = function() {
