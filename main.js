@@ -289,7 +289,7 @@ async function parseMieleDevice(mieleDevice, setup, API_Id){
  */
 async function addMieleDevice(mieleDevice, setup){
     let newPath = mieleDevice.ident.deviceIdentLabel.fabNumber;
-    adapter.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
+    // adapter.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
     mieleTools.createExtendObject(adapter, newPath, {
         type: 'device',
         common: {name:   _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].name,
@@ -304,7 +304,7 @@ async function addMieleDevice(mieleDevice, setup){
     mieleTools.createChannelIdent(adapter, newPath, setup) ;
     // add device states and ident
     for (let deviceInfo in mieleDevice){
-        adapter.log.debug('addMieleDevice:' + deviceInfo);
+        // adapter.log.debug('addMieleDevice:' + deviceInfo);
         switch (deviceInfo) {
             case 'ident':
                 if (setup) {
@@ -644,14 +644,22 @@ async function main() {
             // start refresh scheduler with interval from adapters config
             adapter.log.info(`Registering for appliance events at Miele API.`);
             _sse = mieleAPITools.APIregisterForEvents(adapter, _auth);
-            _sse.addEventListener( 'devices', function(result) {
+            _sse.addEventListener( 'devices', function(event) {
                 // adapter.log.info('Received DEVICES message by SSE.');
-                adapter.log.debug('Received devices message by SSE: ' + JSON.stringify(result));
-                splitMieleDevices(JSON.parse(result.data), false);
+                adapter.log.debug('Received devices message by SSE: ' + JSON.stringify(event));
+                splitMieleDevices(JSON.parse(event.data), false);
             });
-            _sse.addEventListener( 'actions', function(result) {
+            _sse.addEventListener( 'actions', function(event) {
                 // adapter.log.info('Received ACTIONS message by SSE.');
-                // adapter.log.info('EL: Actions: '+ JSON.stringify(result));
+                // adapter.log.info('EL: Actions: '+ JSON.stringify(event));
+            });
+            _sse.addEventListener( 'error', function(event) {
+                adapter.log.warn('Received error message by SSE: ' + JSON.stringify(event));
+                if (event.readyState === EventSource.CLOSED) {
+                    adapter.log.info('The connection has been closed. Trying to reconnect.');
+                    adapter.setState('info.connection', false, true);
+                    _sse = mieleAPITools.APIregisterForEvents(adapter, _auth);
+                }
             });
             _sse.onopen = function() {
                 adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');
