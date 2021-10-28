@@ -289,7 +289,7 @@ async function parseMieleDevice(mieleDevice, setup, API_Id){
  */
 async function addMieleDevice(mieleDevice, setup){
     let newPath = mieleDevice.ident.deviceIdentLabel.fabNumber;
-    adapter.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
+    // adapter.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
     mieleTools.createExtendObject(adapter, newPath, {
         type: 'device',
         common: {name:   _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].name,
@@ -304,7 +304,7 @@ async function addMieleDevice(mieleDevice, setup){
     mieleTools.createChannelIdent(adapter, newPath, setup) ;
     // add device states and ident
     for (let deviceInfo in mieleDevice){
-        adapter.log.debug('addMieleDevice:' + deviceInfo);
+        // adapter.log.debug('addMieleDevice:' + deviceInfo);
         switch (deviceInfo) {
             case 'ident':
                 if (setup) {
@@ -654,8 +654,7 @@ async function main() {
                 // adapter.log.info('EL: Actions: '+ JSON.stringify(event));
             });
             _sse.addEventListener( 'error', function(event) {
-                adapter.log.info('Received an error message by SSE.');
-                adapter.log.debug('Received error message by SSE: ' + JSON.stringify(event));
+                adapter.log.warn('Received error message by SSE: ' + JSON.stringify(event));
                 if (event.readyState === EventSource.CLOSED) {
                     adapter.log.info('The connection has been closed. Trying to reconnect.');
                     adapter.setState('info.connection', false, true);
