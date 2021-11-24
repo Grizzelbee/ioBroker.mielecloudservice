@@ -195,6 +195,9 @@ Here is a list of what these raw values stand for:
 |532 | "Flusen ausspülen"        | Washer Dryer |
 
 ## Changelog
+### V5.0.3 (2021-11-27) (Invincible)
+* (grizzelbee) Fix: [MIELECLOUDSERVICE-8](https://sentry.io/organizations/nocompany-6j/issues/2380318199/?project=5735758) fixed stringifying circular structure
+
 ### V5.0.2 (2021-10-27) (Invincible)
 * (grizzelbee) Upd: Added listener to error events
 * (grizzelbee) Upd: Trying to reconnect if connection has been lost
