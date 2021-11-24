@@ -416,7 +416,7 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         } else if (error.request) {
             // The request was made but no response was received
             adapter.log.error('The request was made but no response was received:');
-            adapter.log.error(JSON.stringify(error.request));
+            adapter.log.error(stringify(error.request));
         } else {
             // Something happened in setting up the request that triggered an Error
             adapter.log.error('Something happened in setting up the request that triggered an Error:');
