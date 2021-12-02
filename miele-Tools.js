@@ -1082,14 +1082,14 @@ module.exports.addPrograms = async function(adapter, setup, _auth, path, device)
     if (setup) {
         const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
         adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
-        if (typeof programs !== 'undefined' && programs != 'Error 500: Internal Server Error.') {
+        if (typeof programs !== 'undefined' && programs !== 'Error 500: Internal Server Error.') {
             // let result = {};
             for (const prog in programs) {
                 adapter.log.debug(`Prog: ${JSON.stringify(programs[prog])}`);
                 if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')) {
                     // result[programs[prog].programId] = programs[prog].program;
                     adapter.log.debug(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
-                    mieleTools.createExtendObject(adapter, path + '.ACTIONS.' + programs[prog].program.replace( ' ', '_') , {
+                    mieleTools.createExtendObject(adapter, path + '.ACTIONS.' + programs[prog].program.replace( / /g, '_') , {
                         type: 'state',
                         common: {
                             "name": programs[prog].program,
@@ -1100,8 +1100,8 @@ module.exports.addPrograms = async function(adapter, setup, _auth, path, device)
                         },
                         native: {"progId": programs[prog].programId}
                     }, null);
-                    adapter.subscribeStates(path + '.ACTIONS.' + programs[prog].program.replace( ' ', '_'));
-                    adapter.log.debug(`Subscribed to program: ${path + '.ACTIONS.' + programs[prog].program.replace( ' ', '_')}`);
+                    adapter.subscribeStates(path + '.ACTIONS.' + programs[prog].program.replace( / /g, '_'));
+                    adapter.log.debug(`Subscribed to program: ${path + '.ACTIONS.' + programs[prog].program.replace( / /g, '_')}`);
                 }
             }
         } else {
