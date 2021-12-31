@@ -378,9 +378,11 @@ module.exports.addProgramIdAction = function(adapter, setup, path, value){
             }
             , () => {
                 adapter.subscribeStates(path + '.ACTIONS.programId');
+                if (typeof value === 'undefined') return;
                 adapter.setState(path + '.ACTIONS.programId', value, true);
             });
     } else {
+        if (typeof value === 'undefined') return;
         adapter.setState(path + '.ACTIONS.programId', value, true);
     }
 }
@@ -1055,6 +1057,7 @@ module.exports.createStateFullRemoteControl = function(adapter, setup, path, val
  */
 module.exports.createStateSignalDoor = function(adapter, setup, path, value){
     //adapter.log.debug(`createStateSignalDoor: Path[${path}], setup: [${setup}], path: [${path}], value: [${value}]`);
+    if ( typeof value === 'undefined' ) return;
     return mieleTools.createBool( adapter,
         setup,
         path + '.signalDoor',
