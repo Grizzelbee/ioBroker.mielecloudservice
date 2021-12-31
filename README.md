@@ -520,4 +520,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ## Copyright
-Copyright (c) 2019, 2021 grizzelbee <open.source@hingsen.de>
+Copyright (c) 2019 - 2022 grizzelbee <open.source@hingsen.de>
