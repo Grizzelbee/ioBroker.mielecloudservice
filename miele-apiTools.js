@@ -47,7 +47,7 @@ module.exports.APIGetAccessToken = async function (adapter) {
     try {
         const auth = await getOwnerCredentials();
         adapter.expiryDate = new Date();
-        adapter.expiryDate.setSeconds(adapter.expiryDate.getSeconds() + auth.hasOwnProperty('expires_in') ? auth.expires_in : 0);
+        adapter.expiryDate.setSeconds(adapter.expiryDate.getSeconds() + (auth.hasOwnProperty('expires_in') ? auth.expires_in : 0));
         adapter.log.info('Access-Token expires at:  [' + adapter.expiryDate.toString() + ']');
         adapter.setState('info.connection', true, true);
         return auth;
@@ -120,7 +120,7 @@ async function APIRefreshToken(adapter, refresh_token) {
     try {
         const auth = await getNewAccessToken();
         adapter.expiryDate = new Date();
-        adapter.expiryDate.setSeconds(adapter.expiryDate.getSeconds() +  auth.hasOwnProperty('expires_in')?auth.expires_in:0 );
+        adapter.expiryDate.setSeconds(adapter.expiryDate.getSeconds() +  (auth.hasOwnProperty('expires_in')?auth.expires_in:0) );
         adapter.log.info('New Access-Token expires at:  [' + adapter.expiryDate.toString() + ']');
         adapter.setState('info.connection', true, true);
         return auth;
@@ -299,7 +299,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
         await mieleAPITools.refreshMieleData(adapter, auth, device);
     } catch(err) {
         await mieleTools.createString(adapter, setup, currentPath + '.Action_Information', 'Additional Information returned from API.', err.hasOwnProperty('message')?err.message:err);
-        adapter.log.error('[APIStartAction] ' + err.hasOwnProperty('message')?err.message:err);
+        adapter.log.error('[APIStartAction] ' + (err.hasOwnProperty('message')?err.message:err));
     }
 }
 
@@ -416,7 +416,7 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         } else if (error.request) {
             // The request was made but no response was received
             adapter.log.error('The request was made but no response was received:');
-            adapter.log.error(JSON.stringify(error.request));
+            adapter.log.error(stringify(error.request));
         } else {
             // Something happened in setting up the request that triggered an Error
             adapter.log.error('Something happened in setting up the request that triggered an Error:');

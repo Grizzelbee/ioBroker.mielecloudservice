@@ -598,9 +598,9 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
                 await mieleTools.addModeSwitch(adapter, setup, path, actions);
                 break;
             case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
-                mieleTools.createStateBatteryLevel(adapter, setup, path, currentDeviceState.batteryLevel);
+                await mieleTools.createStateBatteryLevel(adapter, setup, path, currentDeviceState.batteryLevel);
                 // Actions
-                mieleTools.addProgramIdAction(adapter, setup, path, currentDeviceState.programId);
+                await mieleTools.addProgramIdAction(adapter, setup, path, currentDeviceState.programId);
                 await mieleTools.addStartButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.START));
                 await mieleTools.addStopButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.STOP));
                 await mieleTools.addPauseButton(adapter, setup, path, Array(actions.processAction).includes(mieleConst.PAUSE));
@@ -608,7 +608,7 @@ async function addMieleDeviceState(path, currentDevice, currentDeviceState, setu
             case 25: // 25 = DISH WARMER*
                 await mieleTools.createStateSignalInfo(adapter, setup, path, currentDeviceState.signalInfo);
                 // Actions
-                mieleTools.addProgramIdAction(adapter, setup, path, currentDeviceState.programId);
+                await mieleTools.addProgramIdAction(adapter, setup, path, currentDeviceState.programId);
                 break;
             case 48: // 48 = VACUUM DRAWER
                 break;

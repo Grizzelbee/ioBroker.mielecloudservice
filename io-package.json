@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "5.0.2",
+        "version": "5.0.3",
         "news": {
+            "5.0.3": {
+                "en": "Some minor bug fixes.",
+                "de": "Einige kleinere Fehlerbehebungen.",
+                "ru": "Исправлены мелкие ошибки.",
+                "pt": "Algumas pequenas correções de bugs.",
+                "nl": "Enkele kleine bugfixes.",
+                "fr": "Quelques corrections de bugs mineurs.",
+                "it": "Alcune correzioni di bug minori.",
+                "es": "Algunas correcciones de errores menores.",
+                "pl": "Kilka drobnych poprawek.",
+                "zh-cn": "一些小错误修复。"
+            },
             "5.0.2": {
                 "en": "Added event listener for errors and trying to reconnect if connection is lost.",
                 "de": "Ereignis-Listener für Fehler hinzugefügt und versucht, eine Verbindung wiederherzustellen, wenn die Verbindung verloren geht.",
