@@ -73,7 +73,7 @@ Here is a list of what these raw values stand for:
 ### DeviceTypes
 
 | Raw value | State                                            |
-|-----------|------------------------------------------------ |
+|-----------|--------------------------------------------------|
 | 1         | WASHING MACHINE                                  |
 | 2         | TUMBLE DRYER                                     |
 | 7         | DISHWASHER                                       |
@@ -110,48 +110,48 @@ Here is a list of what these raw values stand for:
 
 ### State/Status
 
-| Raw value | State|
-|-----------|------|
-|1|   OFF|
-|2|   STAND_BY|
-|3|   PROGRAMMED|
-|4|   PROGRAMMED_WAITING_TO_START|
-|5|   RUNNING|
-|6|   PAUSE|
-|7|   END_PROGRAMMED|
-|8|   FAILURE|
-|9|   PROGRAMME_INTERRUPTED|
-|10|  IDLE|
-|11|  RINSE_HOLD|
-|12|  SERVICE|
-|13|  SUPERFREEZING|
-|14|  SUPERCOOLING|
-|15|  SUPERHEATING|
-|144| DEFAULT|
-|145| LOCKED|
-|146| SUPERCOOLING_SUPERFREEZING|
-|255| Device offline|
+| Raw value | State                       |
+|-----------|-----------------------------|
+| 1         | OFF                         |
+| 2         | STAND_BY                    |
+| 3         | PROGRAMMED                  |
+| 4         | PROGRAMMED_WAITING_TO_START |
+| 5         | RUNNING                     |
+| 6         | PAUSE                       |
+| 7         | END_PROGRAMMED              |
+| 8         | FAILURE                     |
+| 9         | PROGRAMME_INTERRUPTED       |
+| 10        | IDLE                        |
+| 11        | RINSE_HOLD                  |
+| 12        | SERVICE                     |
+| 13        | SUPERFREEZING               |
+| 14        | SUPERCOOLING                |
+| 15        | SUPERHEATING                |
+| 144       | DEFAULT                     |
+| 145       | LOCKED                      |
+| 146       | SUPERCOOLING_SUPERFREEZING  |
+| 255       | Device offline              |
 
 ### ProgramType/Programmart
 
-| Raw value | State|
-|----------|-------|
-|0 | Normal operation mode  |
-|1 | Own program            |
-|2 | Automatic program      |
-|3 | Cleaning-/Care program |
+| Raw value | State                  |
+|-----------|------------------------|
+| 0         | Normal operation mode  |
+| 1         | Own program            |
+| 2         | Automatic program      |
+| 3         | Cleaning-/Care program |
 
 ### dryingStep/Trockenstufe
 
-| Raw value | State|
-|----------|-------|
-|0 |   Extra dry|
-|1 |   Normal Plus|
-|2 |   Normal|
-|3 |   Slightly Dry|
-|4 |   Hand iron level 1|
-|5 |   Hand iron level 2|
-|6 |   Machine iron|
+| Raw value | State             |
+|-----------|-------------------|
+| 0         | Extra dry         |
+| 1         | Normal Plus       |
+| 2         | Normal            |
+| 3         | Slightly Dry      |
+| 4         | Hand iron level 1 |
+| 5         | Hand iron level 2 |
+| 6         | Machine iron      |
 
 ### Programmbezeichnung
 
@@ -176,23 +176,23 @@ Here is a list of what these raw values stand for:
 
 ### ProgramPhase
 
-| Raw value | State| available for |
-|----------|-------|---------------|
-|258 | "Einweichen"              | Washing Machine | 
-|260 | "Waschen" / "Washing"     | Washing Machine |
-|261 | "Spülen"  / "Rinse"       | Washing Machine |
-|265 | "Pumpen"                  | Washing Machine |
-|266 | "Schleudern" / "Spinning" | Washing Machine |
-|267 | "Knitterschutz" / ""      | Washing Machine |
-|268 | "Ende" / "End"            | Washing Machine |
-|256 | "Vorbügeln"               | Washing Machine |
-|512 | "Ende" / "Finished"       | Tumble dryers   |
-|514 | "Trocknen" / "Drying"     | Washer Dryer, Tumble dryers |
-|519 | "Abkühlen" / "Cool down"  | Washer Dryer |
-|521 | "Knitterschutz" / ""      | Tumble dryer |
-|522 | "Ende" / "Finished"       | Tumble dryer |
-|531 | "Komfortkühlen"           | Tumble Dryer |
-|532 | "Flusen ausspülen"        | Washer Dryer |
+| Raw value | State                     | available for               |
+|-----------|---------------------------|-----------------------------|
+| 258       | "Einweichen"              | Washing Machine             | 
+| 260       | "Waschen" / "Washing"     | Washing Machine             |
+| 261       | "Spülen"  / "Rinse"       | Washing Machine             |
+| 265       | "Pumpen"                  | Washing Machine             |
+| 266       | "Schleudern" / "Spinning" | Washing Machine             |
+| 267       | "Knitterschutz" / ""      | Washing Machine             |
+| 268       | "Ende" / "End"            | Washing Machine             |
+| 256       | "Vorbügeln"               | Washing Machine             |
+| 512       | "Ende" / "Finished"       | Tumble dryers               |
+| 514       | "Trocknen" / "Drying"     | Washer Dryer, Tumble dryers |
+| 519       | "Abkühlen" / "Cool down"  | Washer Dryer                |
+| 521       | "Knitterschutz" / ""      | Tumble dryer                |
+| 522       | "Ende" / "Finished"       | Tumble dryer                |
+| 531       | "Komfortkühlen"           | Tumble Dryer                |
+| 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
 ### V5.0.3 (2021-12-31) (Invincible)
