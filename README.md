@@ -72,65 +72,65 @@ Here is a list of what these raw values stand for:
 
 ### DeviceTypes
 
- | Raw value | State|
- |----------|-------|
- |1 | WASHING MACHINE|
- |2 | TUMBLE DRYER|
- |7 | DISHWASHER|
- |8 | DISHWASHER SEMI-PROF|
- |12 | OVEN|
- |13 | OVEN MICROWAVE|
- |14 | HOB HIGHLIGHT|
- |15 | STEAM OVEN|
- |16 | MICROWAVE|
- |17 | COFFEE SYSTEM|
- |18 | HOOD|
- |19 | FRIDGE|
- |20 | FREEZER|
- |21 | FRIDGE-/FREEZER COMBINATION|
- |23 | VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER|
- |24 | WASHER DRYER|
- |25 | DISH WARMER|
- |27 | HOB INDUCTION|
- |28 | HOB GAS|
- |31 | STEAM OVEN COMBINATION|
- |32 | WINE CABINET|
- |33 | WINE CONDITIONING UNIT|
- |34 | WINE STORAGE CONDITIONING UNIT|
- |39 | DOUBLE OVEN|
- |40 | DOUBLE STEAM OVEN|
- |41 | DOUBLE STEAM OVEN COMBINATION|
- |42 | DOUBLE MICROWAVE|
- |43 | DOUBLE MICROWAVE OVEN|
- |45 | STEAM OVEN MICROWAVE COMBINATION|
- |48 | VACUUM DRAWER|
- |67 | DIALOGOVEN|
- |68 | WINE CABINET FREEZER COMBINATION| 
+| Raw value | State                                            |
+|-----------|------------------------------------------------ |
+| 1         | WASHING MACHINE                                  |
+| 2         | TUMBLE DRYER                                     |
+| 7         | DISHWASHER                                       |
+| 8         | DISHWASHER SEMI-PROF                             |
+| 12        | OVEN                                             |
+| 13        | OVEN MICROWAVE                                   |
+| 14        | HOB HIGHLIGHT                                    |
+| 15        | STEAM OVEN                                       |
+| 16        | MICROWAVE                                        |
+| 17        | COFFEE SYSTEM                                    |
+| 18        | HOOD                                             |
+| 19        | FRIDGE                                           |
+| 20        | FREEZER                                          |
+| 21        | FRIDGE-/FREEZER COMBINATION                      |
+| 23        | VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER |
+| 24        | WASHER DRYER                                     |
+| 25        | DISH WARMER                                      |
+| 27        | HOB INDUCTION                                    |
+| 28        | HOB GAS                                          |
+| 31        | STEAM OVEN COMBINATION                           |
+| 32        | WINE CABINET                                     |
+| 33        | WINE CONDITIONING UNIT                           |
+| 34        | WINE STORAGE CONDITIONING UNIT                   |
+| 39        | DOUBLE OVEN                                      |
+| 40        | DOUBLE STEAM OVEN                                |
+| 41        | DOUBLE STEAM OVEN COMBINATION                    |
+| 42        | DOUBLE MICROWAVE                                 |
+| 43        | DOUBLE MICROWAVE OVEN                            |
+| 45        | STEAM OVEN MICROWAVE COMBINATION                 |
+| 48        | VACUUM DRAWER                                    |
+| 67        | DIALOGOVEN                                       |
+| 68        | WINE CABINET FREEZER COMBINATION                 | 
 
 
 ### State/Status
 
- | Raw value | State|
- |----------|-------|
- |1|   OFF|
- |2|   STAND_BY|
- |3|   PROGRAMMED|
- |4|   PROGRAMMED_WAITING_TO_START|
- |5|   RUNNING|
- |6|   PAUSE|
- |7|   END_PROGRAMMED|
- |8|   FAILURE|
- |9|   PROGRAMME_INTERRUPTED|
- |10|  IDLE|
- |11|  RINSE_HOLD|
- |12|  SERVICE|
- |13|  SUPERFREEZING|
- |14|  SUPERCOOLING|
- |15|  SUPERHEATING|
- |144| DEFAULT|
- |145| LOCKED|
- |146| SUPERCOOLING_SUPERFREEZING|
- |255| Device offline|
+| Raw value | State|
+|-----------|------|
+|1|   OFF|
+|2|   STAND_BY|
+|3|   PROGRAMMED|
+|4|   PROGRAMMED_WAITING_TO_START|
+|5|   RUNNING|
+|6|   PAUSE|
+|7|   END_PROGRAMMED|
+|8|   FAILURE|
+|9|   PROGRAMME_INTERRUPTED|
+|10|  IDLE|
+|11|  RINSE_HOLD|
+|12|  SERVICE|
+|13|  SUPERFREEZING|
+|14|  SUPERCOOLING|
+|15|  SUPERHEATING|
+|144| DEFAULT|
+|145| LOCKED|
+|146| SUPERCOOLING_SUPERFREEZING|
+|255| Device offline|
 
 ### ProgramType/Programmart
 
@@ -143,15 +143,15 @@ Here is a list of what these raw values stand for:
 
 ### dryingStep/Trockenstufe
 
- | Raw value | State|
- |----------|-------|
- |0 |   Extra dry|
- |1 |   Normal Plus|
- |2 |   Normal|
- |3 |   Slightly Dry|
- |4 |   Hand iron level 1|
- |5 |   Hand iron level 2|
- |6 |   Machine iron|
+| Raw value | State|
+|----------|-------|
+|0 |   Extra dry|
+|1 |   Normal Plus|
+|2 |   Normal|
+|3 |   Slightly Dry|
+|4 |   Hand iron level 1|
+|5 |   Hand iron level 2|
+|6 |   Machine iron|
 
 ### Programmbezeichnung
 
