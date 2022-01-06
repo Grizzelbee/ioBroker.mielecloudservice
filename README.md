@@ -203,10 +203,6 @@ Here is a list of what these raw values stand for:
 ### V5.0.2 (2021-10-27) (Invincible)
 * (grizzelbee) Upd: Added listener to error events
 * (grizzelbee) Upd: Trying to reconnect if connection has been lost
-
-### V5.0.2 (2021-10-27) (Invincible)
-* (grizzelbee) Upd: Added listener to error events
-* (grizzelbee) Upd: Trying to reconnect if connection has been lost
  
 ### V5.0.1 (2021-10-25) (Invincible)
 * (grizzelbee) Fix: [178](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/178) Removed: info Received ACTIONS message by SSE.
