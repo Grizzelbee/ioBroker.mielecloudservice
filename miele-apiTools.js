@@ -205,7 +205,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
     paths.pop();                    // remove last element of path
     let device = paths[2];          // device is the fourth element of the path array
     let currentPath = paths.join('.');         // join all elements back together
-    let endpoint = '/actions'
+    let endpoint = '/actions';
     adapter.log.debug("APIStartAction: received Action: ["+action+"] with value: ["+value+"] for device ["+device+"] / path:["+currentPath+"]");
     switch (action) {
         case 'colors': currentAction = {'colors':value};
@@ -269,7 +269,7 @@ module.exports.APIStartAction = async function(adapter, auth, path, action, valu
             break;
         default: {
             // none of the known actions - so it should be a program
-            endpoint = '/programs'
+            endpoint = '/programs';
             adapter.log.debug(`getting PROGRAM-Object: ID: ${path}.`);
             const currentProg = await adapter.getObjectAsync(path);
             adapter.log.debug(`PROGRAM-Object: ID: ${path} value: ${JSON.stringify(currentProg)}`);
