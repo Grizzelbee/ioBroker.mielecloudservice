@@ -651,7 +651,7 @@ async function main() {
                 clearTimeout(timeHandler);
             }
         } while (!_auth);
-        if (_auth && _auth.hasOwnProperty('access_token') ) {
+        if (_auth.hasOwnProperty('access_token') ) {
             adapter.log.info(`Setting up devices ...`);
             // do the first API call and setup all devices returned
             const result = await mieleAPITools.refreshMieleData( adapter, _auth, '' );
