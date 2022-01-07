@@ -356,6 +356,12 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
         url: mieleConst.BASE_URL + Endpoint
     };
 
+    // addressing sentry issues: MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-7
+    if (!auth || typeof auth === 'undefined') {
+        adapter.log.error(`There is no auth token for some unknown reason. Aborting request.`);
+        return;
+    }
+
     adapter.log.debug('APISendRequest: Awaiting requested data.');
     try {
         adapter.log.debug('axios options: [' +JSON.stringify(options) + ']');
