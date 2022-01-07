@@ -398,11 +398,11 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
                 case 401:
                     try {
                         adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
-                        auth = APIRefreshToken(adapter, auth.refresh_token);
+                        // auth = APIRefreshToken(adapter, auth.refresh_token);
                     } catch (err) {
                         adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
                     }
-                    return 'Error 401: Authorization failed.';
+                    return 'Error 401: Authorization failed. Seems like the token expired.';
                 case 404:
                     adapter.log.info('Device/fabNumber is unknown. Disabling all actions.');
                     return( {"processAction":[],"light":[],"ambientLight":[],"startTime":[],"ventilationStep":[],"programId":[],"targetTemperature":[],"deviceName":false,"powerOn":false,"powerOff":false,"colors":[],"modes":[]} );
