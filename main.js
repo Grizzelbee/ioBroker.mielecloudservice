@@ -290,6 +290,21 @@ async function parseMieleDevice(mieleDevice, setup, API_Id){
 async function addMieleDevice(mieleDevice, setup){
     let newPath = mieleDevice.ident.deviceIdentLabel.fabNumber;
     // adapter.log.debug('addMieleDevice: NewPath = [' + newPath + ']');
+
+    // addresses sentry issue: MIELECLOUDSERVICE-28
+    if (typeof mieleDevice.ident.deviceIdentLabel.fabNumber === 'undefined'){
+        adapter.log.warn('This device has no fabNumber and can therefore not being identified. Not able to add it to the device tree.');
+        return;
+    }
+    if (typeof _knownDevices === 'undefined'){
+        adapter.log.warn('_knownDevices has not been initialized. Not able to add this device to the device tree.');
+        return;
+    }
+    if (!_knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].hasOwnProperty('name')){
+        adapter.log.warn('This device is known but has no name. Not able to add this device to the device tree.');
+        return;
+    }
+
     mieleTools.createExtendObject(adapter, newPath, {
         type: 'device',
         common: {name:   _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].name,

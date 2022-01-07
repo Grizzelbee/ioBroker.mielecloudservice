@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "5.0.3",
+        "version": "5.0.4",
         "news": {
+            "5.0.4": {
+                "en": "More minor bug fixes for sentry issues MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
+                "de": "Weitere kleinere Fehlerbehebungen für Sentry-Fehler: MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
+                "ru": "Дополнительные мелкие исправления ошибок для сторожевых проблем MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
+                "pt": "Mais pequenas correções de bug para problemas de sentinela MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
+                "nl": "Meer kleine bugfixes voor schildwachtproblemen MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
+                "fr": "Plus de corrections de bugs mineurs pour les problèmes de sentinelle MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
+                "it": "Altre correzioni di bug minori per problemi di sentinella MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
+                "es": "Más correcciones de errores menores para problemas de centinelas MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
+                "pl": "Więcej drobnych poprawek błędów związanych z działkami MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
+                "zh-cn": "针对哨兵问题 MIELECLOUDSERVICE-7、MIELECLOUDSERVICE-2J、MIELECLOUDSERVICE-2K、MIELECLOUDSERVICE-28 的更多小错误修复。"
+            },
             "5.0.3": {
                 "en": "Some minor bug fixes.",
                 "de": "Einige kleinere Fehlerbehebungen.",

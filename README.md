@@ -195,6 +195,12 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
+### V5.0.4 (2022-01-07) (Invincible)
+* (grizzelbee) Fix: [MIELECLOUDSERVICE-7](https://sentry.io/organizations/nocompany-6j/issues/2379624775/?project=5735758) handling if there is no auth token for a request 
+* (grizzelbee) Fix: [MIELECLOUDSERVICE-2J](https://sentry.io/organizations/nocompany-6j/issues/2885488082/?project=5735758) handling if there is no auth token for a request
+* (grizzelbee) Fix: [MIELECLOUDSERVICE-2K](https://sentry.io/organizations/nocompany-6j/issues/2886827789/?project=5735758) handling if there is no auth token for a request
+* (grizzelbee) Fix: [MIELECLOUDSERVICE-28](https://sentry.io/organizations/nocompany-6j/issues/2787208315/?project=5735758) handling if the device is unknown
+
 ### V5.0.3 (2021-12-31) (Invincible)
 * (grizzelbee) Fix: [MIELECLOUDSERVICE-8](https://sentry.io/organizations/nocompany-6j/issues/2380318199/?project=5735758) fixed stringifying circular structure
 * (grizzelbee) Fix: undefined is not a valid state value for id "xxx.signalDoor"
