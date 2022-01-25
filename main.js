@@ -130,6 +130,8 @@ function startadapter(options) {
  * splits the json data received from cloud API into separate device
  *
  * @param {object} devices The whole JSON which needs to be split into devices
+ * @param {object} devices.ident The whole JSON which needs to be split into devices
+ * @param {object} devices.ident.deviceIdentLabel The whole JSON which needs to be split into devices
  * @param {string} devices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
  * @param {boolean} setup  indicator whether the devices need to setup or only states are to be updated
  */
@@ -252,10 +254,12 @@ function getDeviceObj(deviceTypeID){
  * parses the JSON of each single device and creates the needed states
  *
  * @param {object} mieleDevice the JSON for a single device
- * @param {string} mieleDevice.ident the ident number of the device
+ * @param {object} mieleDevice.ident the ident data of the device
  * @param {string} mieleDevice.ident.deviceName the nickname of the device
+ * @param {object} mieleDevice.ident.type the ident type data of the device
  * @param {string} mieleDevice.ident.type.value_localized localized name of the device type
  * @param {number} mieleDevice.ident.type.value_raw numerical representation of the device type
+ * @param {object} mieleDevice.ident.deviceIdentLabel the ident deviceIdentLabel data of the device
  * @param {string} mieleDevice.ident.deviceIdentLabel.fabNumber SerialNumber of the device
  * @param {boolean} setup  indicator whether the devices need to setup or only states are to be updated
  * @param {string} API_Id  the API-ID for the current device
@@ -313,7 +317,9 @@ async function addMieleDevice(mieleDevice, setup){
             icon: _knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].icon
         },
         native: {}
-    }, null);
+    }, function(){
+        adapter.log.warn(`createExtendObject Object [${_knownDevices[mieleDevice.ident.deviceIdentLabel.fabNumber].name}] has called it's callback. It's not intended to be called. Error?`);
+    });
 
     mieleTools.createChannelActions(adapter, newPath, setup) ;
     mieleTools.createChannelIdent(adapter, newPath, setup) ;
