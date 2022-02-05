@@ -39,7 +39,7 @@
     "flatted": "^3.2.4",
     "minimist": "^1.2.5",
     "semver": "^7.3.5",
-    "snyk": "^1.819.0"
+    "snyk": "^1.827.0"
   },
   "devDependencies": {
     "@iobroker/testing": "^2.5.2",
