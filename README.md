@@ -195,7 +195,7 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
-### V5.0.5 (2022-01-07) (Invincible)
+### V5.0.5 (2022-02-07) (Invincible)
 * (grizzelbee) Fix: fixed some lgtm findings
 * (grizzelbee) New: Added link to request Miele API credentials in config page.  
 * (grizzelbee) Upd: dependencies got updated
