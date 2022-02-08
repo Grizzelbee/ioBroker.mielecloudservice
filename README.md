@@ -199,6 +199,7 @@ Here is a list of what these raw values stand for:
 * (grizzelbee) Fix: fixed some lgtm findings
 * (grizzelbee) New: Added link to request Miele API credentials in config page.  
 * (grizzelbee) Upd: dependencies got updated
+* (grizzelbee) Upd: removed separate license file
 
 
 ### V5.0.4 (2022-01-07) (Invincible)
@@ -528,4 +529,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ## Copyright
-Copyright (c) 2019 - 2022 grizzelbee <open.source@hingsen.de>
+Copyright (c) 2019-2022 grizzelbee <open.source@hingsen.de>
