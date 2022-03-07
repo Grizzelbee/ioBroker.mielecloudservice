@@ -1,0 +1,48 @@
+{
+    "cli": true,
+    "target": "directory",
+    "adapterName": "mielecloudservice",
+    "title": "Miele CloudService",
+    "description": "Get your Miele appliances (XGW3000 & WiFiConn@ct) connected",
+    "keywords": [
+        "iobroker",
+        "miele",
+        "wificonn@ct",
+        "xgw3000",
+        "gateway"
+    ],
+    "contributors": [
+        "grizzelbee"
+    ],
+    "expert": "yes",
+    "features": [
+        "adapter"
+    ],
+    "adminFeatures": [],
+    "type": "household",
+    "startMode": "daemon",
+    "connectionType": "cloud",
+    "dataSource": "push",
+    "connectionIndicator": "yes",
+    "language": "JavaScript",
+    "adminReact": "no",
+    "tools": [
+        "ESLint",
+        "type checking"
+    ],
+    "i18n": "JSON",
+    "releaseScript": "yes",
+    "devServer": "no",
+    "indentation": "Space (4)",
+    "quotes": "single",
+    "es6class": "yes",
+    "authorName": "grizzelbee",
+    "authorGithub": "Grizzelbee",
+    "authorEmail": "open.source@hingsen.de",
+    "gitRemoteProtocol": "HTTPS",
+    "gitCommit": "no",
+    "defaultBranch": "master",
+    "license": "MIT License",
+    "dependabot": "yes",
+    "creatorVersion": "2.1.0"
+}
