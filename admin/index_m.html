@@ -1,41 +1,60 @@
 <html>
-
 <head>
-
-    <!-- Load ioBroker scripts and styles-->
-    <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+    <!-- these 4 files always have to be included -->
     <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+    <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
 
     <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
 
+    <!-- these files always have to be included -->
     <script type="text/javascript" src="../../js/translate.js"></script>
     <script type="text/javascript" src="../../lib/js/materialize.js"></script>
     <script type="text/javascript" src="../../js/adapter-settings.js"></script>
-
-    <!-- Load our own files -->
-    <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="words.js"></script>
+    <style>
+        .m .col .select-wrapper + label {
+            top: -26px;
+        }
 
+        .m span {
+            font-size: 0.9em;
+        }
+    </style>
+    <!-- you have to define 2 functions in the global scope: -->
     <script type="text/javascript">
+        if (typeof supportsFeature !== 'function' || !supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
+            alert('This adapter requires at least js-controller V3.0.0. Your system is not compatible. Please update.');
+            throw new Error('This adapter requires at least js-controller V3.0.0. Your system is not compatible. Please update.');
+        };
+        let secret = '';
+
         // This will be called by the admin adapter when the settings page loads
         function load(settings, onChange) {
             // example: select elements with id=key and class=value and insert value
             if (!settings) return;
+
             $('.value').each(function () {
                 var $key = $(this);
                 var id = $key.attr('id');
+
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
                     $key.prop('checked', settings[id])
-                        .on('change', () => onChange())
-                        ;
+                        .on('change', () => onChange());
                 } else {
+                    if ((id === 'Miele_pwd') || (id === 'Client_secret')) {
+                        // get the system secret for pwd de-/encryption
+                        socket.emit('getObject', 'system.config', function (err, obj) {
+                            secret = (obj.native ? obj.native.secret : '');
+                            settings[id] = decrypt(secret, settings[id]);
+                            $key.val(settings[id]).on('change', () => onChange());
+                        });
+                    }
                     // do not call onChange direct, because onChange could expect some arguments
                     $key.val(settings[id])
                         .on('change', () => onChange())
-                        .on('keyup', () => onChange())
-                        ;
+                        .on('keyup', () => onChange());
                 }
             });
             onChange(false);
@@ -49,47 +68,139 @@
             var obj = {};
             $('.value').each(function () {
                 var $this = $(this);
+                var id = $this.attr('id');
+
                 if ($this.attr('type') === 'checkbox') {
-                    obj[$this.attr('id')] = $this.prop('checked');
+                    obj[id] = $this.prop('checked');
                 } else if ($this.attr('type') === 'number') {
-                    obj[$this.attr('id')] = parseFloat($this.val());
+                    obj[id] = parseFloat($this.val());
                 } else {
-                    obj[$this.attr('id')] = $this.val();
+                    if ((id === 'Miele_pwd') || (id === 'Client_secret')) {
+                        obj[id] = encrypt(secret, $this.val());
+                    } else {
+                        obj[id] = $this.val();
+                    }
                 }
             });
             callback(obj);
         }
     </script>
-
+    <script type="text/javascript" src="../gulpfile.js"></script>
 </head>
-
 <body>
-
-    <div class="m adapter-container">
-
+<!-- you have to put your config page in a div with id adapter-container -->
+<div class="m adapter-container">
+    <div class="row">
+        <!-- Forms are the standard way to receive user inputted data.
+     Learn more http://materializecss.com/forms.html-->
         <div class="row">
-            <div class="col s12 m4 l2">
-                <img src="mielecloudservice.png" class="logo">
+            <div class="input-field col s6">
+                <img src="mielecloudservice.svg" class="logo">
             </div>
         </div>
-
-        <!-- Put your content here -->
-
-        <!-- For example columns with settings: -->
         <div class="row">
-            <div class="col s6 input-field">
-                <input type="checkbox" class="value" id="option1" />
-                <label for="option1" class="translate">option1</label>
-            </div>
-
-            <div class="col s6 input-field">
-                <input type="text" class="value" id="option2" />
-                <label for="option2" class="translate">option2</label>
+            <div class="input-field col s6">
+                <a href="https://www.miele.com/f/com/en/register_api.aspx"><span class="translate">Miele_API_link</span></a>
             </div>
         </div>
-
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input class="value" id="Miele_account" type="text">
+                <label class="translate" for="Miele_account">Miele_Account</label>
+                <span class="translate">Miele_Account_desc</span>
+            </div>
+            <div class="input-field col s12 m6 l4">
+                <input class="value" id="Client_ID" type="text">
+                <label class="translate" for="Client_ID">Client_ID</label>
+                <span  class="translate">Client_ID_desc</span>
+            </div>
+            <div class="input-field col s12 m6 l2">
+                <select  class="value" id="locale">
+                    <option value="de" class="translate">German</option>
+                    <option value="en" class="translate" >English</option>
+                    <option value="fr" class="translate" >French</option>
+                    <option value="es" class="translate" >Spanish</option>
+                    <option value="it" class="translate" >Italian</option>
+                    <option value="nb" class="translate" >Norwegian</option>
+                    <option value="da" class="translate" >Danish</option>
+                    <option value="nl" class="translate" >Netherlands</option>
+                </select>
+                <label class="translate" for="locale">locale</label>
+                <span class="translate" for="locale_desc">locale_desc</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 m6 l4">
+                <input class="value"     id="Miele_pwd" type="password">
+                <label class="translate" for="Miele_pwd">Miele_pwd</label>
+                <span  class="translate">Miele_pwd_desc</span>
+            </div>
+            <div class="input-field col s12 m6 l4">
+                <input class="value" id="Client_secret" type="password">
+                <label class="translate" for="Client_secret">Client_secret</label>
+                <span class="translate">Client_secret_desc</span>
+            </div>
+            <div class="input-field col s12 m6 l4">
+                <select  class="value" id="oauth2_vg">
+                    <option value="en-AU">Miele Australia</option>
+                    <option value="nl-BE">Miele België</option>
+                    <option value="en-CA">Miele Canada</option>
+                    <option value="es-CL">Miele Chile</option>
+                    <option value="hr-HR">Miele Croatia</option>
+                    <option value="cs-CZ">Miele Czechia</option>
+                    <option value="da-DK">Miele Danmark</option>
+                    <option value="de-DE">Miele Deutschland</option>
+                    <option value="et-EE">Miele Eesti</option>
+                    <option value="es-ES">Miele España</option>
+                    <option value="fr-FR">Miele France</option>
+                    <option value="ko-KR">Miele Hanguk</option>
+                    <option value="zh-HK">Miele Hong Kong, China</option>
+                    <option value="en-IE">Miele Ireland</option>
+                    <option value="en-IL">Miele Israel</option>
+                    <option value="it-IT">Miele Italia</option>
+                    <option value="el-CY">Miele Kypros</option>
+                    <option value="lv-LV">Miele Latvija</option>
+                    <option value="lt-LT">Miele Lietuva</option>
+                    <option value="de-LU">Miele Luxemburg</option>
+                    <option value="hu-HU">Miele Magyarország</option>
+                    <option value="en-MY">Miele Malaysia</option>
+                    <option value="es-MX">Miele México</option>
+                    <option value="nl-NL">Miele Nederland</option>
+                    <option value="en-NZ">Miele New Zealand</option>
+                    <option value="ja-JP">Miele Nihon</option>
+                    <option value="no-NO">Miele Norge</option>
+                    <option value="pl-PL">Miele Polska</option>
+                    <option value="pt-PT">Miele Portugual</option>
+                    <option value="ro-RO">Miele România</option>
+                    <option value="de-CH">Miele Schweiz</option>
+                    <option value="en-SG">Miele Singapore</option>
+                    <option value="sl-SI">Miele Slovenia</option>
+                    <option value="sk-SK">Miele Slovensko</option>
+                    <option value="en-ZA">Miele South Africa</option>
+                    <option value="fi-FI">Miele Suomi</option>
+                    <option value="sv-SE">Miele Sverige</option>
+                    <option value="en-TH">Miele Thailand</option>
+                    <option value="tr-TR">Miele Türkiye</option>
+                    <option value="en-GB">Miele UK</option>
+                    <option value="en-US">Miele USA</option>
+                    <option value="en-AE">Miele United Arab Emirates</option>
+                    <option value="zh-CN">Miele Zhōngguó, dàlù</option>
+                    <option value="de-AT">Miele Österreich</option>
+                    <option value="el-GR">Miele Ελλάδα</option>
+                    <option value="ru-BY">Miele Беларуси</option>
+                    <option value="bg-BG">Miele България</option>
+                    <option value="ru-KZ">Miele Казахстан</option>
+                    <option value="ru-RU">Miele Россия</option>
+                    <option value="sr-RS">Miele Србија</option>
+                    <option value="ru-UA">Miele Україна</option>
+                </select>
+                <label class="translate" for="oauth2_vg">oauth2_vg</label>
+                <span class="translate" for="oauth2_vg_desc">oauth2_vg_desc</span>
+            </div>
+        </div>
     </div>
 
+</div>
 </body>
 
 </html>
