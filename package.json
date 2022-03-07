@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mielecloudservice",
-  "version": "0.0.1",
+  "version": "5.5.0",
   "description": "Get your Miele appliances (XGW3000 & WiFiConn@ct) connected",
   "author": {
     "name": "grizzelbee",
@@ -25,7 +25,12 @@
     "url": "https://github.com/Grizzelbee/ioBroker.mielecloudservice"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^2.6.0"
+    "@iobroker/adapter-core": "^2.6.0",
+    "@iobroker/plugin-sentry": "^1.2.0",
+    "axios": "^0.26.0",
+    "axios-oauth-client": "^1.4.4",
+    "eventsource": "^2.0.0",
+    "snyk": "^1.864.0"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^2.2.2",
@@ -71,5 +76,6 @@
   "bugs": {
     "url": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues"
   },
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "snyk": true
 }

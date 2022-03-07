@@ -1,19 +1,10 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "0.0.1",
+        "version": "5.5.0",
         "news": {
-            "0.0.1": {
-                "en": "initial release",
-                "de": "Erstveröffentlichung",
-                "ru": "Начальная версия",
-                "pt": "lançamento inicial",
-                "nl": "Eerste uitgave",
-                "fr": "Première version",
-                "it": "Versione iniziale",
-                "es": "Versión inicial",
-                "pl": "Pierwsze wydanie",
-                "zh-cn": "首次出版"
+            "5.5.0": {
+                "en": "full rewrite of the adapter"
             }
         },
         "title": "Miele CloudService",
@@ -54,9 +45,9 @@
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "main.js",
-        "icon": "mielecloudservice.png",
+        "icon": "mielecloudservice.svg",
         "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.png",
+        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.svg",
         "readme": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/README.md",
         "loglevel": "info",
         "mode": "daemon",
@@ -64,17 +55,45 @@
         "compact": true,
         "connectionType": "cloud",
         "dataSource": "push",
+        "tier": 2,
         "materialize": true,
+        "adminUI": {
+            "config": "materialize"
+        },
+        "globalDependencies": [
+            {
+                "admin": ">=4.0.9"
+            }
+        ],
         "dependencies": [
             {
-                "js-controller": ">=2.0.0"
+                "js-controller": ">=3.0.0"
             }
-        ]
+        ],
+        "plugins": {
+            "sentry": {
+                "dsn": "https://bb362bebab074bcd8b8f821a070f6662@o505019.ingest.sentry.io/5735758"
+            }
+        }
     },
     "native": {
-        "option1": true,
-        "option2": "42"
+        "Client_secret": "",
+        "Miele_pwd": "",
+        "Miele_account": "",
+        "Client_ID": "",
+        "locale": "de",
+        "oauth2_vg": "de-DE",
+        "pollinterval": 1,
+        "pollUnit": 60
     },
+    "encryptedNative": [
+        "Client_secret",
+        "Miele_pwd"
+        ],
+    "protectedNative": [
+        "Client_secret",
+        "Miele_pwd"
+    ],
     "objects": [],
     "instanceObjects": [
         {
