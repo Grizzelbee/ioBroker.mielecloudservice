@@ -13,6 +13,7 @@
 
 module.exports.BASE_URL = 'https://api.mcs3.miele.com/';
 module.exports.ENDPOINT_TOKEN = 'thirdparty/token/';
+module.exports.ENDPOINT_REFRESHTOKEN = 'thirdparty/token/';
 module.exports.ENDPOINT_LOGOUT = 'thirdparty/logout/';
 module.exports.START = 1;
 module.exports.STOP  = 2;
@@ -25,3 +26,5 @@ module.exports.LIGHT_ON  = 1;
 module.exports.LIGHT_OFF = 2;
 module.exports.MODE_NORMAL  = 0;
 module.exports.MODE_SABBATH = 1;
+module.exports.RESTART_TIMEOUT = 30;
+module.exports.ALL_ACTIONS_DISABLED={'processAction':[],'light':[],'ambientLight':[],'startTime':[],'ventilationStep':[],'programId':[],'targetTemperature':[],'deviceName':false,'powerOn':false,'powerOff':false,'colors':[],'modes':[]};
