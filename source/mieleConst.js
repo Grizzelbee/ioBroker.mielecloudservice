@@ -13,7 +13,7 @@
 
 module.exports.BASE_URL = 'https://api.mcs3.miele.com/';
 module.exports.ENDPOINT_TOKEN = 'thirdparty/token/';
-module.exports.ENDPOINT_REFRESHTOKEN = 'thirdparty/token/';
+module.exports.ENDPOINT_EVENTS = 'v1/devices/all/events/';
 module.exports.ENDPOINT_LOGOUT = 'thirdparty/logout/';
 module.exports.START = 1;
 module.exports.STOP  = 2;

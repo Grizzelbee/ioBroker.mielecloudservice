@@ -7,11 +7,13 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
+const EventSource = require('eventsource');
 const mieleTools = require('./source/mieleTools.js');
-const events = require('eventsource');
+const mieleConst = require('./source/mieleConst');
 
+const timeouts = {};
+let events;
 let auth;
-let timeouts = {};
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
@@ -37,9 +39,12 @@ class Mielecloudservice extends utils.Adapter {
     async onReady() {
         // Reset the connection indicator during startup
         this.setState('info.connection', false, true);
+        // remember the link to the adapter instance
+        const adapter = this;
         // decrypt passwords
         this.config.Client_secret =  this.decrypt(this.config.Client_secret);
         this.config.Miele_pwd =  this.decrypt(this.config.Miele_pwd);
+        // test config and get auth token
         try {
             await mieleTools.checkConfig(this, this.config)
                 .then(async ()=> {
@@ -48,6 +53,7 @@ class Mielecloudservice extends utils.Adapter {
                             // this.log.error(err);
                             this.terminate(err);
                         });
+                    this.log.debug(JSON.stringify(auth));
                 })
                 .catch(()=> {
                     this.terminate('Terminating adapter due to invalid configuration.');
@@ -67,16 +73,49 @@ class Mielecloudservice extends utils.Adapter {
                             }
                         });
                 }
-            }, 15*1000, this, this.config); // org: 12*3600*1000
+            }, 12*3600*1000, this, this.config); // org: 12*3600*1000; for testing: 30000
+            /*
+            // code for debugging the refresh of tokens; will be removed as soon as the refresh code is tested
             this.log.debug(`auth=${JSON.stringify(auth)}`);
-
             setTimeout(()=> {
                 auth.expiryDate = new Date().getSeconds()+6*3600;
                 this.log.debug(`Setting new expiry date: ${Date(auth.expiryDate).toLocaleString()}`);
             }, 10000);
+            */
+            // register for events from Miele API
+            // curl -H "Accept:text/event-stream" -H "Accept-Language: de-DE" -H "Authorization: Bearer ACCESS_TOKEN" https://api.mcs3.miele.com/v1/devices/all/events
+            this.log.info(`Registering for all appliance events at Miele API.`);
+            events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : this.config.locale }} );
+
+            events.addEventListener( 'devices', function(event) {
+                adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
+                // splitMieleDevices(JSON.parse(event.data), false);
+            });
+
+            events.addEventListener( 'actions', function(actions) {
+                adapter.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(actions)}]`);
+            });
+
+            events.addEventListener( 'ping', function() {
+                // ping messages usually occur every five seconds.
+                // todo implement a watchdog upon ping messages
+                adapter.log.debug(`Received PING message by SSE.`);
+
+            });
+
+            events.addEventListener( 'error', function(event) {
+                adapter.log.warn('Received error message by SSE: ' + JSON.stringify(event));
+                if (event.readyState === EventSource.CLOSED) {
+                    adapter.log.info('The connection has been closed. Trying to reconnect.');
+                    adapter.setState('info.connection', false, true);
+                    events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : adapter.config.locale }} );
+                }
+            });
 
 
-            //events =
+            events.onopen = function() {
+                adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');
+            };
         } catch (err) {
             this.log.error(err);
         }
@@ -100,7 +139,7 @@ class Mielecloudservice extends utils.Adapter {
                 this.log.debug(`Clearing interval ${key}.`);
                 clearInterval(timeouts[key]);
             }
-            events.close();
+            //events.close();
             if (auth) {
                 await mieleTools.APILogOff(this, auth, 'access_token');
             }

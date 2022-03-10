@@ -4,7 +4,6 @@
 const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
-// const events = require('eventsource');
 
 
 
@@ -143,110 +142,6 @@ module.exports.getAuth = async function(adapter, config , iteration){
 
 
 /**
- * APISendRequest
- *
- * trigger the given action on the given device
- *
- * @param adapter {object} link to the adapter instance
- * @param auth {object} OAuth2 token object
- * @param Endpoint {string} the URI endpoint to call
- * @param Method {string} method to use for this request: POST or GET
- * @param payload {string} payload for this request
- *
- */
-async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
-    // build options object for axios
-    const options = {
-        headers: {
-            Authorization: 'Bearer ' + auth.access_token,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: Method,
-        data: payload,
-        dataType: 'json',
-        json: true,
-        url: mieleConst.BASE_URL + Endpoint
-    };
-
-    // addressing sentry issues: MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-7
-    if (!auth || typeof auth === 'undefined') {
-        adapter.log.error(`There is no auth token for some unknown reason. Aborting request.`);
-        return;
-    }
-
-    adapter.log.debug('APISendRequest: Awaiting requested data.');
-    try {
-        adapter.log.debug('axios options: [' +JSON.stringify(options) + ']');
-        // @ts-ignore
-        const response = await axios(options);
-        adapter.log.debug('API returned Status: [' + response.status + ']');
-        adapter.log.debug('API returned Information: [' +  ( Object(response.data).hasOwn('message')? JSON.stringify(response.data.message) : JSON.stringify(response.data)) + ']');
-        if ( Object(response).hasOwn('data')) {
-            if (Object(response.data).hasOwn('message')){
-                return response.data.message;
-            } else {
-                switch (response.status) {
-                    case 202:
-                        return  'Accepted, processing has not been completed.';
-                    case 204: // OK, No Content
-                        return 'OK, no content.';
-                    default: return  response.data;
-                }
-            }
-        }
-    } catch(error) {
-        adapter.log.debug('Given parameters:');
-        adapter.log.debug('Auth: [' + JSON.stringify(auth) + ']');
-        adapter.log.debug('Endpoint: [' + Endpoint + ']');
-        adapter.log.debug('Method: [' + Method + ']');
-        adapter.log.debug('Payload: [' + JSON.stringify(payload) + ']');
-        adapter.log.debug('[APISendRequest] ' + JSON.stringify(error) + ' | [Stack]: ' + error.stack);
-        if (error.response) {
-            switch (error.response.status) {
-                case 400: {
-                    const device = Endpoint.split('/', 3).pop();
-                    adapter.log.info(`The API returned http-error 400: ${error.response.data.message} for device: [${device}].`);
-                }
-                    return;
-                case 401:
-                    try {
-                        adapter.log.info('OAuth2 Access token has expired. Trying to refresh it.');
-                        // auth = APIRefreshToken(adapter, auth.refresh_token);
-                    } catch (err) {
-                        adapter.log.error('[APIRefreshToken] ' + JSON.stringify(err));
-                    }
-                    return 'Error 401: Authorization failed. Seems like the token expired.';
-                case 404:
-                    adapter.log.info('Device/fabNumber is unknown. Disabling all actions.');
-                    return( mieleConst.ALL_ACTIONS_DISABLED );
-                case 500:
-                    adapter.log.info('HTTP 500: Internal Server Error @Miele-API servers. There is nothing you can do but waiting if if solves itself or get in contact with Miele.');
-                    return 'Error 500: Internal Server Error.';
-                case 504:
-                    adapter.log.info('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
-                    return 'Error 504: Gateway timeout';
-            }
-            // Request made and server responded
-            adapter.log.error('Request made and server responded:');
-            adapter.log.error('Response.status:' + error.response.status);
-            adapter.log.error('Response.data.message: ' + JSON.stringify(error.response.data.message));
-            adapter.log.error('Response.headers: ' + JSON.stringify(error.response.headers));
-            adapter.log.error('Response.data: ' + JSON.stringify(error.response.data));
-        } else if (error.request) {
-            // The request was made but no response was received
-            adapter.log.error('The request was made but no response was received:');
-            adapter.log.error(error);
-        } else {
-            // Something happened in setting up the request that triggered an Error
-            adapter.log.error('Something happened in setting up the request that triggered an Error:');
-            adapter.log.error(`Error: [${error}]`);
-        }
-    }
-}
-
-
-/**
  * sendAPIRequest
  *
  * build and send a http request to the miele server
@@ -255,21 +150,87 @@ async function APISendRequest(adapter, auth, Endpoint, Method, payload) {
  * @param {object} auth OAuth2 token object
  * @param {string} Endpoint the URI endpoint to call
  * @param {string} Method method to use for this request: POST or GET
- * @param {string} payload payload for this request
+ * @param {object} payload payload for this request
  *
  */
 async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
     return new Promise((resolve, reject) => {
         // addressing sentry issues: MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-7
-        if (!auth || typeof auth === 'undefined') {
-            reject(`There is no auth token for some unknown reason. Aborting request.`);
+        if (!auth || typeof auth === 'undefined' || Endpoint === '' || Method === '') {
+            reject(`[sendAPIRequest] Aborting request due to: ${typeof auth === 'undefined'?'Missing auth token.':Endpoint === ''?'Missing endpoint.':'No method (GET/POST) given.'}`);
         }
-        if (Endpoint === '') {
-            reject(`There is no endpoint given for this request. Aborting request.`);
-        }
-        if (Method === '') {
-            reject(`There is no method (GET/POST) given for this request. Aborting request.`);
-        }
+        // build options object for axios
+        const options = {
+            headers: {
+                Authorization: 'Bearer ' + auth.access_token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: Method,
+            data: payload,
+            dataType: 'json',
+            json: true,
+            url: mieleConst.BASE_URL + Endpoint
+        };
+        // @ts-ignore
+        axios(options)
+            .then((response)=>{
+                if ( Object.prototype.hasOwnProperty.call(response, 'data')) {
+                    if (Object.prototype.hasOwnProperty.call(response.data, 'message')){
+                        adapter.log.debug(`API returned Information: [${JSON.stringify(response.data.message)}]`);
+                        resolve(response.data.message);
+                    } else {
+                        adapter.log.debug(`API returned Status: [${response.status}]`);
+                        switch (response.status) {
+                            case 202:
+                                resolve({message:'Accepted, processing has not been completed.'});
+                                break;
+                            case 204: // OK, No Content
+                                resolve({message:'OK, no content.'});
+                                break;
+                            default: resolve(response.data);
+                        }
+                    }
+                }
+            })
+            .catch((error)=>{
+                if (error.response) {
+                    switch (error.response.status) {
+                        case 400: {
+                            const device = Endpoint.split('/', 3).pop();
+                            adapter.log.info(`The API returned http-error 400: ${error.response.data.message} for device: [${device}].`);
+                            reject(`The API returned http-error 400: ${error.response.data.message} for device: [${device}].`);
+                        }
+                            break;
+                        case 401:
+                            adapter.log.error('OAuth2 Access token has expired. This shouldn\'t ever happen.Please open an issue on github for that.');
+                            reject('OAuth2 Access token has expired.');
+                            break;
+                        case 404:
+                            adapter.log.info('Device/fabNumber is unknown. Disabling all actions.');
+                            resolve( mieleConst.ALL_ACTIONS_DISABLED );
+                            break;
+                        case 500:
+                            adapter.log.info('HTTP 500: Internal Server Error @Miele-API servers. There is nothing you can do but waiting if if solves itself or get in contact with Miele.');
+                            reject('Error 500: Internal Server Error.');
+                            break;
+                        case 504:
+                            adapter.log.info('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
+                            reject('Error 504: Gateway timeout');
+                            break;
+                    }
+                    // Request made and server responded
+                    adapter.log.error(`Request made and server responded: ${JSON.stringify(error.response)}`);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    adapter.log.error(`The request was made but no response was received: [${error}]`);
+                    reject(error);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    adapter.log.error(`Something happened in setting up the request that triggered an Error: [${error}]`);
+                    reject(error);
+                }
+            });
     });
 }
 
@@ -317,13 +278,12 @@ module.exports.refreshAuthToken = async function(adapter, config, auth){
             url: mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN
         };
         // @ts-ignore
-//        oauth.client(axios.create(), payload)
         axios(options)
             .then((result)=>{
                 result.expiryDate = new Date();
                 result.expiryDate.setSeconds(result.expiryDate.getSeconds() + result.expires_in );
                 // @ts-ignore
-                adapter.log.info(`New Access-Token expires on: [${Date(adapter.expiryDate).toLocaleString()}]`);
+                adapter.log.info(`New Access-Token expires on: [${Date(result.expiryDate).toLocaleString()}]`);
                 resolve(result) ;
             })
             .catch((error) => {
@@ -337,7 +297,7 @@ module.exports.refreshAuthToken = async function(adapter, config, auth){
                             reject(`Terminating adapter due to inability to authenticate.`);
                             break;
                         case 429: // endpoint currently not available
-                            adapter.log.warn('Error: Endpoint: [' + mieleConst.BASE_URL + mieleConst.ENDPOINT_REFRESHTOKEN + '] is currently not available.');
+                            adapter.log.warn('Error: Endpoint: [' + mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN + '] is currently not available.');
                             break;
                         default:
                             adapter.log.warn('[error.response.data]: ' + ((typeof error.response.data === 'object') ? '' : error.response.data));
@@ -355,7 +315,7 @@ module.exports.refreshAuthToken = async function(adapter, config, auth){
                     // Something happened in setting up the request that triggered an Error
                     adapter.log.warn(error.message);
                 }
-                adapter.log.info(`Refresh attempt wasn't successful. Trying again to connect in ${mieleConst.RESTART_TIMEOUT} Seconds.`);
+                adapter.log.info(`Refresh attempt wasn't successful. Trying again to refresh in ${mieleConst.RESTART_TIMEOUT} Seconds.`);
                 setTimeout( ()=>{
                     exports.refreshAuthToken(adapter, config, auth);
                 }, 1000*mieleConst.RESTART_TIMEOUT);
@@ -375,9 +335,14 @@ module.exports.refreshAuthToken = async function(adapter, config, auth){
  *
  */
 module.exports.APILogOff = async function(adapter, auth, token_type) {
-    await APISendRequest(adapter, auth, mieleConst.ENDPOINT_LOGOUT, 'POST', 'token: '+ auth[token_type] )
+    adapter.log.debug(`[APILogOff] Invalidating access tokens.`);
+    sendAPIRequest(adapter, auth, mieleConst.ENDPOINT_LOGOUT, 'POST', {token: `${auth[token_type]}`} )
+        .then((result)=>{
+            return result;
+        })
         .catch( (error) => {
             adapter.log.error('[APILogOff] ' + JSON.stringify(error) + ' Stack: '+error.stack);
+            return error;
         });
 };
 
@@ -388,11 +353,12 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
  * Updates an existing object (id) or creates it if not existing.
  * In case id and name are equal, it will only set it's new state
  *
- * @param id {string} path/id of datapoint to create
- * @param objData {object} details to the datapoint to be created (Device, channel, state, ...)
- * @param value {any} value of the datapoint
+ * @param {object} adapter link to the adapters instance
+ * @param {string} id path/id of datapoint to create
+ * @param {object} objData details to the datapoint to be created (Device, channel, state, ...)
+ * @param {any} value value of the datapoint
  */
-function createOrExtendObject(id, objData, value) {
+function createOrExtendObject(adapter, id, objData, value) {
     adapter.getObject(id, function (err, oldObj) {
         if (!err && oldObj) {
             if ( objData.name === oldObj.common.name ){
