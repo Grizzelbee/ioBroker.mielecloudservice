@@ -4,6 +4,7 @@
 const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
+const flatted = require('flatted');
 
 
 
@@ -133,7 +134,8 @@ module.exports.getAuth = async function(adapter, config , iteration){
         if (auth){
             auth.expiryDate = new Date();
             auth.expiryDate.setSeconds(auth.expiryDate.getSeconds() + auth.expires_in);
-            adapter.log.debug(`Access token expires on: ${ auth.expiryDate.toLocaleString() }`);
+            // @ts-ignore
+            adapter.log.debug(`Access token expires on: ${ Date(auth.expiryDate).toLocaleString() }`);
             adapter.setState('info.connection', true, true);
             resolve (auth);
         }
@@ -262,29 +264,31 @@ module.exports.refreshAuthToken = async function(adapter, config, auth){
     return new Promise((resolve, reject) => {
         const options = {
             headers: {
-                Authorization: 'Bearer ' + auth.access_token,
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
+                // Authorization: 'Bearer ' + auth.access_token,
+                Accept: 'application/json;charset=utf-8',
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
             method: 'POST',
-            data: {
-                grant_type : 'refresh_token',
-                client_id : config.Client_ID,
-                client_secret : config.Client_secret,
-                refresh_token : auth.refresh_token
-            },
-            dataType: 'JSON',
-            json: true,
+            data: `grant_type=refresh_token&client_id=${config.Client_ID}&client_secret=${config.Client_secret}&refresh_token=${auth.refresh_token}`,
+            dataType: 'text/plain',
             url: mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN
         };
         // @ts-ignore
         axios(options)
             .then((result)=>{
-                result.expiryDate = new Date();
-                result.expiryDate.setSeconds(result.expiryDate.getSeconds() + result.expires_in );
+                result=JSON.parse(flatted.stringify(result));
+                const data= result[result[0].data];
+                const newAuth={};
+                newAuth.access_token = result[data.access_token];
+                newAuth.refresh_token = result[data.refresh_token];
+                newAuth.token_type = result[data.token_type];
+                newAuth.expires_in = data.expires_in;
+                newAuth.expiryDate = new Date();
+                newAuth.expiryDate.setSeconds(newAuth.expiryDate.getSeconds() + Number(data.expires_in) );
+                adapter.log.debug(`NewAuth from server: ${JSON.stringify(newAuth)}`);
                 // @ts-ignore
-                adapter.log.info(`New Access-Token expires on: [${Date(result.expiryDate).toLocaleString()}]`);
-                resolve(result) ;
+                adapter.log.info(`New Access-Token expires on: [${Date(newAuth.expiryDate).toLocaleString()}]`);
+                resolve(newAuth) ;
             })
             .catch((error) => {
                 adapter.log.error(JSON.stringify(error));

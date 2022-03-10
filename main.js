@@ -10,7 +10,6 @@ const utils = require('@iobroker/adapter-core');
 const EventSource = require('eventsource');
 const mieleTools = require('./source/mieleTools.js');
 const mieleConst = require('./source/mieleConst');
-
 const timeouts = {};
 let events;
 let auth;
@@ -73,15 +72,16 @@ class Mielecloudservice extends utils.Adapter {
                             }
                         });
                 }
-            }, 12*3600*1000, this, this.config); // org: 12*3600*1000; for testing: 30000
-            /*
+            }, 300000, this, this.config); // org: 12*3600*1000; for testing: 30000
+            // *
             // code for debugging the refresh of tokens; will be removed as soon as the refresh code is tested
             this.log.debug(`auth=${JSON.stringify(auth)}`);
             setTimeout(()=> {
                 auth.expiryDate = new Date().getSeconds()+6*3600;
+                // @ts-ignore
                 this.log.debug(`Setting new expiry date: ${Date(auth.expiryDate).toLocaleString()}`);
-            }, 10000);
-            */
+            }, 5000);
+            // */
             // register for events from Miele API
             // curl -H "Accept:text/event-stream" -H "Accept-Language: de-DE" -H "Authorization: Bearer ACCESS_TOKEN" https://api.mcs3.miele.com/v1/devices/all/events
             this.log.info(`Registering for all appliance events at Miele API.`);

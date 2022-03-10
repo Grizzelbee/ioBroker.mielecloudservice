@@ -30,6 +30,7 @@
     "axios": "^0.26.0",
     "axios-oauth-client": "^1.4.4",
     "eventsource": "^2.0.0",
+    "flatted": "^3.2.5",
     "snyk": "^1.864.0"
   },
   "devDependencies": {
