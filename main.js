@@ -72,16 +72,16 @@ class Mielecloudservice extends utils.Adapter {
                             }
                         });
                 }
-            }, 300000, this, this.config); // org: 12*3600*1000; for testing: 30000
-            // *
+            }, 12*3600*1000, this, this.config); // org: 12*3600*1000; for testing: 30000
+            /*
             // code for debugging the refresh of tokens; will be removed as soon as the refresh code is tested
             this.log.debug(`auth=${JSON.stringify(auth)}`);
             setTimeout(()=> {
-                auth.expiryDate = new Date().getSeconds()+6*3600;
-                // @ts-ignore
-                this.log.debug(`Setting new expiry date: ${Date(auth.expiryDate).toLocaleString()}`);
+                auth.expiryDate = new Date();
+                auth.expiryDate.setSeconds(6*3600);
+                this.log.debug(`Setting new expiry date: ${auth.expiryDate.toLocaleString()}`);
             }, 5000);
-            // */
+            */
             // register for events from Miele API
             // curl -H "Accept:text/event-stream" -H "Accept-Language: de-DE" -H "Authorization: Bearer ACCESS_TOKEN" https://api.mcs3.miele.com/v1/devices/all/events
             this.log.info(`Registering for all appliance events at Miele API.`);
@@ -111,7 +111,6 @@ class Mielecloudservice extends utils.Adapter {
                     events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : adapter.config.locale }} );
                 }
             });
-
 
             events.onopen = function() {
                 adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');

@@ -133,9 +133,8 @@ module.exports.getAuth = async function(adapter, config , iteration){
         });
         if (auth){
             auth.expiryDate = new Date();
-            auth.expiryDate.setSeconds(auth.expiryDate.getSeconds() + auth.expires_in);
-            // @ts-ignore
-            adapter.log.debug(`Access token expires on: ${ Date(auth.expiryDate).toLocaleString() }`);
+            auth.expiryDate.setSeconds(auth.expires_in);
+            adapter.log.debug(`Access token expires on: ${ auth.expiryDate.toLocaleString() }`);
             adapter.setState('info.connection', true, true);
             resolve (auth);
         }
@@ -241,13 +240,13 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
  * Test whether the auth token is going to expire within the next 24 hours
  *
  * @param {object} auth the current auth token with all it's values
- * @param {number} auth.expiryDate the current expiry date of the token
+ * @param {string} auth.expiryDate the current expiry date of the token
  * @returns {boolean} Returns true if the token is going to expire within the next 24 hours - false if not.
  */
 module.exports.authHasExpired = function (auth){
     const testValue = new Date();
-    testValue.setSeconds( testValue.getSeconds()+24*3600 );
-    return (new Date(auth.expiryDate).getSeconds()-testValue.getSeconds() <= 0);
+    testValue.setSeconds( 24*3600 );
+    return (Date.parse(auth.expiryDate)-Date.parse(testValue.toLocaleString())<= 0);
 };
 
 
@@ -284,10 +283,9 @@ module.exports.refreshAuthToken = async function(adapter, config, auth){
                 newAuth.token_type = result[data.token_type];
                 newAuth.expires_in = data.expires_in;
                 newAuth.expiryDate = new Date();
-                newAuth.expiryDate.setSeconds(newAuth.expiryDate.getSeconds() + Number(data.expires_in) );
+                newAuth.expiryDate.setSeconds(data.expires_in);
                 adapter.log.debug(`NewAuth from server: ${JSON.stringify(newAuth)}`);
-                // @ts-ignore
-                adapter.log.info(`New Access-Token expires on: [${Date(newAuth.expiryDate).toLocaleString()}]`);
+                adapter.log.info(`New Access-Token expires on: [${newAuth.expiryDate.toLocaleString()}]`);
                 resolve(newAuth) ;
             })
             .catch((error) => {
