@@ -124,12 +124,13 @@ module.exports.getAuth = async function(adapter, config , iteration){
                 // Something happened in setting up the request that triggered an Error
                 adapter.log.warn(error.message);
             }
-            // adapter.setState('info.connection', false, true);
-            adapter.log.info(`Login attempt wasn't successful. Trying again to connect in ${mieleConst.RESTART_TIMEOUT} Seconds.`);
-            setTimeout( ()=>{
-                exports.getAuth(adapter, config, iteration+1);
-            }, 1000*mieleConst.RESTART_TIMEOUT);
+            if (error.response.status != 401){
+                adapter.log.info(`Login attempt wasn't successful. Trying again to connect in ${mieleConst.RESTART_TIMEOUT} Seconds.`);
+                setTimeout( ()=>{
+                    exports.getAuth(adapter, config, iteration+1);
+                }, 1000*mieleConst.RESTART_TIMEOUT);
 
+            }
         });
         if (auth){
             auth.expiryDate = new Date();
