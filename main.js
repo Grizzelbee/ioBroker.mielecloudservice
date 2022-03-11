@@ -82,6 +82,15 @@ class Mielecloudservice extends utils.Adapter {
                 this.log.debug(`Setting new expiry date: ${auth.expiryDate.toLocaleString()}`);
             }, 5000);
             */
+            // code for watchdog -> check every 60 seconds
+            timeouts.watchdog=setInterval(()=> {
+                const testValue = new Date();
+                if (Date.parse(testValue.toLocaleString())-Date.parse(auth.ping)>= 60){
+                    adapter.log.info(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to reconnect.`);
+                    events.close();
+                    events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : this.config.locale }} );
+                }
+            }, 60000);
             // register for events from Miele API
             // curl -H "Accept:text/event-stream" -H "Accept-Language: de-DE" -H "Authorization: Bearer ACCESS_TOKEN" https://api.mcs3.miele.com/v1/devices/all/events
             this.log.info(`Registering for all appliance events at Miele API.`);
@@ -100,7 +109,7 @@ class Mielecloudservice extends utils.Adapter {
                 // ping messages usually occur every five seconds.
                 // todo implement a watchdog upon ping messages
                 adapter.log.debug(`Received PING message by SSE.`);
-
+                auth.ping=new Date();
             });
 
             events.addEventListener( 'error', function(event) {
