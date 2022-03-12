@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.5.1",
-    "@iobroker/plugin-sentry": "^1.1.10",
+    "@iobroker/plugin-sentry": "^1.2.0",
     "axios": "^0.25.0",
     "axios-oauth-client": "^1.4.4",
     "eventsource": "^1.1.0",
