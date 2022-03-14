@@ -6,6 +6,8 @@ const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
 
+const knownDevices = [];
+
 
 
 /**
@@ -348,6 +350,36 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
             return error;
         });
 };
+
+
+
+/**
+ * Function splitMieleDevices
+ *
+ * splits the json data received from cloud API into separate device
+ *
+ * @param {object} adapter Link to the adapter instance
+ * @param {object} mieleDevices The whole JSON which needs to be split into devices
+ * @param {object} mieleDevices.ident Indent Data of the device
+ * @param {object} mieleDevices.ident.deviceIdentLabel The whole JSON which needs to be split into devices
+ * @param {string} mieleDevices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
+ */
+module.exports.splitMieleDevices = async function(adapter, mieleDevices){
+    // Splits the data-package returned by the API into single devices and iterates over each single device
+    for (const mieleDevice in mieleDevices) {
+        adapter.log.debug('splitMieleDevices: ' + mieleDevice+ ': [' + mieleDevice + '] *** Value: [' + JSON.stringify(mieleDevices[mieleDevice]) + ']');
+        if (mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber === ''){
+            adapter.log.debug('Device: [' + mieleDevice + '] has no serial number/fabNumber. Taking DeviceNumber instead.');
+            mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber = mieleDevice;
+            knownDevices.push();
+        } else {
+
+        }
+        // await parseMieleDevice(mieleDevices[mieleDevice], setup, mieleDevice);
+    }
+};
+
+
 
 
 /**

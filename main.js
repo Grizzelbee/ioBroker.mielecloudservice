@@ -74,32 +74,21 @@ class Mielecloudservice extends utils.Adapter {
                             });
                     }
                 }, 12*3600*1000, this, this.config); // org: 12*3600*1000; for testing: 30000
-                /*
-                // code for debugging the refresh of tokens; will be removed as soon as the refresh code is tested
-                this.log.debug(`auth=${JSON.stringify(auth)}`);
-                setTimeout(()=> {
-                    auth.expiryDate = new Date();
-                    auth.expiryDate.setSeconds(6*3600);
-                    this.log.debug(`Setting new expiry date: ${auth.expiryDate.toLocaleString()}`);
-                }, 5000);
-                */
-                // code for watchdog -> check every 60 seconds
+                // code for watchdog -> check every 5 minutes
                 timeouts.watchdog=setInterval(()=> {
                     const testValue = new Date();
                     if (Date.parse(testValue.toLocaleString())-Date.parse(auth.ping.toLocaleString())>= 60000){
                         adapter.log.info(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to reconnect.`);
-                        events.close();
-                        events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : this.config.locale }} );
+                        events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : adapter.config.locale }} );
                     }
-                }, 60000);
+                }, mieleConst.WATCHDOG_TIMEOUT);
                 // register for events from Miele API
-                // curl -H "Accept:text/event-stream" -H "Accept-Language: de-DE" -H "Authorization: Bearer ACCESS_TOKEN" https://api.mcs3.miele.com/v1/devices/all/events
                 this.log.info(`Registering for all appliance events at Miele API.`);
-                events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : this.config.locale }} );
+                events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : adapter.config.locale }} );
 
                 events.addEventListener( 'devices', function(event) {
                     adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
-                    // splitMieleDevices(JSON.parse(event.data), false);
+                    mieleTools.splitMieleDevices(adapter, JSON.parse(event.data));
                 });
 
                 events.addEventListener( 'actions', function(actions) {
@@ -145,10 +134,10 @@ class Mielecloudservice extends utils.Adapter {
             this.unsubscribeStates('*');
             this.setState('info.connection', false, true);
             for (const [key] of Object.entries(timeouts) ) {
-                this.log.debug(`Clearing interval ${key}.`);
+                this.log.debug(`Clearing ${key} interval.`);
                 clearInterval(timeouts[key]);
             }
-            //events.close();
+            events.close();
             if (auth) {
                 await mieleTools.APILogOff(this, auth, 'access_token');
             }

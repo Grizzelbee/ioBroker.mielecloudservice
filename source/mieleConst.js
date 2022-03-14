@@ -26,5 +26,6 @@ module.exports.LIGHT_ON  = 1;
 module.exports.LIGHT_OFF = 2;
 module.exports.MODE_NORMAL  = 0;
 module.exports.MODE_SABBATH = 1;
-module.exports.RESTART_TIMEOUT = 30;
+module.exports.RESTART_TIMEOUT = 30;      // 30 Seconds
+module.exports.WATCHDOG_TIMEOUT = 300000; // 5 Minutes in ms
 module.exports.ALL_ACTIONS_DISABLED={'processAction':[],'light':[],'ambientLight':[],'startTime':[],'ventilationStep':[],'programId':[],'targetTemperature':[],'deviceName':false,'powerOn':false,'powerOff':false,'colors':[],'modes':[]};
