@@ -4,7 +4,16 @@
         "version": "5.5.0",
         "news": {
             "5.5.0": {
-                "en": "full rewrite of the adapter"
+                "en": "full rewrite of the adapter",
+                "de": "vollständige Neuschreibung des Adapters",
+                "ru": "полная перезапись адаптера",
+                "pt": "reescrita completa do adaptador",
+                "nl": "volledige herschrijving van de adapter",
+                "fr": "réécriture complète de l'adaptateur",
+                "it": "riscrittura completa dell'adattatore",
+                "es": "reescritura completa del adaptador",
+                "pl": "pełne przepisanie adaptera",
+                "zh-cn": "完全重写适配器"
             }
         },
         "title": "Miele CloudService",
@@ -89,7 +98,7 @@
     "encryptedNative": [
         "Client_secret",
         "Miele_pwd"
-        ],
+    ],
     "protectedNative": [
         "Client_secret",
         "Miele_pwd"
