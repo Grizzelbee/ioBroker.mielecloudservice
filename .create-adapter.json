@@ -44,5 +44,6 @@
     "defaultBranch": "master",
     "license": "MIT License",
     "dependabot": "yes",
-    "creatorVersion": "2.1.0"
+    "creatorVersion": "2.1.0",
+    "replay": "C:\\Users\\hanjo\\WebstormProjects\\ioBroker.mielecloudservice\\.create-adapter.json"
 }
