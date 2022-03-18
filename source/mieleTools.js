@@ -6,9 +6,7 @@ const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
 
-const knownDevices = [];
-
-
+const knownDevices = {icon:`icons/00_genericappliance.svg`}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 
 /**
  * checkConfig
@@ -371,13 +369,541 @@ module.exports.splitMieleDevices = async function(adapter, mieleDevices){
         if (mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber === ''){
             adapter.log.debug('Device: [' + mieleDevice + '] has no serial number/fabNumber. Taking DeviceNumber instead.');
             mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber = mieleDevice;
-            knownDevices.push();
-        } else {
-
         }
-        // await parseMieleDevice(mieleDevices[mieleDevice], setup, mieleDevice);
+        knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber]={};
+        knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].icon   =`icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`;
+        knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].API_ID = mieleDevice;
+        knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].deviceType = mieleDevices[mieleDevice].ident.type.value_raw;
+        if (mieleDevices[mieleDevice].ident.deviceName === '') {
+            knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].name = mieleDevices[mieleDevice].ident.type.value_localized;
+        } else {
+            knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].name = mieleDevices[mieleDevice].ident.deviceName;
+        }
+        switch (mieleDevices[mieleDevice].ident.type.value_raw) {
+            case 19: // 19 = FRIDGE*
+            case 32: // 32 = WINE CABINET*
+            case 33: // 33 = WINE CONDITIONING UNIT
+            case 34: // 34 = WINE STORAGE CONDITIONING UNIT
+                knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].fridgeZone = 1;
+                break;
+            case 20: // 20 = FREEZER*
+                knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].freezerZone = 1;
+                break;
+            case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
+            case 68: // 68 = WINE CABINET FREEZER COMBINATION
+                knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].fridgeZone = 1;
+                knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].freezerZone = 2;
+                break;
+        }
+        const obj = {
+            type: 'device',
+            common: {name: knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].name,
+                read: true,
+                write: false,
+                icon: `icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`,
+                type: 'object'
+            }
+        };
+        await createOrExtendObject(adapter, mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber, obj, null);
+        await createIdentTree(adapter, mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber+'.IDENT', mieleDevices[mieleDevice].ident);
+        await createStateTree(adapter, mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber, mieleDevices[mieleDevice].state);
+
+        //await addMieleDevice(mieleDevice);
+        //await buildDeviceTree(adapter, mieleDevice, mieleDevices[mieleDevice]);
     }
 };
+
+
+/**
+ * createIdentTree
+ *
+ * add selected ident data to the device tree
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the data point is going to be created
+ * @param {object} currentDeviceIdent ident data of the device
+ */
+async function createIdentTree(adapter, path, currentDeviceIdent){
+    await createString(adapter, path + '.ComModFirmware',  'The release version of the communication module', currentDeviceIdent.xkmIdentLabel.releaseVersion);
+    await createString(adapter, path + '.ComModTechType',  'The technical type of the communication module', currentDeviceIdent.xkmIdentLabel.techType);
+    await createString(adapter, path + '.DeviceSerial',    'The serial number of the device', currentDeviceIdent.deviceIdentLabel.fabNumber);
+    await createString(adapter, path + '.DeviceTechType',  'The technical type of the device', currentDeviceIdent.deviceIdentLabel.techType);
+    await createString(adapter, path + '.DeviceType',      currentDeviceIdent.type.key_localized, currentDeviceIdent.type.value_localized);
+    await createString(adapter, path + '.DeviceType_raw',  'Device type as number', currentDeviceIdent.type.value_raw);
+    await createString(adapter, path + '.DeviceMatNumber', 'The material number of the device', currentDeviceIdent.deviceIdentLabel.matNumber);
+}
+
+/**
+ * Function addMieleDeviceState
+ *
+ * adds the current miele device states to the device tree beneath its device type folder (channel) and device Id (device)
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param path {string} path where the device is to be created (aka deviceFolder)
+ * @param currentDevice {object} the complete JSON for the current device
+ * @param currentDeviceState {object} the JSON for a single device
+ */
+async function createStateTree(adapter, path, currentDevice, currentDeviceState){
+    // create for ALL devices
+    await createStateDeviceMainState(adapter,   `${path}.${currentDeviceState.status.key_localized}`, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw);
+    await createStateSignalFailure(adapter,  path, currentDeviceState.signalFailure);
+    // set the values for self designed redundant state indicators
+    await createStateConnected(adapter,  path, currentDeviceState.status.value_raw !== 255);
+    await createStateSignalInUse(adapter,  path, currentDeviceState.status.value_raw !== 1);
+    // nickname action is supported by all devices
+    await createStateActionsInformation(adapter,  path, '');
+    await addDeviceNicknameAction(adapter, path, currentDevice);
+
+    // checkPermittedActions
+    // const actions = await mieleAPITools.getPermittedActions(adapter, _auth,  _knownDevices[currentDevice.ident.deviceIdentLabel.fabNumber].API_Id );
+    // programs
+    // await addPrograms(adapter,  _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
+
+    try{
+        // set/create device dependant states
+        switch (currentDevice.ident.type.value_raw) {
+            case 1 : // 1 = WASHING MACHINE*
+                // setup ecoFeedback channel for this device if needed
+                createChannelEcoFeedback(adapter, path) ;
+                // states the device is known to support
+                await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
+                await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
+                await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
+                await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
+                await createStateStartTime(adapter,  path, currentDeviceState.startTime);
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateEstimatedEndTime(adapter,  path, currentDeviceState);
+                await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
+                await createStateSpinningSpeed(adapter,  `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
+                await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
+                await createStateEcoFeedbackWater(adapter,  path, currentDeviceState.ecoFeedback);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
+                // actions
+                await addPowerSwitch(adapter, path, actions);
+                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
+                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                break;
+            case 2: // 2 = TUMBLE DRYER*
+                // setup ecoFeedback channel for this device if needed
+                createChannelEcoFeedback(adapter, path) ;
+                // states
+                await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
+                await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
+                await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
+                await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
+                await createStateStartTime(adapter,  path, currentDeviceState.startTime);
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateEstimatedEndTime(adapter,  path, currentDeviceState);
+                await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
+                await createStateDryingStep(adapter,  `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
+                await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
+                // Actions
+                await addPowerSwitch(adapter, path, actions);
+                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
+                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                break;
+            case 24: // 24 = WASHER DRYER*
+                // setup ecoFeedback channel for this device if needed
+                createChannelEcoFeedback(adapter, path);
+                // states
+                await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
+                await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
+                await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
+                await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
+                await createStateStartTime(adapter,  path, currentDeviceState.startTime);
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateEstimatedEndTime(adapter,  path, currentDeviceState);
+                await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
+                await createStateSpinningSpeed(adapter,  `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
+                await createStateDryingStep(adapter,  `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
+                await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
+                await createStateEcoFeedbackWater(adapter,  path, currentDeviceState.ecoFeedback);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
+                // Actions
+                await addPowerSwitch(adapter, path, actions);
+                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
+                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                break;
+            case 7: // 7 = DISHWASHER*
+            case 8: // 8 = DISHWASHER SEMI-PROF
+                // setup ecoFeedback channel for this device if needed
+                createChannelEcoFeedback(adapter, path);
+                // states
+                await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
+                await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
+                await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
+                await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
+                await createStateStartTime(adapter,  path, currentDeviceState.startTime);
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateEstimatedEndTime(adapter,  path, currentDeviceState);
+                await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
+                await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
+                await createStateEcoFeedbackWater(adapter,  path, currentDeviceState.ecoFeedback);
+                // Actions
+                await addPowerSwitch(adapter, path, actions);
+                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
+                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
+                await addPauseButton(adapter,  path, Array(actions.processAction).includes(mieleConst.PAUSE));
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                break;
+            case 12: // 12 = OVEN*
+                await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
+                await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
+                await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
+                await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
+                await createStateStartTime(adapter,  path, currentDeviceState.startTime);
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateEstimatedEndTime(adapter,  path, currentDeviceState);
+                await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
+                await createStateTemperature(adapter,  path, currentDeviceState.temperature);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
+                // Actions
+                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                break;
+            case 13: // 13 = OVEN Microwave*
+            case 15: // 15 = STEAM OVEN*
+            case 16: // 16 = MICROWAVE*
+            case 31: // 31 = STEAM OVEN COMBINATION*
+            case 45: // 45 = STEAM OVEN MICROWAVE COMBINATION*
+            case 67: // 67 = DIALOG OVEN*
+                await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
+                await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
+                await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
+                await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
+                await createStateStartTime(adapter,  path, currentDeviceState.startTime);
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateEstimatedEndTime(adapter,  path, currentDeviceState);
+                await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
+                await createStateTemperature(adapter,  path, currentDeviceState.temperature);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
+                // Actions
+                await addPowerSwitch(adapter, path, actions);
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
+                break;
+            case 14: // 14 = HOB HIGHLIGHT*
+            case 27: // 27 = HOB INDUCTION*
+                await createStatePlateStep(adapter,  path, currentDeviceState.plateStep);
+                break;
+            case 17: // 17 = COFFEE SYSTEM*
+                await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
+                await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                // Actions
+                await addPowerSwitch(adapter, path, actions);
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                break;
+            case 18: // 18 = HOOD*
+                // States
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateVentilationStep(adapter,  path, currentDeviceState.ventilationStep.value_raw);
+                // Actions
+                await addPowerSwitch(adapter, path, actions);
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
+                await addVentilationStepSwitch(adapter,  path);
+                await addColorsAction(adapter,  path);
+                // colors
+                break;
+            case 19: // 19 = FRIDGE*
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateTemperature(adapter,  path, currentDeviceState.temperature);
+                await createStateTargetTemperatureFridge(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
+                // Actions
+                await addSuperCoolingSwitch(adapter,  path, actions);
+                break;
+            case 20: // 20 = FREEZER*
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateTemperature(adapter,  path, currentDeviceState.temperature);
+                await createStateTargetTemperatureFreezer(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
+                // Actions
+                await addSuperFreezingSwitch(adapter,  path, actions);
+                break;
+            case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateTemperature(adapter,  path, currentDeviceState.temperature);
+                await createStateTargetTemperatureFridge(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
+                await createStateTargetTemperatureFreezer(adapter,  path, currentDeviceState.targetTemperature[1].value_localized, actions.targetTemperature[1].min, actions.targetTemperature[1].max, currentDeviceState.targetTemperature[1].unit);
+                // Actions
+                await addSuperCoolingSwitch(adapter,  path, actions);
+                await addSuperFreezingSwitch(adapter,  path, actions);
+                break;
+            case 32: // 32 = WINE CABINET*
+            case 33: // 33 = WINE CONDITIONING UNIT
+            case 34: // 34 = WINE STORAGE CONDITIONING UNIT
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateTemperature(adapter,  path, currentDeviceState.temperature);
+                await createStateTargetTemperatureFridge(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
+                // Actions
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                break;
+            case 28: // 28 = HOB GAS
+                break;
+            case 39: // 39 = DOUBLE OVEN
+                break;
+            case 40: // 40 = DOUBLE STEAM OVEN
+                break;
+            case 41: // 41 = DOUBLE STEAM OVEN COMBINATION
+                break;
+            case 42: // 42 = DOUBLE MICROWAVE
+                break;
+            case 43: // 43 = DOUBLE MICROWAVE OVEN
+                break;
+            case 68: // 68 = WINE CABINET FREEZER COMBINATION
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createStateTemperature(adapter,  path, currentDeviceState.temperature);
+                await createStateTargetTemperatureFridge(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
+                await createStateTargetTemperatureFreezer(adapter,  path, currentDeviceState.targetTemperature[1].value_localized, actions.targetTemperature[1].min, actions.targetTemperature[1].max, currentDeviceState.targetTemperature[1].unit);
+                // Actions
+                await addSuperFreezingSwitch(adapter,  path, actions);
+                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                await addModeSwitch(adapter,  path, actions);
+                break;
+            case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
+                await createStateBatteryLevel(adapter,  path, currentDeviceState.batteryLevel);
+                // Actions
+                await addProgramIdAction(adapter,  path, currentDeviceState.programId);
+                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
+                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
+                await addPauseButton(adapter,  path, Array(actions.processAction).includes(mieleConst.PAUSE));
+                break;
+            case 25: // 25 = DISH WARMER*
+                await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
+                // Actions
+                await addProgramIdAction(adapter,  path, currentDeviceState.programId);
+                break;
+            case 48: // 48 = VACUUM DRAWER
+                break;
+        }
+    } catch(err){
+        adapter.log.error('[addMieleDeviceState]: ' + err.message + ', Stacktrace: ' + err.stack);
+    }
+}
+
+
+/**
+ * addDeviceNicknameAction
+ *
+ * add the nickname action to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param mieleDevice {object} ident data of the device
+ */
+async function addDeviceNicknameAction(adapter, path, mieleDevice) {
+    // addDeviceNicknameAction - suitable for each and every device
+    await createRWState(adapter,path + '.Nickname', 'Nickname of your device. Can be edited in Miele APP or here!',  (mieleDevice.ident.deviceName === '' ? mieleDevice.ident.type.value_localized : mieleDevice.ident.deviceName),'string', 'text');
+    adapter.subscribeStates(path + '.Nickname');
+}
+
+/**
+ * createStateActionsInformation
+ *
+ * create the state that shows additional information to the result of executed actions
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ */
+async function createStateActionsInformation(adapter, path, value){
+    await createString( adapter,path + '.ACTIONS.Action_Information','Additional information to the result of executed actions.', value);
+}
+
+
+/**
+ * createStateDeviceMainState
+ *
+ * create the state that shows the main state for this Device.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ */
+async function createStateDeviceMainState(adapter, path, value, value_raw){
+    await createROState( adapter, path + '_raw', 'Main state of the Device (raw-value)', value_raw, 'number', 'value');
+    await createString( adapter, path, 'Main state of the Device', value);
+}
+
+
+/**
+ * createStateSignalFailure
+ *
+ * create the state that shows whether a failure message is active for this Device.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ */
+async function createStateSignalFailure(adapter, path, value){
+    await createROState( adapter,path + '.signalFailure','Indicates whether a failure message is active for this Device.', value, 'boolean', 'indicator');
+}
+
+
+/**
+ * createStateSignalInUse
+ *
+ * create the state that shows whether the device is connected to WLAN or Gateway.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ */
+async function createStateSignalInUse(adapter, path, value){
+    await createROState( adapter,path + '.signalInUse','Indicates whether the device is in use or switched off.',value, 'boolean', 'indicator.InUse');
+}
+
+
+
+/**
+ * createStateSignalInfo
+ *
+ * create the state that shows whether a notification is active for this Device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ */
+async function createStateSignalInfo(adapter, path, value){
+    await createROState( adapter,path + '.signalInfo','Indicates whether a notification is active for this Device.',value,'boolean', 'indicator');
+}
+
+/**
+ * createStateConnected
+ *
+ * create the state that shows whether the device is connected to WLAN or Gateway.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ */
+async function createStateConnected(adapter, path, value){
+    await createROState( adapter,path + '.Connected','Indicates whether the device is connected to WLAN or Gateway.',value,'boolean','indicator.reachable');
+}
+
+
+/**
+ * Function createString
+ *
+ * Adds a string data point to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param value {string} value to set to the data point
+ */
+async function createString(adapter, path, description, value){
+    await createROState(adapter, path, description, value, 'string', 'text');
+}
+
+
+
+/**
+ * Function createROState
+ *
+ * Adds a read only state of various type to the device tree
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path  path where the data point is going to be created
+ * @param {string} description description of the data point
+ * @param {string} type valid type of this state
+ * @param {string} role valid role of this state
+ * @param {any} value value to set to the data point
+ */
+async function createROState(adapter, path, description, value, type, role){
+    if ( typeof value === 'undefined' ) return;
+    createOrExtendObject(adapter, path, {
+        type: 'state',
+        common: {'name': description,
+            'read':  true,
+            'write': false,
+            'role': role,
+            'type': type
+        }
+    }, value);
+}
+
+
+
+/**
+ * Function createRWState
+ *
+ * Adds a read/write state of various type to the device tree
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path  path where the data point is going to be created
+ * @param {string} description description of the data point
+ * @param {string} type valid type of this state
+ * @param {string} role valid role of this state
+ * @param {any} value value to set to the data point
+ */
+async function createRWState(adapter, path, description, value, type, role){
+    if ( typeof value === 'undefined' ) return;
+    createOrExtendObject(adapter, path, {
+        type: 'state',
+        common: {'name': description,
+            'read':  true,
+            'write': true,
+            'role': role,
+            'type': type
+        }
+    }, value);
+}
+
+
+
+
 
 
 

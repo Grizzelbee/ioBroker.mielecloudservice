@@ -13,7 +13,7 @@
 
 Get your Miele appliances (XGW3000 & WiFiConn@ct) connected
 
->If you like this adapter and consider supporting me:
+>If you like this adapter and consider supporting me:<br/>
 >[![Donate with PayPal](admin/paypal-donate-button.png)](https://www.paypal.com/donate/?hosted_button_id=SPUDTXGNG2MYG)
 
 ## Description

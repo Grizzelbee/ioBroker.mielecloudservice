@@ -74,6 +74,15 @@ class Mielecloudservice extends utils.Adapter {
                             });
                     }
                 }, 12*3600*1000, this, this.config); // org: 12*3600*1000; for testing: 30000
+                /*
+                // code for debugging the refresh of tokens; will be removed as soon as the refresh code is tested
+                this.log.debug(`auth=${JSON.stringify(auth)}`);
+                setTimeout(()=> {
+                    auth.expiryDate = new Date();
+                    auth.expiryDate.setSeconds(6*3600);
+                    this.log.debug(`Setting new expiry date: ${auth.expiryDate.toLocaleString()}`);
+                }, 5000);
+                */
                 // code for watchdog -> check every 5 minutes
                 timeouts.watchdog=setInterval(()=> {
                     const testValue = new Date();
