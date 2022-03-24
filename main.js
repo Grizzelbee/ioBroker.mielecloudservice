@@ -102,6 +102,8 @@ class Mielecloudservice extends utils.Adapter {
 
                 events.addEventListener( 'actions', function(actions) {
                     adapter.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(actions)}]`);
+                    adapter.log.debug(`ACTIONS.lastEventId: [${JSON.stringify(actions.lastEventId)}]`);
+                    mieleTools.splitMieleActionsMessage(adapter, JSON.parse(actions.data));
                 });
 
                 events.addEventListener( 'ping', function() {
@@ -135,10 +137,6 @@ class Mielecloudservice extends utils.Adapter {
     async onUnload(callback) {
         try {
             // Here you must clear all timeouts or intervals that may still be active
-            // clearTimeout(timeout1);
-            // clearTimeout(timeout2);
-            // ...
-            // clearInterval(interval1);
             this.unsubscribeObjects('*');
             this.unsubscribeStates('*');
             this.setState('info.connection', false, true);
