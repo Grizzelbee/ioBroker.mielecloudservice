@@ -37,7 +37,7 @@
     "axios-oauth-client": "^1.4.4",
     "eventsource": "^1.1.0",
     "flatted": "^3.2.5",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "semver": "^7.3.5",
     "snyk": "^1.852.0"
   },
