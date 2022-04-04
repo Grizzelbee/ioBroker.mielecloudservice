@@ -196,11 +196,14 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
-### V5.5.0 (2022-04-xx) ()
+### V6.0.0 (2022-04-xx) ()
+* (grizzelbee) New: Added donate button to config page and readme file
 * (grizzelbee) New: Adapter entirely rewritten from scratch
-* (grizzelbee) Fix: Login delay works properly now when login fails on Startup
+* (grizzelbee) New: Implemented watchdog for broken lines
+* (grizzelbee) Fix: [213](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/213) Login delay works properly now when login fails on Startup
 * (grizzelbee) Fix: Refresh of expired tokens works properly now
-* (grizzelbee) New: Implemented watchdog for broken lines 
+* (grizzelbee) Upd: dependencies got updated
+* (grizzelbee) Chg: Changed IDs for targetTemperature and temperature 
 
 ### V5.0.5 (2022-02-07) (Invincible)
 * (grizzelbee) Fix: fixed some lgtm findings
