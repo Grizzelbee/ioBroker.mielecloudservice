@@ -5,7 +5,7 @@ const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
-
+const mieleTools = require("../miele-Tools");
 const knownDevices = {icon:`icons/00_genericappliance.svg`}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 
 /**
@@ -365,51 +365,57 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
 module.exports.splitMieleDevices = async function(adapter, mieleDevices){
     // Splits the data-package returned by the API into single devices and iterates over each single device
     for (const mieleDevice in mieleDevices) {
-        adapter.log.debug('splitMieleDevices: ' + mieleDevice+ ': [' + mieleDevice + '] *** Value: [' + JSON.stringify(mieleDevices[mieleDevice]) + ']');
-        if (mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber === ''){
-            adapter.log.debug('Device: [' + mieleDevice + '] has no serial number/fabNumber. Taking DeviceNumber instead.');
-            mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber = mieleDevice;
-        }
-        knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber]={};
-        knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].icon   =`icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`;
-        knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].API_ID = mieleDevice;
-        knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].deviceType = mieleDevices[mieleDevice].ident.type.value_raw;
-        if (mieleDevices[mieleDevice].ident.deviceName === '') {
-            knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].name = mieleDevices[mieleDevice].ident.type.value_localized;
+        if ( typeof mieleDevices === 'undefined' || typeof mieleDevice === 'undefined' ){
+            adapter.log.debug(`splitMieleDevices: Given dataset is undefined or not splittable. Returning without action.`);
+            return;
         } else {
-            knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].name = mieleDevices[mieleDevice].ident.deviceName;
-        }
-        switch (mieleDevices[mieleDevice].ident.type.value_raw) {
-            case 19: // 19 = FRIDGE*
-            case 32: // 32 = WINE CABINET*
-            case 33: // 33 = WINE CONDITIONING UNIT
-            case 34: // 34 = WINE STORAGE CONDITIONING UNIT
-                knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].fridgeZone = 1;
-                break;
-            case 20: // 20 = FREEZER*
-                knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].freezerZone = 1;
-                break;
-            case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
-            case 68: // 68 = WINE CABINET FREEZER COMBINATION
-                knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].fridgeZone = 1;
-                knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].freezerZone = 2;
-                break;
-        }
-        const obj = {
-            type: 'device',
-            common: {name: knownDevices[mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber].name,
-                read: true,
-                write: false,
-                icon: `icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`,
-                type: 'object'
+            adapter.log.debug('splitMieleDevices: ' + mieleDevice+ ': [' + mieleDevice + '] *** Value: [' + JSON.stringify(mieleDevices[mieleDevice]) + ']');
+            knownDevices[mieleDevice]={};
+            knownDevices[mieleDevice].icon   =`icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`;
+            knownDevices[mieleDevice].API_ID = mieleDevice;
+            knownDevices[mieleDevice].deviceType = mieleDevices[mieleDevice].ident.type.value_raw;
+            if (mieleDevices[mieleDevice].ident.deviceName === '') {
+                knownDevices[mieleDevice].name = mieleDevices[mieleDevice].ident.type.value_localized;
+            } else {
+                knownDevices[mieleDevice].name = mieleDevices[mieleDevice].ident.deviceName;
             }
-        };
-        await createOrExtendObject(adapter, mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber, obj, null);
-        await createIdentTree(adapter, mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber+'.IDENT', mieleDevices[mieleDevice].ident);
-        await createStateTree(adapter, mieleDevices[mieleDevice].ident.deviceIdentLabel.fabNumber, mieleDevices[mieleDevice].state);
-
-        //await addMieleDevice(mieleDevice);
-        //await buildDeviceTree(adapter, mieleDevice, mieleDevices[mieleDevice]);
+            switch (mieleDevices[mieleDevice].ident.type.value_raw) {
+                case 19: // 19 = FRIDGE*
+                case 32: // 32 = WINE CABINET*
+                case 33: // 33 = WINE CONDITIONING UNIT
+                case 34: // 34 = WINE STORAGE CONDITIONING UNIT
+                    knownDevices[mieleDevice].fridgeZones  = 1;
+                    knownDevices[mieleDevice].freezerZones = 0;
+                    knownDevices[mieleDevice].fridgeZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[0].unit || 'Celsius', min:0, max:0}];
+                    break;
+                case 20: // 20 = FREEZER*
+                    knownDevices[mieleDevice].fridgeZones  = 0;
+                    knownDevices[mieleDevice].freezerZones = 1;
+                    knownDevices[mieleDevice].freezerZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[0].unit || 'Celsius', min:0, max:0}];
+                    break;
+                case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
+                case 68: // 68 = WINE CABINET FREEZER COMBINATION
+                    knownDevices[mieleDevice].fridgeZones  = 1;
+                    knownDevices[mieleDevice].freezerZones = 2;
+                    knownDevices[mieleDevice].fridgeZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[0].unit || 'Celsius', min:0, max:0}];
+                    knownDevices[mieleDevice].freezerZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[1].unit || 'Celsius', min:0, max:0}, {unit:mieleDevices[mieleDevice].state.targetTemperature[2].unit || 'Celsius', min:0, max:0}];
+                    break;
+            }
+            const obj = {
+                type: 'device',
+                common: {name: knownDevices[mieleDevice].name,
+                    read: true,
+                    write: false,
+                    icon: `icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`,
+                    type: 'object'
+                }
+            };
+            await createOrExtendObject(adapter, mieleDevice, obj, null);  // create base object
+            await createIdentTree(adapter, mieleDevice+'.IDENT', mieleDevices[mieleDevice].ident);
+            await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
+            // query supported programs of this device
+            // await addPrograms(adapter,  _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
+        }
     }
 };
 
@@ -424,12 +430,13 @@ module.exports.splitMieleDevices = async function(adapter, mieleDevices){
  * @param {object} currentDeviceIdent ident data of the device
  */
 async function createIdentTree(adapter, path, currentDeviceIdent){
+    await createChannelIdent(adapter, path);
     await createString(adapter, path + '.ComModFirmware',  'The release version of the communication module', currentDeviceIdent.xkmIdentLabel.releaseVersion);
     await createString(adapter, path + '.ComModTechType',  'The technical type of the communication module', currentDeviceIdent.xkmIdentLabel.techType);
     await createString(adapter, path + '.DeviceSerial',    'The serial number of the device', currentDeviceIdent.deviceIdentLabel.fabNumber);
     await createString(adapter, path + '.DeviceTechType',  'The technical type of the device', currentDeviceIdent.deviceIdentLabel.techType);
     await createString(adapter, path + '.DeviceType',      currentDeviceIdent.type.key_localized, currentDeviceIdent.type.value_localized);
-    await createString(adapter, path + '.DeviceType_raw',  'Device type as number', currentDeviceIdent.type.value_raw);
+    await createNumber(adapter, path + '.DeviceType_raw',  'Device type as number', currentDeviceIdent.type.value_raw, '', '');
     await createString(adapter, path + '.DeviceMatNumber', 'The material number of the device', currentDeviceIdent.deviceIdentLabel.matNumber);
 }
 
@@ -440,9 +447,37 @@ async function createIdentTree(adapter, path, currentDeviceIdent){
  *
  * @param {object} adapter link to the adapter instance
  * @param path {string} path where the device is to be created (aka deviceFolder)
- * @param currentDevice {object} the complete JSON for the current device
+ * @param currentDevice {object} the entire JSON for the current device
  * @param currentDeviceState {object} the JSON for a single device
- */
+ * @param currentDeviceState.status {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.status.key_localized {string} the localized name of the key
+ * @param currentDeviceState.status.value_localized {string} the localized value
+ * @param currentDeviceState.status.value_raw {any} the raw value
+ * @param currentDeviceState.signalFailure {boolean} indicator that there is an open failure message for this device
+ * @param currentDeviceState.signalInfo {boolean} indicator that there is an open Info message for this device
+ * @param currentDeviceState.signalDoor {boolean} indicator that there is an open door message for this device
+ * @param currentDeviceState.ProgramID {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.programType {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.programPhase {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.remainingTime {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.remoteEnable {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.remoteEnable.fullRemoteControl {boolean} the JSON for the status structure of a single device
+ * @param currentDeviceState.remoteEnable.smartGrid {boolean} the JSON for the status structure of a single device
+ * @param currentDeviceState.remoteEnable.mobileStart {boolean} the JSON for the status structure of a single device
+ * @param currentDeviceState.startTime {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.elapsedTime {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.ecoFeedback {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.spinningSpeed {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.targetTemperature {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.dryingStep {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.temperature {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.plateStep {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.ventilationStep {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.batteryLevel {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.status {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.status {object} the JSON for the status structure of a single device
+ * @param currentDeviceState.status {object} the JSON for the status structure of a single device
+ **/
 async function createStateTree(adapter, path, currentDevice, currentDeviceState){
     // create for ALL devices
     await createStateDeviceMainState(adapter,   `${path}.${currentDeviceState.status.key_localized}`, currentDeviceState.status.value_localized, currentDeviceState.status.value_raw);
@@ -453,18 +488,12 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
     // nickname action is supported by all devices
     await createStateActionsInformation(adapter,  path, '');
     await addDeviceNicknameAction(adapter, path, currentDevice);
-
-    // checkPermittedActions
-    // const actions = await mieleAPITools.getPermittedActions(adapter, _auth,  _knownDevices[currentDevice.ident.deviceIdentLabel.fabNumber].API_Id );
-    // programs
-    // await addPrograms(adapter,  _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
-
     try{
         // set/create device dependant states
         switch (currentDevice.ident.type.value_raw) {
             case 1 : // 1 = WASHING MACHINE*
                 // setup ecoFeedback channel for this device if needed
-                createChannelEcoFeedback(adapter, path) ;
+                await createChannelEcoFeedback(adapter, path) ;
                 // states the device is known to support
                 await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
                 await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
@@ -481,15 +510,10 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
                 await createStateEcoFeedbackWater(adapter,  path, currentDeviceState.ecoFeedback);
                 await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
-                // actions
-                await addPowerSwitch(adapter, path, actions);
-                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
-                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 2: // 2 = TUMBLE DRYER*
                 // setup ecoFeedback channel for this device if needed
-                createChannelEcoFeedback(adapter, path) ;
+                await createChannelEcoFeedback(adapter, path) ;
                 // states
                 await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
                 await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
@@ -505,15 +529,10 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateDryingStep(adapter,  `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
                 await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
-                // Actions
-                await addPowerSwitch(adapter, path, actions);
-                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
-                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 24: // 24 = WASHER DRYER*
                 // setup ecoFeedback channel for this device if needed
-                createChannelEcoFeedback(adapter, path);
+                await createChannelEcoFeedback(adapter, path);
                 // states
                 await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
                 await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
@@ -531,16 +550,11 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
                 await createStateEcoFeedbackWater(adapter,  path, currentDeviceState.ecoFeedback);
                 await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
-                // Actions
-                await addPowerSwitch(adapter, path, actions);
-                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
-                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 7: // 7 = DISHWASHER*
             case 8: // 8 = DISHWASHER SEMI-PROF
                 // setup ecoFeedback channel for this device if needed
-                createChannelEcoFeedback(adapter, path);
+                await createChannelEcoFeedback(adapter, path);
                 // states
                 await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
                 await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
@@ -556,12 +570,6 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
                 await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
                 await createStateEcoFeedbackWater(adapter,  path, currentDeviceState.ecoFeedback);
-                // Actions
-                await addPowerSwitch(adapter, path, actions);
-                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
-                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
-                await addPauseButton(adapter,  path, Array(actions.processAction).includes(mieleConst.PAUSE));
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 12: // 12 = OVEN*
                 await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
@@ -578,9 +586,6 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
                 await createStateTemperature(adapter,  path, currentDeviceState.temperature);
                 await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
-                // Actions
-                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 13: // 13 = OVEN Microwave*
             case 15: // 15 = STEAM OVEN*
@@ -602,10 +607,6 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
                 await createStateTemperature(adapter,  path, currentDeviceState.temperature);
                 await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
-                // Actions
-                await addPowerSwitch(adapter, path, actions);
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
-                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
                 break;
             case 14: // 14 = HOB HIGHLIGHT*
             case 27: // 27 = HOB INDUCTION*
@@ -618,9 +619,6 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
                 await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
-                // Actions
-                await addPowerSwitch(adapter, path, actions);
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
                 break;
             case 18: // 18 = HOOD*
                 // States
@@ -628,13 +626,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
                 await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
-                await createStateVentilationStep(adapter,  path, currentDeviceState.ventilationStep.value_raw);
-                // Actions
-                await addPowerSwitch(adapter, path, actions);
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
-                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
-                await addVentilationStepSwitch(adapter,  path);
-                await addColorsAction(adapter,  path);
+                await createVentilationStepSwitch(adapter,  path, currentDeviceState.ventilationStep.value_raw);
                 // colors
                 break;
             case 19: // 19 = FRIDGE*
@@ -644,9 +636,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
                 await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
                 await createStateTemperature(adapter,  path, currentDeviceState.temperature);
-                await createStateTargetTemperatureFridge(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
-                // Actions
-                await addSuperCoolingSwitch(adapter,  path, actions);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
                 break;
             case 20: // 20 = FREEZER*
                 await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
@@ -655,9 +645,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
                 await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
                 await createStateTemperature(adapter,  path, currentDeviceState.temperature);
-                await createStateTargetTemperatureFreezer(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
-                // Actions
-                await addSuperFreezingSwitch(adapter,  path, actions);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
                 break;
             case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
                 await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
@@ -666,11 +654,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
                 await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
                 await createStateTemperature(adapter,  path, currentDeviceState.temperature);
-                await createStateTargetTemperatureFridge(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
-                await createStateTargetTemperatureFreezer(adapter,  path, currentDeviceState.targetTemperature[1].value_localized, actions.targetTemperature[1].min, actions.targetTemperature[1].max, currentDeviceState.targetTemperature[1].unit);
-                // Actions
-                await addSuperCoolingSwitch(adapter,  path, actions);
-                await addSuperFreezingSwitch(adapter,  path, actions);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
                 break;
             case 32: // 32 = WINE CABINET*
             case 33: // 33 = WINE CONDITIONING UNIT
@@ -681,9 +665,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
                 await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
                 await createStateTemperature(adapter,  path, currentDeviceState.temperature);
-                await createStateTargetTemperatureFridge(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
-                // Actions
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
                 break;
             case 28: // 28 = HOB GAS
                 break;
@@ -703,25 +685,13 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
                 await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
                 await createStateTemperature(adapter,  path, currentDeviceState.temperature);
-                await createStateTargetTemperatureFridge(adapter,  path, currentDeviceState.targetTemperature[0].value_localized, actions.targetTemperature[0].min, actions.targetTemperature[0].max, currentDeviceState.targetTemperature[0].unit);
-                await createStateTargetTemperatureFreezer(adapter,  path, currentDeviceState.targetTemperature[1].value_localized, actions.targetTemperature[1].min, actions.targetTemperature[1].max, currentDeviceState.targetTemperature[1].unit);
-                // Actions
-                await addSuperFreezingSwitch(adapter,  path, actions);
-                await addLightSwitch(adapter, path, actions, currentDeviceState.light);
-                await addModeSwitch(adapter,  path, actions);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
                 break;
             case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
                 await createStateBatteryLevel(adapter,  path, currentDeviceState.batteryLevel);
-                // Actions
-                await addProgramIdAction(adapter,  path, currentDeviceState.programId);
-                await addStartButton(adapter,  path, Array(actions.processAction).includes(mieleConst.START));
-                await addStopButton(adapter,  path, Array(actions.processAction).includes(mieleConst.STOP));
-                await addPauseButton(adapter,  path, Array(actions.processAction).includes(mieleConst.PAUSE));
                 break;
             case 25: // 25 = DISH WARMER*
                 await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
-                // Actions
-                await addProgramIdAction(adapter,  path, currentDeviceState.programId);
                 break;
             case 48: // 48 = VACUUM DRAWER
                 break;
@@ -743,8 +713,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
  */
 async function addDeviceNicknameAction(adapter, path, mieleDevice) {
     // addDeviceNicknameAction - suitable for each and every device
-    await createRWState(adapter,path + '.Nickname', 'Nickname of your device. Can be edited in Miele APP or here!',  (mieleDevice.ident.deviceName === '' ? mieleDevice.ident.type.value_localized : mieleDevice.ident.deviceName),'string', 'text');
-    adapter.subscribeStates(path + '.Nickname');
+    await createRWState(adapter,path + '.ACTIONS.Nickname', 'Nickname of your device. Can be edited in Miele APP or here!',  (mieleDevice.ident.deviceName === '' ? mieleDevice.ident.type.value_localized : mieleDevice.ident.deviceName),'string', 'text', null);
 }
 
 /**
@@ -757,7 +726,7 @@ async function addDeviceNicknameAction(adapter, path, mieleDevice) {
  * @param value {string} value to set to the data point
  */
 async function createStateActionsInformation(adapter, path, value){
-    await createString( adapter,path + '.ACTIONS.Action_Information','Additional information to the result of executed actions.', value);
+    await createString( adapter,path + '.ACTIONS.LastActionResult','Result of the last executed action - since actions may fail.', value);
 }
 
 
@@ -801,7 +770,7 @@ async function createStateSignalFailure(adapter, path, value){
  * @param value {boolean} value to set to the data point
  */
 async function createStateSignalInUse(adapter, path, value){
-    await createROState( adapter,path + '.signalInUse','Indicates whether the device is in use or switched off.',value, 'boolean', 'indicator.InUse');
+    await createROState( adapter,path + '.signalInUse','Indicates whether the device is in use or switched off.',value, 'boolean', 'indicator');
 }
 
 
@@ -830,6 +799,876 @@ async function createStateSignalInfo(adapter, path, value){
  */
 async function createStateConnected(adapter, path, value){
     await createROState( adapter,path + '.Connected','Indicates whether the device is connected to WLAN or Gateway.',value,'boolean','indicator.reachable');
+}
+
+
+/**
+ * createStateSmartGrid
+ *
+ * create the state that shows whether the device is set to Smart Grid mode
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ */
+async function createStateSmartGrid(adapter, path, value){
+    await createROState( adapter, path + '.smartGrid', 'Indicates whether the device is set to Smart Grid mode', value, 'boolean', 'indicator');
+}
+
+
+
+/**
+ * createStateMobileStart
+ *
+ * create the state that shows whether the device is set to Smart Grid mode
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ */
+async function createStateMobileStart(adapter,  path, value){
+    await createROState( adapter, path + '.mobileStart', 'Indicates whether the device supports the Mobile Start option.', value, 'boolean', 'indicator');
+}
+
+
+
+/**
+ * createStateFullRemoteControl
+ *
+ * create the state that shows whether the device can be controlled from remote.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ */
+async function createStateFullRemoteControl(adapter, path, value){
+    await createROState( adapter, path + '.fullRemoteControl', 'Indicates whether the device can be controlled from remote.', value, 'boolean', 'indicator');
+}
+
+
+
+/**
+ * createStateSignalDoor
+ *
+ * create the state that shows whether a door-open message is active for this Device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {boolean} value to set to the data point
+ */
+async function createStateSignalDoor(adapter, path, value){
+    await createROState(adapter, path + '.signalDoor', 'Indicates whether a door-open message is active for this Device.', value, 'boolean', 'indicator');
+}
+
+
+/**
+ * addPrograms
+ *
+ * adds the available programs for the given device to the object tree
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {object} _auth Object with authorization information for Miele API
+ * @param {boolean} setup indicator whether the devices need to setup or only states are to be updated
+ * @param {string} path path where the data point is going to be created
+ * @param {string} device The device to query the programs for
+ */
+
+/*
+module.exports.addPrograms = async function(adapter, setup, _auth, path, device){
+    adapter.log.debug(`addPrograms: Path[${path}], setup: [${setup}], path: [${path}], device: ${device}`);
+    if (setup) {
+        const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
+        adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
+        if (typeof programs !== 'undefined' && programs !== 'Error 500: Internal Server Error.') {
+            // let result = {};
+            for (const prog in programs) {
+                adapter.log.debug(`Prog: ${JSON.stringify(programs[prog])}`);
+                if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')) {
+                    // result[programs[prog].programId] = programs[prog].program;
+                    adapter.log.debug(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
+                    mieleTools.createExtendObject(adapter, path + '.ACTIONS.' + programs[prog].program.replace( / /g, '_') , {
+                        type: 'state',
+                        common: {
+                            "name": programs[prog].program,
+                            "read": true,
+                            "write": true,
+                            "role": 'button',
+                            "type": 'boolean'
+                        },
+                        native: {"progId": programs[prog].programId}
+                    }, null);
+                    adapter.subscribeStates(path + '.ACTIONS.' + programs[prog].program.replace( / /g, '_'));
+                    adapter.log.debug(`Subscribed to program: ${path + '.ACTIONS.' + programs[prog].program.replace( / /g, '_')}`);
+                }
+            }
+        } else {
+            adapter.log.info(`Sorry. No programs to add for device: ${device}.`);
+        }
+    }
+}
+*/
+
+/**
+ * createStateProgramID
+ *
+ * create the state that shows the main state for this Device.
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ */
+async function createStateProgramID(adapter, path, value, value_raw){
+    await createROState( adapter, path + '_raw', 'ID of the running Program (raw-value)', value_raw, 'number', 'value');
+    await createROState( adapter, path, 'ID of the running Program', value, 'string', 'text');
+}
+
+
+
+/**
+ * createStateProgramType
+ *
+ * create the state that shows the Program type of the running Program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ */
+async function createStateProgramType(adapter, path, value, value_raw){
+    await createROState( adapter, path + '_raw', 'Program type of the running Program (raw-value)', value_raw, 'number', 'value');
+    await createROState( adapter, path, 'Program type of the running Program', value, 'string', 'text');
+}
+
+
+
+/**
+ * createStateProgramPhase
+ *
+ * create the state that shows the Phase of the running program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ */
+async function createStateProgramPhase(adapter, path, value, value_raw){
+    await createROState( adapter, path + '_raw', 'Phase of the running program (raw-value)', value_raw, 'number', 'value');
+    await createROState( adapter, path, 'Phase of the running program', value, 'string', 'text');
+}
+
+
+/**
+ * createStateDryingStep
+ *
+ * create the state that shows the
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param value_raw {number} value to set to the raw-data point
+ */
+async function createStateDryingStep(adapter, path, value, value_raw){
+    await createROState( adapter, path + '_raw', 'This field is only valid for hoods (raw-value)', value_raw, 'number', 'value');
+    await createROState( adapter, path, 'This field is only valid for hoods.', value, 'string', 'text');
+}
+
+
+
+/**
+ * createStateEstimatedEndTime
+ *
+ * create the state that shows the estimated ending time of the current running program
+ *
+ * @param {object} adapter  link to the adapter instance
+ * @param {string} path path where the data point is going to be created
+ * @param {object} currentDeviceState array that contains the remaining time in format [hours, minutes]
+ * @param {object} currentDeviceState.remainingTime array that contains the remaining time in format [hours, minutes]
+ * @param {object} currentDeviceState.status  current state of the device
+ * @param {string} currentDeviceState.status.value_raw current state of the device
+ */
+async function createStateEstimatedEndTime(adapter, path, currentDeviceState){
+    if ( parseInt(currentDeviceState.status.value_raw) < 2 || currentDeviceState.remainingTime[0] + currentDeviceState.remainingTime[1] === 0 ){
+        adapter.log.debug('No EstimatedEndTime to show!');
+        await createROState(adapter, path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time of the running program.', '', 'string', 'text');
+    } else {
+        const now = new Date;
+        const estimatedEndTime = new Date;
+        estimatedEndTime.setMinutes((now.getMinutes() + ((currentDeviceState.remainingTime[0]*60) + (currentDeviceState.remainingTime[1]*1))));
+        const timeToShow = estimatedEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        await createROState(adapter, path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time of the running program.', timeToShow, 'string', 'text');
+    }
+}
+
+
+
+/**
+ * createStateAmbientLight
+ *
+ * create the state that shows the state of ambient light of the current device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {string}
+ */
+async function createStateAmbientLight(adapter, path, value){
+    await createROState(adapter, path, 'The ambientLight field indicates the status of the device ambient light.', value , 'string', 'text');
+}
+
+
+/**
+ * createStateRemainingTime
+ *
+ * create the state that shows the remaining time of the running program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param remainingTime {object} array value to set to the data point
+ */
+async function createStateRemainingTime(adapter, path, remainingTime){
+    await createTime(  adapter, path + '.remainingTime', 'The RemainingTime equals the relative remaining time', remainingTime, 'text');
+}
+
+
+
+/**
+ * createStateStartTime
+ *
+ * create the state that shows the start time of the running program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param startTime {object} array value to set to the data point
+ */
+async function createStateStartTime(adapter, path, startTime){
+    await createTime(  adapter, path + '.startTime', 'The StartTime equals the relative starting time', startTime, 'value');
+}
+
+
+/**
+ * createStateElapsedTime
+ *
+ * create the state that shows the elapsed time of the running program
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {object} array value that represents a time value to set to the data point
+ *
+ */
+async function createStateElapsedTime(adapter, path, value){
+    await createTime(  adapter, path + '.elapsedTime', 'ElapsedTime since program start (only present for certain devices)', value, '');
+}
+
+
+/**
+ * createStateTemperature
+ *
+ * create the state that shows information about one or multiple temperatures of the device.
+ * API returns 1 to 3 values depending on the device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param valueObj {object} array valueObj to set to the data point
+ */
+async function createStateTemperature(adapter, path, valueObj){
+    for (let n=0; n < valueObj.length; n++){
+        if (valueObj.value_raw===-32768) continue;
+        const unit =  valueObj[n].unit==='Celsius'?'°C':'°F';
+        createOrExtendObject(adapter,
+            `${path}.temperatureZone-${n+1}`,
+            {
+                type: 'state',
+                common: {
+                    name: `The current temperature of zone ${n+1}.`,
+                    read: true,
+                    write: false,
+                    type: 'number',
+                    unit : unit,
+                    role: 'value.temperature'
+                },
+                native: {}
+            }, valueObj[n].value_localized );
+    }
+}
+
+/**
+ * createStateTargetTemperature
+ *
+ * create the state that shows information about one or multiple target temperatures of the process.
+ * API returns 1 to 3 values depending on the device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param valueObj {object} array valueObj to set to the data point
+ */
+async function createStateTargetTemperature(adapter, path, valueObj){
+    for (let n=0; n < valueObj.length; n++){
+        if (valueObj.value_raw===-32768) continue;
+        const unit =  valueObj[n].unit==='Celsius'?'°C':'°F';
+        createOrExtendObject(adapter,
+            `${path}.ACTIONS.targetTemperatureZone-${n+1}`,
+            {
+                type: 'state',
+                common: {
+                    name: `The target temperature of zone ${n+1}.`,
+                    //name: `The target temperature of zone ${n+1} (${knownDevices[path].fridgeZone[n].min} to ${knownDevices[path].fridgeZone[n].max}).`,
+                    read: true,
+                    write: true,
+                    type: 'number',
+                    unit : unit,
+                    role: 'value.temperature'
+                },
+                native: {}
+            }, valueObj[n].value_localized );
+    }
+}
+
+/**
+ * updateStateTargetTemperature
+ *
+ * create the state that shows information about one or multiple target temperatures of the process.
+ * API returns 1 to 3 values depending on the device
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param valueObj {object} array valueObj to set to the data point
+ */
+async function updateStateTargetTemperature(adapter, path, valueObj){
+    for (let n=0; n < valueObj.length; n++) {
+        if (valueObj.value_raw === -32768) continue;
+        adapter.getObject(`${path}.ACTIONS.targetTemperatureZone-${n + 1}`, function (err, oldObj) {
+            if (!err && oldObj) {
+                if (`The target temperature of zone ${n + 1} (${knownDevices[path].fridgeZone[n].min} to ${knownDevices[path].fridgeZone[n].max}).` !== oldObj.common.name) {
+                    adapter.extendObject(`${path}.ACTIONS.targetTemperatureZone-${n + 1}`, {
+                        common: {
+                            name: `The target temperature of zone ${n + 1} (${knownDevices[path].fridgeZone[n].min} to ${knownDevices[path].fridgeZone[n].max}).`,
+                            min: valueObj[n].min,
+                            max: valueObj[n].max
+                        }
+                    });
+                }
+            }
+        });
+    }
+}
+
+
+/**
+ * createStatePlateStep
+ *
+ * create the state that shows the selected cooking zone levels for a hob
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {object} array value to set to the data point
+ */
+async function createStatePlateStep(adapter, path, value){
+    await createArray( adapter, path + '.PlateStep', 'The plateStep object represents the selected cooking zone levels for a hob.', value);
+}
+
+/**
+ * createStateBatteryLevel
+ *
+ * create the state that shows the charging level of a builtin battery as a percentage value between 0 .. 100
+ * NEW API 1.0.4
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {number} value to set to the data point
+ */
+async function createStateBatteryLevel(adapter, path, value) {
+    await createNumber(adapter,
+        path + '.batteryLevel',
+        'The batteryLevel object returns the charging level of a builtin battery as a percentage value between 0 .. 100',
+        value==null?0:value,
+        '%',
+        'value');
+}
+
+
+
+/**
+ * createStateEcoFeedbackWater
+ *
+ * create the states that show
+ * NEW API 1.0.4
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param ecoFeedback {object} value to set to the data point
+ */
+async function createStateEcoFeedbackWater(adapter, path, ecoFeedback) {
+    //adapter.log.debug(`createStateEcoFeedbackWater: Path[${path}], setup: [${setup}], path: [${path}], value: [${JSON.stringify(ecoFeedback)}]`);
+    await createNumber(adapter,
+        path + '.EcoFeedback.currentWaterConsumption',
+        'The amount of water used by the current running program up to the present moment.',
+        (ecoFeedback===null? 0: ecoFeedback.currentWaterConsumption.value.valueOf()*1),
+        ecoFeedback===null? 'l': ecoFeedback.currentWaterConsumption.unit,
+        'value');
+    await createNumber(adapter,
+        path + '.EcoFeedback.waterForecast',
+        'The relative water usage for the selected program from 0 to 100.',
+        (ecoFeedback===null? 0: ecoFeedback.waterForecast*100),
+        '%',
+        'value');
+}
+
+
+/**
+ * createStateEcoFeedbackEnergy
+ *
+ * create the states that show
+ * NEW API 1.0.4
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param ecoFeedback {object} value to set to the data point
+ */
+async function createStateEcoFeedbackEnergy(adapter, path, ecoFeedback) {
+    await createNumber(adapter,
+        path + '.EcoFeedback.currentEnergyConsumption',
+        'The amount of energy used by the current running program up to the present moment.',
+        (ecoFeedback===null? 0: ecoFeedback.currentEnergyConsumption.value.valueOf()*1),
+        ecoFeedback===null? 'kWh': ecoFeedback.currentEnergyConsumption.unit,
+        'value.power.consumption'
+    );
+    await createNumber(adapter,
+        path + '.EcoFeedback.EnergyForecast',
+        'The relative energy usage for the selected program from 0 to 100.',
+        (ecoFeedback===null? 0: ecoFeedback.energyForecast*100),
+        '%',
+        'value');
+}
+
+
+
+/**
+ * createStateSpinningSpeed
+ *
+ * create the states that show
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param value {string} value to set to the data point
+ * @param unit {string} unit the value is in
+ */
+async function createStateSpinningSpeed(adapter, path, value, unit) {
+    await createNumber(adapter, path, 'Spinning speed of a washing machine.', Number.parseInt(value), unit, 'value');
+}
+
+
+/**
+ * createChannelActions
+ *
+ * create the channel for Actions
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {object} message the message object as received from miele
+ */
+module.exports.splitMieleActionsMessage = async function(adapter, message){
+    for (const [device, actions] of Object.entries(message) ) {
+        adapter.log.debug(`Key ${device}: Value ${JSON.stringify(actions)} | typeof value ${typeof actions}`);
+        adapter.log.debug(`KnownDevice ${JSON.stringify(knownDevices[device])}`);
+        await createDeviceActions(adapter, device, actions);
+    }
+};
+
+
+/**
+ * processes actions message for each device
+ *
+ * @param {object} adapter Link to the adapter instance
+ * @param {string} device Name (mostly serial) of the current device in the device tree
+ * @param {object} actions actions object as received from miele, but splitted into single devices
+ * @returns {Promise<void>}
+ */
+async function createDeviceActions(adapter, device, actions){
+    await createChannelActions(adapter, device);
+    switch (knownDevices[device].deviceType){
+        case 1 : // 1 = WASHING MACHINE*
+        case 2: // 2 = TUMBLE DRYER*
+        case 24: // 24 = WASHER DRYER*
+            // Actions
+            await addPowerSwitch(adapter, device, !actions.powerOn);
+            await addStartButton(adapter, device, false);
+            await addStopButton(adapter,  device, false);
+            await addLightSwitch(adapter, device, actions.light[0]===1);
+            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+            break;
+        case 7: // 7 = DISHWASHER*
+        case 8: // 8 = DISHWASHER SEMI-PROF
+            // Actions
+            await addPowerSwitch(adapter, device, !actions.powerOn);
+            await addStartButton(adapter, device, false);
+            await addStopButton(adapter,  device, false);
+            await addPauseButton(adapter,  device, false);
+            await addLightSwitch(adapter, device, actions.light[0]===1);
+            break;
+        case 12: // 12 = OVEN*
+            // Actions
+            await addStopButton(adapter,  device, false);
+            await addLightSwitch(adapter, device, actions.light[0]===1);
+            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+            break;
+        case 13: // 13 = OVEN Microwave*
+        case 15: // 15 = STEAM OVEN*
+        case 16: // 16 = MICROWAVE*
+        case 31: // 31 = STEAM OVEN COMBINATION*
+        case 45: // 45 = STEAM OVEN MICROWAVE COMBINATION*
+        case 67: // 67 = DIALOG OVEN*
+            // Actions
+            await addPowerSwitch(adapter, device, !actions.powerOn);
+            await addStopButton(adapter,  device, false);
+            await addLightSwitch(adapter, device, actions.light[0]===1);
+            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+            break;
+        case 14: // 14 = HOB HIGHLIGHT*
+        case 27: // 27 = HOB INDUCTION*
+            break;
+        case 17: // 17 = COFFEE SYSTEM*
+            // Actions
+            await addPowerSwitch(adapter, device, !actions.powerOn);
+            await addLightSwitch(adapter, device, actions.light[0]===1);
+            break;
+        case 18: // 18 = HOOD*
+            // Actions
+            await addPowerSwitch(adapter, device, !actions.powerOn);
+            await addStopButton(adapter,  device, false);
+            await addLightSwitch(adapter, device, actions.light[0]===1);
+            await addColorsAction(adapter,  device);
+            // colors
+            break;
+        case 19: // 19 = FRIDGE*
+            // Actions
+            await addSuperCoolingSwitch(adapter,  device);
+            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+            break;
+        case 20: // 20 = FREEZER*
+            // Actions
+            await addSuperFreezingSwitch(adapter,  device);
+            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+            break;
+        case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
+            // Actions
+            await addSuperCoolingSwitch(adapter,  device);
+            await addSuperFreezingSwitch(adapter,  device);
+            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+            break;
+        case 32: // 32 = WINE CABINET*
+        case 33: // 33 = WINE CONDITIONING UNIT
+        case 34: // 34 = WINE STORAGE CONDITIONING UNIT
+            // Actions
+            await addLightSwitch(adapter, device, actions.light[0]===1);
+            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+            break;
+        case 28: // 28 = HOB GAS
+            break;
+        case 39: // 39 = DOUBLE OVEN
+            break;
+        case 40: // 40 = DOUBLE STEAM OVEN
+            break;
+        case 41: // 41 = DOUBLE STEAM OVEN COMBINATION
+            break;
+        case 42: // 42 = DOUBLE MICROWAVE
+            break;
+        case 43: // 43 = DOUBLE MICROWAVE OVEN
+            break;
+        case 68: // 68 = WINE CABINET FREEZER COMBINATION
+            // Actions
+            await addSuperFreezingSwitch(adapter,  device);
+            await addLightSwitch(adapter, device, actions.light[0]===1);
+            await addModeSwitch(adapter,  device);
+            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+            break;
+        case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
+            // Actions
+            await addProgramIdAction(adapter,  device);
+            await addStartButton(adapter, device, false);
+            await addStopButton(adapter,  device, false);
+            await addPauseButton(adapter,  device, false);
+            break;
+        case 25: // 25 = DISH WARMER*
+            // Actions
+            await addProgramIdAction(adapter,  device);
+            break;
+        case 48: // 48 = VACUUM DRAWER
+            break;
+
+    }
+    adapter.subscribeStates(device + '.ACTIONS.*');
+}
+
+
+/**
+ * Function addProgramIdAction
+ *
+ * Adds programId action switch to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the action button is going to be created
+ *
+ */
+async function addProgramIdAction(adapter, path ){
+    createOrExtendObject(adapter, path + '.ACTIONS.programId' , {
+        type: 'state',
+        common: {'name': 'Program Id - to select a program. Values depend on your device. See Miele docs.',
+            'read': true,
+            'write': true,
+            'role': 'switch',
+            'type': 'integer'
+        },
+        native: {}
+    }
+    ,0 );
+}
+
+
+
+
+/**
+ * Function addModeSwitch
+ *
+ * Adds a Modes switch to the device tree and subscribes for changes to it
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the action button is going to be created
+ */
+async function addModeSwitch(adapter, path ){
+    createOrExtendObject(adapter, path + '.ACTIONS.Mode' , {
+        type: 'state',
+        common: {'name': 'Modes switch of the device',
+            'read': true,
+            'write': true,
+            'role': 'switch',
+            'type': 'number',
+            'states':{'Normal':0, 'Sabbath':1}
+        },
+        native: {}
+    }, 0 );
+}
+
+
+/**
+ * Function addSuperCoolingSwitch
+ *
+ * Adds a SuperCooling switch to the device tree and subscribes for changes to it
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the action button is going to be created
+ */
+async function addSuperCoolingSwitch(adapter, path){
+    createOrExtendObject(adapter, path + '.ACTIONS.SuperCooling' , {
+        type: 'state',
+        common: {'name': 'SuperCooling switch of the device',
+            'read': true,
+            'write': true,
+            'role': 'switch',
+            'type': 'string',
+            'states':{'On':'On', 'Off':'Off'}
+        },
+        native: {}
+    }
+    , 'Off');
+}
+
+/**
+ * Function addSuperFreezingSwitch
+ *
+ * Adds a SuperFreezing switch to the device tree and subscribes for changes to it
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the action button is going to be created
+ */
+async function addSuperFreezingSwitch(adapter, path){
+    createOrExtendObject(adapter, path + '.ACTIONS.SuperFreezing' , {
+        type: 'state',
+        common: {'name': 'SuperFreezing switch of the device',
+            'read': true,
+            'write': true,
+            'role': 'switch',
+            'type': 'string',
+            'states':{'On':'On', 'Off':'Off'}
+        },
+        native: {}
+    }, 'Off');
+}
+
+
+
+
+
+/**
+ * Function addColorsAction
+ *
+ * Adds colors action switch to the device tree
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the action button is going to be created
+ */
+async function addColorsAction(adapter,path) {
+    createOrExtendObject(adapter, path + '.ACTIONS.color', {
+        type: 'state',
+        common: {
+            'name': 'select the ambient light color of your device',
+            'read': true,
+            'write': true,
+            'role': 'switch',
+            'type': 'string',
+            states: {
+                'white': 'white',
+                'blue': 'blue',
+                'red': 'red',
+                'yellow': 'yellow',
+                'orange': 'orange',
+                'green': 'green',
+                'pink': 'pink',
+                'purple': 'purple',
+                'turquoise': 'turquoise'
+            }
+        },
+        native: {}
+    }, 'white');
+}
+
+/**
+ * createChannelActions
+ *
+ * create the channel for Actions
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+async function createChannelActions(adapter, path) {
+    createOrExtendObject(adapter, path + '.ACTIONS', {
+        type: 'channel',
+        common: {
+            name: 'Available actions for this device',
+            read: true,
+            write: false,
+            icon: 'icons/cog.svg',
+            type:'object'
+        },
+        native: {}
+    }, null);
+}
+
+
+/**
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the state should be created
+ * @param {any} currentState current state of this state
+ * @returns {Promise<void>}
+ */
+async function createVentilationStepSwitch(adapter, path, currentState){
+    await createRWState(adapter, `${path}.ACTIONS.VentilationStep`, 'Ventilation step switch of the device',currentState, 'boolean', 'level', {0:'Off', 1:'Level 1', 2:'Level 2', 3:'Level 3', 4:'Level 4'} );
+}
+
+
+/**
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the state should be created
+ * @param {any} currentState current state of this state
+ * @returns {Promise<void>}
+ */
+async function addPowerSwitch(adapter, path, currentState){
+    await createRWState(adapter, `${path}.ACTIONS.Power`, 'Main power switch of the device',currentState, 'boolean', 'switch.power', {true:'On', false:'Off'} );
+}
+
+
+
+async function addStartButton(adapter,  path, data){
+    createOrExtendObject(adapter, path + '.ACTIONS.Start' ,
+        {
+            type: 'state',
+            common: {'name': 'Starts the device if possible. Depends on prerequisites.',
+                'read': true,
+                'write': true,
+                'role': 'button',
+                'type': 'boolean'
+            },
+            native: {buttonType:'button.start'}
+        }, data);
+}
+
+
+async function addStopButton(adapter,  path, data){
+    createOrExtendObject(adapter, path + '.ACTIONS.Stop' ,
+        {
+            type: 'state',
+            common: {'name': 'Stops the device if possible. Depends on prerequisites.',
+                'read': true,
+                'write': true,
+                'role': 'button',
+                'type': 'boolean'
+            },
+            native: {buttonType:'button.stop'}
+        }, data);
+}
+
+async function addPauseButton(adapter,  path, data){
+    createOrExtendObject(adapter, path + '.ACTIONS.Pause' ,
+        {
+            type: 'state',
+            common: {'name': 'Pauses the device if possible. Depends on prerequisites.',
+                'read': true,
+                'write': true,
+                'role': 'button',
+                'type': 'boolean'
+            },
+            native: {buttonType:'button.pause'}
+        }, data);
+}
+
+async function addLightSwitch(adapter, path, currentState){
+    await createRWState(adapter, `${path}.ACTIONS.Light`, 'Light switch of the device', (currentState?1:2), 'boolean', 'switch.power', {0:'None', 1:'Off', 2:'On'} );
+}
+
+
+/**
+ * createChannelIdent
+ *
+ * create the channel for Ident-information
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+async function createChannelIdent(adapter, path) {
+    await createOrExtendObject(adapter, path, {
+        type: 'channel',
+        common: {
+            name: 'Available ident information for this device',
+            read: true,
+            write: false,
+            icon: 'icons/info.svg',
+            type: 'object'
+        },
+        native: {}
+    }, null);
+}
+
+
+/**
+ * createChannelEcoFeedback
+ *
+ * create the channel for EcoFeedback-information
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ */
+async function createChannelEcoFeedback(adapter, path) {
+    await createOrExtendObject(adapter, path + '.EcoFeedback', {
+        type: 'channel',
+        common: {
+            name: 'EcoFeedback information available for this device',
+            read: true,
+            write: false,
+            icon: 'icons/eco.svg',
+            type: 'object'
+        },
+        native: {}
+    }, null);
 }
 
 
@@ -886,27 +1725,109 @@ async function createROState(adapter, path, description, value, type, role){
  * @param {string} description description of the data point
  * @param {string} type valid type of this state
  * @param {string} role valid role of this state
+ * @param {object} states valid states object for this switch
  * @param {any} value value to set to the data point
  */
-async function createRWState(adapter, path, description, value, type, role){
+async function createRWState(adapter, path, description, value, type, role, states){
     if ( typeof value === 'undefined' ) return;
+    const commonObj = {};
+    commonObj.name  = description;
+    commonObj.read  = true;
+    commonObj.write = true;
+    commonObj.role  = role;
+    commonObj.type  = type;
+    if (states) commonObj.states = states;
+    createOrExtendObject(adapter, path, {
+        type: 'state',
+        common: commonObj
+    }, value);
+}
+
+
+/**
+ * Function createArray
+ *
+ * Adds a number data point to the device tree for each element in the given array
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param value {object} array containing the value(s) to set to the data point(s)
+ */
+async function createArray(adapter, path, description, value){
+    // depending on the device we receive up to 3 values
+    // there is a min of 1 and a max of 3 temperatures returned by the miele API
+    let MyPath = path;
+    for (const n in value) {
+        if (Object.keys(value).length > 1){
+            MyPath = `${path}_${n}`;
+        }
+        await createNumber(adapter, MyPath, description, Number.parseInt(value[n].value_localized), value[n].unit, 'value.temperature');
+    }
+}
+
+/**
+ * Function createNumber
+ *
+ * Adds a number data point to the device tree
+ * Unit "Celsius" will be converted to "°C" and "Fahrenheit" to "°F"
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param value {number} value to set to the data point
+ * @param unit {string} unit to set to the data point
+ * @param role {string} role to set to the data point (default: text)
+ */
+async function createNumber(adapter, path, description, value, unit, role){
+    //adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
+    // get back to calling function if there is no valid value given.
+    if ( !value || value === -32768 || value == null) {
+        //adapter.log.debug('[createNumber]: invalid value detected. Skipping...');
+        return;
+    }
+    role = role || 'value';
+    switch (unit){
+        case 'Celsius' : unit = '°C';
+            break;
+        case 'Fahrenheit' : unit = '°F';
+            break;
+    }
     createOrExtendObject(adapter, path, {
         type: 'state',
         common: {'name': description,
-            'read':  true,
-            'write': true,
+            'read': true,
+            'write':false,
             'role': role,
-            'type': type
+            'type': 'number',
+            'unit': unit
         }
     }, value);
 }
 
 
-
-
-
-
-
+/**
+ * Function createTime
+ *
+ * Adds a time data point to the device tree by a given array containing [hours, minutes]
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param path {string} path where the data point is going to be created
+ * @param description {string} description of the data point
+ * @param value {object} array value to set to the data point
+ * @param role {string} role to set to the data point (default: text)
+ */
+async function createTime(adapter, path, description, value, role){
+    await createOrExtendObject(adapter, path, {
+        type: 'state',
+        common: {'name': description,
+            'read': true,
+            'write': (path.split('.').pop() === 'startTime'),
+            'role': role,
+            'type': 'string'
+        }
+    },  (value[0] + ':' + (value[1]<10? '0': '') + value[1]) );
+}
 
 /**
  * Function Create or extend object

@@ -13,6 +13,7 @@ const mieleConst = require('./source/mieleConst');
 const timeouts = {};
 let events;
 let auth;
+// const fakeRequests=true;// this switch is used to fake requests against the Miele API and load the JSON-objects from disk
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
