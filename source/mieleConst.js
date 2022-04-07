@@ -12,10 +12,11 @@
  */
 
 module.exports.BASE_URL = 'https://api.mcs3.miele.com/';
-module.exports.ENDPOINT_TOKEN = 'thirdparty/token/';
-module.exports.ENDPOINT_EVENTS = 'v1/devices/all/events/';
-module.exports.ENDPOINT_LOGOUT = 'thirdparty/logout/';
+module.exports.ENDPOINT_TOKEN    = 'thirdparty/token/';
+module.exports.ENDPOINT_EVENTS   = 'v1/devices/all/events/';
+module.exports.ENDPOINT_LOGOUT   = 'thirdparty/logout/';
 module.exports.ENDPOINT_PROGRAMS = 'v1/devices/DEVICEID/programs';
+module.exports.ENDPOINT_ACTIONS  = 'v1/devices/DEVICEID/actions';
 module.exports.START = 1;
 module.exports.STOP  = 2;
 module.exports.PAUSE = 3;

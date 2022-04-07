@@ -163,11 +163,23 @@ class Mielecloudservice extends utils.Adapter {
     async onStateChange(id, state) {
         if (state) {
             // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+            // this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
             if (state.ack){
                 if (id.split('.').pop() === 'Power' && state.val){
+                    // add programs to device when it's powered on, since querying programs powers devices on or throws errors
                     await mieleTools.addProgramsToDevice(this, auth, id.split('.', 3).pop());
                 }
+            } else {
+                // manual change / request
+                this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+                const payload = {};
+                const action  = id.split('.').pop();
+                const device  = id.split('.', 3).pop();
+                switch(action){
+                    case 'Light': payload.light=state.val;
+                        break;
+                }
+                await mieleTools.executeAction(this, auth, action, device, payload);
             }
         } else {
             // The state was deleted

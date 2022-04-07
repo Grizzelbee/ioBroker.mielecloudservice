@@ -201,9 +201,10 @@ Here is a list of what these raw values stand for:
 * (grizzelbee) New: Adapter entirely rewritten from scratch
 * (grizzelbee) New: Implemented watchdog for broken lines
 * (grizzelbee) Fix: [213](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/213) Login delay works properly now when login fails on Startup
+* (grizzelbee) Fix: [207](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/207) powering on device due to querying available programs
 * (grizzelbee) Fix: Refresh of expired tokens works properly now
-* (grizzelbee) Upd: dependencies got updated
 * (grizzelbee) Chg: Changed IDs for targetTemperature and temperature 
+* (grizzelbee) Upd: dependencies got updated
 
 ### V5.0.5 (2022-02-07) (Invincible)
 * (grizzelbee) Fix: fixed some lgtm findings
