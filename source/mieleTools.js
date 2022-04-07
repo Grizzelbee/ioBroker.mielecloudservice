@@ -5,7 +5,6 @@ const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
-const mieleTools = require("../miele-Tools");
 const knownDevices = {icon:`icons/00_genericappliance.svg`}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 
 /**
@@ -174,6 +173,7 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
             json: true,
             url: mieleConst.BASE_URL + Endpoint
         };
+        adapter.log.debug(`Doing axios request: ${JSON.stringify(options)}`);
         // @ts-ignore
         axios(options)
             .then((response)=>{
@@ -222,14 +222,14 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
                             break;
                     }
                     // Request made and server responded
-                    adapter.log.error(`Request made and server responded: ${JSON.stringify(error.response)}`);
+                    adapter.log.warn(`Request made and server responded: ${flatted.stringify(error.response)}`);
                 } else if (error.request) {
                     // The request was made but no response was received
-                    adapter.log.error(`The request was made but no response was received: [${error}]`);
+                    adapter.log.warn(`The request was made but no response was received: [${flatted.stringify(error.request)}]`);
                     reject(error);
                 } else {
                     // Something happened in setting up the request that triggered an Error
-                    adapter.log.error(`Something happened in setting up the request that triggered an Error: [${error}]`);
+                    adapter.log.warn(`Something happened in setting up the request that triggered an Error: [${flatted.stringify(error)}]`);
                     reject(error);
                 }
             });
@@ -357,12 +357,13 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
  * splits the json data received from cloud API into separate device
  *
  * @param {object} adapter Link to the adapter instance
+ * @param {object} auth Link to the authentication object
  * @param {object} mieleDevices The whole JSON which needs to be split into devices
  * @param {object} mieleDevices.ident Indent Data of the device
  * @param {object} mieleDevices.ident.deviceIdentLabel The whole JSON which needs to be split into devices
  * @param {string} mieleDevices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
  */
-module.exports.splitMieleDevices = async function(adapter, mieleDevices){
+module.exports.splitMieleDevices = async function(adapter, auth, mieleDevices){
     // Splits the data-package returned by the API into single devices and iterates over each single device
     for (const mieleDevice in mieleDevices) {
         if ( typeof mieleDevices === 'undefined' || typeof mieleDevice === 'undefined' ){
@@ -413,11 +414,30 @@ module.exports.splitMieleDevices = async function(adapter, mieleDevices){
             await createOrExtendObject(adapter, mieleDevice, obj, null);  // create base object
             await createIdentTree(adapter, mieleDevice+'.IDENT', mieleDevices[mieleDevice].ident);
             await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
-            // query supported programs of this device
-            // await addPrograms(adapter,  _auth, path, currentDevice.ident.deviceIdentLabel.fabNumber);
+
         }
     }
 };
+
+/**
+ *
+ * @param adapter
+ * @param auth
+ * @param mieleDevice
+ * @returns {Promise<void>}
+ */
+module.exports.addProgramsToDevice = async function(adapter, auth, mieleDevice){
+    // query supported programs of this device if needed
+    if ( Object.prototype.hasOwnProperty.call(knownDevices[mieleDevice], 'programs') ){
+        adapter.log.debug(`Programs for device ${knownDevices[mieleDevice].name} are already registered. Skipping Query.`);
+    } else {
+        adapter.log.debug(`KnownDevices so far: ${JSON.stringify(knownDevices[mieleDevice])}`);
+        await addPrograms(adapter, auth, mieleDevice);
+    }
+};
+
+
+
 
 
 /**
@@ -867,46 +887,32 @@ async function createStateSignalDoor(adapter, path, value){
  * adds the available programs for the given device to the object tree
  *
  * @param {object} adapter link to the adapter instance
- * @param {object} _auth Object with authorization information for Miele API
- * @param {boolean} setup indicator whether the devices need to setup or only states are to be updated
- * @param {string} path path where the data point is going to be created
+ * @param {object} auth Object with authorization information for Miele API
  * @param {string} device The device to query the programs for
  */
-
-/*
-module.exports.addPrograms = async function(adapter, setup, _auth, path, device){
-    adapter.log.debug(`addPrograms: Path[${path}], setup: [${setup}], path: [${path}], device: ${device}`);
-    if (setup) {
-        const programs = await mieleAPITools.getAvailablePrograms(adapter, _auth, device);
-        adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
-        if (typeof programs !== 'undefined' && programs !== 'Error 500: Internal Server Error.') {
-            // let result = {};
+async function addPrograms(adapter, auth, device){
+    await sendAPIRequest(adapter,  auth, mieleConst.ENDPOINT_PROGRAMS.replace('DEVICEID', knownDevices[device].API_ID), 'GET', '')
+        .then((programs)=>{
+            adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
+            knownDevices[device].programs = programs;
             for (const prog in programs) {
-                adapter.log.debug(`Prog: ${JSON.stringify(programs[prog])}`);
-                if (programs[prog].hasOwnProperty('programId') && programs[prog].hasOwnProperty('program')) {
-                    // result[programs[prog].programId] = programs[prog].program;
-                    adapter.log.debug(`Added Program: Id: ${programs[prog].programId}/${programs[prog].program}`);
-                    mieleTools.createExtendObject(adapter, path + '.ACTIONS.' + programs[prog].program.replace( / /g, '_') , {
-                        type: 'state',
-                        common: {
-                            "name": programs[prog].program,
-                            "read": true,
-                            "write": true,
-                            "role": 'button',
-                            "type": 'boolean'
-                        },
-                        native: {"progId": programs[prog].programId}
-                    }, null);
-                    adapter.subscribeStates(path + '.ACTIONS.' + programs[prog].program.replace( / /g, '_'));
-                    adapter.log.debug(`Subscribed to program: ${path + '.ACTIONS.' + programs[prog].program.replace( / /g, '_')}`);
-                }
+                createOrExtendObject(adapter, `${device}.ACTIONS.${programs[prog].programId}`, {
+                    type: 'state',
+                    common: {
+                        'name': programs[prog].program,
+                        'read': true,
+                        'write': true,
+                        'role': 'button',
+                        'type': 'boolean'
+                    }
+                } , false);
             }
-        } else {
-            adapter.log.info(`Sorry. No programs to add for device: ${device}.`);
-        }
-    }
+        })
+        .catch((err) => {
+            adapter.log.info(`Sorry. No programs to add for device: ${knownDevices[device].name} (${device}). Reason: ${err}`);
+            knownDevices[device].programs = {};
+        });
 }
-*/
 
 /**
  * createStateProgramID
@@ -989,7 +995,7 @@ async function createStateDryingStep(adapter, path, value, value_raw){
  */
 async function createStateEstimatedEndTime(adapter, path, currentDeviceState){
     if ( parseInt(currentDeviceState.status.value_raw) < 2 || currentDeviceState.remainingTime[0] + currentDeviceState.remainingTime[1] === 0 ){
-        adapter.log.debug('No EstimatedEndTime to show!');
+        adapter.log.debug(`No EstimatedEndTime to show for device ${knownDevices[path].name} (${path})!`);
         await createROState(adapter, path + '.estimatedEndTime', 'The EstimatedEndTime is the current time plus remaining time of the running program.', '', 'string', 'text');
     } else {
         const now = new Date;
@@ -1103,7 +1109,7 @@ async function createStateTemperature(adapter, path, valueObj){
  */
 async function createStateTargetTemperature(adapter, path, valueObj){
     for (let n=0; n < valueObj.length; n++){
-        if (valueObj.value_raw===-32768) continue;
+        if (valueObj.value_raw===-32768 || valueObj.value_raw===null || valueObj.value_raw==='null') continue;
         const unit =  valueObj[n].unit==='Celsius'?'°C':'°F';
         createOrExtendObject(adapter,
             `${path}.ACTIONS.targetTemperatureZone-${n+1}`,
@@ -1135,7 +1141,7 @@ async function createStateTargetTemperature(adapter, path, valueObj){
  */
 async function updateStateTargetTemperature(adapter, path, valueObj){
     for (let n=0; n < valueObj.length; n++) {
-        if (valueObj.value_raw === -32768) continue;
+        if (valueObj.value_raw === -32768 || valueObj.value_raw === null || valueObj.value_raw === 'null' ) continue;
         adapter.getObject(`${path}.ACTIONS.targetTemperatureZone-${n + 1}`, function (err, oldObj) {
             if (!err && oldObj) {
                 if (`The target temperature of zone ${n + 1} (${knownDevices[path].fridgeZone[n].min} to ${knownDevices[path].fridgeZone[n].max}).` !== oldObj.common.name) {
@@ -1267,9 +1273,13 @@ async function createStateSpinningSpeed(adapter, path, value, unit) {
  */
 module.exports.splitMieleActionsMessage = async function(adapter, message){
     for (const [device, actions] of Object.entries(message) ) {
-        adapter.log.debug(`Key ${device}: Value ${JSON.stringify(actions)} | typeof value ${typeof actions}`);
-        adapter.log.debug(`KnownDevice ${JSON.stringify(knownDevices[device])}`);
-        await createDeviceActions(adapter, device, actions);
+        adapter.log.debug(`Device ${device}: Value ${JSON.stringify(actions)} | typeof value ${typeof actions}`);
+        if (typeof knownDevices[device] === 'undefined' ){
+            adapter.log.debug(`Device [${device}] is currently unknown - skipping creating actions on it.`);
+        } else {
+            adapter.log.debug(`KnownDevice ${JSON.stringify(knownDevices[device])}`);
+            await createDeviceActions(adapter, device, actions);
+        }
     }
 };
 
@@ -1284,116 +1294,119 @@ module.exports.splitMieleActionsMessage = async function(adapter, message){
  */
 async function createDeviceActions(adapter, device, actions){
     await createChannelActions(adapter, device);
-    switch (knownDevices[device].deviceType){
-        case 1 : // 1 = WASHING MACHINE*
-        case 2: // 2 = TUMBLE DRYER*
-        case 24: // 24 = WASHER DRYER*
-            // Actions
-            await addPowerSwitch(adapter, device, !actions.powerOn);
-            await addStartButton(adapter, device, false);
-            await addStopButton(adapter,  device, false);
-            await addLightSwitch(adapter, device, actions.light[0]===1);
-            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
-            break;
-        case 7: // 7 = DISHWASHER*
-        case 8: // 8 = DISHWASHER SEMI-PROF
-            // Actions
-            await addPowerSwitch(adapter, device, !actions.powerOn);
-            await addStartButton(adapter, device, false);
-            await addStopButton(adapter,  device, false);
-            await addPauseButton(adapter,  device, false);
-            await addLightSwitch(adapter, device, actions.light[0]===1);
-            break;
-        case 12: // 12 = OVEN*
-            // Actions
-            await addStopButton(adapter,  device, false);
-            await addLightSwitch(adapter, device, actions.light[0]===1);
-            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
-            break;
-        case 13: // 13 = OVEN Microwave*
-        case 15: // 15 = STEAM OVEN*
-        case 16: // 16 = MICROWAVE*
-        case 31: // 31 = STEAM OVEN COMBINATION*
-        case 45: // 45 = STEAM OVEN MICROWAVE COMBINATION*
-        case 67: // 67 = DIALOG OVEN*
-            // Actions
-            await addPowerSwitch(adapter, device, !actions.powerOn);
-            await addStopButton(adapter,  device, false);
-            await addLightSwitch(adapter, device, actions.light[0]===1);
-            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
-            break;
-        case 14: // 14 = HOB HIGHLIGHT*
-        case 27: // 27 = HOB INDUCTION*
-            break;
-        case 17: // 17 = COFFEE SYSTEM*
-            // Actions
-            await addPowerSwitch(adapter, device, !actions.powerOn);
-            await addLightSwitch(adapter, device, actions.light[0]===1);
-            break;
-        case 18: // 18 = HOOD*
-            // Actions
-            await addPowerSwitch(adapter, device, !actions.powerOn);
-            await addStopButton(adapter,  device, false);
-            await addLightSwitch(adapter, device, actions.light[0]===1);
-            await addColorsAction(adapter,  device);
-            // colors
-            break;
-        case 19: // 19 = FRIDGE*
-            // Actions
-            await addSuperCoolingSwitch(adapter,  device);
-            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
-            break;
-        case 20: // 20 = FREEZER*
-            // Actions
-            await addSuperFreezingSwitch(adapter,  device);
-            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
-            break;
-        case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
-            // Actions
-            await addSuperCoolingSwitch(adapter,  device);
-            await addSuperFreezingSwitch(adapter,  device);
-            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
-            break;
-        case 32: // 32 = WINE CABINET*
-        case 33: // 33 = WINE CONDITIONING UNIT
-        case 34: // 34 = WINE STORAGE CONDITIONING UNIT
-            // Actions
-            await addLightSwitch(adapter, device, actions.light[0]===1);
-            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
-            break;
-        case 28: // 28 = HOB GAS
-            break;
-        case 39: // 39 = DOUBLE OVEN
-            break;
-        case 40: // 40 = DOUBLE STEAM OVEN
-            break;
-        case 41: // 41 = DOUBLE STEAM OVEN COMBINATION
-            break;
-        case 42: // 42 = DOUBLE MICROWAVE
-            break;
-        case 43: // 43 = DOUBLE MICROWAVE OVEN
-            break;
-        case 68: // 68 = WINE CABINET FREEZER COMBINATION
-            // Actions
-            await addSuperFreezingSwitch(adapter,  device);
-            await addLightSwitch(adapter, device, actions.light[0]===1);
-            await addModeSwitch(adapter,  device);
-            await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
-            break;
-        case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
-            // Actions
-            await addProgramIdAction(adapter,  device);
-            await addStartButton(adapter, device, false);
-            await addStopButton(adapter,  device, false);
-            await addPauseButton(adapter,  device, false);
-            break;
-        case 25: // 25 = DISH WARMER*
-            // Actions
-            await addProgramIdAction(adapter,  device);
-            break;
-        case 48: // 48 = VACUUM DRAWER
-            break;
-
+    try{
+        switch (knownDevices[device].deviceType){
+            case 1 : // 1 = WASHING MACHINE*
+            case 2: // 2 = TUMBLE DRYER*
+            case 24: // 24 = WASHER DRYER*
+                // Actions
+                await addPowerSwitch(adapter, device, !actions.powerOn);
+                await addStartButton(adapter, device, false);
+                await addStopButton(adapter,  device, false);
+                await addLightSwitch(adapter, device, (actions.light[0]===1));
+                await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+                break;
+            case 7: // 7 = DISHWASHER*
+            case 8: // 8 = DISHWASHER SEMI-PROF
+                // Actions
+                await addPowerSwitch(adapter, device, !actions.powerOn);
+                await addStartButton(adapter, device, false);
+                await addStopButton(adapter,  device, false);
+                await addPauseButton(adapter,  device, false);
+                await addLightSwitch(adapter, device, actions.light[0]===1);
+                break;
+            case 12: // 12 = OVEN*
+                // Actions
+                await addStopButton(adapter,  device, false);
+                await addLightSwitch(adapter, device, actions.light[0]===1);
+                await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+                break;
+            case 13: // 13 = OVEN Microwave*
+            case 15: // 15 = STEAM OVEN*
+            case 16: // 16 = MICROWAVE*
+            case 31: // 31 = STEAM OVEN COMBINATION*
+            case 45: // 45 = STEAM OVEN MICROWAVE COMBINATION*
+            case 67: // 67 = DIALOG OVEN*
+                // Actions
+                await addPowerSwitch(adapter, device, !actions.powerOn);
+                await addStopButton(adapter,  device, false);
+                await addLightSwitch(adapter, device, actions.light[0]===1);
+                await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+                break;
+            case 14: // 14 = HOB HIGHLIGHT*
+            case 27: // 27 = HOB INDUCTION*
+                break;
+            case 17: // 17 = COFFEE SYSTEM*
+                // Actions
+                await addPowerSwitch(adapter, device, !actions.powerOn);
+                await addLightSwitch(adapter, device, actions.light[0]===1);
+                break;
+            case 18: // 18 = HOOD*
+                // Actions
+                await addPowerSwitch(adapter, device, !actions.powerOn);
+                await addStopButton(adapter,  device, false);
+                await addLightSwitch(adapter, device, actions.light[0]===1);
+                await addColorsAction(adapter,  device);
+                // colors
+                break;
+            case 19: // 19 = FRIDGE*
+                // Actions
+                await addSuperCoolingSwitch(adapter,  device);
+                await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+                break;
+            case 20: // 20 = FREEZER*
+                // Actions
+                await addSuperFreezingSwitch(adapter,  device);
+                await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+                break;
+            case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
+                // Actions
+                await addSuperCoolingSwitch(adapter,  device);
+                await addSuperFreezingSwitch(adapter,  device);
+                await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+                break;
+            case 32: // 32 = WINE CABINET*
+            case 33: // 33 = WINE CONDITIONING UNIT
+            case 34: // 34 = WINE STORAGE CONDITIONING UNIT
+                // Actions
+                await addLightSwitch(adapter, device, actions.light[0]===1);
+                await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+                break;
+            case 28: // 28 = HOB GAS
+                break;
+            case 39: // 39 = DOUBLE OVEN
+                break;
+            case 40: // 40 = DOUBLE STEAM OVEN
+                break;
+            case 41: // 41 = DOUBLE STEAM OVEN COMBINATION
+                break;
+            case 42: // 42 = DOUBLE MICROWAVE
+                break;
+            case 43: // 43 = DOUBLE MICROWAVE OVEN
+                break;
+            case 68: // 68 = WINE CABINET FREEZER COMBINATION
+                // Actions
+                await addSuperFreezingSwitch(adapter,  device);
+                await addLightSwitch(adapter, device, actions.light[0]===1);
+                await addModeSwitch(adapter,  device);
+                await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
+                break;
+            case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
+                // Actions
+                await addProgramIdAction(adapter,  device);
+                await addStartButton(adapter, device, false);
+                await addStopButton(adapter,  device, false);
+                await addPauseButton(adapter,  device, false);
+                break;
+            case 25: // 25 = DISH WARMER*
+                // Actions
+                await addProgramIdAction(adapter,  device);
+                break;
+            case 48: // 48 = VACUUM DRAWER
+                break;
+        }
+    } catch(err){
+        adapter.log.warn('createDeviceActions: '+ err);
     }
     adapter.subscribeStates(device + '.ACTIONS.*');
 }

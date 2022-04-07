@@ -98,7 +98,7 @@ class Mielecloudservice extends utils.Adapter {
 
                 events.addEventListener( 'devices', function(event) {
                     adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
-                    mieleTools.splitMieleDevices(adapter, JSON.parse(event.data));
+                    mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data));
                 });
 
                 events.addEventListener( 'actions', function(actions) {
@@ -160,10 +160,15 @@ class Mielecloudservice extends utils.Adapter {
      * @param {string} id
      * @param {ioBroker.State | null | undefined} state
      */
-    onStateChange(id, state) {
+    async onStateChange(id, state) {
         if (state) {
             // The state was changed
             this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+            if (state.ack){
+                if (id.split('.').pop() === 'Power' && state.val){
+                    await mieleTools.addProgramsToDevice(this, auth, id.split('.', 3).pop());
+                }
+            }
         } else {
             // The state was deleted
             this.log.info(`state ${id} deleted`);
