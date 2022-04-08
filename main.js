@@ -97,7 +97,7 @@ class Mielecloudservice extends utils.Adapter {
                 events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : adapter.config.locale }} );
 
                 events.addEventListener( 'devices', function(event) {
-                    adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
+                    // adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
                     mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data));
                 });
 
@@ -172,14 +172,26 @@ class Mielecloudservice extends utils.Adapter {
             } else {
                 // manual change / request
                 this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+                const adapter= this;
                 const payload = {};
                 const action  = id.split('.').pop();
                 const device  = id.split('.', 3).pop();
                 switch(action){
-                    case 'Light': payload.light=state.val;
+                    case 'Light': payload.light = (state.val? 2 : 1);
+                        break;
+                    case 'Power': (state.val? payload.powerOn=true : payload.powerOff=true);
+                        break;
+                    case 'LastActionResult': break;
+                    default : payload.programId = (typeof action == 'string' ? Number.parseInt(action) : 0);
                         break;
                 }
-                await mieleTools.executeAction(this, auth, action, device, payload);
+                await mieleTools.executeAction(this, auth, action, device, payload)
+                    .then(() => {
+                        adapter.setState(`${device}.ACTIONS.LastActionResult`, 'Okay!', true);
+                    })
+                    .catch((error)=>{
+                        adapter.setState(`${device}.ACTIONS.LastActionResult`, error, true);
+                    });
             }
         } else {
             // The state was deleted

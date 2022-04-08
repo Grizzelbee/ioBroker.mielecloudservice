@@ -124,7 +124,7 @@ module.exports.getAuth = async function(adapter, config , iteration){
                 // Something happened in setting up the request that triggered an Error
                 adapter.log.warn(error.message);
             }
-            if (error.response.status != 401){
+            if (error.response.status !== 401){
                 adapter.log.info(`Login attempt wasn't successful. Trying again to connect in ${mieleConst.RESTART_TIMEOUT} Seconds.`);
                 setTimeout( ()=>{
                     exports.getAuth(adapter, config, iteration+1);
@@ -201,8 +201,8 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
                     switch (error.response.status) {
                         case 400: {
                             const device = Endpoint.split('/', 3).pop();
-                            adapter.log.info(`The API returned http-error 400: ${error.response.data.message} for device: [${device}].`);
-                            reject(`The API returned http-error 400: ${error.response.data.message} for device: [${device}].`);
+                            adapter.log.debug(`The API returned http-error 400: ${error.response.data.message} for device: [${knownDevices[device].name} (${device})].`);
+                            reject(`${error.response.data.message}`);
                         }
                             break;
                         case 401:
@@ -910,8 +910,9 @@ async function addPrograms(adapter, auth, device){
     await sendAPIRequest(adapter,  auth, mieleConst.ENDPOINT_PROGRAMS.replace('DEVICEID', knownDevices[device].API_ID), 'GET', '')
         .then((programs)=>{
             adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
-            if (programs.keys().length > 0){
-                knownDevices[device].programs = programs;
+            if (Object.keys(programs).length > 0){
+                knownDevices[device].programs = {};
+                knownDevices[device].programs.push(programs);
                 for (const prog in programs) {
                     createOrExtendObject(adapter, `${device}.ACTIONS.${programs[prog].programId}`, {
                         type: 'state',
@@ -922,10 +923,11 @@ async function addPrograms(adapter, auth, device){
                             'role': 'button',
                             'type': 'boolean'
                         }
-                    } , false);
+                    } , true);
                 }
             } else {
-                adapter.log.info(`Sorry. No programs to add for device: ${knownDevices[device].name} (${device}). Reason: No programs returned by the API for this device.`);
+                adapter.log.info(`Sorry. No programs to add for device: ${knownDevices[device].name} (${device}). Reason: No programs have been returned by the API for this device.`);
+                knownDevices[device].programs = {};
             }
         })
         .catch((err) => {
@@ -1323,7 +1325,7 @@ async function createDeviceActions(adapter, device, actions){
                 await addPowerSwitch(adapter, device, !actions.powerOn);
                 await addStartButton(adapter, device, false);
                 await addStopButton(adapter,  device, false);
-                await addLightSwitch(adapter, device, actions.light.includes(1));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 7: // 7 = DISHWASHER*
@@ -1333,12 +1335,12 @@ async function createDeviceActions(adapter, device, actions){
                 await addStartButton(adapter, device, false);
                 await addStopButton(adapter,  device, false);
                 await addPauseButton(adapter,  device, false);
-                await addLightSwitch(adapter, device, actions.light.includes(1));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 break;
             case 12: // 12 = OVEN*
                 // Actions
                 await addStopButton(adapter,  device, false);
-                await addLightSwitch(adapter, device, actions.light.includes(1));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 13: // 13 = OVEN Microwave*
@@ -1350,7 +1352,7 @@ async function createDeviceActions(adapter, device, actions){
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
                 await addStopButton(adapter,  device, false);
-                await addLightSwitch(adapter, device, actions.light.includes(1));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 14: // 14 = HOB HIGHLIGHT*
@@ -1359,13 +1361,13 @@ async function createDeviceActions(adapter, device, actions){
             case 17: // 17 = COFFEE SYSTEM*
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
-                await addLightSwitch(adapter, device, actions.light.includes(1));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 break;
             case 18: // 18 = HOOD*
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
                 await addStopButton(adapter,  device, false);
-                await addLightSwitch(adapter, device, actions.light.includes(1));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await addColorsAction(adapter,  device);
                 // colors
                 break;
@@ -1389,7 +1391,7 @@ async function createDeviceActions(adapter, device, actions){
             case 33: // 33 = WINE CONDITIONING UNIT
             case 34: // 34 = WINE STORAGE CONDITIONING UNIT
                 // Actions
-                await addLightSwitch(adapter, device, actions.light.includes(1));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 28: // 28 = HOB GAS
@@ -1407,7 +1409,7 @@ async function createDeviceActions(adapter, device, actions){
             case 68: // 68 = WINE CABINET FREEZER COMBINATION
                 // Actions
                 await addSuperFreezingSwitch(adapter,  device);
-                await addLightSwitch(adapter, device, actions.light.includes(1));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await addModeSwitch(adapter,  device);
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
@@ -1606,7 +1608,7 @@ async function createVentilationStepSwitch(adapter, path, currentState){
  * @returns {Promise<void>}
  */
 async function addPowerSwitch(adapter, path, currentState){
-    await createRWState(adapter, `${path}.ACTIONS.Power`, 'Main power switch of the device',currentState, 'boolean', 'switch.power', {true:'On', false:'Off'} );
+    await createRWState(adapter, `${path}.ACTIONS.Power`, 'Main power switch of the device',currentState, 'boolean', 'switch.power', '');
 }
 
 
@@ -1655,7 +1657,7 @@ async function addPauseButton(adapter,  path, data){
 }
 
 async function addLightSwitch(adapter, path, currentState){
-    await createRWState(adapter, `${path}.ACTIONS.Light`, 'Light switch of the device', (currentState?1:2), 'boolean', 'switch.power', {0:'None', 1:'Off', 2:'On'} );
+    await createRWState(adapter, `${path}.ACTIONS.Light`, 'Light switch of the device', currentState, 'boolean', 'switch', '' );
 }
 
 
