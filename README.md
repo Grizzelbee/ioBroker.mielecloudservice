@@ -196,7 +196,7 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
-### V6.0.0 (2022-04-xx) (Black Wings)
+### V6.0.0 (2022-04-19) (Black Wings)
 * (grizzelbee) New: Added donate button to config page and readme file
 * (grizzelbee) New: Adapter entirely rewritten from scratch
 * (grizzelbee) New: Implemented watchdog for broken lines
