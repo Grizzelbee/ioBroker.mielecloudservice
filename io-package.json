@@ -4,7 +4,16 @@
         "version": "6.0.0",
         "news": {
             "6.0.0": {
-                "en": "full rewrite of the adapter - see change log for details"
+                "en": "Adapter entirely rewritten from scratch - the changelog is too long to provide it here - Please take a look into the readme and be careful on updating.",
+                "de": "Adapter komplett von Grund auf neu geschrieben - das Änderungsprotokoll ist zu lang, um es hier bereitzustellen - Bitte werfen Sie einen Blick in die Readme und seien Sie beim Aktualisieren vorsichtig.",
+                "ru": "Адаптер полностью переписан с нуля - журнал изменений слишком длинный, чтобы его здесь приводить - Пожалуйста, загляните в файл readme и будьте осторожны при обновлении.",
+                "pt": "Adaptador totalmente reescrito do zero - o changelog é muito longo para fornecê-lo aqui - Por favor, dê uma olhada no readme e tenha cuidado ao atualizar.",
+                "nl": "Adapter volledig opnieuw geschreven - het changelog is te lang om het hier weer te geven - Neem een ​​kijkje in de readme en wees voorzichtig bij het updaten.",
+                "fr": "Adaptateur entièrement réécrit à partir de zéro - le journal des modifications est trop long pour le fournir ici - Veuillez consulter le fichier Lisez-moi et soyez prudent lors de la mise à jour.",
+                "it": "Adattatore interamente riscritto da zero - il log delle modifiche è troppo lungo per fornirlo qui - Dai un'occhiata al readme e fai attenzione durante l'aggiornamento.",
+                "es": "Adaptador completamente reescrito desde cero: el registro de cambios es demasiado largo para proporcionarlo aquí. Eche un vistazo al archivo Léame y tenga cuidado al actualizar.",
+                "pl": "Adapter całkowicie przepisany od zera - dziennik zmian jest zbyt długi, aby go tutaj podać - zajrzyj do pliku readme i bądź ostrożny przy aktualizacji.",
+                "zh-cn": "适配器完全从头重写 - 更改日志太长，无法在此处提供 - 请查看自述文件并小心更新。"
             }
         },
         "title": "Miele CloudService",

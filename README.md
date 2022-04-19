@@ -5,7 +5,7 @@
 [![NPM version](https://img.shields.io/npm/v/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
 [![Known Vulnerabilities](https://snyk.io/test/github/Grizzelbee/ioBroker.mielecloudservice/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Grizzelbee/ioBroker.mielecloudservice?targetFile=package.json)
 [![Test and Release](https://github.com/Grizzelbee/ioBroker.mielecloudservice/actions/workflows/test-and-release.yml/badge.svg)](https://github.com/Grizzelbee/ioBroker.mielecloudservice/actions/workflows/test-and-release.yml)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/grizzelbee/iobroker.mielecloudservice/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/grizzelbee/iobroker.mielecloudservice/blob/master/README.md)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.mielecloudservice.svg)](https://www.npmjs.com/package/iobroker.mielecloudservice)
 [![NPM](https://nodei.co/npm/iobroker.mielecloudservice.png?downloads=true)](https://nodei.co/npm/iobroker.mielecloudservice/)
 
@@ -197,8 +197,9 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 ### V6.0.0 (2022-04-19) (Black Wings)
-* (grizzelbee) New: Added donate button to config page and readme file
 * (grizzelbee) New: Adapter entirely rewritten from scratch
+* (grizzelbee) New: Added donate button to config page and readme file
+* (grizzelbee) New: Added link to request Miele API credentials in config page.
 * (grizzelbee) New: Implemented watchdog for broken lines
 * (grizzelbee) New: [216](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/216) Added additional (undocumented) data points to dish warmer
 * (grizzelbee) Fix: [213](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/213) Login delay works properly now when login fails on Startup
@@ -206,11 +207,6 @@ Here is a list of what these raw values stand for:
 * (grizzelbee) Fix: Refresh of expired tokens works properly now
 * (grizzelbee) Fix: Light-Switch is working now e.g. for coffee systems
 * (grizzelbee) Chg: BREAKING CHANGE: Changed IDs for targetTemperature and temperature 
-* (grizzelbee) Upd: dependencies got updated
-
-### V5.0.5 (2022-02-07) (Invincible)
-* (grizzelbee) Fix: fixed some lgtm findings
-* (grizzelbee) New: Added link to request Miele API credentials in config page.
 * (grizzelbee) Upd: dependencies got updated
 * (grizzelbee) Upd: removed separate license file
 
