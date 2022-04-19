@@ -181,7 +181,8 @@ class Mielecloudservice extends utils.Adapter {
                         break;
                     case 'Power': (state.val? payload.powerOn=true : payload.powerOff=true);
                         break;
-                    case 'LastActionResult': break;
+                    case 'LastActionResult':
+                        break;
                     default : payload.programId = (typeof action == 'string' ? Number.parseInt(action) : 0);
                         break;
                 }

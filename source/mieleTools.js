@@ -522,7 +522,6 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
     await createStateConnected(adapter,  path, currentDeviceState.status.value_raw !== 255);
     await createStateSignalInUse(adapter,  path, currentDeviceState.status.value_raw !== 1);
     // nickname action is supported by all devices
-    await createStateActionsInformation(adapter,  path, '');
     await addDeviceNicknameAction(adapter, path, currentDevice);
     try{
         // set/create device dependant states
@@ -753,20 +752,6 @@ async function addDeviceNicknameAction(adapter, path, mieleDevice) {
 }
 
 /**
- * createStateActionsInformation
- *
- * create the state that shows additional information to the result of executed actions
- *
- * @param adapter {object} link to the adapter instance
- * @param path {string} path where the data point is going to be created
- * @param value {string} value to set to the data point
- */
-async function createStateActionsInformation(adapter, path, value){
-    await createString( adapter,path + '.ACTIONS.LastActionResult','Result of the last executed action - since actions may fail.', value);
-}
-
-
-/**
  * createStateDeviceMainState
  *
  * create the state that shows the main state for this Device.
@@ -911,8 +896,8 @@ async function addPrograms(adapter, auth, device){
         .then((programs)=>{
             adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
             if (Object.keys(programs).length > 0){
-                knownDevices[device].programs = {};
-                knownDevices[device].programs.push(programs);
+                knownDevices[device].programs = [];
+                knownDevices[device].programs = programs;
                 for (const prog in programs) {
                     createOrExtendObject(adapter, `${device}.ACTIONS.${programs[prog].programId}`, {
                         type: 'state',
@@ -1131,7 +1116,7 @@ async function createStateTemperature(adapter, path, valueObj){
  */
 async function createStateTargetTemperature(adapter, path, valueObj){
     for (let n=0; n < valueObj.length; n++){
-        if (valueObj.value_raw===-32768 || valueObj.value_raw===null || valueObj.value_raw==='null') continue;
+        if (valueObj[n].value_raw===-32768 || valueObj[n].value_raw===null || valueObj[n].value_raw==='null' || valueObj[n].value_raw==='undefined') return;
         const unit =  valueObj[n].unit==='Celsius'?'°C':'°F';
         createOrExtendObject(adapter,
             `${path}.ACTIONS.targetTemperatureZone-${n+1}`,
@@ -1585,6 +1570,17 @@ async function createChannelActions(adapter, path) {
         },
         native: {}
     }, null);
+    createOrExtendObject(adapter, path + '.ACTIONS.LastActionResult', {
+        type: 'state',
+        common: {
+            name: 'Additional information on the execution of the last action',
+            read: true,
+            write: false,
+            icon: 'icons/info.svg',
+            type:'string'
+        },
+        native: {}
+    }, '');
 }
 
 
