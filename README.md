@@ -196,10 +196,11 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
-### V6.0.0 (2022-04-xx) ()
+### V6.0.0 (2022-04-xx) (Black Wings)
 * (grizzelbee) New: Added donate button to config page and readme file
 * (grizzelbee) New: Adapter entirely rewritten from scratch
 * (grizzelbee) New: Implemented watchdog for broken lines
+* (grizzelbee) New: [216](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/216) Added additional (undocumented) data points to dish warmer
 * (grizzelbee) Fix: [213](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/213) Login delay works properly now when login fails on Startup
 * (grizzelbee) Fix: [207](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/207) powering on device due to querying available programs
 * (grizzelbee) Fix: Refresh of expired tokens works properly now

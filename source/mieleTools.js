@@ -726,6 +726,13 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateBatteryLevel(adapter,  path, currentDeviceState.batteryLevel);
                 break;
             case 25: // 25 = DISH WARMER*
+
+                await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
+                await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
+                await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
+                await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
+                await createStateTemperature(adapter,  path, currentDeviceState.temperature);
                 await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
                 break;
             case 48: // 48 = VACUUM DRAWER
@@ -1408,6 +1415,7 @@ async function createDeviceActions(adapter, device, actions){
             case 25: // 25 = DISH WARMER*
                 // Actions
                 await addProgramIdAction(adapter,  device);
+                await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 48: // 48 = VACUUM DRAWER
                 break;
