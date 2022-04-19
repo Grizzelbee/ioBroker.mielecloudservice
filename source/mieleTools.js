@@ -1054,7 +1054,7 @@ async function createStateRemainingTime(adapter, path, remainingTime){
  * @param startTime {object} array value to set to the data point
  */
 async function createStateStartTime(adapter, path, startTime){
-    await createTime(  adapter, path + '.startTime', 'The StartTime equals the relative starting time', startTime, 'value');
+    await createTime(  adapter, path + '.ACTIONS.startTime', 'The StartTime equals the relative starting time', startTime, 'value');
 }
 
 
@@ -1108,7 +1108,7 @@ async function createStateTemperature(adapter, path, valueObj){
  * createStateTargetTemperature
  *
  * create the state that shows information about one or multiple target temperatures of the process.
- * API returns 1 to 3 values depending on the device
+ * API returns 0 to 3 values depending on the device
  *
  * @param adapter {object} link to the adapter instance
  * @param path {string} path where the data point is going to be created
@@ -1483,8 +1483,7 @@ async function addSuperCoolingSwitch(adapter, path){
             'read': true,
             'write': true,
             'role': 'switch',
-            'type': 'string',
-            'states':{'On':'On', 'Off':'Off'}
+            'type': 'boolean'
         },
         native: {}
     }
@@ -1506,8 +1505,7 @@ async function addSuperFreezingSwitch(adapter, path){
             'read': true,
             'write': true,
             'role': 'switch',
-            'type': 'string',
-            'states':{'On':'On', 'Off':'Off'}
+            'type': 'boolean'
         },
         native: {}
     }, 'Off');
@@ -1526,7 +1524,7 @@ async function addSuperFreezingSwitch(adapter, path){
  * @param path {string} path where the action button is going to be created
  */
 async function addColorsAction(adapter,path) {
-    createOrExtendObject(adapter, path + '.ACTIONS.color', {
+    createOrExtendObject(adapter, path + '.ACTIONS.Color', {
         type: 'state',
         common: {
             'name': 'select the ambient light color of your device',

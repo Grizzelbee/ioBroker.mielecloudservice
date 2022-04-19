@@ -177,6 +177,30 @@ class Mielecloudservice extends utils.Adapter {
                 const action  = id.split('.').pop();
                 const device  = id.split('.', 3).pop();
                 switch(action){
+                    case 'Nickname': payload.deviceName = state.val;
+                        break;
+                    case 'Start': payload.processAction = mieleConst.START;
+                        break;
+                    case 'Stop': payload.processAction = mieleConst.STOP;
+                        break;
+                    case 'Pause': payload.processAction = mieleConst.PAUSE;
+                        break;
+                    case 'SuperFreezing': payload.processAction = (state.val?mieleConst.START_SUPERFREEZING:mieleConst.STOP_SUPERFREEZING);
+                        break;
+                    case 'SuperCooling': payload.processAction = (state.val?mieleConst.START_SUPERCOOLING:mieleConst.STOP_SUPERCOOLING);
+                        break;
+                    case 'startTime': payload.startTime = (typeof state.val==='string'?state.val.split(':'):[0,0]);
+                        break;
+                    case 'ventilationStep': payload.ventilationStep = state.val;
+                        break;
+                    case 'targetTemperatureZone-1':
+                    case 'targetTemperatureZone-2':
+                    case 'targetTemperatureZone-3': payload.targetTemperature = {zone:action.split('-').pop(), value: state.val};
+                        break;
+                    case 'Color': payload.colors = state.val;
+                        break;
+                    case 'Mode': payload.modes = state.val;
+                        break;
                     case 'Light': payload.light = (state.val? 2 : 1);
                         break;
                     case 'Power': (state.val? payload.powerOn=true : payload.powerOff=true);
