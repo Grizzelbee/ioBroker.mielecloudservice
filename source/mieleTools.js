@@ -1308,8 +1308,8 @@ async function createDeviceActions(adapter, device, actions){
             case 24: // 24 = WASHER DRYER*
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
-                await addStartButton(adapter, device, false);
-                await addStopButton(adapter,  device, false);
+                await addStartButton(adapter, device, true);
+                await addStopButton(adapter,  device, true);
                 await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
@@ -1317,14 +1317,14 @@ async function createDeviceActions(adapter, device, actions){
             case 8: // 8 = DISHWASHER SEMI-PROF
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
-                await addStartButton(adapter, device, false);
-                await addStopButton(adapter,  device, false);
-                await addPauseButton(adapter,  device, false);
+                await addStartButton(adapter, device, true);
+                await addStopButton(adapter,  device, true);
+                await addPauseButton(adapter,  device, true);
                 await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 break;
             case 12: // 12 = OVEN*
                 // Actions
-                await addStopButton(adapter,  device, false);
+                await addStopButton(adapter,  device, true);
                 await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
@@ -1336,7 +1336,7 @@ async function createDeviceActions(adapter, device, actions){
             case 67: // 67 = DIALOG OVEN*
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
-                await addStopButton(adapter,  device, false);
+                await addStopButton(adapter,  device, true);
                 await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
@@ -1351,7 +1351,7 @@ async function createDeviceActions(adapter, device, actions){
             case 18: // 18 = HOOD*
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
-                await addStopButton(adapter,  device, false);
+                await addStopButton(adapter,  device, true);
                 await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
                 await addColorsAction(adapter,  device);
                 // colors
@@ -1401,9 +1401,9 @@ async function createDeviceActions(adapter, device, actions){
             case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
                 // Actions
                 await addProgramIdAction(adapter,  device);
-                await addStartButton(adapter, device, false);
-                await addStopButton(adapter,  device, false);
-                await addPauseButton(adapter,  device, false);
+                await addStartButton(adapter, device, true);
+                await addStopButton(adapter,  device, true);
+                await addPauseButton(adapter,  device, true);
                 break;
             case 25: // 25 = DISH WARMER*
                 // Actions
