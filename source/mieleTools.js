@@ -448,7 +448,7 @@ module.exports.addProgramsToDevice = async function(adapter, auth, mieleDevice){
     if ( Object.prototype.hasOwnProperty.call(knownDevices[mieleDevice], 'programs') ){
         adapter.log.debug(`Programs for device ${knownDevices[mieleDevice].name} are already registered. Skipping Query.`);
     } else {
-        adapter.log.debug(`KnownDevices so far: ${JSON.stringify(knownDevices[mieleDevice])}`);
+        adapter.log.debug(`KnownDevices before querying programs: ${JSON.stringify(knownDevices[mieleDevice])}`);
         await addPrograms(adapter, auth, mieleDevice);
     }
 };
@@ -727,7 +727,6 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateBatteryLevel(adapter,  path, currentDeviceState.batteryLevel);
                 break;
             case 25: // 25 = DISH WARMER*
-
                 await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
                 await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
                 await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
@@ -1293,7 +1292,7 @@ module.exports.splitMieleActionsMessage = async function(adapter, message){
         if (typeof knownDevices[device] === 'undefined' ){
             adapter.log.debug(`Device [${device}] is currently unknown - skipping creating actions on it.`);
         } else {
-            adapter.log.debug(`KnownDevice ${JSON.stringify(knownDevices[device])}`);
+            adapter.log.debug(`KnownDevice before updating actions on it: ${JSON.stringify(knownDevices[device])}`);
             await createDeviceActions(adapter, device, actions);
         }
     }
@@ -1310,6 +1309,7 @@ module.exports.splitMieleActionsMessage = async function(adapter, message){
  */
 async function createDeviceActions(adapter, device, actions){
     await createChannelActions(adapter, device);
+    knownDevices[device].actions = actions;
     try{
         switch (knownDevices[device].deviceType){
             case 1 : // 1 = WASHING MACHINE*

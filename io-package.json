@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.0.0",
+        "version": "6.0.0-rc1",
         "news": {
             "6.0.0": {
                 "en": "Adapter entirely rewritten from scratch - the changelog is too long to provide it here - Please take a look into the readme and be careful on updating.",
