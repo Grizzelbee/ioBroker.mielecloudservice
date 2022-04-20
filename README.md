@@ -207,9 +207,12 @@ Here is a list of what these raw values stand for:
 * (grizzelbee) Fix: Refresh of expired tokens works properly now
 * (grizzelbee) Fix: Light-Switch is working now e.g. for coffee systems
 * (grizzelbee) Chg: BREAKING CHANGE: Changed IDs for targetTemperature and temperature 
+* (grizzelbee) Chg: targetTemperature and temperature with invalid values (-32768, null, ...) will no longer be created
+* (grizzelbee) Chg: startTime has moved to ACTIONS and is intended to work properly
+* (grizzelbee) Chg: ACTIONS.*_Button_Active data points have been removed
+* (grizzelbee) Chg: Switches in the ACTIONS are simple boolean switches now (no on/off, ...)
 * (grizzelbee) Upd: dependencies got updated
 * (grizzelbee) Upd: removed separate license file
-
 
 ### V5.0.4 (2022-01-07) (Invincible)
 * (grizzelbee) Fix: [MIELECLOUDSERVICE-7](https://sentry.io/organizations/nocompany-6j/issues/2379624775/?project=5735758) handling if there is no auth token for a request
