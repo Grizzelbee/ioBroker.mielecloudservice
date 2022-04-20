@@ -1155,7 +1155,7 @@ async function createStateTargetTemperature(adapter, path, valueObj){
  */
 async function updateStateTargetTemperature(adapter, path, valueObj){
     for (let n=0; n < valueObj.length; n++) {
-        if (valueObj.value_raw === -32768 || valueObj.value_raw === null || valueObj.value_raw === 'null' ) continue;
+        if (valueObj[n].value_raw===-32768 || valueObj[n].value_raw===null || valueObj[n].value_raw==='null' || valueObj[n].value_raw==='undefined') return;
         adapter.getObject(`${path}.ACTIONS.targetTemperatureZone-${n + 1}`, function (err, oldObj) {
             if (!err && oldObj) {
                 if (`The target temperature of zone ${n + 1} (${knownDevices[path].fridgeZone[n].min} to ${knownDevices[path].fridgeZone[n].max}).` !== oldObj.common.name) {
