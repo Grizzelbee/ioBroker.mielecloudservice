@@ -386,7 +386,8 @@ module.exports.splitMieleDevices = async function(adapter, auth, mieleDevices){
         if ( typeof mieleDevices === 'undefined' || typeof mieleDevice === 'undefined' ){
             adapter.log.debug(`splitMieleDevices: Given dataset is undefined or not splittable. Returning without action.`);
             return;
-        } else {
+        } else if (typeof knownDevices[mieleDevice] === 'undefined') {
+            adapter.log.debug(`Device ${mieleDevice} isn't already known. Registering now...`);
             adapter.log.debug('splitMieleDevices: ' + mieleDevice+ ': [' + mieleDevice + '] *** Value: [' + JSON.stringify(mieleDevices[mieleDevice]) + ']');
             knownDevices[mieleDevice]={};
             knownDevices[mieleDevice].icon   =`icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`;

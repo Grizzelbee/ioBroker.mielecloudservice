@@ -169,8 +169,9 @@ class Mielecloudservice extends utils.Adapter {
                 if (id.split('.').pop() === 'Power' && state.val ){
                     // add programs to device when it's powered on, since querying programs powers devices on or throws errors
                     adapter.getState(id, async function (err, oldObj) {
+                        adapter.log.debug(`OLDOBJ: ${JSON.stringify(oldObj)}`);
                         if (!err && oldObj) {
-                            if (state.val !== oldObj.val) await mieleTools.addProgramsToDevice(adapter, auth, id.split('.', 3).pop());
+                            if (!oldObj.val) await mieleTools.addProgramsToDevice(adapter, auth, id.split('.', 3).pop());
                         }
                     });
                 }
