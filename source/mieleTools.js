@@ -1092,7 +1092,7 @@ async function createStateElapsedTime(adapter, path, value){
  */
 async function createStateTemperature(adapter, path, valueObj){
     for (let n=0; n < valueObj.length; n++){
-        if (valueObj.value_raw===-32768) continue;
+        if (valueObj[n].value_raw===-32768 || valueObj[n].value_raw===null || valueObj[n].value_raw==='null' || valueObj[n].value_raw==='undefined') return;
         const unit =  valueObj[n].unit==='Celsius'?'°C':'°F';
         createOrExtendObject(adapter,
             `${path}.temperatureZone-${n+1}`,
