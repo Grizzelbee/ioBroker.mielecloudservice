@@ -5,7 +5,7 @@ const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
-const knownDevices = {icon:`icons/00_genericappliance.svg`}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
+const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 
 
 /**
@@ -905,6 +905,7 @@ async function addPrograms(adapter, auth, device){
             if (Object.keys(programs).length > 0){
                 knownDevices[device].programs = [];
                 knownDevices[device].programs = programs;
+                adapter.log.debug(`addPrograms: knownDevices: ${ JSON.stringify(knownDevices)}`);
                 for (const prog in programs) {
                     createOrExtendObject(adapter, `${device}.ACTIONS.${programs[prog].programId}`, {
                         type: 'state',

@@ -11,6 +11,7 @@ const EventSource = require('eventsource');
 const mieleTools = require('./source/mieleTools.js');
 const mieleConst = require('./source/mieleConst');
 const timeouts = {};
+let adapter;
 let events;
 let auth;
 // const fakeRequests=true;// this switch is used to fake requests against the Miele API and load the JSON-objects from disk
@@ -40,7 +41,7 @@ class Mielecloudservice extends utils.Adapter {
         // Reset the connection indicator during startup
         this.setState('info.connection', false, true);
         // remember the link to the adapter instance
-        const adapter = this;
+        adapter = this;
         // decrypt passwords
         this.config.Client_secret =  this.decrypt(this.config.Client_secret);
         this.config.Miele_pwd =  this.decrypt(this.config.Miele_pwd);
@@ -165,9 +166,13 @@ class Mielecloudservice extends utils.Adapter {
             // The state was changed
             // this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
             if (state.ack){
-                if (id.split('.').pop() === 'Power' && state.val){
+                if (id.split('.').pop() === 'Power' && state.val ){
                     // add programs to device when it's powered on, since querying programs powers devices on or throws errors
-                    await mieleTools.addProgramsToDevice(this, auth, id.split('.', 3).pop());
+                    adapter.getState(id, async function (err, oldObj) {
+                        if (!err && oldObj) {
+                            if (state.val !== oldObj.val) await mieleTools.addProgramsToDevice(adapter, auth, id.split('.', 3).pop());
+                        }
+                    });
                 }
             } else {
                 // manual change / request

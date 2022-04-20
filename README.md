@@ -198,9 +198,9 @@ Here is a list of what these raw values stand for:
 ## Changelog
 ### V6.0.0 (2022-04-19) (Black Wings)
 * (grizzelbee) New: Adapter entirely rewritten from scratch
-* (grizzelbee) New: Added donate button to config page and readme file
 * (grizzelbee) New: Added link to request Miele API credentials in config page.
 * (grizzelbee) New: Implemented watchdog for broken lines
+* (grizzelbee) New: Added donate button to config page and readme file
 * (grizzelbee) New: [216](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/216) Added additional (undocumented) data points to dish warmer
 * (grizzelbee) Fix: [213](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/213) Login delay works properly now when login fails on Startup
 * (grizzelbee) Fix: [207](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/207) powering on device due to querying available programs
@@ -233,7 +233,7 @@ Here is a list of what these raw values stand for:
 * (grizzelbee) Fix: [178](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/178) Removed: info Received ACTIONS message by SSE.
 * (grizzelbee) Fix: [179](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/179) Removed: info Received DEVICES message by SSE.
 * (grizzelbee) Fix: [180](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/180) Fixed: Info: State value to set for "mielecloudservice.0.xxx.ACTIONS.Power" has to be type "boolean" but received type "string"
-* (grizzelbee) Fix: [181](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/181) Fixed: Programbuttons should be fixed and work as soon as Miele fixes the API (as of today it has bugs).
+* (grizzelbee) Fix: [181](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/181) Fixed: Program buttons should be fixed and work as soon as Miele fixes the API (as of today it has bugs).
 * (grizzelbee) Upd: Removed many debug log output
 
 ### V5.0.0 (2021-10-21) (Invincible)
