@@ -98,7 +98,7 @@ class Mielecloudservice extends utils.Adapter {
                 events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, { headers: { Authorization: 'Bearer ' + auth.access_token,'Accept' : 'text/event-stream','Accept-Language' : adapter.config.locale }} );
 
                 events.addEventListener( 'devices', function(event) {
-                    // adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
+                    adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
                     mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data));
                 });
 
@@ -168,12 +168,7 @@ class Mielecloudservice extends utils.Adapter {
             if (state.ack){
                 if (id.split('.').pop() === 'Power' && state.val ){
                     // add programs to device when it's powered on, since querying programs powers devices on or throws errors
-                    adapter.getState(id, async function (err, oldObj) {
-                        adapter.log.debug(`OLDOBJ: ${JSON.stringify(oldObj)}`);
-                        if (!err && oldObj) {
-                            if (!oldObj.val) await mieleTools.addProgramsToDevice(adapter, auth, id.split('.', 3).pop());
-                        }
-                    });
+                    await mieleTools.addProgramsToDevice(adapter, auth, id.split('.', 3).pop());
                 }
             } else {
                 // manual change / request

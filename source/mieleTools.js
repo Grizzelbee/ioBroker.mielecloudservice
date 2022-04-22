@@ -430,9 +430,9 @@ module.exports.splitMieleDevices = async function(adapter, auth, mieleDevices){
                 }
             };
             await createOrExtendObject(adapter, mieleDevice, obj, null);  // create base object
-            await createIdentTree(adapter, mieleDevice+'.IDENT', mieleDevices[mieleDevice].ident);
-            await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
         }
+        await createIdentTree(adapter, mieleDevice+'.IDENT', mieleDevices[mieleDevice].ident);
+        await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
     }
 };
 
@@ -941,7 +941,7 @@ async function addPrograms(adapter, auth, device){
  */
 async function createStateProgramID(adapter, path, value, value_raw){
     await createROState( adapter, path + '_raw', 'ID of the running Program (raw-value)', value_raw, 'number', 'value');
-    await createROState( adapter, path, 'ID of the running Program', value, 'string', 'text');
+    await createROState( adapter, path, 'Name of the running Program', value, 'string', 'text');
 }
 
 
@@ -990,8 +990,8 @@ async function createStateProgramPhase(adapter, path, value, value_raw){
  * @param value_raw {number} value to set to the raw-data point
  */
 async function createStateDryingStep(adapter, path, value, value_raw){
-    await createROState( adapter, path + '_raw', 'This field is only valid for hoods (raw-value)', value_raw, 'number', 'value');
-    await createROState( adapter, path, 'This field is only valid for hoods.', value, 'string', 'text');
+    await createROState( adapter, path + '_raw', 'The dryingStep object represents the selected drying step of a tumble dryer or a washer-dryer combination. (raw-value)', value_raw, 'number', 'value');
+    await createROState( adapter, path, 'The dryingStep object represents the selected drying step of a tumble dryer or a washer-dryer combination.', value, 'string', 'text');
 }
 
 
