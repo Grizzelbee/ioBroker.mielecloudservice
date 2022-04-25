@@ -56,7 +56,9 @@ But Miele is working on it and extends the support on a regular basis.
 Please refer to the general Miele API documentation (below) for more information.
 
 ## Known Issues
-* none
+* There is a new endpoint inside the Miele API since V1.05 of the API (/programs).
+  * It`s currently unknown how to use them since the API documentation is ... improvable.
+  * These programs are basically supported since v6.0.0 of the adapter. Except programs that need additional parameters. 
 
 ## Documentation
 Please mainly refer to the main API documentation published by Miele
