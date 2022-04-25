@@ -1,163 +1,19 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "5.0.4",
+        "version": "6.0.0",
         "news": {
-            "5.0.4": {
-                "en": "More minor bug fixes for sentry issues MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
-                "de": "Weitere kleinere Fehlerbehebungen für Sentry-Fehler: MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
-                "ru": "Дополнительные мелкие исправления ошибок для сторожевых проблем MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
-                "pt": "Mais pequenas correções de bug para problemas de sentinela MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
-                "nl": "Meer kleine bugfixes voor schildwachtproblemen MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
-                "fr": "Plus de corrections de bugs mineurs pour les problèmes de sentinelle MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
-                "it": "Altre correzioni di bug minori per problemi di sentinella MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
-                "es": "Más correcciones de errores menores para problemas de centinelas MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
-                "pl": "Więcej drobnych poprawek błędów związanych z działkami MIELECLOUDSERVICE-7, MIELECLOUDSERVICE-2J, MIELECLOUDSERVICE-2K, MIELECLOUDSERVICE-28.",
-                "zh-cn": "针对哨兵问题 MIELECLOUDSERVICE-7、MIELECLOUDSERVICE-2J、MIELECLOUDSERVICE-2K、MIELECLOUDSERVICE-28 的更多小错误修复。"
-            },
-            "5.0.3": {
-                "en": "Some minor bug fixes.",
-                "de": "Einige kleinere Fehlerbehebungen.",
-                "ru": "Исправлены мелкие ошибки.",
-                "pt": "Algumas pequenas correções de bugs.",
-                "nl": "Enkele kleine bugfixes.",
-                "fr": "Quelques corrections de bugs mineurs.",
-                "it": "Alcune correzioni di bug minori.",
-                "es": "Algunas correcciones de errores menores.",
-                "pl": "Kilka drobnych poprawek.",
-                "zh-cn": "一些小错误修复。"
-            },
-            "5.0.2": {
-                "en": "Added event listener for errors and trying to reconnect if connection is lost.",
-                "de": "Ereignis-Listener für Fehler hinzugefügt und versucht, eine Verbindung wiederherzustellen, wenn die Verbindung verloren geht.",
-                "ru": "Добавлен прослушиватель событий для ошибок и попыток переподключения, если соединение потеряно.",
-                "pt": "Adicionado ouvinte de eventos para erros e tentativa de reconectar se a conexão for perdida.",
-                "nl": "Gebeurtenislistener toegevoegd voor fouten en proberen opnieuw verbinding te maken als de verbinding is verbroken.",
-                "fr": "Ajout d'un écouteur d'événements pour les erreurs et tentative de reconnexion si la connexion est perdue.",
-                "it": "Aggiunto listener di eventi per errori e tentativo di riconnessione in caso di perdita della connessione.",
-                "es": "Se agregó un detector de eventos para detectar errores e intentar volver a conectarse si se pierde la conexión.",
-                "pl": "Dodano detektor zdarzeń dla błędów i próby ponownego połączenia w przypadku utraty połączenia.",
-                "zh-cn": "添加了错误事件侦听器，并在连接丢失时尝试重新连接。"
-            },
-            "5.0.1": {
-                "en": "Bugfix Release\nFixed some minor bugs.",
-                "de": "Bugfix Release\n Einige kleinere Fehler behoben.",
-                "ru": "Выпуск Bugfix \n Исправлены мелкие ошибки.",
-                "pt": "Lançamento de correção de bug \n Corrigido alguns pequenos bugs.",
-                "nl": "Bugfix-release\n Enkele kleine bugs verholpen.",
-                "fr": "Bugfix Release \n Correction de quelques bugs mineurs.",
-                "it": "Rilascio bugfix\nRisolti alcuni bug minori.",
-                "es": "Versión de corrección de errores \n Se corrigieron algunos errores menores.",
-                "pl": "Bugfix Release\n Naprawiono kilka drobnych błędów.",
-                "zh-cn": "错误修正发布\n修正了一些小错误。"
-            },
-            "5.0.0": {
-                "en": "BREAKING CHANGE: removed grouping folders\nSwitched from data polling to server sent events and implemented changes for API 1.0.5\nMany fixes - see changelog for details",
-                "de": "BREAKING CHANGE: Gruppierungsordner entfernt\nUmgestellt von Datenabfrage auf vom Server gesendete Ereignisse und Änderungen für API 1.0.5 implementiert\nViele Fixes – siehe Änderungsprotokoll für Details",
-                "ru": "ПРЕРЫВАНИЕ ИЗМЕНЕНИЙ: удалены группирующие папки. \n Переключен с опроса данных на отправленные сервером события и внесены изменения в API 1.0.5.",
-                "pt": "QUEBRANDO A MUDANÇA: pastas de agrupamento removidas \n Mudou de polling de dados para eventos enviados pelo servidor e implementou mudanças para API 1.0.5 \n Muitas correções - veja changelog para detalhes",
-                "nl": "BREKENDE WIJZIGING: verwijderde groeperingsmappen\n Overgeschakeld van data polling naar door de server verzonden gebeurtenissen en wijzigingen doorgevoerd voor API 1.0.5\nVeel fixes - zie changelog voor details",
-                "fr": "BREAKING CHANGE : suppression des dossiers de regroupement",
-                "it": "CAMBIAMENTO D'INTERRUZIONE: cartelle di raggruppamento rimosse\nPassato dal polling dei dati agli eventi inviati dal server e modifiche implementate per l'API 1.0.5\nMolte correzioni: vedere il registro delle modifiche per i dettagli",
-                "es": "CAMBIO IMPORTANTE: carpetas de agrupación eliminadas \n Cambio de sondeo de datos a eventos enviados por el servidor e implementado cambios para API 1.0.5 \n Muchas correcciones: consulte el registro de cambios para obtener más detalles",
-                "pl": "NAJWAŻNIEJSZA ZMIANA: usunięto foldery grupujące \n Przejście z odpytywania danych na serwer wysłanych zdarzeń i zaimplementowanych zmian dla API 1.0.5 \n Wiele poprawek - zobacz dziennik zmian po szczegóły",
-                "zh-cn": "突破性变化：删除分组文件夹\n从数据轮询切换到服务器发送的事件并实施了 API 1.0.5 的更改\n许多修复 - 请参阅更改日志以获取详细信息"
-            },
-            "4.2.0": {
-                "en": "Adding Pause action to dish washers",
-                "de": "Hinzufügen der Pause-Aktion zu Geschirrspülern",
-                "ru": "Добавление действия паузы в посудомоечные машины",
-                "pt": "Adicionar ação de pausa às máquinas de lavar louça",
-                "nl": "Een pauze-actie toevoegen aan vaatwassers",
-                "fr": "Ajout d'une action Pause aux lave-vaisselle",
-                "it": "Aggiunta dell'azione Pausa alle lavastoviglie",
-                "es": "Adición de la acción de pausa a los lavavajillas",
-                "pl": "Dodanie akcji Pauza do zmywarek",
-                "zh-cn": "为洗碗机增加暂停功能"
-            },
-            "4.1.0": {
-                "en": "Adding support for Miele RX2 vacuum cleaner robots (Start, Stop, Pause).",
-                "de": "Unterstützung für Miele RX2-Staubsaugerroboter hinzugefügt (Start, Stopp, Pause).",
-                "ru": "Добавлена ​​поддержка роботов-пылесосов Miele RX2 (Start, Stop, Pause).",
-                "pt": "Adicionando suporte para robôs de aspirador de pó Miele RX2 (Iniciar, Parar, Pausar).",
-                "nl": "Ondersteuning toevoegen voor Miele RX2-stofzuigerrobots (Start, Stop, Pause).",
-                "fr": "Ajout de la prise en charge des robots aspirateurs Miele RX2 (Start, Stop, Pause).",
-                "it": "Aggiunta del supporto per i robot aspirapolvere Miele RX2 (Start, Stop, Pause).",
-                "es": "Adición de soporte para robots aspiradores Miele RX2 (Inicio, Detención, Pausa).",
-                "pl": "Dodanie obsługi robotów odkurzających Miele RX2 (Start, Stop, Pauza).",
-                "zh-cn": "增加了对Miele RX2吸尘器机器人的支持（启动，停止，暂停）。"
-            },
-            "4.0.22": {
-                "en": "Bugfix Release - see full changelog since your last version for details!",
-                "de": "Bugfix Release - Bitte sehen Sie sich das vollständige Änderungsprotokoll seit Ihrer aktuell eingesetzten Version an!",
-                "ru": "Выпуск Bugfix - подробности смотрите в полном журнале изменений с момента выхода последней версии!",
-                "pt": "Versão de correção de bug - veja o changelog completo desde sua última versão para detalhes!",
-                "nl": "Bugfix Release - zie het volledige log met wijzigingen sinds uw laatste versie voor details!",
-                "fr": "Bugfix Release - voir le journal des modifications complet depuis votre dernière version pour plus de détails!",
-                "it": "Rilascio bugfix: guarda il log delle modifiche completo dall'ultima versione per i dettagli!",
-                "es": "Versión de corrección de errores: consulte el registro de cambios completo desde su última versión para obtener más detalles.",
-                "pl": "Wydanie poprawek - zobacz pełną listę zmian od ostatniej wersji, aby uzyskać szczegółowe informacje!",
-                "zh-cn": "错误修正版本-自上一版本以来，查看完整的变更日志以获取详细信息！"
-            },
-            "4.0.0": {
-                "en": "Major Release - Update with care and read the change log!",
-                "de": "Hauptversion - Aktualisieren Sie sorgfältig und lesen Sie das Änderungsprotokoll!",
-                "ru": "Основной выпуск - обновляйте внимательно и читайте журнал изменений!",
-                "pt": "Versão principal - atualize com cuidado e leia o log de alterações!",
-                "nl": "Grote release - Update zorgvuldig en lees het wijzigingslogboek!",
-                "fr": "Version majeure - Mettez à jour avec soin et lisez le journal des modifications!",
-                "it": "Versione principale: aggiorna con attenzione e leggi il registro delle modifiche!",
-                "es": "Versión principal: actualice con cuidado y lea el registro de cambios.",
-                "pl": "Główne wydanie - aktualizuj uważnie i przeczytaj dziennik zmian!",
-                "zh-cn": "主要版本-谨慎更新并阅读更改日志！"
-            },
-            "3.0.2": {
-                "en": "Maintenance release - Bugfixes and minor improvements.",
-                "de": "Wartungsversion - Bugfixes und kleinere Verbesserungen.",
-                "ru": "Технический релиз - исправления и мелкие улучшения.",
-                "pt": "Versão de manutenção - correções de bugs e pequenas melhorias.",
-                "nl": "Onderhoudsrelease - Bugfixes en kleine verbeteringen.",
-                "fr": "Version de maintenance - Corrections de bogues et améliorations mineures.",
-                "it": "Versione di manutenzione: correzioni di bug e miglioramenti minori.",
-                "es": "Versión de mantenimiento: correcciones de errores y mejoras menores.",
-                "pl": "Wydanie konserwacyjne - poprawki błędów i drobne ulepszenia.",
-                "zh-cn": "维护版本-错误修正和较小的改进。"
-            },
-            "3.0.1": {
-                "en": "Maintenance release - Bugfixes and minor improvements.",
-                "de": "Wartungsversion - Bugfixes und kleinere Verbesserungen.",
-                "ru": "Технический релиз - исправления и мелкие улучшения.",
-                "pt": "Versão de manutenção - correções de bugs e pequenas melhorias.",
-                "nl": "Onderhoudsrelease - Bugfixes en kleine verbeteringen.",
-                "fr": "Version de maintenance - Corrections de bogues et améliorations mineures.",
-                "it": "Versione di manutenzione: correzioni di bug e miglioramenti minori.",
-                "es": "Versión de mantenimiento: correcciones de errores y mejoras menores.",
-                "pl": "Wydanie konserwacyjne - poprawki błędów i drobne ulepszenia.",
-                "zh-cn": "维护版本-错误修正和较小的改进。"
-            },
-            "3.0.0": {
-                "en": "BREAKING CHANGE Release see changelog for all changes.",
-                "de": "BREAKING CHANGE Release Alle Änderungen finden Sie im Changelog.",
-                "ru": "BREAKING CHANGE Release см. В журнале изменений все изменения.",
-                "pt": "QUEBRANDO MUDANÇAS Release veja o changelog para todas as mudanças.",
-                "nl": "BREAKING CHANGE Release zie het changelog voor alle wijzigingen.",
-                "fr": "BREAKING CHANGE Relâchez voir changelog pour tous les changements.",
-                "it": "CAMBIAMENTI ROTTURANTI Rilasciare vedere il log delle modifiche per tutte le modifiche.",
-                "es": "CAMBIO IMPORTANTE Lanzamiento ver registro de cambios para todos los cambios.",
-                "pl": "NIESAMOWITA ZMIANA Wydanie Zobacz listę zmian dla wszystkich zmian.",
-                "zh-cn": "BREAKING CHANGE发布，请参阅更改日志以了解所有更改。"
-            },
-            "2.0.3": {
-                "en": "Added debug code and fixed some minor bugs.",
-                "de": "Debug-Code hinzugefügt und einige kleinere Fehler behoben.",
-                "ru": "Добавлен код отладки и исправлены мелкие ошибки.",
-                "pt": "Adicionado código de depuração e corrigidos alguns pequenos bugs.",
-                "nl": "Foutopsporingscode toegevoegd en enkele kleine bugs verholpen.",
-                "fr": "Ajout du code de débogage et correction de quelques bugs mineurs.",
-                "it": "Aggiunto codice di debug e risolti alcuni bug minori.",
-                "es": "Se agregó código de depuración y se corrigieron algunos errores menores.",
-                "pl": "Dodano kod debugowania i naprawiono kilka drobnych błędów.",
-                "zh-cn": "添加了调试代码并修复了一些小错误。"
+            "6.0.0": {
+                "en": "Adapter entirely rewritten from scratch - the changelog is too long to provide it here - Please take a look into the readme and be careful on updating.",
+                "de": "Adapter komplett von Grund auf neu geschrieben - das Änderungsprotokoll ist zu lang, um es hier bereitzustellen - Bitte werfen Sie einen Blick in die Readme und seien Sie beim Aktualisieren vorsichtig.",
+                "ru": "Адаптер полностью переписан с нуля - журнал изменений слишком длинный, чтобы его здесь приводить - Пожалуйста, загляните в файл readme и будьте осторожны при обновлении.",
+                "pt": "Adaptador totalmente reescrito do zero - o changelog é muito longo para fornecê-lo aqui - Por favor, dê uma olhada no readme e tenha cuidado ao atualizar.",
+                "nl": "Adapter volledig opnieuw geschreven - het changelog is te lang om het hier weer te geven - Neem een ​​kijkje in de readme en wees voorzichtig bij het updaten.",
+                "fr": "Adaptateur entièrement réécrit à partir de zéro - le journal des modifications est trop long pour le fournir ici - Veuillez consulter le fichier Lisez-moi et soyez prudent lors de la mise à jour.",
+                "it": "Adattatore interamente riscritto da zero - il log delle modifiche è troppo lungo per fornirlo qui - Dai un'occhiata al readme e fai attenzione durante l'aggiornamento.",
+                "es": "Adaptador completamente reescrito desde cero: el registro de cambios es demasiado largo para proporcionarlo aquí. Eche un vistazo al archivo Léame y tenga cuidado al actualizar.",
+                "pl": "Adapter całkowicie przepisany od zera - dziennik zmian jest zbyt długi, aby go tutaj podać - zajrzyj do pliku readme i bądź ostrożny przy aktualizacji.",
+                "zh-cn": "适配器完全从头重写 - 更改日志太长，无法在此处提供 - 请查看自述文件并小心更新。"
             }
         },
         "title": "Miele CloudService",
@@ -167,55 +23,62 @@
             "ru": "Miele CloudService",
             "pt": "Miele CloudService",
             "nl": "Miele CloudService",
-            "fr": "Miele CloudService",
-            "it": "Miele CloudService",
-            "es": "Miele CloudService",
+            "fr": "Miele Cloud Service",
+            "it": "Servizio cloud Miele",
+            "es": "Servicio en la nube de Miele",
             "pl": "Miele CloudService",
-            "zh-cn": "Miele CloudService"
+            "zh-cn": "Miele 云服务"
         },
         "desc": {
-            "en": "Miele CloudService: Get your Miele appliances (WiFiConn@ct & XGW 3000) connected to ioBroker.",
-            "de": "Miele CloudService: Verbinden Sie Ihre Miele-Geräte (WiFiConn@ct & XGW 3000) mit ioBroker.",
-            "ru": "Miele CloudService: подключите свои устройства Miele (WiFiConn@ct & XGW 3000) к ioBroker.",
-            "pt": "Miele CloudService: conecte seus dispositivos Miele (WiFiConn@ct & XGW 3000) ao ioBroker.",
-            "nl": "Miele CloudService: verbind uw Miele-apparaten (WiFiConn@ct & XGW 3000) met ioBroker.",
-            "fr": "Miele CloudService: connectez vos appareils Miele (WiFiConn@ct & XGW 3000) à ioBroker.",
-            "it": "Miele CloudService: collega i tuoi apparecchi Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
-            "es": "Miele CloudService: conecte sus dispositivos Miele (WiFiConn@ct & XGW 3000) a ioBroker.",
-            "pl": "Miele CloudService: Połącz swoje urządzenia Miele (WiFiConn@ct & XGW 3000) z ioBroker.",
-            "zh-cn": "Miele CloudService：将Miele (WiFiConn@ct & XGW 3000)设备连接到ioBroker。"
+            "en": "Get your Miele appliances (XGW3000 & WiFiConn@ct) connected",
+            "de": "Verbinden Sie Ihre Miele Geräte (XGW3000 & WiFiConn@ct).",
+            "ru": "Подключите свою бытовую технику Miele (XGW3000 и WiFiConn@ct) к сети",
+            "pt": "Ligue os seus electrodomésticos Miele (XGW3000 & WiFiConn@ct)",
+            "nl": "Verbind je Miele apparaten (XGW3000 & WiFiConn@ct)",
+            "fr": "Connectez vos appareils Miele (XGW3000 & WiFiConn@ct)",
+            "it": "Collega i tuoi elettrodomestici Miele (XGW3000 e WiFiConn@ct).",
+            "es": "Conecta tus electrodomésticos Miele (XGW3000 y WiFiConn@ct)",
+            "pl": "Podłącz swoje urządzenia Miele (XGW3000 i WiFiConn@ct)",
+            "zh-cn": "连接您的 Miele 电器（XGW3000 和 WiFiConn@ct）"
         },
         "authors": [
             "grizzelbee <open.source@hingsen.de>"
         ],
+        "keywords": [
+            "iobroker",
+            "miele",
+            "wificonn@ct",
+            "xgw3000",
+            "gateway"
+        ],
+        "license": "MIT",
         "platform": "Javascript/Node.js",
-        "mode": "daemon",
-        "compact": true,
+        "main": "main.js",
         "icon": "mielecloudservice.svg",
+        "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.svg",
+        "readme": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "household",
+        "compact": true,
+        "connectionType": "cloud",
+        "dataSource": "push",
+        "tier": 2,
+        "materialize": true,
         "adminUI": {
             "config": "materialize"
         },
-        "enabled": true,
-        "keywords": [
-            "MieleCloudService"
-        ],
-        "readme": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/README.md",
-        "loglevel": "info",
-        "type": "household",
-        "connectionType": "cloud",
-        "dataSource": "push",
-        "dependencies": [
+        "globalDependencies": [
             {
-                "js-controller": ">=3.0.0",
                 "admin": ">=4.0.9"
             }
         ],
-        "license": "MIT",
-        "tier": 2,
-        "materialize": true,
-        "messagebox": true,
-        "subscribe": "messagebox",
+        "dependencies": [
+            {
+                "js-controller": ">=3.0.0"
+            }
+        ],
         "plugins": {
             "sentry": {
                 "dsn": "https://bb362bebab074bcd8b8f821a070f6662@o505019.ingest.sentry.io/5735758"
@@ -243,11 +106,19 @@
     "objects": [],
     "instanceObjects": [
         {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
             "_id": "info.connection",
             "type": "state",
             "common": {
                 "role": "indicator.connected",
-                "name": "If connected to miele cloud service",
+                "name": "Device or service connected",
                 "type": "boolean",
                 "read": true,
                 "write": false,
