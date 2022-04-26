@@ -10,7 +10,7 @@ node_modules
 test
 .travis.yml
 appveyor.yml
-
+tsconfig.json
 # CorelDraw files
 *.cdr
 *.bak
