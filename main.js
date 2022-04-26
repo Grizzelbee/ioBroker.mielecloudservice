@@ -17,8 +17,6 @@ let auth;
 // const fakeRequests=true;// this switch is used to fake requests against the Miele API and load the JSON-objects from disk
 
 // Load your modules here, e.g.:
-// const fs = require("fs");
-
 class Mielecloudservice extends utils.Adapter {
 
     /**
