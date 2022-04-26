@@ -1,5 +1,5 @@
 gulpfile.js
-admin/i18n
+admin/i18n/
 admin/Sicherungs*
 tasks
 node_modules
