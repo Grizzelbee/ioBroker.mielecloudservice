@@ -17,8 +17,6 @@ let auth;
 // const fakeRequests=true;// this switch is used to fake requests against the Miele API and load the JSON-objects from disk
 
 // Load your modules here, e.g.:
-// const fs = require("fs");
-
 class Mielecloudservice extends utils.Adapter {
 
     /**
@@ -52,12 +50,12 @@ class Mielecloudservice extends utils.Adapter {
                     auth = await mieleTools.getAuth(this, this.config, 1)
                         .catch((err)=> {
                             // this.log.error(err);
-                            this.terminate(err);
+                            this.terminate(err, 11);
                         });
                     this.log.debug(JSON.stringify(auth));
                 })
                 .catch(()=> {
-                    this.terminate('Terminating adapter due to invalid configuration.');
+                    this.terminate('Terminating adapter due to invalid configuration.', 11);
                 });
             if (auth){
                 // continue here after config is checked and auth is requested
@@ -76,15 +74,6 @@ class Mielecloudservice extends utils.Adapter {
                             });
                     }
                 }, 12*3600*1000, this, this.config); // org: 12*3600*1000; for testing: 30000
-                /*
-                // code for debugging the refresh of tokens; will be removed as soon as the refresh code is tested
-                this.log.debug(`auth=${JSON.stringify(auth)}`);
-                setTimeout(()=> {
-                    auth.expiryDate = new Date();
-                    auth.expiryDate.setSeconds(6*3600);
-                    this.log.debug(`Setting new expiry date: ${auth.expiryDate.toLocaleString()}`);
-                }, 5000);
-                */
                 // code for watchdog -> check every 5 minutes
                 timeouts.watchdog=setInterval(()=> {
                     const testValue = new Date();
