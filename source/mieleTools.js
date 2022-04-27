@@ -1024,20 +1024,6 @@ async function createStateEstimatedEndTime(adapter, path, currentDeviceState){
 
 
 /**
- * createStateAmbientLight
- *
- * create the state that shows the state of ambient light of the current device
- *
- * @param adapter {object} link to the adapter instance
- * @param path {string} path where the data point is going to be created
- * @param value {string}
- */
-async function createStateAmbientLight(adapter, path, value){
-    await createROState(adapter, path, 'The ambientLight field indicates the status of the device ambient light.', value , 'string', 'text');
-}
-
-
-/**
  * createStateRemainingTime
  *
  * create the state that shows the remaining time of the running program
