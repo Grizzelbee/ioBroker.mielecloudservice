@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.0.0",
+        "version": "6.1.0",
         "news": {
+            "6.1.0": {
+                "en": "Added some error handling*Changed PlateStep data point name*Removed some unused code",
+                "de": "Etwas Fehlerbehandlung hinzugefügt * Name des PlateStep-Datenpunkts geändert * Nicht verwendeten Code entfernt",
+                "ru": "Добавлена ​​обработка некоторых ошибок * Изменено имя точки данных PlateStep * Удален некоторый неиспользуемый код",
+                "pt": "Adicionado algum tratamento de erros*Alterado o nome do ponto de dados PlateStep*Removido algum código não utilizado",
+                "nl": "Wat foutafhandeling toegevoegd * PlateStep-gegevenspuntnaam gewijzigd * Enkele ongebruikte code verwijderd",
+                "fr": "Ajout de la gestion des erreurs * Modification du nom du point de données PlateStep * Suppression de certains codes inutilisés",
+                "it": "Aggiunte alcune operazioni di gestione degli errori*Nome del punto dati PlateStep modificato*Rimosso del codice inutilizzato",
+                "es": "Se agregó un manejo de errores * Se cambió el nombre del punto de datos de PlateStep * Se eliminó un código no utilizado",
+                "pl": "Dodano obsługę błędów*Zmieniono nazwę punktu danych PlateStep*Usunięto część nieużywanego kodu",
+                "zh-cn": "添加了一些错误处理*更改了 PlateStep 数据点名称*删除了一些未使用的代码"
+            },
             "6.0.0": {
                 "en": "Adapter entirely rewritten from scratch - the changelog is too long to provide it here - Please take a look into the readme and be careful on updating.",
                 "de": "Adapter komplett von Grund auf neu geschrieben - das Änderungsprotokoll ist zu lang, um es hier bereitzustellen - Bitte werfen Sie einen Blick in die Readme und seien Sie beim Aktualisieren vorsichtig.",
