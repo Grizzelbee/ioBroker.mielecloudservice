@@ -48,7 +48,7 @@ Please refer to [Miele-Documentation](#documentation) for more Information on ac
 With API V1.0.5 Miele introduced a new endpoint called "/programs".
 The support for this endpoint starts with adapter version 4.5.0. A new datapoint [device.Actions.Program] will be created listing all supported programs as returned by Miele.
 **Selecting one of the values will execute the program immediately!**
-Currently only simple programs are supported. E.g. Ovens need some additional information - this will be implemented in a future version.
+Currently, only simple programs are supported. E.g. Ovens need some additional information - this will be implemented in a future version.
 
 When publishing the adapter Miele documented a few device categories to support this endpoint and only (at least for me)
 a subset of these really work. For my coffee system, washing machine and tumble dryer it only works for the coffee system.
@@ -198,6 +198,12 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
+### V6.1.0 (2022-04-27) (Black Wings)
+* (grizzelbee) Fix: Added some error handling
+* (grizzelbee) Chg: Changed PlateStep_x data structure to PlateStepZone-x
+* (grizzelbee) Chg: Removed unused ambientLight function
+* (grizzelbee) Chg: Removed unused freezerZone code for knownDevices
+
 ### V6.0.0 (2022-04-19) (Black Wings)
 * (grizzelbee) New: Adapter entirely rewritten from scratch
 * (grizzelbee) New: Added link to request Miele API credentials in config page.

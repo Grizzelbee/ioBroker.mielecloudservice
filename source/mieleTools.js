@@ -398,28 +398,6 @@ module.exports.splitMieleDevices = async function(adapter, auth, mieleDevices){
             } else {
                 knownDevices[mieleDevice].name = mieleDevices[mieleDevice].ident.deviceName;
             }
-            switch (mieleDevices[mieleDevice].ident.type.value_raw) {
-                case 19: // 19 = FRIDGE*
-                case 32: // 32 = WINE CABINET*
-                case 33: // 33 = WINE CONDITIONING UNIT
-                case 34: // 34 = WINE STORAGE CONDITIONING UNIT
-                    knownDevices[mieleDevice].fridgeZones  = 1;
-                    knownDevices[mieleDevice].freezerZones = 0;
-                    knownDevices[mieleDevice].fridgeZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[0].unit || 'Celsius', min:0, max:0}];
-                    break;
-                case 20: // 20 = FREEZER*
-                    knownDevices[mieleDevice].fridgeZones  = 0;
-                    knownDevices[mieleDevice].freezerZones = 1;
-                    knownDevices[mieleDevice].freezerZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[0].unit || 'Celsius', min:0, max:0}];
-                    break;
-                case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
-                case 68: // 68 = WINE CABINET FREEZER COMBINATION
-                    knownDevices[mieleDevice].fridgeZones  = 1;
-                    knownDevices[mieleDevice].freezerZones = 2;
-                    knownDevices[mieleDevice].fridgeZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[0].unit || 'Celsius', min:0, max:0}];
-                    knownDevices[mieleDevice].freezerZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[1].unit || 'Celsius', min:0, max:0}, {unit:mieleDevices[mieleDevice].state.targetTemperature[2].unit || 'Celsius', min:0, max:0}];
-                    break;
-            }
             const obj = {
                 type: 'device',
                 common: {name: knownDevices[mieleDevice].name,
@@ -1024,20 +1002,6 @@ async function createStateEstimatedEndTime(adapter, path, currentDeviceState){
 
 
 /**
- * createStateAmbientLight
- *
- * create the state that shows the state of ambient light of the current device
- *
- * @param adapter {object} link to the adapter instance
- * @param path {string} path where the data point is going to be created
- * @param value {string}
- */
-async function createStateAmbientLight(adapter, path, value){
-    await createROState(adapter, path, 'The ambientLight field indicates the status of the device ambient light.', value , 'string', 'text');
-}
-
-
-/**
  * createStateRemainingTime
  *
  * create the state that shows the remaining time of the running program
@@ -1184,7 +1148,10 @@ async function updateStateTargetTemperature(adapter, path, valueObj){
  * @param value {object} array value to set to the data point
  */
 async function createStatePlateStep(adapter, path, value){
-    await createArray( adapter, path + '.PlateStep', 'The plateStep object represents the selected cooking zone levels for a hob.', value);
+    for (const n in value) {
+        const MyPath = `${path}.PlateStepZone-${n}`;
+        await createNumber(adapter, MyPath , 'The plateStep object represents the selected cooking zone levels for a hob.', Number.parseInt(value[n].value_localized), '', 'level');
+    }
 }
 
 /**
@@ -1780,29 +1747,6 @@ async function createRWState(adapter, path, description, value, type, role, stat
         type: 'state',
         common: commonObj
     }, value);
-}
-
-
-/**
- * Function createArray
- *
- * Adds a number data point to the device tree for each element in the given array
- *
- * @param adapter {object} link to the adapter instance
- * @param path {string} path where the data point is going to be created
- * @param description {string} description of the data point
- * @param value {object} array containing the value(s) to set to the data point(s)
- */
-async function createArray(adapter, path, description, value){
-    // depending on the device we receive up to 3 values
-    // there is a min of 1 and a max of 3 temperatures returned by the miele API
-    let MyPath = path;
-    for (const n in value) {
-        if (Object.keys(value).length > 1){
-            MyPath = `${path}_${n}`;
-        }
-        await createNumber(adapter, MyPath, description, Number.parseInt(value[n].value_localized), value[n].unit, 'value.temperature');
-    }
 }
 
 /**

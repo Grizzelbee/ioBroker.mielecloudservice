@@ -88,13 +88,19 @@ class Mielecloudservice extends utils.Adapter {
 
                 events.addEventListener( 'devices', function(event) {
                     adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
-                    mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data));
+                    mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data))
+                        .catch((err)=>{
+                            adapter.log.warn(`splitMieleDevices crashed with error: [${err}]`);
+                        });
                 });
 
                 events.addEventListener( 'actions', function(actions) {
                     adapter.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(actions)}]`);
                     adapter.log.debug(`ACTIONS.lastEventId: [${JSON.stringify(actions.lastEventId)}]`);
-                    mieleTools.splitMieleActionsMessage(adapter, JSON.parse(actions.data));
+                    mieleTools.splitMieleActionsMessage(adapter, JSON.parse(actions.data))
+                        .catch((err)=>{
+                            adapter.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
+                        });
                 });
 
                 events.addEventListener( 'ping', function() {
