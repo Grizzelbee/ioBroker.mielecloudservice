@@ -398,28 +398,6 @@ module.exports.splitMieleDevices = async function(adapter, auth, mieleDevices){
             } else {
                 knownDevices[mieleDevice].name = mieleDevices[mieleDevice].ident.deviceName;
             }
-            switch (mieleDevices[mieleDevice].ident.type.value_raw) {
-                case 19: // 19 = FRIDGE*
-                case 32: // 32 = WINE CABINET*
-                case 33: // 33 = WINE CONDITIONING UNIT
-                case 34: // 34 = WINE STORAGE CONDITIONING UNIT
-                    knownDevices[mieleDevice].fridgeZones  = 1;
-                    knownDevices[mieleDevice].freezerZones = 0;
-                    knownDevices[mieleDevice].fridgeZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[0].unit || 'Celsius', min:0, max:0}];
-                    break;
-                case 20: // 20 = FREEZER*
-                    knownDevices[mieleDevice].fridgeZones  = 0;
-                    knownDevices[mieleDevice].freezerZones = 1;
-                    knownDevices[mieleDevice].freezerZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[0].unit || 'Celsius', min:0, max:0}];
-                    break;
-                case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
-                case 68: // 68 = WINE CABINET FREEZER COMBINATION
-                    knownDevices[mieleDevice].fridgeZones  = 1;
-                    knownDevices[mieleDevice].freezerZones = 2;
-                    knownDevices[mieleDevice].fridgeZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[0].unit || 'Celsius', min:0, max:0}];
-                    knownDevices[mieleDevice].freezerZone=[{unit:mieleDevices[mieleDevice].state.targetTemperature[1].unit || 'Celsius', min:0, max:0}, {unit:mieleDevices[mieleDevice].state.targetTemperature[2].unit || 'Celsius', min:0, max:0}];
-                    break;
-            }
             const obj = {
                 type: 'device',
                 common: {name: knownDevices[mieleDevice].name,
