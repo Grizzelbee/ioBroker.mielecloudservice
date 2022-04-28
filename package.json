@@ -27,14 +27,14 @@
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.0",
     "@iobroker/plugin-sentry": "^1.2.0",
-    "@snyk/protect": "^1.913.0",
-    "axios": "^0.27.1",
+    "@snyk/protect": "^1.914.0",
+    "axios": "^0.27.2",
     "axios-oauth-client": "^1.4.4",
     "eventsource": "^2.0.1",
     "flatted": "^3.2.5"
   },
   "devDependencies": {
-    "@alcalzone/release-script": "^3.5.6",
+    "@alcalzone/release-script": "^3.5.8",
     "@iobroker/adapter-dev": "^1.0.0",
     "@iobroker/testing": "^2.6.0",
     "@types/chai": "^4.3.1",
