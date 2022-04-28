@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mielecloudservice",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "Get your Miele appliances (XGW3000 & WiFiConn@ct) connected",
   "author": {
     "name": "grizzelbee",
@@ -27,14 +27,14 @@
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.0",
     "@iobroker/plugin-sentry": "^1.2.0",
-    "@snyk/protect": "^1.913.0",
-    "axios": "^0.27.1",
+    "@snyk/protect": "^1.914.0",
+    "axios": "^0.27.2",
     "axios-oauth-client": "^1.4.4",
     "eventsource": "^2.0.1",
     "flatted": "^3.2.5"
   },
   "devDependencies": {
-    "@alcalzone/release-script": "^3.5.6",
+    "@alcalzone/release-script": "^3.5.8",
     "@iobroker/adapter-dev": "^1.0.0",
     "@iobroker/testing": "^2.6.0",
     "@types/chai": "^4.3.1",
@@ -54,7 +54,7 @@
     "sinon-chai": "^3.7.0",
     "typescript": "~4.6.3"
   },
-  "main": "main.js",
+  "main": "source/main.js",
   "files": [
     "admin{,/!(src)/**}/!(tsconfig|tsconfig.*).json",
     "admin{,/!(src)/**}/*.{html,css,png,svg,jpg,js}",
@@ -63,7 +63,7 @@
     "www/",
     "io-package.json",
     "LICENSE",
-    "main.js"
+    "source/main.js"
   ],
   "scripts": {
     "test:js": "mocha --config test/mocharc.custom.json \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",

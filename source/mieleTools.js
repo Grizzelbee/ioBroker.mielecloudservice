@@ -893,7 +893,8 @@ async function addPrograms(adapter, auth, device){
                             'write': true,
                             'role': 'button',
                             'type': 'boolean'
-                        }
+                        },
+                        native: {}
                     } , true);
                 }
             } else {
@@ -1129,7 +1130,8 @@ async function updateStateTargetTemperature(adapter, path, valueObj){
                             name: `The target temperature of zone ${n + 1} (${knownDevices[path].fridgeZone[n].min} to ${knownDevices[path].fridgeZone[n].max}).`,
                             min: valueObj[n].min,
                             max: valueObj[n].max
-                        }
+                        },
+                        native: {}
                     });
                 }
             }
@@ -1715,7 +1717,8 @@ async function createROState(adapter, path, description, value, type, role){
             'write': false,
             'role': role,
             'type': type
-        }
+        },
+        native: {}
     }, value);
 }
 
@@ -1745,7 +1748,8 @@ async function createRWState(adapter, path, description, value, type, role, stat
     if (states) commonObj.states = states;
     createOrExtendObject(adapter, path, {
         type: 'state',
-        common: commonObj
+        common: commonObj,
+        native: {}
     }, value);
 }
 
@@ -1784,7 +1788,8 @@ async function createNumber(adapter, path, description, value, unit, role){
             'role': role,
             'type': 'number',
             'unit': unit
-        }
+        },
+        native: {}
     }, value);
 }
 
@@ -1808,7 +1813,8 @@ async function createTime(adapter, path, description, value, role){
             'write': (path.split('.').pop() === 'startTime'),
             'role': role,
             'type': 'string'
-        }
+        },
+        native: {}
     },  (value[0] + ':' + (value[1]<10? '0': '') + value[1]) );
 }
 

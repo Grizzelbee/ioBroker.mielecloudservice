@@ -198,6 +198,11 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
+
+### V6.1.1 (2022-04-28) (Black Wings)
+* (grizzelbee) Fix: added some missing native parts in objects
+* (grizzelbee) Chg: Moved main.js to the source folder
+
 ### V6.1.0 (2022-04-27) (Black Wings)
 * (grizzelbee) Fix: Added some error handling
 * (grizzelbee) Chg: Changed PlateStep_x data structure to PlateStepZone-x
