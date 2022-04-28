@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mielecloudservice",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "Get your Miele appliances (XGW3000 & WiFiConn@ct) connected",
   "author": {
     "name": "grizzelbee",
@@ -54,7 +54,7 @@
     "sinon-chai": "^3.7.0",
     "typescript": "~4.6.3"
   },
-  "main": "main.js",
+  "main": "source/main.js",
   "files": [
     "admin{,/!(src)/**}/!(tsconfig|tsconfig.*).json",
     "admin{,/!(src)/**}/*.{html,css,png,svg,jpg,js}",
@@ -63,7 +63,7 @@
     "www/",
     "io-package.json",
     "LICENSE",
-    "main.js"
+    "source/main.js"
   ],
   "scripts": {
     "test:js": "mocha --config test/mocharc.custom.json \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",

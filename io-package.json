@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.1.0",
+        "version": "6.1.1",
         "news": {
             "6.1.0": {
                 "en": "Added some error handling*Changed PlateStep data point name*Removed some unused code",
