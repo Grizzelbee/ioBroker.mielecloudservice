@@ -198,6 +198,9 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
+### V6.1.2 (2022-04-29) (Black Wings)
+* (grizzelbee) Fix: [228](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/228) Inverted light switch
+* (grizzelbee) Chg: Moved main.js back to the main folder to run unit tests
 
 ### V6.1.1 (2022-04-28) (Black Wings)
 * (grizzelbee) Fix: added some missing native parts in objects
@@ -207,7 +210,7 @@ Here is a list of what these raw values stand for:
 * (grizzelbee) Fix: Added some error handling
 * (grizzelbee) Chg: Changed PlateStep_x data structure to PlateStepZone-x
 * (grizzelbee) Chg: Removed unused ambientLight function
-* (grizzelbee) Chg: Removed unused freezerZone code for knownDevices
+* (grizzelbee) Chg: [225](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/225) Removed unused freezerZone code for knownDevices
 
 ### V6.0.0 (2022-04-19) (Black Wings)
 * (grizzelbee) New: Adapter entirely rewritten from scratch

@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.1.1",
+        "version": "6.1.2",
         "news": {
+            "6.1.2": {
+                "en": "Some minor bugfixes - see changelog for details",
+                "de": "Einige kleinere Bugfixes - siehe Änderungsprotokoll für Details",
+                "ru": "Некоторые незначительные исправления ошибок — подробности смотрите в журнале изменений.",
+                "pt": "Algumas correções de bugs menores - veja o changelog para detalhes",
+                "nl": "Enkele kleine bugfixes - zie changelog voor details",
+                "fr": "Quelques corrections de bugs mineurs - voir le journal des modifications pour plus de détails",
+                "it": "Alcune correzioni di bug minori: vedere il registro delle modifiche per i dettagli",
+                "es": "Algunas correcciones de errores menores: consulte el registro de cambios para obtener más detalles.",
+                "pl": "Kilka drobnych poprawek - zobacz listę zmian po szczegóły",
+                "zh-cn": "一些小错误修复 - 有关详细信息，请参阅更改日志"
+            },
             "6.1.0": {
                 "en": "Added some error handling*Changed PlateStep data point name*Removed some unused code",
                 "de": "Etwas Fehlerbehandlung hinzugefügt * Name des PlateStep-Datenpunkts geändert * Nicht verwendeten Code entfernt",

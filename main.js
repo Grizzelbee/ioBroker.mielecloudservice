@@ -8,8 +8,8 @@
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
 const EventSource = require('eventsource');
-const mieleTools = require('./mieleTools.js');
-const mieleConst = require('./mieleConst');
+const mieleTools = require('./source/mieleTools.js');
+const mieleConst = require('./source/mieleConst');
 const timeouts = {};
 let adapter;
 let events;
