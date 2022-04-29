@@ -1288,7 +1288,7 @@ async function createDeviceActions(adapter, device, actions){
                 await addPowerSwitch(adapter, device, !actions.powerOn);
                 await addStartButton(adapter, device, true);
                 await addStopButton(adapter,  device, true);
-                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_OFF));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 7: // 7 = DISHWASHER*
@@ -1298,12 +1298,12 @@ async function createDeviceActions(adapter, device, actions){
                 await addStartButton(adapter, device, true);
                 await addStopButton(adapter,  device, true);
                 await addPauseButton(adapter,  device, true);
-                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_OFF));
                 break;
             case 12: // 12 = OVEN*
                 // Actions
                 await addStopButton(adapter,  device, true);
-                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_OFF));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 13: // 13 = OVEN Microwave*
@@ -1315,7 +1315,7 @@ async function createDeviceActions(adapter, device, actions){
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
                 await addStopButton(adapter,  device, true);
-                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_OFF));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 14: // 14 = HOB HIGHLIGHT*
@@ -1324,13 +1324,13 @@ async function createDeviceActions(adapter, device, actions){
             case 17: // 17 = COFFEE SYSTEM*
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
-                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_OFF));
                 break;
             case 18: // 18 = HOOD*
                 // Actions
                 await addPowerSwitch(adapter, device, !actions.powerOn);
                 await addStopButton(adapter,  device, true);
-                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_OFF));
                 await addColorsAction(adapter,  device);
                 // colors
                 break;
@@ -1354,7 +1354,7 @@ async function createDeviceActions(adapter, device, actions){
             case 33: // 33 = WINE CONDITIONING UNIT
             case 34: // 34 = WINE STORAGE CONDITIONING UNIT
                 // Actions
-                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_OFF));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 28: // 28 = HOB GAS
@@ -1372,7 +1372,7 @@ async function createDeviceActions(adapter, device, actions){
             case 68: // 68 = WINE CABINET FREEZER COMBINATION
                 // Actions
                 await addSuperFreezingSwitch(adapter,  device);
-                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_ON));
+                await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_OFF));
                 await addModeSwitch(adapter,  device);
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
