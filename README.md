@@ -198,7 +198,7 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
-### V6.1.1 (2022-04-29) (Black Wings)
+### V6.1.2 (2022-04-29) (Black Wings)
 * (grizzelbee) Fix: [228](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/228) Inverted light switch
 * (grizzelbee) Chg: Moved main.js back to the main folder to run unit tests
 
