@@ -198,6 +198,13 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
+### V6.1.3 (2022-05-02) (Black Wings)
+* (grizzelbee) Fix: [225](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/225) Fixes error with cooling devices
+* (grizzelbee) Fix: [231](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/231) Fixes startup loop when cooling devices are connected
+* (grizzelbee) Fix: Fixed SuperCooling switch
+* (grizzelbee) Fix: Fixed SuperFreezing switch
+* (grizzelbee) New: Added code to run dry tests with local test data 
+
 ### V6.1.2 (2022-04-29) (Black Wings)
 * (grizzelbee) Fix: [228](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/228) Inverted light switch
 * (grizzelbee) Chg: Moved main.js back to the main folder to run unit tests

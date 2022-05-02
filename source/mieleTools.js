@@ -1097,7 +1097,6 @@ async function createStateTargetTemperature(adapter, path, valueObj){
                 type: 'state',
                 common: {
                     name: `The target temperature of zone ${n+1}.`,
-                    //name: `The target temperature of zone ${n+1} (${knownDevices[path].fridgeZone[n].min} to ${knownDevices[path].fridgeZone[n].max}).`,
                     read: true,
                     write: true,
                     type: 'number',
@@ -1122,12 +1121,12 @@ async function createStateTargetTemperature(adapter, path, valueObj){
 async function updateStateTargetTemperature(adapter, path, valueObj){
     for (let n=0; n < valueObj.length; n++) {
         if (valueObj[n].value_raw===-32768 || valueObj[n].value_raw===null || valueObj[n].value_raw==='null' || valueObj[n].value_raw==='undefined') return;
-        adapter.getObject(`${path}.ACTIONS.targetTemperatureZone-${n + 1}`, function (err, oldObj) {
+        adapter.getObject(`${path}.ACTIONS.targetTemperatureZone-${valueObj[n].zone}`, function (err, oldObj) {
             if (!err && oldObj) {
-                if (`The target temperature of zone ${n + 1} (${knownDevices[path].fridgeZone[n].min} to ${knownDevices[path].fridgeZone[n].max}).` !== oldObj.common.name) {
-                    adapter.extendObject(`${path}.ACTIONS.targetTemperatureZone-${n + 1}`, {
+                if (`The target temperature of zone ${valueObj[n].zone} (${valueObj[n].min} to ${valueObj[n].max}).` !== oldObj.common.name) {
+                    adapter.extendObject(`${path}.ACTIONS.targetTemperatureZone-${valueObj[n].zone}`, {
                         common: {
-                            name: `The target temperature of zone ${n + 1} (${knownDevices[path].fridgeZone[n].min} to ${knownDevices[path].fridgeZone[n].max}).`,
+                            name: `The target temperature of zone ${valueObj[n].zone} (${valueObj[n].min} to ${valueObj[n].max}).`,
                             min: valueObj[n].min,
                             max: valueObj[n].max
                         },
@@ -1336,18 +1335,18 @@ async function createDeviceActions(adapter, device, actions){
                 break;
             case 19: // 19 = FRIDGE*
                 // Actions
-                await addSuperCoolingSwitch(adapter,  device);
+                await addSuperCoolingSwitch(adapter, device, actions.processAction.includes(mieleConst.STOP_SUPERCOOLING));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 20: // 20 = FREEZER*
                 // Actions
-                await addSuperFreezingSwitch(adapter,  device);
+                await addSuperFreezingSwitch(adapter, device, actions.processAction.includes(mieleConst.STOP_SUPERFREEZING));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 21: // 21 = FRIDGE-/FREEZER COMBINATION*
                 // Actions
-                await addSuperCoolingSwitch(adapter,  device);
-                await addSuperFreezingSwitch(adapter,  device);
+                await addSuperCoolingSwitch(adapter, device, actions.processAction.includes(mieleConst.STOP_SUPERCOOLING));
+                await addSuperFreezingSwitch(adapter, device, actions.processAction.includes(mieleConst.STOP_SUPERFREEZING));
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
                 break;
             case 32: // 32 = WINE CABINET*
@@ -1371,7 +1370,7 @@ async function createDeviceActions(adapter, device, actions){
                 break;
             case 68: // 68 = WINE CABINET FREEZER COMBINATION
                 // Actions
-                await addSuperFreezingSwitch(adapter,  device);
+                await addSuperFreezingSwitch(adapter, device, actions.processAction.includes(mieleConst.STOP_SUPERFREEZING));
                 await addLightSwitch(adapter, device, actions.light.includes(mieleConst.LIGHT_OFF));
                 await addModeSwitch(adapter,  device);
                 await updateStateTargetTemperature(adapter, device, actions.targetTemperature);
@@ -1454,8 +1453,9 @@ async function addModeSwitch(adapter, path ){
  *
  * @param adapter {object} link to the adapter instance
  * @param path {string} path where the action button is going to be created
+ * @param isSupercooling {boolean} indicates whether the device is currently supercooling
  */
-async function addSuperCoolingSwitch(adapter, path){
+async function addSuperCoolingSwitch(adapter, path, isSupercooling){
     createOrExtendObject(adapter, path + '.ACTIONS.SuperCooling' , {
         type: 'state',
         common: {'name': 'SuperCooling switch of the device',
@@ -1466,7 +1466,7 @@ async function addSuperCoolingSwitch(adapter, path){
         },
         native: {}
     }
-    , 'Off');
+    , isSupercooling);
 }
 
 /**
@@ -1476,8 +1476,9 @@ async function addSuperCoolingSwitch(adapter, path){
  *
  * @param adapter {object} link to the adapter instance
  * @param path {string} path where the action button is going to be created
- */
-async function addSuperFreezingSwitch(adapter, path){
+ * @param isSuperFreezing {boolean} indicates whether the device is currently super freezing
+ * */
+async function addSuperFreezingSwitch(adapter, path, isSuperFreezing){
     createOrExtendObject(adapter, path + '.ACTIONS.SuperFreezing' , {
         type: 'state',
         common: {'name': 'SuperFreezing switch of the device',
@@ -1487,7 +1488,7 @@ async function addSuperFreezingSwitch(adapter, path){
             'type': 'boolean'
         },
         native: {}
-    }, 'Off');
+    }, isSuperFreezing);
 }
 
 

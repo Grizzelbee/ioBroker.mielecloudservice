@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.1.2",
+        "version": "6.1.3",
         "news": {
+            "6.1.3": {
+                "en": "Fixes error with cooling devices\nFixes startup loop when cooling devices are connected\nFixed SuperCooling switch\nFixed SuperFreezing switch\nAdded code to run dry tests with local test data",
+                "de": "Behebt Fehler bei Kühlgeräten \n Behebt Startschleife, wenn Kühlgeräte angeschlossen sind \n SuperCooling-Schalter behoben \n SuperFreezing-Schalter behoben \n Code hinzugefügt, um Trockentests mit lokalen Testdaten auszuführen",
+                "ru": "Исправлена ​​ошибка с охлаждающими устройствами \n Исправлен цикл запуска при подключении охлаждающих устройств \n Исправлен переключатель SuperCooling \n Исправлен переключатель SuperFreezing \n Добавлен код для запуска сухих тестов с локальными тестовыми данными",
+                "pt": "Corrige o erro com os dispositivos de resfriamento\nCorrige o loop de inicialização quando os dispositivos de resfriamento estão conectados\nFixo comutador SuperCooling\nFixo comutador SuperFreezing\nAdicionado código para executar testes secos com dados de teste locais",
+                "nl": "Verhelpt fout met koelapparaten\nVerhelpt opstartlus wanneer koelapparaten zijn aangesloten\nVaste SuperCooling-schakelaar\nFixed SuperFreezing-schakelaar\n Toegevoegde code om droge tests uit te voeren met lokale testgegevens",
+                "fr": "Corrige l'erreur avec les dispositifs de refroidissement\nCorrige la boucle de démarrage lorsque les dispositifs de refroidissement sont connectés\nCommutateur SuperCooling fixe\nCommutateur SuperFreezing fixe\nCode ajouté pour exécuter des tests à sec avec des données de test locales",
+                "it": "Risolve l'errore con i dispositivi di raffreddamento\nRisolve il ciclo di avvio quando i dispositivi di raffreddamento sono collegati\nInterruttore SuperCooling fisso\nInterruttore SuperFreezing fisso\nAggiunto codice per eseguire test a secco con dati di test locali",
+                "es": "Soluciona el error con los dispositivos de enfriamiento \n Soluciona el ciclo de inicio cuando los dispositivos de enfriamiento están conectados \n Se corrigió el interruptor SuperCooling \n Se corrigió el interruptor Super Freezing \n Código agregado para ejecutar pruebas en seco con datos de prueba locales",
+                "pl": "Naprawia błąd z urządzeniami chłodzącymi \n Naprawia pętlę uruchamiania, gdy podłączone są urządzenia chłodzące \n Naprawiono przełącznik SuperCooling \n Naprawiono przełącznik SuperFreezing \n Dodano kod do uruchamiania suchych testów z lokalnymi danymi testowymi",
+                "zh-cn": "修复了冷却设备的错误\n修复了连接冷却设备时的启动循环\n修复了 SuperCooling 开关\n修复了 SuperFreezing 开关\n添加了使用本地测试数据运行干测试的代码"
+            },
             "6.1.2": {
                 "en": "Some minor bugfixes - see changelog for details",
                 "de": "Einige kleinere Bugfixes - siehe Änderungsprotokoll für Details",
@@ -16,16 +28,16 @@
                 "zh-cn": "一些小错误修复 - 有关详细信息，请参阅更改日志"
             },
             "6.1.0": {
-                "en": "Added some error handling*Changed PlateStep data point name*Removed some unused code",
-                "de": "Etwas Fehlerbehandlung hinzugefügt * Name des PlateStep-Datenpunkts geändert * Nicht verwendeten Code entfernt",
-                "ru": "Добавлена ​​обработка некоторых ошибок * Изменено имя точки данных PlateStep * Удален некоторый неиспользуемый код",
-                "pt": "Adicionado algum tratamento de erros*Alterado o nome do ponto de dados PlateStep*Removido algum código não utilizado",
-                "nl": "Wat foutafhandeling toegevoegd * PlateStep-gegevenspuntnaam gewijzigd * Enkele ongebruikte code verwijderd",
-                "fr": "Ajout de la gestion des erreurs * Modification du nom du point de données PlateStep * Suppression de certains codes inutilisés",
-                "it": "Aggiunte alcune operazioni di gestione degli errori*Nome del punto dati PlateStep modificato*Rimosso del codice inutilizzato",
-                "es": "Se agregó un manejo de errores * Se cambió el nombre del punto de datos de PlateStep * Se eliminó un código no utilizado",
-                "pl": "Dodano obsługę błędów*Zmieniono nazwę punktu danych PlateStep*Usunięto część nieużywanego kodu",
-                "zh-cn": "添加了一些错误处理*更改了 PlateStep 数据点名称*删除了一些未使用的代码"
+                "en": "Added some error handling\nChanged PlateStep data point name\nRemoved some unused code",
+                "de": "Etwas Fehlerbehandlung hinzugefügt \n Name des PlateStep-Datenpunkts geändert \n Nicht verwendeten Code entfernt",
+                "ru": "Добавлена ​​обработка некоторых ошибок \n Изменено имя точки данных PlateStep \n Удален некоторый неиспользуемый код",
+                "pt": "Adicionado algum tratamento de erros\nAlterado o nome do ponto de dados PlateStep\nRemovido algum código não utilizado",
+                "nl": "Wat foutafhandeling toegevoegd \n PlateStep-gegevenspuntnaam gewijzigd \n Enkele ongebruikte code verwijderd",
+                "fr": "Ajout de la gestion des erreurs \n Modification du nom du point de données PlateStep \n Suppression de certains codes inutilisés",
+                "it": "Aggiunte alcune operazioni di gestione degli errori\nNome del punto dati PlateStep modificato\nRimosso del codice inutilizzato",
+                "es": "Se agregó un manejo de errores \n Se cambió el nombre del punto de datos de PlateStep \n Se eliminó un código no utilizado",
+                "pl": "Dodano obsługę błędów\nZmieniono nazwę punktu danych PlateStep\nUsunięto część nieużywanego kodu",
+                "zh-cn": "添加了一些错误处理\n更改了 PlateStep 数据点名称\n删除了一些未使用的代码"
             },
             "6.0.0": {
                 "en": "Adapter entirely rewritten from scratch - the changelog is too long to provide it here - Please take a look into the readme and be careful on updating.",
