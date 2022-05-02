@@ -1,0 +1,184 @@
+{
+    "007116614756": {
+      "processAction": [
+        4,
+        6
+      ],
+      "light": [],
+      "ambientLight": [
+        1
+      ],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [
+        {
+          "zone": 1,
+          "min": 1,
+          "max": 9
+        },
+        {
+          "zone": 2,
+          "min": -26,
+          "max": -16
+        }
+      ],
+      "deviceName": true,
+      "powerOn": false,
+      "powerOff": true,
+      "colors": [],
+      "modes": []
+    },
+    "000152214619": {
+      "processAction": [
+        2
+      ],
+      "light": [],
+      "ambientLight": [],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [],
+      "deviceName": true,
+      "powerOn": false,
+      "powerOff": true,
+      "colors": [],
+      "modes": []
+    },
+    "711762131": {
+      "processAction": [
+        4
+      ],
+      "light": [],
+      "ambientLight": [],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [
+        {
+          "zone": 1,
+          "min": -26,
+          "max": -16
+        }
+      ],
+      "deviceName": true,
+      "powerOn": false,
+      "powerOff": true,
+      "colors": [],
+      "modes": [
+        1
+      ]
+    },
+    "000151893460": {
+      "processAction": [],
+      "light": [],
+      "ambientLight": [],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [],
+      "deviceName": false,
+      "powerOn": true,
+      "powerOff": false,
+      "colors": [],
+      "modes": []
+    },
+    "000711955298": {
+      "processAction": [
+        6
+      ],
+      "light": [],
+      "ambientLight": [],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [
+        {
+          "zone": 1,
+          "min": 1,
+          "max": 9
+        }
+      ],
+      "deviceName": true,
+      "powerOn": false,
+      "powerOff": true,
+      "colors": [],
+      "modes": [
+        1
+      ]
+    },
+    "000104695514": {
+      "processAction": [],
+      "light": [
+        1
+      ],
+      "ambientLight": [],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [],
+      "deviceName": false,
+      "powerOn": true,
+      "powerOff": false,
+      "colors": [],
+      "modes": []
+    },
+    "000149861133": {
+      "processAction": [],
+      "light": [],
+      "ambientLight": [],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [],
+      "deviceName": false,
+      "powerOn": true,
+      "powerOff": false,
+      "colors": [],
+      "modes": []
+    },
+    "000153002737": {
+      "processAction": [],
+      "light": [
+        1
+      ],
+      "ambientLight": [],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [],
+      "deviceName": false,
+      "powerOn": true,
+      "powerOff": false,
+      "colors": [],
+      "modes": []
+    },
+    "000140375979": {
+      "processAction": [],
+      "light": [],
+      "ambientLight": [],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [],
+      "deviceName": false,
+      "powerOn": true,
+      "powerOff": false,
+      "colors": [],
+      "modes": []
+    },
+    "000149137623": {
+      "processAction": [],
+      "light": [],
+      "ambientLight": [],
+      "startTime": [],
+      "ventilationStep": [],
+      "programId": [],
+      "targetTemperature": [],
+      "deviceName": false,
+      "powerOn": true,
+      "powerOff": false,
+      "colors": [],
+      "modes": []
+    }
+}
