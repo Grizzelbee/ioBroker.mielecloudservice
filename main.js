@@ -230,7 +230,7 @@ class Mielecloudservice extends utils.Adapter {
                         break;
                     case 'targetTemperatureZone-1':
                     case 'targetTemperatureZone-2':
-                    case 'targetTemperatureZone-3': payload.targetTemperature = {zone:action.split('-').pop(), value: state.val};
+                    case 'targetTemperatureZone-3': payload.targetTemperature = [{zone:action.split('-').pop(), value: state.val}];
                         break;
                     case 'Color': payload.colors = state.val;
                         break;
