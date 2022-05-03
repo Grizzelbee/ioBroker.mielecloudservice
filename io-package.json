@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.1.3",
+        "version": "6.1.4",
         "news": {
+            "6.1.4": {
+                "en": "Fixes error with setting target temperature",
+                "de": "Behebt Fehler beim Einstellen der Zieltemperatur",
+                "ru": "Исправлена ​​ошибка с установкой целевой температуры",
+                "pt": "Corrige o erro ao definir a temperatura alvo",
+                "nl": "Lost fout op bij het instellen van de doeltemperatuur",
+                "fr": "Corrige l'erreur avec le réglage de la température cible",
+                "it": "Risolve l'errore con l'impostazione della temperatura target",
+                "es": "Soluciona el error al establecer la temperatura objetivo",
+                "pl": "Naprawiono błąd z ustawieniem temperatury docelowej",
+                "zh-cn": "修复了设置目标温度的错误"
+            },
             "6.1.3": {
                 "en": "Fixes error with cooling devices\nFixes startup loop when cooling devices are connected\nFixed SuperCooling switch\nFixed SuperFreezing switch\nAdded code to run dry tests with local test data",
                 "de": "Behebt Fehler bei Kühlgeräten \n Behebt Startschleife, wenn Kühlgeräte angeschlossen sind \n SuperCooling-Schalter behoben \n SuperFreezing-Schalter behoben \n Code hinzugefügt, um Trockentests mit lokalen Testdaten auszuführen",
