@@ -281,11 +281,12 @@ module.exports.refreshAuthToken = async function(adapter, config, auth){
                 result=JSON.parse(flatted.stringify(result));
                 const data= result[result[0].data];
                 const newAuth={};
-                newAuth.access_token = result[data.access_token];
+                newAuth.access_token  = result[data.access_token];
                 newAuth.refresh_token = result[data.refresh_token];
-                newAuth.token_type = result[data.token_type];
-                newAuth.expires_in = data.expires_in;
-                newAuth.expiryDate = new Date();
+                newAuth.token_type    = result[data.token_type];
+                newAuth.expires_in    = data.expires_in;
+                newAuth.expiryDate    = new Date();
+                newAuth.ping          = new Date();
                 newAuth.expiryDate.setSeconds(data.expires_in);
                 adapter.log.debug(`NewAuth from server: ${JSON.stringify(newAuth)}`);
                 adapter.log.info(`New Access-Token expires on: [${newAuth.expiryDate.toLocaleString()}]`);
