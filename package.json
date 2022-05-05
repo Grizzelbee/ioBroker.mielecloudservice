@@ -27,7 +27,7 @@
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.0",
     "@iobroker/plugin-sentry": "^1.2.0",
-    "@snyk/protect": "^1.915.0",
+    "@snyk/protect": "^1.919.0",
     "axios": "^0.27.2",
     "axios-oauth-client": "^1.4.4",
     "eventsource": "^2.0.1",
