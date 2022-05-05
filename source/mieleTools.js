@@ -134,6 +134,7 @@ module.exports.getAuth = async function(adapter, config , iteration){
         });
         if (auth){
             auth.expiryDate = new Date();
+            auth.ping       = new Date();
             auth.expiryDate.setSeconds(auth.expires_in);
             adapter.log.debug(`Access token expires on: ${ auth.expiryDate.toLocaleString() }`);
             adapter.setState('info.connection', true, true);
