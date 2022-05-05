@@ -198,9 +198,12 @@ Here is a list of what these raw values stand for:
 | 532       | "Flusen ausspülen"        | Washer Dryer                |
 
 ## Changelog
+### **WORK IN PROGRESS**
+
 ### V6.1.5 (2022-05-05) (Black Wings)
 * (grizzelbee) Fix: Changed State-Changed log entry from info to debug 
 * (grizzelbee) Fix: Fixed issue with not initialized auth.ping variable on adapter startup
+* (grizzelbee) Fix: Fixed issue with not initialized auth.ping variable after token has been refreshed 
 
 ### V6.1.4 (2022-05-03) (Black Wings)
 * (grizzelbee) Fix: [233](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/233) Fixed error while setting targetTemperature
