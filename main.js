@@ -206,7 +206,7 @@ class Mielecloudservice extends utils.Adapter {
                 }
             } else {
                 // manual change / request
-                this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+                this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
                 const adapter= this;
                 const payload = {};
                 const action  = id.split('.').pop();
