@@ -27,7 +27,6 @@
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.0",
     "@iobroker/plugin-sentry": "^1.2.0",
-    "@snyk/protect": "^1.919.0",
     "axios": "^0.27.2",
     "axios-oauth-client": "^1.4.4",
     "eventsource": "^2.0.1",
@@ -37,6 +36,7 @@
     "@alcalzone/release-script": "^3.5.9",
     "@iobroker/adapter-dev": "^1.0.0",
     "@iobroker/testing": "^2.6.0",
+    "@snyk/protect": "^1.921.0",
     "@types/chai": "^4.3.1",
     "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^9.1.1",
