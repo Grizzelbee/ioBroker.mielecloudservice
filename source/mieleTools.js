@@ -248,8 +248,8 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
  */
 module.exports.authHasExpired = function (auth){
     const testValue = new Date();
-    testValue.setSeconds( 24*3600 );
-    return (Date.parse(auth.expiryDate)-Date.parse(testValue.toLocaleString())<= 0);
+    const diffHours = (new Date(auth.expiryDate).getTime() - testValue.getTime() )/1000/60;
+    return (diffHours <= 24);
 };
 
 

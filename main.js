@@ -93,7 +93,7 @@ class Mielecloudservice extends utils.Adapter {
                                     }
                                 });
                         }
-                    }, 12 * 3600 * 1000, this, this.config); // org: 12*3600*1000; for testing: 30000
+                    }, 12*3600*1000, this, this.config); // org: 12*3600*1000; for testing: 30000
                     // code for watchdog -> check every 5 minutes
                     timeouts.watchdog = setInterval(() => {
                         const testValue = new Date();
