@@ -93,7 +93,7 @@ class Mielecloudservice extends utils.Adapter {
                                     }
                                 });
                         }
-                    }, 12 * 3600 * 1000, this, this.config); // org: 12*3600*1000; for testing: 30000
+                    }, 12*3600*1000, this, this.config); // org: 12*3600*1000; for testing: 30000
                     // code for watchdog -> check every 5 minutes
                     timeouts.watchdog = setInterval(() => {
                         const testValue = new Date();
@@ -206,7 +206,7 @@ class Mielecloudservice extends utils.Adapter {
                 }
             } else {
                 // manual change / request
-                this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+                this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
                 const adapter= this;
                 const payload = {};
                 const action  = id.split('.').pop();
