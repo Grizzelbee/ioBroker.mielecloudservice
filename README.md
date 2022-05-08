@@ -200,6 +200,10 @@ Here is a list of what these raw values stand for:
 ## Changelog
 ### **WORK IN PROGRESS**
 
+### V6.1.6 (2022-05-10) (Black Wings)
+* (grizzelbee) New: Added some additional error handling code when Server Send Events report errors.
+
+
 ### V6.1.5 (2022-05-05) (Black Wings)
 * (grizzelbee) Fix: Changed State-Changed log entry from info to debug 
 * (grizzelbee) Fix: Fixed issue with not initialized auth.ping variable on adapter startup

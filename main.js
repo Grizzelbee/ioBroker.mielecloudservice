@@ -142,10 +142,19 @@ class Mielecloudservice extends utils.Adapter {
                     });
 
                     events.addEventListener('error', function (event) {
+                        adapter.setState('info.connection', false, true);
                         adapter.log.warn('Received error message by SSE: ' + JSON.stringify(event));
                         if (event.readyState === EventSource.CLOSED) {
                             adapter.log.info('The connection has been closed. Trying to reconnect.');
-                            adapter.setState('info.connection', false, true);
+                            events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
+                                headers: {
+                                    Authorization: 'Bearer ' + auth.access_token,
+                                    'Accept': 'text/event-stream',
+                                    'Accept-Language': adapter.config.locale
+                                }
+                            });
+                        } else {
+                            adapter.log.info('An error occurred. Trying to close the connection and reconnect.');
                             events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
                                 headers: {
                                     Authorization: 'Bearer ' + auth.access_token,
