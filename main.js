@@ -51,12 +51,12 @@ class Mielecloudservice extends utils.Adapter {
                 adapter.log.info( 'Device test data: ' + data.toString() );
                 mieleTools.splitMieleDevices( adapter, {}, JSON.parse(data.toString()) );
             });
-            setTimeout(()=>{
+            timeouts.fakeRequest = setTimeout(()=>{
                 fs.readFile('test/testdata.actions.json', 'utf8', function(err, data) {
                     if (err) throw err;
                     adapter.log.info( 'Actions test data: ' + data.toString() );
                     mieleTools.splitMieleActionsMessage( adapter, JSON.parse(data.toString()) );
-                    setTimeout(()=>{
+                    timeouts.terminateDelay = setTimeout(()=>{
                         adapter.terminate('Processing of testdata completed. Nothing more to do.', 11);
                     }, 5000);
                 });
@@ -118,18 +118,18 @@ class Mielecloudservice extends utils.Adapter {
                         }
                     });
 
-                    events.addEventListener('devices', function (event) {
+                    events.addEventListener('devices', async function (event) {
                         adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
-                        mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data))
+                        await mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data))
                             .catch((err) => {
                                 adapter.log.warn(`splitMieleDevices crashed with error: [${err}]`);
                             });
                     });
 
-                    events.addEventListener('actions', function (actions) {
+                    events.addEventListener('actions', async function (actions) {
                         adapter.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(actions)}]`);
                         adapter.log.debug(`ACTIONS.lastEventId: [${JSON.stringify(actions.lastEventId)}]`);
-                        mieleTools.splitMieleActionsMessage(adapter, JSON.parse(actions.data))
+                        await mieleTools.splitMieleActionsMessage(adapter, JSON.parse(actions.data))
                             .catch((err) => {
                                 adapter.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
                             });
@@ -155,13 +155,16 @@ class Mielecloudservice extends utils.Adapter {
                             });
                         } else {
                             adapter.log.info('An error occurred. Trying to close the connection and reconnect.');
-                            events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
-                                headers: {
-                                    Authorization: 'Bearer ' + auth.access_token,
-                                    'Accept': 'text/event-stream',
-                                    'Accept-Language': adapter.config.locale
-                                }
-                            });
+                            events.close();
+                            timeouts.reconnectDelay = setTimeout(function () {
+                                events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
+                                    headers: {
+                                        Authorization: 'Bearer ' + auth.access_token,
+                                        'Accept': 'text/event-stream',
+                                        'Accept-Language': adapter.config.locale
+                                    }
+                                });
+                            }, 10000);
                         }
                     });
 
