@@ -98,7 +98,7 @@ class Mielecloudservice extends utils.Adapter {
                     timeouts.watchdog = setInterval(() => {
                         const testValue = new Date();
                         if (Date.parse(testValue.toLocaleString()) - Date.parse(auth.ping.toLocaleString()) >= 60000) {
-                            adapter.log.info(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to reconnect.`);
+                            adapter.log.debug(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to reconnect.`);
                             events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
                                 headers: {
                                     Authorization: 'Bearer ' + auth.access_token,

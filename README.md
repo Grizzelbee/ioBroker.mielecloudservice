@@ -204,7 +204,8 @@ Here is a list of what these raw values stand for:
 * (grizzelbee) New: Added some additional error handling code when Server Send Events report errors.
 * (grizzelbee) New: [238](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/238) Added reconnect delay in case od an error 
 * (grizzelbee) New: [192](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/192) Improved handling od adapter traffic light in case of an error 
-* (grizzelbee) New: waiting for code to complete in case of an ocurring event 
+* (grizzelbee) New: Waiting for code to complete in case of an occurring event 
+* (grizzelbee) Chg: Changed watchdog log entry from info to debug
 
 ### V6.1.5 (2022-05-05) (Black Wings)
 * (grizzelbee) Fix: Changed State-Changed log entry from info to debug 
