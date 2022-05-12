@@ -32,6 +32,99 @@ class Mielecloudservice extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
     }
 
+    getEventSource(){
+        return new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
+            headers: {
+                Authorization: 'Bearer ' + auth.access_token,
+                'Accept': 'text/event-stream',
+                'Accept-Language': adapter.config.locale
+            }
+        });
+    }
+
+    initSSE(){
+        events = this.getEventSource();
+
+        events.onopen = function () {
+            adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');
+        };
+
+        events.addEventListener(mieleConst.DEVICES,  (event) => {
+            adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
+            mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data))
+                .catch((err) => {
+                    adapter.log.warn(`splitMieleDevices crashed with error: [${err}]`);
+                });
+        });
+
+        events.addEventListener(mieleConst.ACTIONS,  (event) => {
+            adapter.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(event)}]`);
+            mieleTools.splitMieleActionsMessage(adapter, JSON.parse(event.data))
+                .catch((err) => {
+                    adapter.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
+                });
+        });
+
+        events.addEventListener(mieleConst.PING,  (event) => {
+            // ping messages usually occur every five seconds.
+            adapter.log.debug(`Received PING message by SSE: ${JSON.stringify(event)}`);
+            auth.ping = new Date();
+        });
+
+        events.addEventListener(mieleConst.ERROR,  (event) => {
+            adapter.setState('info.connection', false, true);
+            adapter.log.warn('Received error message by SSE: ' + JSON.stringify(event));
+            adapter.log.info('An error occurred. Closing the connection.');
+            timeouts.reconnectDelay = setTimeout(function () {
+                adapter.log.info('Trying to reconnect.');
+                adapter.initSSE();
+            }, mieleConst.RECONNECT_TIMEOUT);
+        });
+
+        // code for watchdog -> check every 5 minutes
+        timeouts.watchdog = setInterval(() => {
+            const testValue = new Date();
+            if (Date.parse(testValue.toLocaleString()) - Date.parse(auth.ping.toLocaleString()) >= 60000) {
+                adapter.log.debug(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to reconnect.`);
+            }
+        }, mieleConst.WATCHDOG_TIMEOUT);
+    }
+
+    doDataPolling(adapter, auth){
+        timeouts.datapolling = setInterval(async function () {
+            // getDeviceInfos
+            const devices = await mieleTools.refreshMieleDevices(adapter, auth)
+                .catch((error) => {
+                    adapter.log.info('Devices-Error: '+JSON.stringify(error));
+                });
+            auth.ping = new Date();
+            // processDeviceInfos
+            mieleTools.splitMieleDevices(adapter, auth, devices)
+                .catch((err) => {
+                    adapter.log.warn(`splitMieleDevices crashed with error: [${err}]`);
+                });
+            timeouts.actionsDelay = setTimeout( async function() {
+                const knownDevices = mieleTools.getKnownDevices();
+                const keys = Object.keys(knownDevices);
+                adapter.log.debug(keys.length===0?`There are no known devices; No actions to query`:`There are ${keys.length} known devices; querying actions for them.`);
+                for (let n=0; n < keys.length; n++) {
+                    // getActions
+                    adapter.log.debug(`Querying device ${knownDevices[keys[n]].name}`);
+                    const actions = await mieleTools.refreshMieleActions(adapter, auth, knownDevices[keys[n]].API_ID)
+                        .catch((error) => {
+                            adapter.log.info('Actions-Error: '+JSON.stringify(error));
+                        });
+                    adapter.log.info('Actions: '+JSON.stringify(actions));
+                    // processDeviceActions
+                    mieleTools.splitMieleActionsMessage(adapter, actions)
+                        .catch((err) => {
+                            adapter.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
+                        });
+                }
+            }, 1000);
+        }, adapter.config.pollInterval * adapter.config.pollUnit * 1000);
+    }
+
     /**
      * Is called when databases are connected and adapter received configuration.
      */
@@ -57,12 +150,11 @@ class Mielecloudservice extends utils.Adapter {
                     adapter.log.info( 'Actions test data: ' + data.toString() );
                     mieleTools.splitMieleActionsMessage( adapter, JSON.parse(data.toString()) );
                     timeouts.terminateDelay = setTimeout(()=>{
-                        adapter.terminate('Processing of testdata completed. Nothing more to do.', 11);
+                        adapter.terminate('Processing of test data completed. Nothing more to do.', 11);
                     }, 5000);
                 });
             }, 5000);
         } else {
-            //
             // test config and get auth token
             try {
                 await mieleTools.checkConfig(this, this.config)
@@ -93,84 +185,15 @@ class Mielecloudservice extends utils.Adapter {
                                     }
                                 });
                         }
-                    }, 12*3600*1000, this, this.config); // org: 12*3600*1000; for testing: 30000
-                    // code for watchdog -> check every 5 minutes
-                    timeouts.watchdog = setInterval(() => {
-                        const testValue = new Date();
-                        if (Date.parse(testValue.toLocaleString()) - Date.parse(auth.ping.toLocaleString()) >= 60000) {
-                            adapter.log.debug(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to reconnect.`);
-                            events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
-                                headers: {
-                                    Authorization: 'Bearer ' + auth.access_token,
-                                    'Accept': 'text/event-stream',
-                                    'Accept-Language': adapter.config.locale
-                                }
-                            });
-                        }
-                    }, mieleConst.WATCHDOG_TIMEOUT);
+                    }, mieleConst.AUTH_CHECK_TIMEOUT, this, this.config);
                     // register for events from Miele API
-                    this.log.info(`Registering for all appliance events at Miele API.`);
-                    events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
-                        headers: {
-                            Authorization: 'Bearer ' + auth.access_token,
-                            'Accept': 'text/event-stream',
-                            'Accept-Language': adapter.config.locale
-                        }
-                    });
-
-                    events.addEventListener('devices', async function (event) {
-                        adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
-                        await mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data))
-                            .catch((err) => {
-                                adapter.log.warn(`splitMieleDevices crashed with error: [${err}]`);
-                            });
-                    });
-
-                    events.addEventListener('actions', async function (actions) {
-                        adapter.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(actions)}]`);
-                        adapter.log.debug(`ACTIONS.lastEventId: [${JSON.stringify(actions.lastEventId)}]`);
-                        await mieleTools.splitMieleActionsMessage(adapter, JSON.parse(actions.data))
-                            .catch((err) => {
-                                adapter.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
-                            });
-                    });
-
-                    events.addEventListener('ping', function () {
-                        // ping messages usually occur every five seconds.
-                        // adapter.log.debug(`Received PING message by SSE.`);
-                        auth.ping = new Date();
-                    });
-
-                    events.addEventListener('error', function (event) {
-                        adapter.setState('info.connection', false, true);
-                        adapter.log.warn('Received error message by SSE: ' + JSON.stringify(event));
-                        if (event.readyState === EventSource.CLOSED) {
-                            adapter.log.info('The connection has been closed. Trying to reconnect.');
-                            events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
-                                headers: {
-                                    Authorization: 'Bearer ' + auth.access_token,
-                                    'Accept': 'text/event-stream',
-                                    'Accept-Language': adapter.config.locale
-                                }
-                            });
-                        } else {
-                            adapter.log.info('An error occurred. Trying to close the connection and reconnect.');
-                            events.close();
-                            timeouts.reconnectDelay = setTimeout(function () {
-                                events = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
-                                    headers: {
-                                        Authorization: 'Bearer ' + auth.access_token,
-                                        'Accept': 'text/event-stream',
-                                        'Accept-Language': adapter.config.locale
-                                    }
-                                });
-                            }, 10000);
-                        }
-                    });
-
-                    events.onopen = function () {
-                        adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');
-                    };
+                    if (adapter.config.sse){
+                        this.log.info(`Registering for all appliance events at Miele API.`);
+                        adapter.initSSE();
+                    } else {
+                        this.log.info(`Requesting data from Miele API using time based polling every ${adapter.config.pollInterval * adapter.config.pollUnit} Seconds.`);
+                        adapter.doDataPolling(adapter, auth);
+                    }
                 }
             } catch (err) {
                 this.log.error(err);
