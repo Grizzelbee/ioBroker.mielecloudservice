@@ -4,7 +4,6 @@
     "Client_ID_desc": "Twój identyfikator klienta API Miele",
     "Client_secret": "Tajemnica klienta API",
     "Client_secret_desc": "Twój sekret klienta API Miele",
-    "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install": "Całkowicie przepisany, wszystkie stany w nowej kolejności, NIE aktualizuj adaptera - usuń i wykonaj czystą nową instalację",
     "English": "język angielski",
     "German": "Niemiecki",
     "Manual": "podręcznik",
@@ -19,15 +18,13 @@
     "locale": "Język odpowiedzi API",
     "locale_desc": "Język, w którym Miele-API ma odpowiadać",
     "mielecloudservice adapter settings": "Ustawienia adaptera dla mielecloudservice",
-    "minor updates": "drobne aktualizacje",
     "oauth2_vg": "Konto Miele Kraj",
     "oauth2_vg_desc": "Kraj, w którym zostało otwarte konto Miele.",
     "on save adapter restarts with new config immediately": "po zapisaniu adapter natychmiast uruchamia się ponownie z nową konfiguracją",
-    "option1": "opcja 1",
-    "option2": "Opcja 2",
+    "pollInterval": "Interwał sondowania API",
+    "pollInterval_desc": "Czas między dwoma ankietami API (w jednostce interwału sondowania)",
     "pollUnit": "Jednostka interwału sondowania",
     "pollUnit_desc": "Sonda API w kilka sekund lub minut",
-    "pollinterval": "Interwał sondowania API",
-    "pollinterval_desc": "Czas między dwoma ankietami API (w jednostce interwału sondowania)",
-    "template adapter settings": "ustawienia adaptera szablonu"
+    "sse": "Zdarzenia wysyłane przez serwer",
+    "sse_desc": "Zaznacz tę opcję, aby uzyskać dane przesyłane przez serwer; "
 }
