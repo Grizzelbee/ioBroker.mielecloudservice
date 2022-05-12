@@ -47,6 +47,7 @@ class Mielecloudservice extends utils.Adapter {
 
         events.onopen = function () {
             adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');
+            adapter.setState('info.connection', true, true);
         };
 
         events.addEventListener(mieleConst.DEVICES,  (event) => {
