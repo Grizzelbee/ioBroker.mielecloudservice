@@ -26,5 +26,5 @@
     "pollUnit": "Abfrageintervalleinheit",
     "pollUnit_desc": "API in Sekunden oder Minuten abfragen",
     "sse": "Vom Server gesendete Ereignisse",
-    "sse_desc": "Aktivieren Sie diese Option, um die Daten vom Server zu erhalten; "
+    "sse_desc": "Aktivieren Sie diese Option, um die Daten bei Änderung vom Server gesendet zu bekommen; deaktivieren um zeitbasiertes Polling zu verwenden."
 }
