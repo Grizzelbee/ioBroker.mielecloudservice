@@ -38,7 +38,7 @@ class Mielecloudservice extends utils.Adapter {
                 Authorization: 'Bearer ' + auth.access_token,
                 'Accept': 'text/event-stream',
                 'Accept-Language': adapter.config.locale
-            }
+            }//-> an option to test: , https:{rejectUnauthorized: false}
         });
     }
 
@@ -75,19 +75,18 @@ class Mielecloudservice extends utils.Adapter {
         events.addEventListener(mieleConst.ERROR,  (event) => {
             adapter.setState('info.connection', false, true);
             adapter.log.warn('Received error message by SSE: ' + JSON.stringify(event));
-            adapter.log.info(`An error occurred. Taking care of it in ${mieleConst.RECONNECT_TIMEOUT/1000} seconds to give a chance to calm down by itself.`);
+            adapter.log.info(`An error occurred. Taking care of it in ${mieleConst.RECONNECT_TIMEOUT/1000} seconds to give it a chance to calm down by itself.`);
             timeouts.reconnectDelay = setTimeout(function (adapter, events) {
                 switch (events.readState) {
-                    case EventSource.CONNECTING:
+                    case 0: // CONNECTING
                         adapter.log.info(`SSE is trying to reconnect but it seems this won't work. So trying myself...`);
                         events.close();
-                        events = null;
                         adapter.initSSE();
                         break;
-                    case EventSource.OPEN:
+                    case 1: // OPEN
                         adapter.log.info(`SSE connection is still open or open again. Doing nothing.`);
                         break;
-                    case EventSource.CLOSED:
+                    case 2: // CLOSED
                         adapter.log.info(`SSE connection has been closed. Trying to reconnect ...`);
                         adapter.initSSE();
                         break;
