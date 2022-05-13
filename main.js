@@ -43,7 +43,7 @@ class Mielecloudservice extends utils.Adapter {
     }
 
     doSSEErrorHandling(adapter, events){
-        switch (events.readState) {
+        switch (events.readyState) {
             case 0: // CONNECTING
                 adapter.log.info(`SSE is trying to reconnect but it seems this won't work. So trying myself...`);
                 events.close();
@@ -55,6 +55,9 @@ class Mielecloudservice extends utils.Adapter {
             case 2: // CLOSED
                 adapter.log.info(`SSE connection has been closed. Trying to reconnect ...`);
                 adapter.initSSE();
+                break;
+            default:
+                adapter.log.warn(`SSE readyState should be [0,1,2] but has an illegal state(${events.readyState}).`);
                 break;
         }
     }
