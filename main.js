@@ -42,6 +42,23 @@ class Mielecloudservice extends utils.Adapter {
         });
     }
 
+    doSSEErrorHandling(adapter, events){
+        switch (events.readState) {
+            case 0: // CONNECTING
+                adapter.log.info(`SSE is trying to reconnect but it seems this won't work. So trying myself...`);
+                events.close();
+                adapter.initSSE();
+                break;
+            case 1: // OPEN
+                adapter.log.info(`SSE connection is still open or open again. Doing nothing.`);
+                break;
+            case 2: // CLOSED
+                adapter.log.info(`SSE connection has been closed. Trying to reconnect ...`);
+                adapter.initSSE();
+                break;
+        }
+    }
+
     initSSE(){
         events = this.getEventSource();
 
@@ -77,20 +94,7 @@ class Mielecloudservice extends utils.Adapter {
             adapter.log.warn('Received error message by SSE: ' + JSON.stringify(event));
             adapter.log.info(`An error occurred. Taking care of it in ${mieleConst.RECONNECT_TIMEOUT/1000} seconds to give it a chance to calm down by itself.`);
             timeouts.reconnectDelay = setTimeout(function (adapter, events) {
-                switch (events.readState) {
-                    case 0: // CONNECTING
-                        adapter.log.info(`SSE is trying to reconnect but it seems this won't work. So trying myself...`);
-                        events.close();
-                        adapter.initSSE();
-                        break;
-                    case 1: // OPEN
-                        adapter.log.info(`SSE connection is still open or open again. Doing nothing.`);
-                        break;
-                    case 2: // CLOSED
-                        adapter.log.info(`SSE connection has been closed. Trying to reconnect ...`);
-                        adapter.initSSE();
-                        break;
-                }
+                adapter.doSSEErrorHandling(adapter, events);
             }, mieleConst.RECONNECT_TIMEOUT, adapter, events);
         });
 
@@ -99,6 +103,7 @@ class Mielecloudservice extends utils.Adapter {
             const testValue = new Date();
             if (Date.parse(testValue.toLocaleString()) - Date.parse(auth.ping.toLocaleString()) >= 60000) {
                 adapter.log.debug(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to reconnect.`);
+                adapter.doSSEErrorHandling(adapter, events);
             }
         }, mieleConst.WATCHDOG_TIMEOUT);
     }
