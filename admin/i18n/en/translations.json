@@ -4,7 +4,6 @@
     "Client_ID_desc": "Your Miele API Client-ID",
     "Client_secret": "API Client-secret",
     "Client_secret_desc": "Your Miele API Client-Secret",
-    "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install": "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install",
     "English": "English",
     "German": "German",
     "Manual": "Manual",
@@ -19,15 +18,13 @@
     "locale": "API Response language",
     "locale_desc": "Language the Miele-API should respond in",
     "mielecloudservice adapter settings": "Adapter settings for mielecloudservice",
-    "minor updates": "minor updates",
     "oauth2_vg": "Miele account Country",
     "oauth2_vg_desc": "Country the Miele account was opened in.",
     "on save adapter restarts with new config immediately": "on save adapter restarts with new config immediately",
-    "option1": "",
-    "option2": "",
+    "pollInterval": "API poll interval",
+    "pollInterval_desc": "Time between two API polls (in poll interval unit)",
     "pollUnit": "Poll interval unit",
     "pollUnit_desc": "Poll API in seconds or minutes",
-    "pollinterval": "API poll interval",
-    "pollinterval_desc": "Time between two API polls (in poll interval unit)",
-    "template adapter settings": "template adapter settings"
+    "sse": "Server-Sent Events",
+    "sse_desc": "Check this option to get the data pushed by the server; uncheck to use time based polling."
 }

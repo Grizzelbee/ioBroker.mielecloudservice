@@ -145,6 +145,49 @@ module.exports.getAuth = async function(adapter, config , iteration){
 
 
 /**
+ * refreshMieleData
+ *
+ * polls the miele cloud API to refresh the device data
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param auth {object}  OAuth2 object containing required credentials
+ */
+module.exports.refreshMieleDevices = async function(adapter, auth){
+    try {
+        return await sendAPIRequest(adapter, auth, 'v1/devices/?language=' + adapter.config.locale, 'GET', '');
+    } catch(error) {
+        adapter.log.error('[refreshMieleDevices] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
+    }
+};
+
+/**
+ * refreshMieleData
+ *
+ * polls the miele cloud API to refresh the device data
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param auth {object}  OAuth2 object containing required credentials
+ * @param device {string}
+ * */
+module.exports.refreshMieleActions = async function(adapter, auth, device){
+    try {
+        const result={};
+        const data = await sendAPIRequest(adapter, auth, `v1/devices/${device}/actions/`, 'GET', '');
+        result[device] = data;
+        return result;
+    } catch(error) {
+        adapter.log.error('[refreshMieleActions] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
+    }
+};
+
+
+
+module.exports.getKnownDevices = function() {
+    return knownDevices;
+};
+
+
+/**
  * sendAPIRequest
  *
  * build and send a http request to the miele server
@@ -237,7 +280,6 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
             });
     });
 }
-
 
 /**
  * Test whether the auth token is going to expire within the next 24 hours

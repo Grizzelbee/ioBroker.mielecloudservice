@@ -4,7 +4,6 @@
     "Client_ID_desc": "Ihre Miele API Client-ID",
     "Client_secret": "API-Client-Geheimnis",
     "Client_secret_desc": "Ihr Miele API Client-Secret",
-    "Completely rewritten, all states in a new order, DON'T update Adapter - remove and make a clean new install": "Komplett neu geschrieben, alle Zustände in einer neuen Reihenfolge, Adapter NICHT aktualisieren - entfernen und eine saubere Neuinstallation durchführen",
     "English": "Englisch",
     "German": "Deutsch",
     "Manual": "Handbuch",
@@ -19,15 +18,13 @@
     "locale": "API-Antwortsprache",
     "locale_desc": "Sprache, in der die Miele-API antworten soll",
     "mielecloudservice adapter settings": "Adaptereinstellungen für mielecloudservice",
-    "minor updates": "kleinere Aktualisierungen",
     "oauth2_vg": "Miele Konto Land",
     "oauth2_vg_desc": "Land, in dem das Miele Konto eröffnet wurde.",
     "on save adapter restarts with new config immediately": "Beim Speichern wird der Adapter sofort mit der neuen Konfiguration neu gestartet",
-    "option1": "Option 1",
-    "option2": "Option 2",
+    "pollInterval": "API-Abfrageintervall",
+    "pollInterval_desc": "Zeit zwischen zwei API-Abfragen (in Abfrageintervalleinheit)",
     "pollUnit": "Abfrageintervalleinheit",
     "pollUnit_desc": "API in Sekunden oder Minuten abfragen",
-    "pollinterval": "API-Abfrageintervall",
-    "pollinterval_desc": "Zeit zwischen zwei API-Abfragen (in Abfrageintervalleinheit)",
-    "template adapter settings": "Vorlagenadaptereinstellungen"
+    "sse": "Vom Server gesendete Ereignisse",
+    "sse_desc": "Aktivieren Sie diese Option, um die Daten bei Änderung vom Server gesendet zu bekommen; deaktivieren um zeitbasiertes Polling zu verwenden."
 }

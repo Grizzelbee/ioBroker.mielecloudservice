@@ -38,6 +38,27 @@ To install, do the following:
 4. Add your Miele-Devices to the App (if not added automatically)
 6. Fill in the client_secret and client_id received from Miele-developer Team and account-id and password from the App.
 
+## Configuration
+### Basic config
+To get this adapter running you'll need at least:
+* Miele@Home User (from the Smartphone App)
+* Miele@Home Password (from the Smartphone App)
+* Miele Client_id (from https://www.miele.com/developer/)
+* Miele Client_secret (from https://www.miele.com/developer/ )
+
+### Server-Sent Events
+Since V6.2.0 you have the opportunity to chose between 
+* Server-Sent Events      (Server-Sent Events Checkbox is checked - default) 
+* Time based Data-Polling (Server-Sent Events Checkbox is unchecked)
+
+Server-Sent Events are a very neat method to get data from the miele servers since the servers will send you data 
+whenever there are changes. No useless polling every xx seconds ignoring whether there were changes or not. Unfortunately
+there are issues using this connection type - it fails pretty often and only restarting the adapter solves this.
+To improve stability of the adapter I reintroduced data polling as a config option you may use when SSE fails four you.
+Nevertheless SSE is the default, and I highly recommend trying and using it since it saves many resources on your and on 
+Mieles side. Beside of that I focus on SSE since Version 5.x.x.
+
+
 ## Controlling your devices
 ### Actions
 All currently supported and documented Actions for all devices are implemented (API V1.0.5).
@@ -199,6 +220,14 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 ### **WORK IN PROGRESS**
+
+### V6.2.0 (2022-05-12) (Black Wings)
+* (grizzelbee) New: [238](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/238) Reintroduced data polling as a config option for all who has troubles with Server-Sent Events
+* (grizzelbee) New: Added some additional error handling code when Server Send Events report errors.
+* (grizzelbee) New: [238](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/238) Added reconnect delay in case od an error 
+* (grizzelbee) New: [192](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/192) Improved handling of adapter traffic light in case of an error 
+* (grizzelbee) New: Waiting for code to complete in case of an occurring event 
+* (grizzelbee) Chg: Changed watchdog log entry from info to debug
 
 ### V6.1.5 (2022-05-05) (Black Wings)
 * (grizzelbee) Fix: Changed State-Changed log entry from info to debug 
