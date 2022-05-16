@@ -221,7 +221,7 @@ Here is a list of what these raw values stand for:
 ## Changelog
 ### **WORK IN PROGRESS**
 ### V6.2.1 (2022-05-16) (Black Wings)
-* (grizzelbee) Fix: VentilationStep needs to be type number but was boolean
+* (grizzelbee) Fix: [242](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/242) VentilationStep needs to be type number but was boolean
 * (grizzelbee) Fix: ACTIONS.programId is invalid: obj.common.type has an invalid value (integer) ...
 
 ### V6.2.0 (2022-05-12) (Black Wings)
