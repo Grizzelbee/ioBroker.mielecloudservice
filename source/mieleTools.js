@@ -1613,7 +1613,7 @@ async function createChannelActions(adapter, path) {
  * @returns {Promise<void>}
  */
 async function createVentilationStepSwitch(adapter, path, currentState){
-    await createRWState(adapter, `${path}.ACTIONS.VentilationStep`, 'Ventilation step switch of the device',currentState, 'boolean', 'level', {0:'Off', 1:'Level 1', 2:'Level 2', 3:'Level 3', 4:'Level 4'} );
+    await createRWState(adapter, `${path}.ACTIONS.VentilationStep`, 'Ventilation step switch of the device',currentState, 'number', 'level', {0:'Off', 1:'Level 1', 2:'Level 2', 3:'Level 3', 4:'Level 4'} );
 }
 
 
