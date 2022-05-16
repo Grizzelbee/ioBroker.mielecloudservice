@@ -1457,7 +1457,7 @@ async function addProgramIdAction(adapter, path ){
             'read': true,
             'write': true,
             'role': 'switch',
-            'type': 'integer'
+            'type': 'number'
         },
         native: {}
     }
