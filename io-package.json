@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.2.0",
+        "version": "6.2.1",
         "news": {
+            "6.2.1": {
+                "en": "VentilationStep needs to be type number but was boolean\nACTIONS.programId is invalid: obj.common.type has an invalid value (integer)",
+                "de": "VentilationStep muss Typnummer sein, war aber boolesch\nACTIONS.programId ist ungültig: obj.common.type hat einen ungültigen Wert (Ganzzahl)",
+                "ru": "VentilationStep должен быть номером типа, но был логическим\nACTIONS.programId недействителен: obj.common.type имеет недопустимое значение (целое число)",
+                "pt": "VentilationStep precisa ser o número do tipo, mas era booleano\nACTIONS.programId é inválido: obj.common.type tem um valor inválido (inteiro)",
+                "nl": "VentilationStep moet typenummer zijn, maar was boolean\nACTIES.programId is ongeldig: obj.common.type heeft een ongeldige waarde (geheel getal)",
+                "fr": "VentilationStep doit être un numéro de type mais était booléen\nACTIONS.programId n'est pas valide : obj.common.type a une valeur non valide (entier)",
+                "it": "VentilationStep deve essere il numero di tipo ma era booleano\nACTIONS.programId non è valido: obj.common.type ha un valore non valido (intero)",
+                "es": "VentilationStep debe ser un número de tipo pero era booleano\nACTIONS.programId no es válido: obj.common.type tiene un valor no válido (entero)",
+                "pl": "VentilationStep musi być typem number, ale był boolean\nACTIONS.programId jest nieprawidłowy: obj.common.type ma nieprawidłową wartość (liczba całkowita)",
+                "zh-cn": "VentilationStep 需要是类型号，但 boolean\nACTIONS.programId 无效：obj.common.type 的值无效（整数）"
+            },
             "6.2.0": {
                 "en": "Reintroduced data polling as a config option for all who has troubles with Server-Sent Events\nAdded some additional error handling code when Server Send Events report errors\nAdded reconnect delay in case of an error\nImproved handling of adapter traffic light in case of an error\nWaiting for code to complete in case of an occurring event\nChanged watchdog log entry from info to debug",
                 "de": "Wiedereinführung der Datenabfrage als Konfigurationsoption für alle, die Probleme mit vom Server gesendeten Ereignissen haben \n Zusätzlichen Code zur Fehlerbehandlung hinzugefügt, wenn Server-Sendeereignisse Fehler melden\nVerzögerung bei Wiederverbindung im Falle eines Fehlers eingebaut\nAdapter-Ampel verbessert wenn Fehler auftreten\nWatchdog-Eintrag von info auf debug geändert",
