@@ -172,8 +172,7 @@ module.exports.refreshMieleDevices = async function(adapter, auth){
 module.exports.refreshMieleActions = async function(adapter, auth, device){
     try {
         const result={};
-        const data = await sendAPIRequest(adapter, auth, `v1/devices/${device}/actions/`, 'GET', '');
-        result[device] = data;
+        result[device] = await sendAPIRequest(adapter, auth, `v1/devices/${device}/actions/`, 'GET', '');
         return result;
     } catch(error) {
         adapter.log.error('[refreshMieleActions] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
