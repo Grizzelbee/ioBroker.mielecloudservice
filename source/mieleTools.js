@@ -172,8 +172,7 @@ module.exports.refreshMieleDevices = async function(adapter, auth){
 module.exports.refreshMieleActions = async function(adapter, auth, device){
     try {
         const result={};
-        const data = await sendAPIRequest(adapter, auth, `v1/devices/${device}/actions/`, 'GET', '');
-        result[device] = data;
+        result[device] = await sendAPIRequest(adapter, auth, `v1/devices/${device}/actions/`, 'GET', '');
         return result;
     } catch(error) {
         adapter.log.error('[refreshMieleActions] [' + error +'] |-> JSON.stringify(error):' + JSON.stringify(error));
@@ -1457,7 +1456,7 @@ async function addProgramIdAction(adapter, path ){
             'read': true,
             'write': true,
             'role': 'switch',
-            'type': 'integer'
+            'type': 'number'
         },
         native: {}
     }
@@ -1614,7 +1613,7 @@ async function createChannelActions(adapter, path) {
  * @returns {Promise<void>}
  */
 async function createVentilationStepSwitch(adapter, path, currentState){
-    await createRWState(adapter, `${path}.ACTIONS.VentilationStep`, 'Ventilation step switch of the device',currentState, 'boolean', 'level', {0:'Off', 1:'Level 1', 2:'Level 2', 3:'Level 3', 4:'Level 4'} );
+    await createRWState(adapter, `${path}.ACTIONS.VentilationStep`, 'Ventilation step switch of the device',currentState, 'number', 'level', {0:'Off', 1:'Level 1', 2:'Level 2', 3:'Level 3', 4:'Level 4'} );
 }
 
 

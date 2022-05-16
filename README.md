@@ -220,6 +220,9 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 ### **WORK IN PROGRESS**
+### V6.2.1 (2022-05-16) (Black Wings)
+* (grizzelbee) Fix: [242](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/242) VentilationStep needs to be type number but was boolean
+* (grizzelbee) Fix: ACTIONS.programId is invalid: obj.common.type has an invalid value (integer) ...
 
 ### V6.2.0 (2022-05-12) (Black Wings)
 * (grizzelbee) New: [238](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/238) Reintroduced data polling as a config option for all who has troubles with Server-Sent Events
