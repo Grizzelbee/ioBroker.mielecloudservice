@@ -1,11 +1,23 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.2.1",
+        "version": "6.2.2",
         "news": {
+            "6.2.2": {
+                "en": "Starting programs on devices is working now.",
+                "de": "Das Starten von Programmen auf Geräten funktioniert jetzt.",
+                "ru": "Запуск программ на устройствах теперь работает.",
+                "pt": "Iniciar programas em dispositivos está funcionando agora.",
+                "nl": "het starten van programma's op apparaten werkt nu.",
+                "fr": "le démarrage des programmes sur les appareils fonctionne maintenant.",
+                "it": "l'avvio dei programmi sui dispositivi ora funziona.",
+                "es": "ahora funciona el inicio de programas en los dispositivos.",
+                "pl": "Uruchamianie programów na urządzeniach działa teraz.",
+                "zh-cn": "设备上的启动程序现在可以正常工作。"
+            },
             "6.2.1": {
                 "en": "VentilationStep needs to be type number but was boolean\nACTIONS.programId is invalid: obj.common.type has an invalid value (integer)",
-                "de": "VentilationStep muss Typnummer sein, war aber boolesch\nACTIONS.programId ist ungültig: obj.common.type hat einen ungültigen Wert (Ganzzahl)",
+                "de": "VentilationStep muss Typ Nummer sein, war aber boolean\nACTIONS.programId ist ungültig: obj.common.type hat einen ungültigen Wert (Ganzzahl)",
                 "ru": "VentilationStep должен быть номером типа, но был логическим\nACTIONS.programId недействителен: obj.common.type имеет недопустимое значение (целое число)",
                 "pt": "VentilationStep precisa ser o número do tipo, mas era booleano\nACTIONS.programId é inválido: obj.common.type tem um valor inválido (inteiro)",
                 "nl": "VentilationStep moet typenummer zijn, maar was boolean\nACTIES.programId is ongeldig: obj.common.type heeft een ongeldige waarde (geheel getal)",
