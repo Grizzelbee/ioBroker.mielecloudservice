@@ -263,10 +263,11 @@ class Mielecloudservice extends utils.Adapter {
             } else {
                 // manual change / request
                 this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-                const adapter= this;
+                const adapter = this;
                 const payload = {};
                 const action  = id.split('.').pop();
                 const device  = id.split('.', 3).pop();
+                let   endpoint = mieleConst.ENDPOINT_ACTIONS;
                 switch(action){
                     case 'Nickname': payload.deviceName = state.val;
                         break;
@@ -298,10 +299,12 @@ class Mielecloudservice extends utils.Adapter {
                         break;
                     case 'LastActionResult':
                         break;
-                    default : payload.programId = (typeof action == 'string' ? Number.parseInt(action) : 0);
+                    default :
+                        payload.programId = (typeof action == 'string' ? Number.parseInt(action) : 0);
+                        endpoint = mieleConst.ENDPOINT_PROGRAMS;
                         break;
                 }
-                await mieleTools.executeAction(this, auth, action, device, payload)
+                await mieleTools.executeAction(this, auth, endpoint, device, payload)
                     .then(() => {
                         adapter.setState(`${device}.ACTIONS.LastActionResult`, 'Okay!', true);
                     })
