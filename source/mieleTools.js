@@ -398,15 +398,15 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
  * send an action to the API to execute it
  *
  *
- * @param adapter
- * @param auth
- * @param action
- * @param device
- * @param payload
+ * @param {object} adapter link to the adapter instance
+ * @param {object} auth the auth object
+ * @param {string} endpoint the API endpoint to call
+ * @param {string} device API-ID of the current device
+ * @param {object} payload payload to send to the API
  * @returns {Promise<unknown>}
  */
-module.exports.executeAction = async function(adapter, auth, action, device, payload) {
-    return sendAPIRequest(adapter, auth, mieleConst.ENDPOINT_ACTIONS.replace('DEVICEID', device), 'PUT', payload);
+module.exports.executeAction = async function(adapter, auth, endpoint, device, payload) {
+    return sendAPIRequest(adapter, auth, endpoint.replace('DEVICEID', device), 'PUT', payload);
 };
 
 
