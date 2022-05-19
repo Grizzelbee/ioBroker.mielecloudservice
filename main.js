@@ -37,7 +37,8 @@ class Mielecloudservice extends utils.Adapter {
             headers: {
                 Authorization: 'Bearer ' + auth.access_token,
                 'Accept': 'text/event-stream',
-                'Accept-Language': adapter.config.locale
+                'Accept-Language': adapter.config.locale,
+                'User-Agent': mieleConst.UserAgent
             }//-> an option to test: , https:{rejectUnauthorized: false}
         });
     }

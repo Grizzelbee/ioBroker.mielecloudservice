@@ -209,7 +209,8 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
             headers: {
                 Authorization: 'Bearer ' + auth.access_token,
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'User-Agent': mieleConst.UserAgent
             },
             method: Method,
             data: payload,
@@ -309,7 +310,8 @@ module.exports.refreshAuthToken = async function(adapter, config, auth){
             headers: {
                 // Authorization: 'Bearer ' + auth.access_token,
                 Accept: 'application/json;charset=utf-8',
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'User-Agent': mieleConst.UserAgent
             },
             method: 'POST',
             data: `grant_type=refresh_token&client_id=${config.Client_ID}&client_secret=${config.Client_secret}&refresh_token=${auth.refresh_token}`,

@@ -4,6 +4,8 @@
 /* jslint node: true */
 'use strict';
 
+const version = require('../io-package.json').common.version;
+
 /**
  * Miele constants
  *
@@ -11,6 +13,7 @@
  *
  */
 
+module.exports.UserAgent = 'ioBroker.MieleCloudService V' + version;
 module.exports.BASE_URL = 'https://api.mcs3.miele.com/';
 module.exports.ENDPOINT_TOKEN    = 'thirdparty/token/';
 module.exports.ENDPOINT_EVENTS   = 'v1/devices/all/events/';
