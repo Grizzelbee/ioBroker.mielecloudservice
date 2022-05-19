@@ -1,8 +1,10 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.2.2",
+        "version": "6.3.0",
         "news": {
+            "6.3.0": {
+                "en": "Added User-Agent to http-headers*"},
             "6.2.2": {
                 "en": "Starting programs on devices is working now.",
                 "de": "Das Starten von Programmen auf Geräten funktioniert jetzt.",

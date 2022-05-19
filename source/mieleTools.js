@@ -403,12 +403,18 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
  * @param {object} adapter link to the adapter instance
  * @param {object} auth the auth object
  * @param {string} endpoint the API endpoint to call
- * @param {string} device API-ID of the current device
+ * @param {string|undefined} device API-ID of the current device
  * @param {object} payload payload to send to the API
  * @returns {Promise<unknown>}
  */
 module.exports.executeAction = async function(adapter, auth, endpoint, device, payload) {
-    return sendAPIRequest(adapter, auth, endpoint.replace('DEVICEID', device), 'PUT', payload);
+    return new Promise(function(resolve, reject) {
+        if (typeof device === 'undefined' || device === ''){
+            reject(`Tried to execute an action with no device given. Aborting.`);
+        } else {
+            resolve(sendAPIRequest(adapter, auth, endpoint.replace('DEVICEID', device), 'PUT', payload));
+        }
+    });
 };
 
 
