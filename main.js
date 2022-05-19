@@ -186,7 +186,6 @@ class Mielecloudservice extends utils.Adapter {
                                 // this.log.error(err);
                                 this.terminate(err, 11);
                             });
-                        this.log.debug(JSON.stringify(auth));
                     })
                     .catch(() => {
                         this.terminate('Terminating adapter due to invalid configuration.', 11);
