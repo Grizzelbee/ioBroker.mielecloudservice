@@ -32,8 +32,13 @@ class Mielecloudservice extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
     }
 
+    /**
+     * Requests and opens a new EventSource (SSE - Server-Sent-Events) Connection
+     *
+     * @returns {EventSource}
+     */
     getEventSource(){
-        return new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
+        const result = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
             headers: {
                 Authorization: 'Bearer ' + auth.access_token,
                 'Accept': 'text/event-stream',
@@ -41,8 +46,16 @@ class Mielecloudservice extends utils.Adapter {
                 'User-Agent': mieleConst.UserAgent
             }//-> an option to test: , https:{rejectUnauthorized: false}
         });
+        result.sseErrors=0;
+        return result;
     }
 
+    /**
+     * does the SSE connection error handling in case an error is reported by the server
+     *
+     * @param adapter
+     * @param events
+     */
     doSSEErrorHandling(adapter, events){
         switch (events.readyState) {
             case 0: // CONNECTING
@@ -69,14 +82,13 @@ class Mielecloudservice extends utils.Adapter {
     initSSE(){
         // Initialize new EventSource
         events = this.getEventSource();
-        events.sseErrors=0;
 
         /**
          * Handle message type 'open'.
          * It occurs when an SSE connection has been established
          */
         events.onopen = function () {
-            adapter.log.info(`Server Sent Events-Connection has been ${events.sseErrors===0?'established':'reestablished'}  @Miele-API.`);
+            adapter.log.info(`Server Sent Events-Connection has been ${events.sseErrors===0?'established':'reestablished'} @Miele-API.`);
             adapter.setState('info.connection', true, true);
             events.sseErrors=0;
         };
