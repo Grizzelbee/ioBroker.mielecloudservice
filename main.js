@@ -46,7 +46,7 @@ class Mielecloudservice extends utils.Adapter {
     doSSEErrorHandling(adapter, events){
         switch (events.readyState) {
             case 0: // CONNECTING
-                adapter.log.info(`SSE is trying to reconnect but it seems this won't work. So trying myself...`);
+                adapter.log.info(`SSE is trying to reconnect but it seems this won't work. So trying myself by closing and reinitializing.`);
                 events.close();
                 adapter.initSSE();
                 break;
@@ -54,7 +54,7 @@ class Mielecloudservice extends utils.Adapter {
                 adapter.log.info(`SSE connection is still open or open again. Doing nothing.`);
                 break;
             case 2: // CLOSED
-                adapter.log.info(`SSE connection has been closed. Trying to reconnect ...`);
+                adapter.log.info(`SSE connection has been closed. Trying to reinitialize.`);
                 adapter.initSSE();
                 break;
             default:
@@ -63,14 +63,28 @@ class Mielecloudservice extends utils.Adapter {
         }
     }
 
+    /**
+     * Initialize new EventSource and handle all occurring events
+     */
     initSSE(){
+        // Initialize new EventSource
         events = this.getEventSource();
+        events.sseErrors=0;
 
+        /**
+         * Handle message type 'open'.
+         * It occurs when an SSE connection has been established
+         */
         events.onopen = function () {
-            adapter.log.info('Server Sent Events-Connection has been (re)established @Miele-API.');
+            adapter.log.info(`Server Sent Events-Connection has been ${events.sseErrors===0?'established':'reestablished'}  @Miele-API.`);
             adapter.setState('info.connection', true, true);
+            events.sseErrors=0;
         };
 
+        /**
+         * Handle message type 'device'.
+         * It occurs when a device changes one of its states and on initialization
+         * */
         events.addEventListener(mieleConst.DEVICES,  (event) => {
             adapter.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
             mieleTools.splitMieleDevices(adapter, auth, JSON.parse(event.data))
@@ -79,6 +93,10 @@ class Mielecloudservice extends utils.Adapter {
                 });
         });
 
+        /**
+         * Handle message type 'action'.
+         * It occurs when a device changes its available actions and on initialization
+         * */
         events.addEventListener(mieleConst.ACTIONS,  (event) => {
             adapter.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(event)}]`);
             mieleTools.splitMieleActionsMessage(adapter, JSON.parse(event.data))
@@ -87,26 +105,39 @@ class Mielecloudservice extends utils.Adapter {
                 });
         });
 
+        /**
+         * Handle message type 'ping'.
+         * It occurs periodically (usually every five seconds).
+         * It's used to feed the watchdog
+         * */
         events.addEventListener(mieleConst.PING,  (event) => {
-            // ping messages usually occur every five seconds.
             adapter.log.debug(`Received PING message by SSE: ${JSON.stringify(event)}`);
             auth.ping = new Date();
         });
 
+        /**
+         * Handle message type 'error'.
+         * It occurs when the Miele-API detects an error
+         * */
         events.addEventListener(mieleConst.ERROR,  (event) => {
+            events.sseErrors++;
             adapter.setState('info.connection', false, true);
-            adapter.log.warn('Received error message by SSE: ' + JSON.stringify(event));
-            adapter.log.info(`An error occurred. Taking care of it in ${mieleConst.RECONNECT_TIMEOUT/1000} seconds to give it a chance to calm down by itself.`);
+            const randomDelay = Math.floor(Math.random()*1000+(events.sseErrors*1000));
+            adapter.log.warn(`An ${typeof event.message != 'undefined'?`error occurred (${event.message})`:'undefined error occurred'}. Taking care of it in ${mieleConst.RECONNECT_TIMEOUT+randomDelay/1000} seconds to give it a chance to solve itself.`);
+            adapter.log.debug('Received error message by SSE: ' + JSON.stringify(event));
             timeouts.reconnectDelay = setTimeout(function (adapter, events) {
                 adapter.doSSEErrorHandling(adapter, events);
-            }, mieleConst.RECONNECT_TIMEOUT, adapter, events);
+            }, mieleConst.RECONNECT_TIMEOUT+randomDelay, adapter, events);
         });
 
-        // code for watchdog -> check every 5 minutes
+        /**
+         * code for watchdog
+         * -> check every 5 minutes whether pings are missing
+         * */
         timeouts.watchdog = setInterval(() => {
             const testValue = new Date();
             if (Date.parse(testValue.toLocaleString()) - Date.parse(auth.ping.toLocaleString()) >= 60000) {
-                adapter.log.debug(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to reconnect.`);
+                adapter.log.debug(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to handle.`);
                 adapter.doSSEErrorHandling(adapter, events);
             }
         }, mieleConst.WATCHDOG_TIMEOUT);
