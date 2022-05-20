@@ -53,8 +53,8 @@ class Mielecloudservice extends utils.Adapter {
     /**
      * does the SSE connection error handling in case an error is reported by the server
      *
-     * @param adapter
-     * @param events
+     * @param adapter {object} link to the current adapter instance
+     * @param events  {object} link to the current EventSource connection
      */
     doSSEErrorHandling(adapter, events){
         switch (events.readyState) {
@@ -155,6 +155,13 @@ class Mielecloudservice extends utils.Adapter {
         }, mieleConst.WATCHDOG_TIMEOUT);
     }
 
+    /**
+     * Does time based data polling in case the SSE doesn't work properly
+     * can be chosen in the adapters config
+     *
+     * @param adapter {object} link to the current adapter instance
+     * @param auth    {object} link to the current authentication object
+     */
     doDataPolling(adapter, auth){
         timeouts.datapolling = setInterval(async function () {
             // getDeviceInfos
