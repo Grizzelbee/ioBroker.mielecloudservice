@@ -243,10 +243,10 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
             .catch((error)=>{
                 if (error.response) {
                     switch (error.response.status) {
-                        case 400: {
+                        case 400:{
                             const device = Endpoint.split('/', 3).pop();
                             adapter.log.debug(`The API returned http-error 400: ${error.response.data.message} for device: [${knownDevices[device].name} (${device})].`);
-                            reject(`${error.response.data.message}`);
+                            reject(error.response.data.message);
                         }
                             break;
                         case 401:
@@ -265,9 +265,12 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
                             adapter.log.info('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
                             reject('Error 504: Gateway timeout');
                             break;
+                        default:
+                            reject(error.response.data.message);
+                            break;
                     }
                     // Request made and server responded
-                    adapter.log.warn(`Request made and server responded: ${flatted.stringify(error.response)}`);
+                    adapter.log.debug(`Request made and server responded: ${flatted.stringify(error.response)}`);
                 } else if (error.request) {
                     // The request was made but no response was received
                     adapter.log.warn(`The request was made but no response was received: [${flatted.stringify(error.request)}]`);
