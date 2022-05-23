@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.2.3",
+        "version": "6.3.0",
         "news": {
-            "6.2.3": {
+            "6.3.0": {
                 "en": "Added User-Agent to http-headers*Added exponential backoff in case of errors*Handling undefined devices properly when executing actions*Fixed light switch action*switched http response from warn to debug",
                 "de": "User-Agent zu http-Headern hinzugefügt * Exponentielles Backoff bei Fehlern hinzugefügt * Korrekte Behandlung undefinierter Geräte beim Ausführen von Aktionen * Lichtschalter-Aktion behoben * HTTP-Antwort von Warnen auf Debug umgestellt",
                 "ru": "Добавлен пользовательский агент в http-заголовки * Добавлена ​​экспоненциальная отсрочка в случае ошибок * Правильная обработка неопределенных устройств при выполнении действий * Исправлено действие переключателя света * Переключен HTTP-ответ с предупреждения на отладку",
