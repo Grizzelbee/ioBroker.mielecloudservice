@@ -343,7 +343,7 @@ class Mielecloudservice extends utils.Adapter {
                         break;
                     case 'Mode': payload.modes = state.val;
                         break;
-                    case 'Light': payload.light = (state.val? 2 : 1);
+                    case 'Light': payload.light = (state.val? 1 : 2);
                         break;
                     case 'Power': (state.val? payload.powerOn=true : payload.powerOff=true);
                         break;
