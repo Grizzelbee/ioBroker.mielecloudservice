@@ -220,6 +220,9 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 ### **WORK IN PROGRESS**
+### V6.3.1 (2022-0x-xx) (Black Wings)
+* (grizzelbee) Fix: Fixed bad log entry for error delay (delay is logged bad - but is executed okay)
+
 ### V6.3.0 (2022-05-23) (Black Wings)
 * (grizzelbee) New: [247](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/247) Added a User-Agent to http-requests to enable Miele to identify requests made by this adapter 
 * (grizzelbee) New: [248](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/248) Added exponential backoff in case of errors
