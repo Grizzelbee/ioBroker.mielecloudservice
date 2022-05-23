@@ -1,10 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.3.0",
+        "version": "6.2.3",
         "news": {
-            "6.3.0": {
-                "en": "Added User-Agent to http-headers*"},
+            "6.2.3": {
+                "en": "Added User-Agent to http-headers*Added exponential backoff in case of errors*Handling undefined devices properly when executing actions*Fixed light switch action*switched http response from warn to debug",
+                "de": "User-Agent zu http-Headern hinzugefügt * Exponentielles Backoff bei Fehlern hinzugefügt * Korrekte Behandlung undefinierter Geräte beim Ausführen von Aktionen * Lichtschalter-Aktion behoben * HTTP-Antwort von Warnen auf Debug umgestellt",
+                "ru": "Добавлен пользовательский агент в http-заголовки * Добавлена ​​экспоненциальная отсрочка в случае ошибок * Правильная обработка неопределенных устройств при выполнении действий * Исправлено действие переключателя света * Переключен HTTP-ответ с предупреждения на отладку",
+                "pt": "Adicionado User-Agent aos cabeçalhos http*Adicionado backoff exponencial em caso de erros*Manuseando dispositivos indefinidos corretamente ao executar ações*Corrigida a ação do interruptor de luz*alterou a resposta http de aviso para depuração",
+                "nl": "User-Agent toegevoegd aan http-headers*Toegevoegd exponentiële back-off in geval van fouten*Omgaan met niet-gedefinieerde apparaten op de juiste manier bij het uitvoeren van acties*Fixed light switch action*switched http-reactie van waarschuwen naar debuggen",
+                "fr": "Ajout de l'agent utilisateur aux en-têtes http*Ajout d'un backoff exponentiel en cas d'erreurs*Gestion correcte des périphériques non définis lors de l'exécution d'actions*Action d'interrupteur d'éclairage fixe*Commutation de la réponse http de l'avertissement au débogage",
+                "it": "Aggiunto User-Agent alle intestazioni http*Aggiunto backoff esponenziale in caso di errori*Gestire correttamente i dispositivi non definiti durante l'esecuzione di azioni*Risolto problema con l'azione dell'interruttore della luce*risposta http commutata da warning a debug",
+                "es": "Se agregó User-Agent a los encabezados http * Se agregó retroceso exponencial en caso de errores * Manejo de dispositivos no definidos correctamente al ejecutar acciones * Acción de interruptor de luz fija * respuesta http cambiada de advertir a depurar",
+                "pl": "Dodano klienta użytkownika do nagłówków http * Dodano wykładnicze wycofywanie w przypadku błędów * Poprawna obsługa niezdefiniowanych urządzeń podczas wykonywania działań * Naprawiono działanie przełącznika światła * zmieniono odpowiedź http z ostrzeżenia na debugowanie",
+                "zh-cn": "在 http-headers 中添加了用户代理*在出现错误时添加了指数退避*在执行操作时正确处理未定义的设备*固定灯开关操作*将 http 响应从警告切换到调试"
+            },
             "6.2.2": {
                 "en": "Starting programs on devices is working now.",
                 "de": "Das Starten von Programmen auf Geräten funktioniert jetzt.",

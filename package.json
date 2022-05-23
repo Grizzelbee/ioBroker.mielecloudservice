@@ -1,6 +1,6 @@
 {
   "name": "iobroker.mielecloudservice",
-  "version": "6.3.0",
+  "version": "6.2.3",
   "description": "Get your Miele appliances (XGW3000 & WiFiConn@ct) connected",
   "author": {
     "name": "grizzelbee",
@@ -36,7 +36,7 @@
     "@alcalzone/release-script": "^3.5.9",
     "@iobroker/adapter-dev": "^1.0.0",
     "@iobroker/testing": "^3.0.2",
-    "@snyk/protect": "^1.934.0",
+    "@snyk/protect": "^1.936.0",
     "@types/chai": "^4.3.1",
     "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^9.1.1",
@@ -46,7 +46,7 @@
     "@types/sinon-chai": "^3.2.8",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^8.15.0",
+    "eslint": "^8.16.0",
     "fs": "^0.0.2",
     "gulp": "^4.0.2",
     "mocha": "^10.0.0",
