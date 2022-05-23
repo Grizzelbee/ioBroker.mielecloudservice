@@ -209,7 +209,8 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
             headers: {
                 Authorization: 'Bearer ' + auth.access_token,
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'User-Agent': mieleConst.UserAgent
             },
             method: Method,
             data: payload,
@@ -242,10 +243,10 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
             .catch((error)=>{
                 if (error.response) {
                     switch (error.response.status) {
-                        case 400: {
+                        case 400:{
                             const device = Endpoint.split('/', 3).pop();
                             adapter.log.debug(`The API returned http-error 400: ${error.response.data.message} for device: [${knownDevices[device].name} (${device})].`);
-                            reject(`${error.response.data.message}`);
+                            reject(error.response.data.message);
                         }
                             break;
                         case 401:
@@ -264,9 +265,12 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload){
                             adapter.log.info('HTTP 504: Gateway Timeout! This error occurred outside of this adapter. Please google it for possible reasons and solutions.');
                             reject('Error 504: Gateway timeout');
                             break;
+                        default:
+                            reject(error.response.data.message);
+                            break;
                     }
                     // Request made and server responded
-                    adapter.log.warn(`Request made and server responded: ${flatted.stringify(error.response)}`);
+                    adapter.log.debug(`Request made and server responded: ${flatted.stringify(error.response)}`);
                 } else if (error.request) {
                     // The request was made but no response was received
                     adapter.log.warn(`The request was made but no response was received: [${flatted.stringify(error.request)}]`);
@@ -309,7 +313,8 @@ module.exports.refreshAuthToken = async function(adapter, config, auth){
             headers: {
                 // Authorization: 'Bearer ' + auth.access_token,
                 Accept: 'application/json;charset=utf-8',
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'User-Agent': mieleConst.UserAgent
             },
             method: 'POST',
             data: `grant_type=refresh_token&client_id=${config.Client_ID}&client_secret=${config.Client_secret}&refresh_token=${auth.refresh_token}`,
@@ -401,12 +406,18 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
  * @param {object} adapter link to the adapter instance
  * @param {object} auth the auth object
  * @param {string} endpoint the API endpoint to call
- * @param {string} device API-ID of the current device
+ * @param {string|undefined} device API-ID of the current device
  * @param {object} payload payload to send to the API
  * @returns {Promise<unknown>}
  */
 module.exports.executeAction = async function(adapter, auth, endpoint, device, payload) {
-    return sendAPIRequest(adapter, auth, endpoint.replace('DEVICEID', device), 'PUT', payload);
+    return new Promise(function(resolve, reject) {
+        if (typeof device === 'undefined' || device === ''){
+            reject(`Tried to execute an action with no device given. Aborting.`);
+        } else {
+            resolve(sendAPIRequest(adapter, auth, endpoint.replace('DEVICEID', device), 'PUT', payload));
+        }
+    });
 };
 
 
