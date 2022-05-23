@@ -135,7 +135,7 @@ class Mielecloudservice extends utils.Adapter {
             events.sseErrors++;
             adapter.setState('info.connection', false, true);
             const randomDelay = Math.floor(Math.random()*1000+(events.sseErrors*1000));
-            adapter.log.warn(`An ${typeof event.message != 'undefined'?`error occurred (${event.message})`:'undefined error occurred'}. Taking care of it in ${mieleConst.RECONNECT_TIMEOUT+randomDelay/1000} seconds to give it a chance to solve itself.`);
+            adapter.log.warn(`An ${typeof event.message != 'undefined'?`error occurred (${event.message})`:'undefined error occurred'}. Taking care of it in ${(mieleConst.RECONNECT_TIMEOUT+randomDelay)/1000} seconds to give it a chance to solve itself.`);
             adapter.log.debug('Received error message by SSE: ' + JSON.stringify(event));
             timeouts.reconnectDelay = setTimeout(function (adapter, events) {
                 adapter.doSSEErrorHandling(adapter, events);
