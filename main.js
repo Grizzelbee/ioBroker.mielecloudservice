@@ -11,10 +11,11 @@ const EventSource = require('eventsource');
 const mieleTools = require('./source/mieleTools.js');
 const mieleConst = require('./source/mieleConst');
 const timeouts = {};
+const fakeRequests=false;// this switch is used to fake requests against the Miele API and load the JSON-objects from disk
 let adapter;
 let events;
 let auth;
-const fakeRequests=false;// this switch is used to fake requests against the Miele API and load the JSON-objects from disk
+let connectionErrorHandlingInProgress=false;
 
 // Load your modules here, e.g.:
 class Mielecloudservice extends utils.Adapter {
@@ -57,22 +58,31 @@ class Mielecloudservice extends utils.Adapter {
      * @param events  {object} link to the current EventSource connection
      */
     doSSEErrorHandling(adapter, events){
-        switch (events.readyState) {
-            case 0: // CONNECTING
-                adapter.log.info(`SSE is trying to reconnect but it seems this won't work. So trying myself by closing and reinitializing.`);
-                events.close();
-                adapter.initSSE();
-                break;
-            case 1: // OPEN
-                adapter.log.info(`SSE connection is still open or open again. Doing nothing.`);
-                break;
-            case 2: // CLOSED
-                adapter.log.info(`SSE connection has been closed. Trying to reinitialize.`);
-                adapter.initSSE();
-                break;
-            default:
-                adapter.log.warn(`SSE readyState should be [0,1,2] but has an illegal state(${events.readyState}).`);
-                break;
+        if (connectionErrorHandlingInProgress){
+            adapter.log.info(`SSE connection error handling already in progress.`);
+        } else {
+            connectionErrorHandlingInProgress=true;
+            try{
+                switch (events.readyState) {
+                    case 0: // CONNECTING
+                        adapter.log.info(`SSE is trying to reconnect but it seems this won't work. So trying myself by closing and reinitializing.`);
+                        events.close();
+                        adapter.initSSE();
+                        break;
+                    case 1: // OPEN
+                        adapter.log.info(`SSE connection is still open or open again. Doing nothing.`);
+                        break;
+                    case 2: // CLOSED
+                        adapter.log.info(`SSE connection has been closed. Trying to reinitialize.`);
+                        adapter.initSSE();
+                        break;
+                    default:
+                        adapter.log.warn(`SSE readyState should be [0,1,2] but has an illegal state(${events.readyState}).`);
+                        break;
+                }
+            } finally {
+                connectionErrorHandlingInProgress=false;
+            }
         }
     }
 
@@ -131,15 +141,23 @@ class Mielecloudservice extends utils.Adapter {
          * Handle message type 'error'.
          * It occurs when the Miele-API detects an error
          * */
-        events.addEventListener(mieleConst.ERROR,  (event) => {
+        events.addEventListener(mieleConst.ERROR, (event) => {
             events.sseErrors++;
             adapter.setState('info.connection', false, true);
-            const randomDelay = Math.floor(Math.random()*1000+(events.sseErrors*1000));
-            adapter.log.warn(`An ${typeof event.message != 'undefined'?`error occurred (${event.message})`:'undefined error occurred'}. Taking care of it in ${(mieleConst.RECONNECT_TIMEOUT+randomDelay)/1000} seconds to give it a chance to solve itself.`);
             adapter.log.debug('Received error message by SSE: ' + JSON.stringify(event));
-            timeouts.reconnectDelay = setTimeout(function (adapter, events) {
+            if (events.sseErrors >= mieleConst.MAX_ERROR_THRESHOLD && !connectionErrorHandlingInProgress){
+                adapter.log.warn(`More than ${mieleConst.MAX_ERROR_THRESHOLD} connection errors occurred. Handling immediately.`);
                 adapter.doSSEErrorHandling(adapter, events);
-            }, mieleConst.RECONNECT_TIMEOUT+randomDelay, adapter, events);
+            } else {
+                const randomDelay = (events.sseErrors*1000) + Math.floor(Math.random()*1000);
+                adapter.log.warn(`An ${typeof event.message != 'undefined'?`error occurred (${event.message})`:'undefined error occurred'}. Handling it in ${(mieleConst.RECONNECT_TIMEOUT+randomDelay)/1000} seconds to give it a chance to solve itself.`);
+                if (Object.prototype.hasOwnProperty.call(timeouts, 'reconnectDelay')){
+                    clearTimeout(timeouts.reconnectDelay);
+                }
+                timeouts.reconnectDelay = setTimeout(function (adapter, events) {
+                    adapter.doSSEErrorHandling(adapter, events);
+                }, mieleConst.RECONNECT_TIMEOUT+randomDelay, adapter, events);
+            }
         });
 
         /**
