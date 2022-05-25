@@ -127,14 +127,14 @@ module.exports.getAuth = async function(adapter, config , iteration){
             const randomDelay = (1000*mieleConst.RESTART_TIMEOUT) + (iteration*1000) + Math.floor(Math.random()*1000);
             adapter.log.info(`Login attempt wasn't successful. Connection retry in ${randomDelay/1000} Seconds.`);
             setTimeout( function (){
-                exports.getAuth(adapter, config, iteration+1);
+                resolve(exports.getAuth(adapter, config, iteration+1));
             }, randomDelay);
         });
         if (auth){
             auth.expiryDate = new Date();
             auth.ping       = new Date();
             auth.expiryDate.setSeconds(auth.expires_in);
-            adapter.log.debug(`Access token expires on: ${ auth.expiryDate.toLocaleString() }`);
+            adapter.log.info(`Access token expires on: ${ auth.expiryDate.toLocaleString() }`);
             adapter.setState('info.connection', true, true);
             resolve (auth);
         }
