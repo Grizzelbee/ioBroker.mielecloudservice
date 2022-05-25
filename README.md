@@ -220,7 +220,7 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 ### **WORK IN PROGRESS**
-### V6.3.1 (2022-0x-xx) (Black Wings)
+### V6.3.1 (2022-05-25) (Black Wings)
 * (grizzelbee) Fix: Fixed bad log entry for error delay (delay is logged bad - but is executed okay)
 * (grizzelbee) Chg: Improved connection error handling
 * (grizzelbee) Fix: Fixed Sentry error: [MIELECLOUDSERVICE-3K](https://sentry.io/organizations/grizzelbee/issues/3281137250)
