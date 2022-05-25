@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.3.0",
+        "version": "6.3.1",
         "news": {
+            "6.3.1": {
+                "en": "Fixed bad log entry for error delay\nImproved connection error handling\nFixed Sentry error: MIELECLOUDSERVICE-3K",
+                "de": "Schlechter Protokolleintrag für Fehlerverzögerung behoben \n Verbesserte Behandlung von Verbindungsfehlern \n Sentry-Fehler behoben: MIELECLOUDSERVICE-3K",
+                "ru": "Исправлена ​​неправильная запись в журнале для задержки ошибки \n Улучшена обработка ошибок подключения \n Исправлена ​​ошибка Sentry: MIELECLOUDSERVICE-3K",
+                "pt": "Corrigida entrada de log inválida para atraso de erro\nTratamento de erros de conexão aprimorado\nCorrigido erro de Sentinela: MIELECLOUDSERVICE-3K",
+                "nl": "Vaste foutieve logboekinvoer voor foutvertraging \n Verbeterde verwerking van verbindingsfouten \n Vaste Sentry-fout: MIELECLOUDSERVICE-3K",
+                "fr": "Correction d'une mauvaise entrée de journal pour le délai d'erreur \n Amélioration de la gestion des erreurs de connexion \n Correction de l'erreur Sentry : MIELECLOUDSERVICE-3K",
+                "it": "Risolto il problema con la voce di registro errata per il ritardo dell'errore \n Migliorata la gestione degli errori di connessione \n Risolto l'errore di Sentry: MIELECLOUDSERVICE-3K",
+                "es": "Se corrigió una entrada de registro incorrecta para el retraso del error \n Manejo mejorado de errores de conexión \n Error de Sentry fijo: MIELECLOUDSERVICE-3K",
+                "pl": "Naprawiono zły wpis w dzienniku dla opóźnienia błędu \n Ulepszona obsługa błędów połączenia \n Naprawiono błąd Sentry: MIELECLOUDSERVICE-3K",
+                "zh-cn": "修复了错误延迟的错误日志条目\n改进了连接错误处理\n修复了 Sentry 错误：MIELECLOUDSERVICE-3K"
+            },
             "6.3.0": {
                 "en": "Added User-Agent to http-headers*Added exponential backoff in case of errors*Handling undefined devices properly when executing actions*Fixed light switch action*switched http response from warn to debug",
                 "de": "User-Agent zu http-Headern hinzugefügt * Exponentielles Backoff bei Fehlern hinzugefügt * Korrekte Behandlung undefinierter Geräte beim Ausführen von Aktionen * Lichtschalter-Aktion behoben * HTTP-Antwort von Warnen auf Debug umgestellt",
