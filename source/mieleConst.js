@@ -41,3 +41,4 @@ module.exports.ACTIONS='actions';
 module.exports.DEVICES='devices';
 module.exports.PING='ping';
 module.exports.ERROR='error';
+module.exports.MAX_ERROR_THRESHOLD=20;
