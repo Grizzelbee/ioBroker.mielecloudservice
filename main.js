@@ -204,7 +204,7 @@ class Mielecloudservice extends utils.Adapter {
                         .catch((error) => {
                             adapter.log.info('Actions-Error: '+JSON.stringify(error));
                         });
-                    adapter.log.info('Actions: '+JSON.stringify(actions));
+                    adapter.log.debug('Actions: '+JSON.stringify(actions));
                     // processDeviceActions
                     mieleTools.splitMieleActionsMessage(adapter, actions)
                         .catch((err) => {
@@ -333,9 +333,10 @@ class Mielecloudservice extends utils.Adapter {
                 this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
                 const adapter = this;
                 const payload = {};
+                let   endpoint;
                 const action  = id.split('.').pop();
                 const device  = id.split('.', 3).pop();
-                let   endpoint = mieleConst.ENDPOINT_ACTIONS;
+                endpoint = mieleConst.ENDPOINT_ACTIONS;
                 switch(action){
                     case 'Nickname': payload.deviceName = state.val;
                         break;

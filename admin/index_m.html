@@ -97,7 +97,7 @@
             <div class="input-field col s6">
                 <img src="mielecloudservice.svg" class="logo">
             </div>
-            <div class="col s8 m4 l4">
+            <div class="col s6 m4 l3">
                 <span class="translate" for="donation">donation</span><br/>
                 <a href="https://www.paypal.com/donate/?hosted_button_id=SPUDTXGNG2MYG"><img src="paypal-donate-button.png"></a>
             </div>
@@ -108,41 +108,46 @@
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s6 m4 l3">
                 <input class="value" id="Miele_account" type="text">
                 <label class="translate" for="Miele_account">Miele_Account</label>
                 <span class="translate">Miele_Account_desc</span>
             </div>
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s6 m4 l3">
                 <input class="value" id="Client_ID" type="text">
                 <label class="translate" for="Client_ID">Client_ID</label>
                 <span  class="translate">Client_ID_desc</span>
             </div>
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s6 m4 l3">
                 <input class="value" id="sse" type="checkbox">
                 <label class="translate" for="sse">sse</label>
                 <div><span  class="translate">sse_desc</span></div>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s6 m4 l3">
                 <input class="value"     id="Miele_pwd" type="password">
                 <label class="translate" for="Miele_pwd">Miele_pwd</label>
                 <span  class="translate">Miele_pwd_desc</span>
             </div>
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s6 m4 l3">
                 <input class="value" id="Client_secret" type="password">
                 <label class="translate" for="Client_secret">Client_secret</label>
                 <span class="translate">Client_secret_desc</span>
             </div>
-            <div class="input-field col s12 m6 l4">
-                <input class="value" id="pollInterval" type="number">
-                <label class="translate" for="pollInterval">pollInterval</label>
-                <span class="translate">pollInterval_desc</span>
+            <div class="input-field col s6 m4 l3">
+                <input class="value" id="delayedProcessing" type="checkbox">
+                <label class="translate" for="delayedProcessing">delayedProcessing</label></br>
+                <span class="translate">delayedProcessing_desc</span>
+            </div>
+            <div class="input-field col s6 m4 l2">
+                <input class="value" id="messageDelay" type="number">
+                <label class="translate" for="messageDelay">messageDelay</label>
+                <span class="translate">messageDelay_desc</span>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s6 m4 l3">
                 <select  class="value" id="oauth2_vg">
                     <option value="en-AU">Miele Australia</option>
                     <option value="nl-BE">Miele België</option>
@@ -199,7 +204,7 @@
                 <label class="translate" for="oauth2_vg">oauth2_vg</label>
                 <span class="translate" for="oauth2_vg_desc">oauth2_vg_desc</span>
             </div>
-            <div class="input-field col s12 m6 l4">
+            <div class="input-field col s6 m4 l3">
                 <select  class="value" id="locale">
                     <option value="de" class="translate">German</option>
                     <option value="en" class="translate" >English</option>
@@ -213,7 +218,12 @@
                 <label class="translate" for="locale">locale</label>
                 <span class="translate" for="locale_desc">locale_desc</span>
             </div>
-            <div class="input-field col s12 m6 l2" >
+            <div class="input-field col s6 m4 l2">
+                <input class="value" id="pollInterval" type="number">
+                <label class="translate" for="pollInterval">pollInterval</label>
+                <span class="translate">pollInterval_desc</span>
+            </div>
+            <div class="input-field col s6 m4 l2" >
                 <select  class="value" id="pollUnit">
                     <option value="1" class="translate">Seconds</option>
                     <option value="60" class="translate">Minutes</option>

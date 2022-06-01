@@ -214,7 +214,9 @@
         "oauth2_vg": "de-DE",
         "pollInterval": 120,
         "pollUnit": 60,
-        "sse": true
+        "sse": true,
+        "delayedProcessing": false,
+        "messageDelay": 2000
     },
     "encryptedNative": [
         "Client_secret",
