@@ -220,6 +220,10 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 ### **WORK IN PROGRESS**
+* (grizzelbee) New: Added new config option "delayed processing" to prevent overload on less powerful hardware
+* (grizzelbee) Fix: changed actions info message during polling to log level debug
+* (grizzelbee) Fix: Fixed german translation bug "minutes" -> "protokoll" (thanks to rekorboi)
+
 ### V6.3.1 (2022-05-25) (Black Wings)
 * (grizzelbee) Fix: Fixed bad log entry for error delay (delay is logged bad - but is executed okay)
 * (grizzelbee) Chg: Improved connection error handling
