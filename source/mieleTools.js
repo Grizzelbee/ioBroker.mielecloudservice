@@ -5,7 +5,9 @@ const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
-const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
+const knownDevices  = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
+const queuedMessage = {};
+let   delayTimeOut;
 
 
 /**
@@ -442,6 +444,7 @@ module.exports.splitMieleDevices = async function(adapter, auth, mieleDevices){
             adapter.log.debug(`Device ${mieleDevice} isn't already known. Registering now...`);
             adapter.log.debug('splitMieleDevices: ' + mieleDevice+ ': [' + mieleDevice + '] *** Value: [' + JSON.stringify(mieleDevices[mieleDevice]) + ']');
             knownDevices[mieleDevice]={};
+            knownDevices[mieleDevice].lastMessage=Date.now();
             knownDevices[mieleDevice].icon   =`icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`;
             knownDevices[mieleDevice].API_ID = mieleDevice;
             knownDevices[mieleDevice].deviceType = mieleDevices[mieleDevice].ident.type.value_raw;
@@ -461,8 +464,33 @@ module.exports.splitMieleDevices = async function(adapter, auth, mieleDevices){
             };
             await createOrExtendObject(adapter, mieleDevice, obj, null);  // create base object
         }
-        await createIdentTree(adapter, mieleDevice+'.IDENT', mieleDevices[mieleDevice].ident);
-        await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
+        // device is already known
+        if (adapter.config.delayedProcessing){
+            if (Date.now() - knownDevices[mieleDevice].lastMessage < adapter.config.messageDelay){
+                adapter.log.debug(`Too many messages in a short period. Discarding message.`);
+                // queue message
+                queuedMessage.device = mieleDevice;
+                queuedMessage.ident  = mieleDevices[mieleDevice].ident;
+                queuedMessage.state  = mieleDevices[mieleDevice].state;
+                // kill running timeout
+                clearTimeout(delayTimeOut);
+                // start new timeout
+                delayTimeOut = setTimeout(async (queuedMessage)=>{
+                    await createIdentTree(adapter, queuedMessage.device + '.IDENT', queuedMessage.ident);
+                    await createStateTree(adapter, queuedMessage.device, mieleDevices[queuedMessage.device], queuedMessage.state);
+                    knownDevices[mieleDevice].lastMessage=Date.now();
+                }, adapter.config.messageDelay, queuedMessage);
+                // process queued message if timeout is reached
+            } else {
+                adapter.log.debug(`Last Event happened long enough ago. Processing message immediately.`);
+                await createIdentTree(adapter, mieleDevice+'.IDENT', mieleDevices[mieleDevice].ident);
+                await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
+                knownDevices[mieleDevice].lastMessage=Date.now();
+            }
+        } else{
+            await createIdentTree(adapter, mieleDevice+'.IDENT', mieleDevices[mieleDevice].ident);
+            await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
+        }
     }
 };
 
