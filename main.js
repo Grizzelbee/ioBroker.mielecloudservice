@@ -333,9 +333,10 @@ class Mielecloudservice extends utils.Adapter {
                 this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
                 const adapter = this;
                 const payload = {};
+                let   endpoint;
                 const action  = id.split('.').pop();
                 const device  = id.split('.', 3).pop();
-                let   endpoint = mieleConst.ENDPOINT_ACTIONS;
+                endpoint = mieleConst.ENDPOINT_ACTIONS;
                 switch(action){
                     case 'Nickname': payload.deviceName = state.val;
                         break;
