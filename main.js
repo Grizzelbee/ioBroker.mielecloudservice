@@ -204,7 +204,7 @@ class Mielecloudservice extends utils.Adapter {
                         .catch((error) => {
                             adapter.log.info('Actions-Error: '+JSON.stringify(error));
                         });
-                    adapter.log.info('Actions: '+JSON.stringify(actions));
+                    adapter.log.debug('Actions: '+JSON.stringify(actions));
                     // processDeviceActions
                     mieleTools.splitMieleActionsMessage(adapter, actions)
                         .catch((err) => {
