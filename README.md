@@ -50,14 +50,29 @@ To get this adapter running you'll need at least:
 Since V6.2.0 you have the opportunity to chose between 
 * Server-Sent Events      (Server-Sent Events Checkbox is checked - default) 
 * Time based Data-Polling (Server-Sent Events Checkbox is unchecked)
+* Delayed Processing
 
+#### Server-sent events
 Server-Sent Events are a very neat method to get data from the miele servers since the servers will send you data 
 whenever there are changes. No useless polling every xx seconds ignoring whether there were changes or not. Unfortunately
 there are issues using this connection type - it fails pretty often and only restarting the adapter solves this.
+
+#### Time based Data Polling
 To improve stability of the adapter I reintroduced data polling as a config option you may use when SSE fails four you.
 Nevertheless SSE is the default, and I highly recommend trying and using it since it saves many resources on your and on 
 Mieles side. Beside of that I focus on SSE since Version 5.x.x.
+Time based Data-Polling relies on the two config options:
+* poll interval
+* poll interval unit (seconds/minutes)
 
+#### Delayed Processing
+In case you own some Miele appliances and use them at the same time it may happen that the API gets sending many messages 
+in a short time period. Depending on your ioBroker hardware this may overload your server and result in unresponsive 
+visualization or an unresponsive broker at all. To avoid this, this config option reduces the number of messages being
+processed to one message every xxx milliseconds. 
+Related config options:
+* delayed processing
+* message delay
 
 ## Controlling your devices
 ### Actions
@@ -220,6 +235,8 @@ Here is a list of what these raw values stand for:
 
 ## Changelog
 ### **WORK IN PROGRESS**
+
+### V6.3.2 (2022-06-02) (Black Wings)
 * (grizzelbee) New: Added new config option "delayed processing" to prevent overload on less powerful hardware
 * (grizzelbee) Fix: changed actions info message during polling to log level debug
 * (grizzelbee) Fix: Fixed german translation bug "minutes" -> "protokoll" (thanks to rekorboi)

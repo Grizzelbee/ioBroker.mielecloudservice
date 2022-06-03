@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.3.1",
+        "version": "6.3.2",
         "news": {
+            "6.3.2": {
+                "en": "New config option \"delayed processing\" to prevent overload on less powerful hardware\nChanged actions info message during polling to log level debug\nFixed german translation bug \"minutes\" -> \"protokoll\" (thanks to rekorboi)",
+                "de": "Neue Konfigurationsoption \"verzögerte Verarbeitung\", um eine Überlastung auf weniger leistungsstarker Hardware zu verhindern \nMeldung während des Pollings von Info auf Debug geändert\n Deutscher Übersetzungsfehler \"Minuten\" -> \"Protokoll\" behoben (danke an rekorboi)",
+                "ru": "Новая опция конфигурации «отложенная обработка» для предотвращения перегрузки на менее мощном оборудовании \n Изменено информационное сообщение о действиях во время опроса для отладки на уровне журнала \n Исправлена ​​​​ошибка перевода на немецкий язык «минуты» -> «протокол» (спасибо rekorboi)",
+                "pt": "Nova opção de configuração \"processamento atrasado\" para evitar sobrecarga em hardware menos poderoso \nMensagem de informações de ações alteradas durante a pesquisa para depuração no nível de log \nCorrigido bug de tradução alemão \"minutos\" -> \"protokoll\" (graças a rekorboi)",
+                "nl": "Nieuwe configuratie-optie \"vertraagde verwerking\" om overbelasting van minder krachtige hardware te voorkomen\nGewijzigd actie-infobericht tijdens polling naar debug op logniveau\nFixed Duitse vertaalfout \"minuten\" -> \"protokoll\" (dankzij rekorboi)",
+                "fr": "Nouvelle option de configuration \"traitement différé\" pour éviter la surcharge sur un matériel moins puissant \n Message d'information sur les actions modifié lors de l'interrogation du débogage au niveau du journal \n Correction du bug de traduction en allemand \"minutes\" -> \"protokoll\" (merci à rekorboi)",
+                "it": "Nuova opzione di configurazione \"elaborazione ritardata\" per prevenire il sovraccarico su hardware meno potente\nMessaggio informativo sulle azioni modificato durante il polling per il debug a livello di log\nCorretto bug di traduzione tedesco \"minuti\" -> \"protokoll\" (grazie a rekorboi)",
+                "es": "Nueva opción de configuración \"procesamiento retrasado\" para evitar la sobrecarga en hardware menos potente \n Se modificó el mensaje de información de acciones durante el sondeo para depurar el nivel de registro \n Se corrigió el error de traducción al alemán \"minutos\" -> \"protokoll\" (gracias a rekorboi)",
+                "pl": "Nowa opcja konfiguracji \"opóźnione przetwarzanie\", aby zapobiec przeciążeniu na mniej wydajnym sprzęcie\n Zmieniono komunikat informacyjny o akcjach podczas odpytywania do debugowania na poziomie dziennika \n Naprawiono błąd w niemieckim tłumaczeniu \"minuty\" -> \"protokoll\" (dzięki rekorboi)",
+                "zh-cn": "新的配置选项“延迟处理”以防止功能较弱的硬件过载\n在轮询期间将操作信息消息更改为日志级别调试\n修复德语翻译错误“分钟”->“protokoll”（感谢 rekorboi）"
+            },
             "6.3.1": {
                 "en": "Fixed bad log entry for error delay\nImproved connection error handling\nFixed Sentry error: MIELECLOUDSERVICE-3K",
                 "de": "Schlechter Protokolleintrag für Fehlerverzögerung behoben \n Verbesserte Behandlung von Verbindungsfehlern \n Sentry-Fehler behoben: MIELECLOUDSERVICE-3K",
