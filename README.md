@@ -236,6 +236,11 @@ Here is a list of what these raw values stand for:
 ## Changelog
 ### **WORK IN PROGRESS**
 
+### V6.3.3 (2022-07-13) (Black Wings)
+* (grizzelbee) Fix: [258](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/258) Improved error handling in case of line outages 
+* (grizzelbee) Fix: [269](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/269) Removed double decryption of passwords
+* (grizzelbee) Chg: Dependencies got updated
+
 ### V6.3.2 (2022-06-02) (Black Wings)
 * (grizzelbee) New: Added new config option "delayed processing" to prevent overload on less powerful hardware
 * (grizzelbee) Fix: changed actions info message during polling to log level debug
