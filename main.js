@@ -48,6 +48,7 @@ class Mielecloudservice extends utils.Adapter {
             }//-> an option to test: , https:{rejectUnauthorized: false}
         });
         result.sseErrors=0;
+        // adapter.log.info('getEventSource-Result: '+JSON.stringify(result));
         return result;
     }
 
@@ -64,10 +65,17 @@ class Mielecloudservice extends utils.Adapter {
             connectionErrorHandlingInProgress=true;
             try{
                 switch (events.readyState) {
-                    case 0: // CONNECTING
+                    case 0: { // CONNECTING
                         adapter.log.info(`SSE is trying to reconnect but it seems this won't work. So trying myself by closing and reinitializing.`);
                         events.close();
-                        adapter.initSSE();
+                        while(events.readyState === 0) {
+                            const randomDelay = Math.pow(events.sseErrors, 2) * 1000 + Math.floor(Math.random() * 1000);
+                            timeouts.getEvents = setTimeout(() => {
+                                adapter.initSSE();
+                                adapter.log.info(`Still trying to connect...`);
+                            }, randomDelay);
+                        }
+                    }
                         break;
                     case 1: // OPEN
                         adapter.log.info(`SSE connection is still open or open again. Doing nothing.`);
@@ -145,32 +153,16 @@ class Mielecloudservice extends utils.Adapter {
             events.sseErrors++;
             adapter.setState('info.connection', false, true);
             adapter.log.debug('Received error message by SSE: ' + JSON.stringify(event));
-            if (events.sseErrors >= mieleConst.MAX_ERROR_THRESHOLD && !connectionErrorHandlingInProgress){
-                adapter.log.warn(`More than ${mieleConst.MAX_ERROR_THRESHOLD} connection errors occurred. Handling immediately.`);
-                adapter.doSSEErrorHandling(adapter, events);
-            } else {
-                const randomDelay = (events.sseErrors*1000) + Math.floor(Math.random()*1000);
-                adapter.log.warn(`An ${typeof event.message != 'undefined'?`error occurred (${event.message})`:'undefined error occurred'}. Handling it in ${(mieleConst.RECONNECT_TIMEOUT+randomDelay)/1000} seconds to give it a chance to solve itself.`);
-                if (Object.prototype.hasOwnProperty.call(timeouts, 'reconnectDelay')){
-                    clearTimeout(timeouts.reconnectDelay);
-                }
-                timeouts.reconnectDelay = setTimeout(function (adapter, events) {
-                    adapter.doSSEErrorHandling(adapter, events);
-                }, mieleConst.RECONNECT_TIMEOUT+randomDelay, adapter, events);
+            const randomDelay = ( Math.pow(events.sseErrors, 2)  * 1000) + Math.floor(Math.random() * 1000);
+            if (Object.prototype.hasOwnProperty.call(timeouts, 'reconnectDelay')){
+                clearTimeout(timeouts.reconnectDelay);
             }
+            adapter.log.warn(`An ${typeof event.message != 'undefined'?`error (#${events.sseErrors}) occurred (${event.message})`:'undefined error occurred'}. Handling it in ${(randomDelay)/1000} seconds to give it a chance to solve itself.`);
+            timeouts.reconnectDelay = setTimeout(function (adapter, events) {
+                event.reconnectInterval = randomDelay;
+                adapter.doSSEErrorHandling(adapter, events);
+            }, randomDelay, adapter, events);
         });
-
-        /**
-         * code for watchdog
-         * -> check every 5 minutes whether pings are missing
-         * */
-        timeouts.watchdog = setInterval(() => {
-            const testValue = new Date();
-            if (Date.parse(testValue.toLocaleString()) - Date.parse(auth.ping.toLocaleString()) >= 60000) {
-                adapter.log.debug(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to handle.`);
-                adapter.doSSEErrorHandling(adapter, events);
-            }
-        }, mieleConst.WATCHDOG_TIMEOUT);
     }
 
     /**
@@ -279,6 +271,20 @@ class Mielecloudservice extends utils.Adapter {
                     if (adapter.config.sse){
                         this.log.info(`Registering for all appliance events at Miele API.`);
                         adapter.initSSE();
+                        /**
+                         * code for watchdog
+                         * -> check every 5 minutes whether pings are missing
+                         * */
+                        this.log.info(`Initializing SSE watchdog.`);
+                        timeouts.watchdog = setInterval(() => {
+                            const testValue = new Date();
+                            if (( testValue.getTime() - auth.ping.getTime() ) >= mieleConst.WATCHDOG_TIMEOUT) {
+                                adapter.log.info(`Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to handle.`);
+                                adapter.setState('info.connection', false, true);
+                                events.close();
+                                adapter.initSSE();
+                            }
+                        }, mieleConst.WATCHDOG_TIMEOUT);
                     } else {
                         this.log.info(`Requesting data from Miele API using time based polling every ${adapter.config.pollInterval * adapter.config.pollUnit} Seconds.`);
                         adapter.doDataPolling(adapter, auth);
