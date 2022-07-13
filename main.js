@@ -214,10 +214,6 @@ class Mielecloudservice extends utils.Adapter {
         this.setState('info.connection', false, true);
         // remember the link to the adapter instance
         adapter = this;
-        // decrypt passwords
-        this.config.Client_secret =  this.decrypt(this.config.Client_secret);
-        this.config.Miele_pwd =  this.decrypt(this.config.Miele_pwd);
-        //
         if (fakeRequests){
             const fs=require('fs');
             fs.readFile('test/testdata.devices.json', 'utf8', function(err, data) {
