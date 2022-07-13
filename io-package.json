@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.3.2",
+        "version": "6.3.3",
         "news": {
+            "6.3.3": {
+                "en": "Improved error handling in case of line outages\nRemoved double decryption of passwords\nDependencies got updated",
+                "de": "Verbesserte Fehlerbehandlung bei Leitungsausfällen\n Doppelte Entschlüsselung von Passwörtern entfernt\n Abhängigkeiten aktualisiert",
+                "ru": "Улучшена обработка ошибок при отключении линии\nУдалена двойная расшифровка паролей\nОбновлены зависимости",
+                "pt": "Tratamento de erros aprimorado em caso de interrupções de linha\nRemovida a descriptografia dupla de senhas\nAs dependências foram atualizadas",
+                "nl": "Verbeterde foutafhandeling in het geval van lijnstoringen \n Dubbele decodering van wachtwoorden verwijderd \n Afhankelijkheden zijn bijgewerkt",
+                "fr": "Amélioration de la gestion des erreurs en cas de panne de ligne \n Suppression du double déchiffrement des mots de passe \n Les dépendances ont été mises à jour",
+                "it": "Migliorata la gestione degli errori in caso di interruzioni della linea\nRimossa la doppia decrittazione delle password\nAggiornate le dipendenze",
+                "es": "Manejo de errores mejorado en caso de cortes de línea \n Eliminado el descifrado doble de contraseñas \n Se actualizaron las dependencias",
+                "pl": "Ulepszona obsługa błędów w przypadku awarii linii\nUsunięto podwójne odszyfrowywanie haseł\nZaktualizowano zależności",
+                "zh-cn": "改进了线路中断时的错误处理\n删除了密码的双重解密\n更新了依赖项"
+            },
             "6.3.2": {
                 "en": "New config option \"delayed processing\" to prevent overload on less powerful hardware\nChanged actions info message during polling to log level debug\nFixed german translation bug \"minutes\" -> \"protokoll\" (thanks to rekorboi)",
                 "de": "Neue Konfigurationsoption \"verzögerte Verarbeitung\", um eine Überlastung auf weniger leistungsstarker Hardware zu verhindern \nMeldung während des Pollings von Info auf Debug geändert\n Deutscher Übersetzungsfehler \"Minuten\" -> \"Protokoll\" behoben (danke an rekorboi)",
