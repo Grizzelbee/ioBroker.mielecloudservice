@@ -48,7 +48,6 @@ class Mielecloudservice extends utils.Adapter {
             }//-> an option to test: , https:{rejectUnauthorized: false}
         });
         result.sseErrors=0;
-        // adapter.log.info('getEventSource-Result: '+JSON.stringify(result));
         return result;
     }
 
