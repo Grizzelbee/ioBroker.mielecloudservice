@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.3.3",
+        "version": "6.3.4",
         "news": {
+            "6.3.4": {
+                "en": "Enabled decryption of passwords again since this issue is a bug in Admin 6.2.0",
+                "de": "Entschlüsselung von Passwörtern wieder aktiviert, da dieses Problem ein Fehler in Admin 6.2.0 ist",
+                "ru": "Снова включена расшифровка паролей, так как эта проблема является ошибкой в ​​Admin 6.2.0.",
+                "pt": "A descriptografia de senhas foi ativada novamente, pois esse problema é um bug no Admin 6.2.0",
+                "nl": "Ontsleuteling van wachtwoorden opnieuw ingeschakeld omdat dit probleem een ​​bug is in Admin 6.2.0",
+                "fr": "Le déchiffrement des mots de passe a de nouveau été activé car ce problème est un bogue dans Admin 6.2.0",
+                "it": "Abilitata nuovamente la decrittografia delle password poiché questo problema è un bug in Admin 6.2.0",
+                "es": "Habilitado el descifrado de contraseñas nuevamente ya que este problema es un error en Admin 6.2.0",
+                "pl": "Ponownie włączono odszyfrowywanie haseł, ponieważ ten problem jest błędem w Admin 6.2.0",
+                "zh-cn": "再次启用密码解密，因为此问题是 Admin 6.2.0 中的错误"
+            },
             "6.3.3": {
                 "en": "Improved error handling in case of line outages\nRemoved double decryption of passwords\nDependencies got updated",
                 "de": "Verbesserte Fehlerbehandlung bei Leitungsausfällen\n Doppelte Entschlüsselung von Passwörtern entfernt\n Abhängigkeiten aktualisiert",
