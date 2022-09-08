@@ -236,8 +236,10 @@ Here is a list of what these raw values stand for:
 ## Changelog
 ### **WORK IN PROGRESS**
 
-### V6.3.5 (2022-09-07) (Dying for an Angel)
+### V6.4.0 (2022-09-07) (Dying for an Angel)
 * (grizzelbee) Fix: program names get localized now
+* (grizzelbee) New: moved Admin-UI to jsonConfig
+* (grizzelbee) Chg: BREAKING CHANGE: removed duplicate en-/decryption of passwords due to jsonConfig
 
 ### V6.3.4 (2022-07-13) (Black Wings)
 * (grizzelbee) Fix: [269](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/269) enabled decryption of passwords again since this issue is a bug in Admin 6.2.0

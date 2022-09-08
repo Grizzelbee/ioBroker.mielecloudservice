@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.3.4",
+        "version": "6.4.0",
         "news": {
+            "6.4.0": {
+                "en": "Fix: Program names get localized now\n New: moved Admin-UI to jsonConfig\n Chg: BREAKING CHANGE: removed duplicate en-/decryption of passwords due to jsonConfig",
+                "de": "Fix: Programmnamen werden jetzt lokalisiert\n Neu: Admin-UI nach jsonConfig verschoben\n Änderung: BREAKING CHANGE: Doppelte Ver-/Entschlüsselung von Passwörtern aufgrund von jsonConfig entfernt",
+                "ru": "Исправлено: Имена программ теперь локализованы. \n Новое: интерфейс администратора перемещен в jsonConfig.",
+                "pt": "Correção: os nomes dos programas são localizados agora \n Novo: Admin-UI movido para jsonConfig \n Chg: BREAKING CHANGE: removido duplicado en-/decryption de senhas devido ao jsonConfig",
+                "nl": "Fix: programmanamen worden nu gelokaliseerd \n Nieuw: Admin-UI verplaatst naar jsonConfig \n Chg: BREAKING CHANGE: dubbele en-/decodering van wachtwoorden verwijderd vanwege jsonConfig",
+                "fr": "Correction : les noms de programme sont désormais localisés \n Nouveau : déplacement de l'interface utilisateur d'administration vers jsonConfig \n Chg : CHANGEMENT BRISANT : suppression du doublon en-/déchiffrement des mots de passe en raison de jsonConfig",
+                "it": "Correzione: i nomi dei programmi vengono ora localizzati\n Novità: spostata Admin-UI in jsonConfig\n Chg: BREAKING CHANGE: rimossa duplicata en-/decrittografia delle password a causa di jsonConfig",
+                "es": "Solución: los nombres de los programas se localizan ahora \n Nuevo: se movió la IU de administración a jsonConfig \n Chg: CAMBIO IMPORTANTE: se eliminó el cifrado/descifrado duplicado de contraseñas debido a jsonConfig",
+                "pl": "Poprawka: Nazwy programów są teraz lokalizowane\n Nowość: przeniesiono Admin-UI do jsonConfig\n Zmiana: NAŁADZAJĄCA ZMIANA: usunięto zduplikowane en-/odszyfrowywanie haseł z powodu jsonConfig",
+                "zh-cn": "修复：程序名称现在本地化\n 新功能：将 Admin-UI 移至 jsonConfig\n Chg：重大更改：删除了由于 jsonConfig 导致的重复密码加密/解密"
+            },
             "6.3.4": {
                 "en": "Enabled decryption of passwords again since this issue is a bug in Admin 6.2.0",
                 "de": "Entschlüsselung von Passwörtern wieder aktiviert, da dieses Problem ein Fehler in Admin 6.2.0 ist",
@@ -172,7 +184,6 @@
                 "zh-cn": "适配器完全从头重写 - 更改日志太长，无法在此处提供 - 请查看自述文件并小心更新。"
             }
         },
-        "title": "Miele CloudService",
         "titleLang": {
             "en": "Miele CloudService",
             "de": "Miele CloudService",
@@ -201,7 +212,7 @@
             "grizzelbee <open.source@hingsen.de>"
         ],
         "keywords": [
-            "iobroker",
+            "household",
             "miele",
             "wificonn@ct",
             "xgw3000",
@@ -223,16 +234,56 @@
         "tier": 2,
         "materialize": true,
         "adminUI": {
-            "config": "materialize"
+            "config": "json"
         },
+        "messages": [
+            {
+                "condition": {
+                    "operand": "and",
+                    "rules": [
+                        "oldVersion<6.4.0",
+                        "newVersion>=6.4.0"
+                    ]
+                },
+                "title": {
+                    "en": "Instance requires new configuration after update",
+                    "de": "Die Instanz erfordert nach dem Update eine neue Konfiguration",
+                    "ru": "Экземпляр требует новой конфигурации после обновления",
+                    "pt": "A instância requer uma nova configuração após a atualização",
+                    "nl": "Instantie vereist nieuwe configuratie na update",
+                    "fr": "L'instance nécessite une nouvelle configuration après la mise à jour",
+                    "it": "L'istanza richiede una nuova configurazione dopo l'aggiornamento",
+                    "es": "La instancia requiere una nueva configuración después de la actualización",
+                    "pl": "Instancja wymaga nowej konfiguracji po aktualizacji",
+                    "zh-cn": "实例更新后需要新配置"
+                },
+                "text": {
+                    "en": "After upgrading to Version 6.4.0 or later you need to reenter your password and client secret due to the change of the admin interface.",
+                    "de": "Nach dem Upgrade auf Version 6.4.0 oder höher müssen Sie Ihr Kennwort und Ihren geheimen Clientschlüssel aufgrund der Änderung der Verwaltungsoberfläche erneut eingeben.",
+                    "ru": "После обновления до версии 6.4.0 или более поздней вам необходимо повторно ввести пароль и секрет клиента из-за изменения интерфейса администратора.",
+                    "pt": "Após o upgrade para a Versão 6.4.0 ou posterior, você precisa reinserir sua senha e segredo do cliente devido à alteração da interface administrativa.",
+                    "nl": "Na het upgraden naar versie 6.4.0 of hoger moet u uw wachtwoord en clientgeheim opnieuw invoeren vanwege de wijziging van de beheerdersinterface.",
+                    "fr": "Après la mise à niveau vers la version 6.4.0 ou ultérieure, vous devez ressaisir votre mot de passe et votre secret client en raison du changement de l'interface d'administration.",
+                    "it": "Dopo l'aggiornamento alla versione 6.4.0 o successiva, è necessario reinserire la password e il segreto client a causa della modifica dell'interfaccia di amministrazione.",
+                    "es": "Después de actualizar a la versión 6.4.0 o posterior, debe volver a ingresar su contraseña y el secreto del cliente debido al cambio de la interfaz de administración.",
+                    "pl": "Po aktualizacji do wersji 6.4.0 lub nowszej należy ponownie wprowadzić hasło i klucz klienta ze względu na zmianę interfejsu administratora.",
+                    "zh-cn": "升级到 6.4.0 或更高版本后，由于管理界面的更改，您需要重新输入密码和客户端密码。"
+                },
+                "level": "warn",
+                "buttons": [
+                    "agree",
+                    "cancel"
+                ]
+            }
+        ],
         "globalDependencies": [
             {
-                "admin": ">=4.0.9"
+                "admin": ">=5.1.13"
             }
         ],
         "dependencies": [
             {
-                "js-controller": ">=3.0.0"
+                "js-controller": ">=3.3.22"
             }
         ],
         "plugins": {
