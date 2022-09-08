@@ -1,0 +1,218 @@
+{
+  "i18n": true,
+  "type": "panel",
+  "items": {
+    "donationHelp": {
+      "type": "staticText",
+      "text": "donation"
+    },
+    "donateButton": {
+      "type": "staticImage",
+      "src": "adapter/mielecloudservice/admin/paypal-donate-button.png",
+      "href": "https://www.paypal.com/donate/?hosted_button_id=SPUDTXGNG2MYG"
+    },
+    "_basicSection": {
+      "newLine": true,
+      "type" : "header",
+      "text" : "Basic settings",
+      "size": 2,
+      "sm": 24,
+      "md": 8,
+      "lg": 6
+    },
+    "sse": {
+      "newLine": true,
+      "type": "checkbox",
+      "label": "sse",
+      "tooltip": "sse_desc",
+      "default": true,
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "API_KeyHelp": {
+      "type": "staticLink",
+      "text": "Miele_API_link",
+      "href": "https://www.miele.com/f/com/en/register_api.aspx"
+    },
+    "Miele_account": {
+      "newLine": true,
+      "type": "text",
+      "label": "Miele_Account",
+      "tooltip" : "Miele_Account_desc",
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "Client_ID": {
+      "type": "text",
+      "label": "API Client-ID",
+      "tooltip" : "Client_ID_desc",
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "Miele_pwd": {
+      "newLine": true,
+      "type": "password",
+      "label": "Miele_pwd",
+      "tooltip": "Miele_pwd_desc",
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "Client_secret": {
+      "type": "password",
+      "label": "Client_secret",
+      "tooltip": "Client_secret_desc",
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "oauth2_vg": {
+      "newLine": true,
+      "type": "select",
+      "label": "oauth2_vg",
+      "default": "de",
+      "tooltip": "oauth2_vg_desc",
+      "options" : [
+        {"label":{"en":"Miele Australia"}, "value":"en-AU"},
+        {"label":{"en":"Miele België"}, "value":"nl-BE"},
+        {"label":{"en":"Miele Canada"}, "value":"en-CA"},
+        {"label":{"en":"Miele Chile"}, "value":"es-CL"},
+        {"label":{"en":"Miele Croatia"}, "value":"hr-HR"},
+        {"label":{"en":"Miele Czechia"}, "value":"cs-CZ"},
+        {"label":{"en":"Miele Danmark"}, "value":"da-DK"},
+        {"label":{"en":"Miele Deutschland"}, "value":"de-DE"},
+        {"label":{"en":"Miele Eesti"}, "value":"et-EE"},
+        {"label":{"en":"Miele España"}, "value":"es-ES"},
+        {"label":{"en":"Miele France"}, "value":"fr-FR"},
+        {"label":{"en":"Miele Hanguk"}, "value":"ko-KR"},
+        {"label":{"en":"Miele HongKong,China"}, "value":"zh-HK"},
+        {"label":{"en":"Miele Ireland"}, "value":"en-IE"},
+        {"label":{"en":"Miele Israel"}, "value":"en-IL"},
+        {"label":{"en":"Miele Italia"}, "value":"it-IT"},
+        {"label":{"en":"Miele Kypros"}, "value":"el-CY"},
+        {"label":{"en":"Miele Latvija"}, "value":"lv-LV"},
+        {"label":{"en":"Miele Lietuva"}, "value":"lt-LT"},
+        {"label":{"en":"Miele Luxemburg"}, "value":"de-LU"},
+        {"label":{"en":"Miele Magyarország"}, "value":"hu-HU"},
+        {"label":{"en":"Miele Malaysia"}, "value":"en-MY"},
+        {"label":{"en":"Miele México"}, "value":"es-MX"},
+        {"label":{"en":"Miele Nederland"}, "value":"nl-NL"},
+        {"label":{"en":"Miele NewZealand"}, "value":"en-NZ"},
+        {"label":{"en":"Miele Nihon"}, "value":"ja-JP"},
+        {"label":{"en":"Miele Norge"}, "value":"no-NO"},
+        {"label":{"en":"Miele Polska"}, "value":"pl-PL"},
+        {"label":{"en":"Miele Portugual"}, "value":"pt-PT"},
+        {"label":{"en":"Miele România"}, "value":"ro-RO"},
+        {"label":{"en":"Miele Schweiz"}, "value":"de-CH"},
+        {"label":{"en":"Miele Singapore"}, "value":"en-SG"},
+        {"label":{"en":"Miele Slovenia"}, "value":"sl-SI"},
+        {"label":{"en":"Miele Slovensko"}, "value":"sk-SK"},
+        {"label":{"en":"Miele SouthAfrica"}, "value":"en-ZA"},
+        {"label":{"en":"Miele Suomi"}, "value":"fi-FI"},
+        {"label":{"en":"Miele Sverige"}, "value":"sv-SE"},
+        {"label":{"en":"Miele Thailand"}, "value":"en-TH"},
+        {"label":{"en":"Miele Türkiye"}, "value":"tr-TR"},
+        {"label":{"en":"Miele UK"}, "value":"en-GB"},
+        {"label":{"en":"Miele USA"}, "value":"en-US"},
+        {"label":{"en":"Miele UnitedArabEmirates"}, "value":"en-AE"},
+        {"label":{"en":"Miele Zhōngguó,dàlù"}, "value":"zh-CN"},
+        {"label":{"en":"Miele Österreich"}, "value":"de-AT"},
+        {"label":{"en":"Miele Ελλάδα"}, "value":"el-GR"},
+        {"label":{"en":"Miele Беларуси"}, "value":"ru-BY"},
+        {"label":{"en":"Miele България"}, "value":"bg-BG"},
+        {"label":{"en":"Miele Казахстан"}, "value":"ru-KZ"},
+        {"label":{"en":"Miele Россия"}, "value":"ru-RU"},
+        {"label":{"en":"Miele Србија"}, "value":"sr-RS"},
+        {"label":{"en":"Miele Україна"}, "value":"ru-UA"}
+      ],
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "locale": {
+      "type": "select",
+      "label": "locale",
+      "default": "de",
+      "tooltip": "locale_desc",
+      "options" : [
+        {"label": {"en":"German","de":"Deutsch","ru":"Немецкий","pt":"Alemão","nl":"Duits","fr":"Allemand","it":"Tedesco","es":"Alemán","pl":"Niemiecki","zh-cn":"德语"}, "value": "de"},
+        {"label": {"en":"English","de":"Englisch","ru":"Английский","pt":"Inglês","nl":"Engels","fr":"Anglais","it":"inglese","es":"inglés","pl":"językangielski","zh-cn":"英语"}, "value": "en"},
+        {"label": {"en":"French","de":"Französisch","ru":"Французский","pt":"Francês","nl":"Frans","fr":"Français","it":"francese","es":"Francés","pl":"Francuski","zh-cn":"法语"}, "value": "fr"},
+        {"label": {"en":"Spanish","de":"Spanisch","ru":"испанский","pt":"Espanhol","nl":"Spaans","fr":"Espagnol","it":"spagnolo","es":"español","pl":"hiszpański","zh-cn":"西班牙语"}, "value": "es"},
+        {"label": {"en":"Italian","de":"Italienisch","ru":"итальянский","pt":"italiano","nl":"Italiaans","fr":"italien","it":"Italiano","es":"italiano","pl":"Włoski","zh-cn":"意大利语"}, "value": "it"},
+        {"label": {"en":"Norwegian","de":"Norwegisch","ru":"Норвежский","pt":"norueguês","nl":"Noors","fr":"norvégien","it":"norvegese","es":"noruego","pl":"norweski","zh-cn":"挪威"}, "value": "nb"},
+        {"label": {"en":"Danish","de":"Dänisch","ru":"датский","pt":"dinamarquês","nl":"Deens","fr":"danois","it":"danese","es":"danés","pl":"duński","zh-cn":"丹麦语"}, "value": "da"},
+        {"label": {"en":"Netherlands","de":"Niederländisch","ru":"Нидерланды","pt":"Holanda","nl":"Nederlands","fr":"Pays-Bas","it":"Olanda","es":"PaísesBajos","pl":"Holandia","zh-cn":"荷兰"}, "value": "nl"}],
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "_delaySection": {
+      "newLine": true,
+      "type" : "header",
+      "text" : "Delaying of messages",
+      "size": 2,
+      "sm": 24,
+      "md": 8,
+      "lg": 6
+    },
+    "delayedProcessing": {
+      "newLine": true,
+      "type": "checkbox",
+      "label": "delayedProcessing",
+      "default": false,
+      "tooltip": "delayedProcessing_desc",
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "messageDelay": {
+      "type": "number",
+      "min": 1,
+      "max": 65565,
+      "label": "messageDelay",
+      "default": 2000,
+      "tooltip": "messageDelay_desc",
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "_pollingSection": {
+      "newLine": true,
+      "type" : "header",
+      "text" : "Polling specific settings",
+      "size": 2,
+      "sm": 24,
+      "md": 8,
+      "lg": 6
+    },
+    "pollInterval": {
+      "newLine": true,
+      "type": "number",
+      "min": 1,
+      "max": 65565,
+      "label": "pollInterval",
+      "default": 120,
+      "tooltip": "pollInterval_desc",
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    },
+    "pollUnit": {
+      "type": "select",
+      "label": "pollUnit",
+      "tooltip": "pollUnit_desc",
+      "options" : [
+        {"label": {"en":"Unit:Seconds","de":"Sekunden","ru":"Секунды","pt":"Segundos","nl":"seconden","fr":"Secondes","it":"Secondi","es":"Segundos","pl":"sekundy","zh-cn":"秒"}, "value": 1},
+        {"label": {"en":"Unit:Minutes","de":"Minuten","ru":"Минуты","pt":"Minutos","nl":"Minuten","fr":"Minutes","it":"Minuti","es":"Minutos","pl":"Minuty","zh-cn":"分钟"}, "value": 60}
+      ],
+      "default": 60,
+      "sm": 12,
+      "md": 4,
+      "lg": 3
+    }
+  }
+}
