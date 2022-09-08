@@ -957,7 +957,7 @@ async function createStateSignalDoor(adapter, path, value){
  * @param {string} device The device to query the programs for
  */
 async function addPrograms(adapter, auth, device){
-    await sendAPIRequest(adapter,  auth, mieleConst.ENDPOINT_PROGRAMS.replace('DEVICEID', knownDevices[device].API_ID), 'GET', '')
+    await sendAPIRequest(adapter,  auth, mieleConst.ENDPOINT_PROGRAMS.replace('DEVICEID', knownDevices[device].API_ID).replace('LANG', adapter.config.locale), 'GET', '')
         .then((programs)=>{
             adapter.log.debug(`addPrograms: available Progs: ${ JSON.stringify(programs)}`);
             if (Object.keys(programs).length > 0){

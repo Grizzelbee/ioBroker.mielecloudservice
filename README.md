@@ -236,7 +236,10 @@ Here is a list of what these raw values stand for:
 ## Changelog
 ### **WORK IN PROGRESS**
 
-### V6.3.3 (2022-07-13) (Black Wings)
+### V6.3.5 (2022-09-07) (Dying for an Angel)
+* (grizzelbee) Fix: program names get localized now
+
+### V6.3.4 (2022-07-13) (Black Wings)
 * (grizzelbee) Fix: [269](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/269) enabled decryption of passwords again since this issue is a bug in Admin 6.2.0
 
 ### V6.3.3 (2022-07-13) (Black Wings)
