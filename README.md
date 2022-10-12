@@ -102,6 +102,10 @@ If you like to get a deeper understanding or need a raw-value translation please
 ## Changelog
 ### **WORK IN PROGRESS**
 
+### 6.4.1 (2022-10-12) (Dying for an Angel)
+* (grizzelbee) Chg: Dependencies got Updated
+* (grizzelbee) Chg: Important: Requires at least Node.js 14
+
 ### 6.4.0 (2022-09-07) (Dying for an Angel)
 * (grizzelbee) Fix: program names get localized now
 * (grizzelbee) New: moved Admin-UI to jsonConfig
