@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.4.0",
+        "version": "6.4.1",
         "news": {
+            "6.4.1": {
+                "en": "Important: Requires at least Node.js 14\nDependencies got updated",
+                "de": "Wichtig: Benötigt mindestens Node.js 14\nAbhängigkeiten wurden aktualisiert",
+                "ru": "Важно: требуется как минимум Node.js 14\nЗависимости обновлены",
+                "pt": "Importante: requer pelo menos Node.js 14\nAs dependências foram atualizadas",
+                "nl": "Belangrijk: Vereist minimaal Node.js 14\nAfhankelijkheden zijn bijgewerkt",
+                "fr": "Important : Nécessite au moins Node.js 14 \n Les dépendances ont été mises à jour",
+                "it": "Importante: richiede almeno Node.js 14\nLe dipendenze sono state aggiornate",
+                "es": "Importante: Requiere al menos Node.js 14\nLas dependencias se actualizaron",
+                "pl": "Ważne: Wymaga co najmniej Node.js 14 \n Zależności zostały zaktualizowane",
+                "zh-cn": "重要提示：至少需要 Node.js 14\nDependencies 已更新"
+            },
             "6.4.0": {
                 "en": "Fix: Program names get localized now\n New: moved Admin-UI to jsonConfig\n Chg: BREAKING CHANGE: removed duplicate en-/decryption of passwords due to jsonConfig",
                 "de": "Fix: Programmnamen werden jetzt lokalisiert\n Neu: Admin-UI nach jsonConfig verschoben\n Änderung: BREAKING CHANGE: Doppelte Ver-/Entschlüsselung von Passwörtern aufgrund von jsonConfig entfernt",
