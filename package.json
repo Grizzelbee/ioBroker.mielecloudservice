@@ -28,7 +28,7 @@
     "@iobroker/adapter-core": "^2.6.7",
     "@iobroker/plugin-sentry": "^1.2.0",
     "axios": "^1.1.2",
-    "axios-oauth-client": "^2.0.0",
+    "axios-oauth-client": "^2.0.2",
     "eventsource": "^2.0.2",
     "flatted": "^3.2.7"
   },
