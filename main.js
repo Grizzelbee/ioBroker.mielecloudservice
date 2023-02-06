@@ -371,7 +371,7 @@ class Mielecloudservice extends utils.Adapter {
                         break;
                     default :
                         payload.programId = (typeof action == 'string' ? Number.parseInt(action) : 0);
-                        endpoint = mieleConst.ENDPOINT_PROGRAMS;
+                        endpoint = mieleConst.ENDPOINT_PROGRAMS.replace('LANG', adapter.config.locale);
                         break;
                 }
                 await mieleTools.executeAction(this, auth, endpoint, device, payload)
