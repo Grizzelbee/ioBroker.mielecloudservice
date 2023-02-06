@@ -795,6 +795,16 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 break;
             case 48: // 48 = VACUUM DRAWER
                 break;
+            case 74: // 74 = Hob with vapour extraction
+                // States
+                await createStatePlateStep(adapter,  path, currentDeviceState.plateStep);
+                await createStateSignalFailure(adapter,  path, currentDeviceState.signalFailure);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createVentilationStepSwitch(adapter,  path, currentDeviceState.ventilationStep.value_raw);
+                // colors
+                break;
         }
     } catch(err){
         adapter.log.error('[addMieleDeviceState]: ' + err.message + ', Stacktrace: ' + err.stack);
