@@ -353,7 +353,7 @@ class Mielecloudservice extends utils.Adapter {
                         break;
                     case 'startTime': payload.startTime = (typeof state.val==='string'?state.val.split(':'):[0,0]);
                         break;
-                    case 'ventilationStep': payload.ventilationStep = state.val;
+                    case 'VentilationStep': payload.ventilationStep = state.val;
                         break;
                     case 'targetTemperatureZone-1':
                     case 'targetTemperatureZone-2':
@@ -365,7 +365,7 @@ class Mielecloudservice extends utils.Adapter {
                         break;
                     case 'Light': payload.light = (state.val? 1 : 2);
                         break;
-                    case 'Power': (state.val? payload.powerOn=true : payload.powerOff=true);
+                    case 'Power': (state.val ? payload.powerOn = true : payload.powerOff = true);
                         break;
                     case 'LastActionResult':
                         break;
