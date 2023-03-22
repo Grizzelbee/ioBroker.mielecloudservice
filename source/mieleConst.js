@@ -20,6 +20,7 @@ module.exports.ENDPOINT_LOGOUT   = 'thirdparty/logout/';
 module.exports.ENDPOINT_EVENTS   = 'v1/devices/all/events/';
 module.exports.ENDPOINT_PROGRAMS = 'v1/devices/DEVICEID/programs/?language=LANG';
 module.exports.ENDPOINT_ACTIONS  = 'v1/devices/DEVICEID/actions';
+module.exports.ENDPOINT_ROOMS    = 'v1/devices/DEVICEID/rooms';
 module.exports.START = 1;
 module.exports.STOP  = 2;
 module.exports.PAUSE = 3;

@@ -1,19 +1,20 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.4.1",
+        "version": "6.5.0-beta1",
         "news": {
-            "6.4.1": {
-                "en": "Important: Requires at least Node.js 14\nDependencies got updated",
-                "de": "Wichtig: Benötigt mindestens Node.js 14\nAbhängigkeiten wurden aktualisiert",
-                "ru": "Важно: требуется как минимум Node.js 14\nЗависимости обновлены",
-                "pt": "Importante: requer pelo menos Node.js 14\nAs dependências foram atualizadas",
-                "nl": "Belangrijk: Vereist minimaal Node.js 14\nAfhankelijkheden zijn bijgewerkt",
-                "fr": "Important : Nécessite au moins Node.js 14 \n Les dépendances ont été mises à jour",
-                "it": "Importante: richiede almeno Node.js 14\nLe dipendenze sono state aggiornate",
-                "es": "Importante: Requiere al menos Node.js 14\nLas dependencias se actualizaron",
-                "pl": "Ważne: Wymaga co najmniej Node.js 14 \n Zależności zostały zaktualizowane",
-                "zh-cn": "重要提示：至少需要 Node.js 14\nDependencies 已更新"
+            "6.5.0-beta1": {
+                "en": "Important: Requires at least Node.js 14*New: added device type 74 = Hob with vapour extraction*Dependencies got updated",
+                "de": "Wichtig: Benötigt mindestens Node.js 14*Neu: Gerätetyp 74 = Kochfeld mit Dunstabzug hinzugefügt*Abhängigkeiten wurden aktualisiert",
+                "ru": "Важно: требуется как минимум Node.js 14 * Новое: добавлен тип устройства 74 = Варочная панель с вытяжкой пара * Обновлены зависимости",
+                "pt": "Importante: Requer pelo menos Node.js 14*Novo: tipo de dispositivo adicionado 74 = Fogão com extração de vapor*As dependências foram atualizadas",
+                "nl": "Belangrijk: Vereist minimaal Node.js 14*Nieuw: toegevoegd apparaattype 74 = Kookplaat met dampafzuiging*Afhankelijkheden zijn bijgewerkt",
+                "fr": "Important : Nécessite au moins Node.js 14*Nouveau : type d'appareil ajouté 74 = Table de cuisson avec extraction de vapeur*Les dépendances ont été mises à jour",
+                "it": "Importante: richiede almeno Node.js 14*Novità: aggiunto tipo di dispositivo 74 = piano cottura con estrazione del vapore*Le dipendenze sono state aggiornate",
+                "es": "Importante: Requiere al menos Node.js 14*Nuevo: tipo de dispositivo agregado 74 = Encimera con extracción de vapor*Se actualizaron las dependencias",
+                "pl": "Ważne: Wymaga co najmniej Node.js 14*Nowość: dodano typ urządzenia 74 = Płyta grzejna z odciągiem pary*Zaktualizowano zależności",
+                "uk": "Важливо: потрібен принаймні Node.js 14*Нове: додано тип пристрою 74 = Варильна поверхня з відведенням пари*Залежності оновлено",
+                "zh-cn": "重要提示：至少需要 Node.js 14*新：添加了设备类型 74 = 带蒸汽抽取的炉灶*依赖项已更新"
             },
             "6.4.0": {
                 "en": "Fix: Program names get localized now\n New: moved Admin-UI to jsonConfig\n Chg: BREAKING CHANGE: removed duplicate en-/decryption of passwords due to jsonConfig",
@@ -25,7 +26,8 @@
                 "it": "Correzione: i nomi dei programmi vengono ora localizzati\n Novità: spostata Admin-UI in jsonConfig\n Chg: BREAKING CHANGE: rimossa duplicata en-/decrittografia delle password a causa di jsonConfig",
                 "es": "Solución: los nombres de los programas se localizan ahora \n Nuevo: se movió la IU de administración a jsonConfig \n Chg: CAMBIO IMPORTANTE: se eliminó el cifrado/descifrado duplicado de contraseñas debido a jsonConfig",
                 "pl": "Poprawka: Nazwy programów są teraz lokalizowane\n Nowość: przeniesiono Admin-UI do jsonConfig\n Zmiana: NAŁADZAJĄCA ZMIANA: usunięto zduplikowane en-/odszyfrowywanie haseł z powodu jsonConfig",
-                "zh-cn": "修复：程序名称现在本地化\n 新功能：将 Admin-UI 移至 jsonConfig\n Chg：重大更改：删除了由于 jsonConfig 导致的重复密码加密/解密"
+                "zh-cn": "修复：程序名称现在本地化\n 新功能：将 Admin-UI 移至 jsonConfig\n Chg：重大更改：删除了由于 jsonConfig 导致的重复密码加密/解密",
+                "uk": "Виправлення: назви програм тепер локалізовано\n Нове: інтерфейс адміністратора перенесено в jsonConfig\n Зміни: ГРУЗОВА ЗМІНА: видалено дублікати шифрування/розшифрування паролів через jsonConfig"
             },
             "6.3.4": {
                 "en": "Enabled decryption of passwords again since this issue is a bug in Admin 6.2.0",
@@ -37,7 +39,8 @@
                 "it": "Abilitata nuovamente la decrittografia delle password poiché questo problema è un bug in Admin 6.2.0",
                 "es": "Habilitado el descifrado de contraseñas nuevamente ya que este problema es un error en Admin 6.2.0",
                 "pl": "Ponownie włączono odszyfrowywanie haseł, ponieważ ten problem jest błędem w Admin 6.2.0",
-                "zh-cn": "再次启用密码解密，因为此问题是 Admin 6.2.0 中的错误"
+                "zh-cn": "再次启用密码解密，因为此问题是 Admin 6.2.0 中的错误",
+                "uk": "Знову ввімкнено розшифровку паролів, оскільки ця проблема є помилкою в Admin 6.2.0"
             },
             "6.3.3": {
                 "en": "Improved error handling in case of line outages\nRemoved double decryption of passwords\nDependencies got updated",
@@ -49,7 +52,8 @@
                 "it": "Migliorata la gestione degli errori in caso di interruzioni della linea\nRimossa la doppia decrittazione delle password\nAggiornate le dipendenze",
                 "es": "Manejo de errores mejorado en caso de cortes de línea \n Eliminado el descifrado doble de contraseñas \n Se actualizaron las dependencias",
                 "pl": "Ulepszona obsługa błędów w przypadku awarii linii\nUsunięto podwójne odszyfrowywanie haseł\nZaktualizowano zależności",
-                "zh-cn": "改进了线路中断时的错误处理\n删除了密码的双重解密\n更新了依赖项"
+                "zh-cn": "改进了线路中断时的错误处理\n删除了密码的双重解密\n更新了依赖项",
+                "uk": "Покращена обробка помилок у разі збою лінії\nВидалено подвійне розшифрування паролів\nЗалежності оновлено"
             },
             "6.3.2": {
                 "en": "New config option \"delayed processing\" to prevent overload on less powerful hardware\nChanged actions info message during polling to log level debug\nFixed german translation bug \"minutes\" -> \"protokoll\" (thanks to rekorboi)",
@@ -61,7 +65,8 @@
                 "it": "Nuova opzione di configurazione \"elaborazione ritardata\" per prevenire il sovraccarico su hardware meno potente\nMessaggio informativo sulle azioni modificato durante il polling per il debug a livello di log\nCorretto bug di traduzione tedesco \"minuti\" -> \"protokoll\" (grazie a rekorboi)",
                 "es": "Nueva opción de configuración \"procesamiento retrasado\" para evitar la sobrecarga en hardware menos potente \n Se modificó el mensaje de información de acciones durante el sondeo para depurar el nivel de registro \n Se corrigió el error de traducción al alemán \"minutos\" -> \"protokoll\" (gracias a rekorboi)",
                 "pl": "Nowa opcja konfiguracji \"opóźnione przetwarzanie\", aby zapobiec przeciążeniu na mniej wydajnym sprzęcie\n Zmieniono komunikat informacyjny o akcjach podczas odpytywania do debugowania na poziomie dziennika \n Naprawiono błąd w niemieckim tłumaczeniu \"minuty\" -> \"protokoll\" (dzięki rekorboi)",
-                "zh-cn": "新的配置选项“延迟处理”以防止功能较弱的硬件过载\n在轮询期间将操作信息消息更改为日志级别调试\n修复德语翻译错误“分钟”->“protokoll”（感谢 rekorboi）"
+                "zh-cn": "新的配置选项“延迟处理”以防止功能较弱的硬件过载\n在轮询期间将操作信息消息更改为日志级别调试\n修复德语翻译错误“分钟”->“protokoll”（感谢 rekorboi）",
+                "uk": "Нова опція конфігурації «відкладена обробка» для запобігання перевантаженню менш потужного обладнання\nІнформаційне повідомлення про дії під час опитування змінено на налагодження рівня журналу\nВиправлено помилку перекладу німецькою мовою «хвилини» -> «протокол» (завдяки rekorboi)"
             },
             "6.3.1": {
                 "en": "Fixed bad log entry for error delay\nImproved connection error handling\nFixed Sentry error: MIELECLOUDSERVICE-3K",
@@ -73,7 +78,8 @@
                 "it": "Risolto il problema con la voce di registro errata per il ritardo dell'errore \n Migliorata la gestione degli errori di connessione \n Risolto l'errore di Sentry: MIELECLOUDSERVICE-3K",
                 "es": "Se corrigió una entrada de registro incorrecta para el retraso del error \n Manejo mejorado de errores de conexión \n Error de Sentry fijo: MIELECLOUDSERVICE-3K",
                 "pl": "Naprawiono zły wpis w dzienniku dla opóźnienia błędu \n Ulepszona obsługa błędów połączenia \n Naprawiono błąd Sentry: MIELECLOUDSERVICE-3K",
-                "zh-cn": "修复了错误延迟的错误日志条目\n改进了连接错误处理\n修复了 Sentry 错误：MIELECLOUDSERVICE-3K"
+                "zh-cn": "修复了错误延迟的错误日志条目\n改进了连接错误处理\n修复了 Sentry 错误：MIELECLOUDSERVICE-3K",
+                "uk": "Виправлено неправильний запис журналу для затримки помилки\nПокращена обробка помилок підключення\nВиправлена ​​помилка Sentry: MIELECLOUDSERVICE-3K"
             },
             "6.3.0": {
                 "en": "Added User-Agent to http-headers*Added exponential backoff in case of errors*Handling undefined devices properly when executing actions*Fixed light switch action*switched http response from warn to debug",
@@ -85,7 +91,8 @@
                 "it": "Aggiunto User-Agent alle intestazioni http*Aggiunto backoff esponenziale in caso di errori*Gestire correttamente i dispositivi non definiti durante l'esecuzione di azioni*Risolto problema con l'azione dell'interruttore della luce*risposta http commutata da warning a debug",
                 "es": "Se agregó User-Agent a los encabezados http * Se agregó retroceso exponencial en caso de errores * Manejo de dispositivos no definidos correctamente al ejecutar acciones * Acción de interruptor de luz fija * respuesta http cambiada de advertir a depurar",
                 "pl": "Dodano klienta użytkownika do nagłówków http * Dodano wykładnicze wycofywanie w przypadku błędów * Poprawna obsługa niezdefiniowanych urządzeń podczas wykonywania działań * Naprawiono działanie przełącznika światła * zmieniono odpowiedź http z ostrzeżenia na debugowanie",
-                "zh-cn": "在 http-headers 中添加了用户代理*在出现错误时添加了指数退避*在执行操作时正确处理未定义的设备*固定灯开关操作*将 http 响应从警告切换到调试"
+                "zh-cn": "在 http-headers 中添加了用户代理*在出现错误时添加了指数退避*在执行操作时正确处理未定义的设备*固定灯开关操作*将 http 响应从警告切换到调试",
+                "uk": "Додано User-Agent до http-заголовків*Додано експоненціальну затримку у разі помилок*Належна обробка невизначених пристроїв під час виконання дій*Виправлена ​​дія перемикача світла*переключено відповідь HTTP з попередження на налагодження"
             },
             "6.2.2": {
                 "en": "Starting programs on devices is working now.",
@@ -97,7 +104,8 @@
                 "it": "l'avvio dei programmi sui dispositivi ora funziona.",
                 "es": "ahora funciona el inicio de programas en los dispositivos.",
                 "pl": "Uruchamianie programów na urządzeniach działa teraz.",
-                "zh-cn": "设备上的启动程序现在可以正常工作。"
+                "zh-cn": "设备上的启动程序现在可以正常工作。",
+                "uk": "Запуск програм на пристроях зараз працює."
             },
             "6.2.1": {
                 "en": "VentilationStep needs to be type number but was boolean\nACTIONS.programId is invalid: obj.common.type has an invalid value (integer)",
@@ -109,7 +117,8 @@
                 "it": "VentilationStep deve essere il numero di tipo ma era booleano\nACTIONS.programId non è valido: obj.common.type ha un valore non valido (intero)",
                 "es": "VentilationStep debe ser un número de tipo pero era booleano\nACTIONS.programId no es válido: obj.common.type tiene un valor no válido (entero)",
                 "pl": "VentilationStep musi być typem number, ale był boolean\nACTIONS.programId jest nieprawidłowy: obj.common.type ma nieprawidłową wartość (liczba całkowita)",
-                "zh-cn": "VentilationStep 需要是类型号，但 boolean\nACTIONS.programId 无效：obj.common.type 的值无效（整数）"
+                "zh-cn": "VentilationStep 需要是类型号，但 boolean\nACTIONS.programId 无效：obj.common.type 的值无效（整数）",
+                "uk": "VentilationStep має бути номером типу, але було логічним\nACTIONS.programId недійсний: obj.common.type має недійсне значення (ціле число)"
             },
             "6.2.0": {
                 "en": "Reintroduced data polling as a config option for all who has troubles with Server-Sent Events\nAdded some additional error handling code when Server Send Events report errors\nAdded reconnect delay in case of an error\nImproved handling of adapter traffic light in case of an error\nWaiting for code to complete in case of an occurring event\nChanged watchdog log entry from info to debug",
@@ -121,7 +130,8 @@
                 "it": "Reintrodotto il polling dei dati come opzione di configurazione per tutti coloro che hanno problemi con gli eventi inviati dal server\nAggiunti alcuni codici di gestione degli errori aggiuntivi quando gli eventi di invio del server segnalano errori\nAggiunto ritardo di riconnessione in caso di errore\nMigliore gestione del semaforo dell'adattatore in caso di ",
                 "es": "Se reintrodujo el sondeo de datos como una opción de configuración para todos los que tienen problemas con los eventos enviados por el servidor. \n Se agregó un código de manejo de errores adicional cuando los eventos de envío del servidor informan errores. ",
                 "pl": "Przywrócono odpytywanie danych jako opcję konfiguracji dla wszystkich, którzy mają problemy ze zdarzeniami wysyłanymi przez serwer \n Dodano dodatkowy kod obsługi błędów, gdy zdarzenia wysłania przez serwer zgłaszają błędy \n Dodano opóźnienie ponownego połączenia w przypadku błędu \n Poprawiono obsługę sygnalizacji świetlnej adaptera w przypadku ",
-                "zh-cn": "重新引入数据轮询作为所有遇到服务器发送事件问题的配置选项\n在服务器发送事件报告错误时添加了一些额外的错误处理代码\n添加了重新连接延迟以防出现错误\n改进了适配器交通灯的处理以防出现错误"
+                "zh-cn": "重新引入数据轮询作为所有遇到服务器发送事件问题的配置选项\n在服务器发送事件报告错误时添加了一些额外的错误处理代码\n添加了重新连接延迟以防出现错误\n改进了适配器交通灯的处理以防出现错误",
+                "uk": "Знову введено опитування даних як параметр конфігурації для всіх, хто має проблеми з подіями, надісланими сервером\nДодано додатковий код обробки помилок, коли події надсилання сервера повідомляють про помилки\nДодано затримку повторного підключення у разі помилки\nПокращена обробка світлофора адаптера в разі помилки\nОчікування завершення коду в разі виникнення події\nЗапис журналу сторожового таймера змінено з інформації на налагодження"
             },
             "6.1.5": {
                 "en": "Changed State-Changed log entry from info to debug\nFixed issue with not initialized auth-ping variable on adapter startup\nFixed issue with not initialized auth-ping variable after token has been refreshed\nFixed error in auth expiry calculation",
@@ -133,7 +143,8 @@
                 "it": "Modificata la voce del registro con modifica dello stato da info a debug\nRisolto problema con la variabile auth-ping non inizializzata all'avvio dell'adattatore\nRisolto problema con la variabile auth-ping non inizializzata dopo l'aggiornamento del token\nRisolto errore nel calcolo della scadenza dell'autenticazione",
                 "es": "Se modificó la entrada de registro de cambio de estado de información a depuración \n Problema solucionado con la variable de auth-ping no inicializada en el inicio del adaptador \n Problema solucionado con la variable de auth-ping no inicializada después de que se actualizó el token \n Error solucionado en el cálculo de caducidad de autenticación",
                 "pl": "Zmieniono wpis w dzienniku Stan-Zmieniono z informacji na debug\nNaprawiono problem z nie zainicjowaną zmienną auth-ping podczas uruchamiania adaptera\nNaprawiono problem z nie zainicjowaną zmienną auth-ping po odświeżeniu tokenu\nNaprawiono błąd w obliczaniu wygaśnięcia uwierzytelniania",
-                "zh-cn": "将 State-Changed 日志条目从 info 更改为 debug\n修复了适配器启动时未初始化 auth-ping 变量的问题\n修复了刷新令牌后未初始化 auth-ping 变量的问题\n修复了身份验证到期计算中的错误"
+                "zh-cn": "将 State-Changed 日志条目从 info 更改为 debug\n修复了适配器启动时未初始化 auth-ping 变量的问题\n修复了刷新令牌后未初始化 auth-ping 变量的问题\n修复了身份验证到期计算中的错误",
+                "uk": "Змінено запис журналу State-Changed з інформації на налагодження\nВиправлена ​​проблема з неініціалізованою змінною auth-ping під час запуску адаптера\nВиправлено проблему з неініціалізованою змінною auth-ping після оновлення маркера\nВиправлена ​​помилка під час розрахунку терміну авторизації"
             },
             "6.1.4": {
                 "en": "Fixes error with setting target temperature",
@@ -145,7 +156,8 @@
                 "it": "Risolve l'errore con l'impostazione della temperatura target",
                 "es": "Soluciona el error al establecer la temperatura objetivo",
                 "pl": "Naprawiono błąd z ustawieniem temperatury docelowej",
-                "zh-cn": "修复了设置目标温度的错误"
+                "zh-cn": "修复了设置目标温度的错误",
+                "uk": "Виправляє помилку з налаштуванням цільової температури"
             },
             "6.1.3": {
                 "en": "Fixes error with cooling devices\nFixes startup loop when cooling devices are connected\nFixed SuperCooling switch\nFixed SuperFreezing switch\nAdded code to run dry tests with local test data",
@@ -157,7 +169,8 @@
                 "it": "Risolve l'errore con i dispositivi di raffreddamento\nRisolve il ciclo di avvio quando i dispositivi di raffreddamento sono collegati\nInterruttore SuperCooling fisso\nInterruttore SuperFreezing fisso\nAggiunto codice per eseguire test a secco con dati di test locali",
                 "es": "Soluciona el error con los dispositivos de enfriamiento \n Soluciona el ciclo de inicio cuando los dispositivos de enfriamiento están conectados \n Se corrigió el interruptor SuperCooling \n Se corrigió el interruptor Super Freezing \n Código agregado para ejecutar pruebas en seco con datos de prueba locales",
                 "pl": "Naprawia błąd z urządzeniami chłodzącymi \n Naprawia pętlę uruchamiania, gdy podłączone są urządzenia chłodzące \n Naprawiono przełącznik SuperCooling \n Naprawiono przełącznik SuperFreezing \n Dodano kod do uruchamiania suchych testów z lokalnymi danymi testowymi",
-                "zh-cn": "修复了冷却设备的错误\n修复了连接冷却设备时的启动循环\n修复了 SuperCooling 开关\n修复了 SuperFreezing 开关\n添加了使用本地测试数据运行干测试的代码"
+                "zh-cn": "修复了冷却设备的错误\n修复了连接冷却设备时的启动循环\n修复了 SuperCooling 开关\n修复了 SuperFreezing 开关\n添加了使用本地测试数据运行干测试的代码",
+                "uk": "Виправляє помилку з охолоджуючими пристроями\nВиправляє цикл запуску при підключенні охолоджуючих пристроїв\nВиправлено перемикач SuperCooling\nВиправлено перемикач SuperFreezing\nДодано код для запуску сухих тестів із локальними тестовими даними"
             },
             "6.1.2": {
                 "en": "Some minor bugfixes - see changelog for details",
@@ -169,7 +182,8 @@
                 "it": "Alcune correzioni di bug minori: vedere il registro delle modifiche per i dettagli",
                 "es": "Algunas correcciones de errores menores: consulte el registro de cambios para obtener más detalles.",
                 "pl": "Kilka drobnych poprawek - zobacz listę zmian po szczegóły",
-                "zh-cn": "一些小错误修复 - 有关详细信息，请参阅更改日志"
+                "zh-cn": "一些小错误修复 - 有关详细信息，请参阅更改日志",
+                "uk": "Деякі незначні виправлення помилок - подробиці дивіться в журналі змін"
             },
             "6.1.0": {
                 "en": "Added some error handling\nChanged PlateStep data point name\nRemoved some unused code",
@@ -181,7 +195,8 @@
                 "it": "Aggiunte alcune operazioni di gestione degli errori\nNome del punto dati PlateStep modificato\nRimosso del codice inutilizzato",
                 "es": "Se agregó un manejo de errores \n Se cambió el nombre del punto de datos de PlateStep \n Se eliminó un código no utilizado",
                 "pl": "Dodano obsługę błędów\nZmieniono nazwę punktu danych PlateStep\nUsunięto część nieużywanego kodu",
-                "zh-cn": "添加了一些错误处理\n更改了 PlateStep 数据点名称\n删除了一些未使用的代码"
+                "zh-cn": "添加了一些错误处理\n更改了 PlateStep 数据点名称\n删除了一些未使用的代码",
+                "uk": "Додано деяку обробку помилок\nЗмінено назву точки даних PlateStep\nВидалено деякий невикористаний код"
             },
             "6.0.0": {
                 "en": "Adapter entirely rewritten from scratch - the changelog is too long to provide it here - Please take a look into the readme and be careful on updating.",
@@ -193,7 +208,8 @@
                 "it": "Adattatore interamente riscritto da zero - il log delle modifiche è troppo lungo per fornirlo qui - Dai un'occhiata al readme e fai attenzione durante l'aggiornamento.",
                 "es": "Adaptador completamente reescrito desde cero: el registro de cambios es demasiado largo para proporcionarlo aquí. Eche un vistazo al archivo Léame y tenga cuidado al actualizar.",
                 "pl": "Adapter całkowicie przepisany od zera - dziennik zmian jest zbyt długi, aby go tutaj podać - zajrzyj do pliku readme i bądź ostrożny przy aktualizacji.",
-                "zh-cn": "适配器完全从头重写 - 更改日志太长，无法在此处提供 - 请查看自述文件并小心更新。"
+                "zh-cn": "适配器完全从头重写 - 更改日志太长，无法在此处提供 - 请查看自述文件并小心更新。",
+                "uk": "Адаптер повністю переписаний з нуля - журнал змін занадто довгий, щоб надати його тут - Будь ласка, перегляньте readme і будьте обережні під час оновлення."
             }
         },
         "titleLang": {
@@ -206,7 +222,8 @@
             "it": "Servizio cloud Miele",
             "es": "Servicio en la nube de Miele",
             "pl": "Miele CloudService",
-            "zh-cn": "Miele 云服务"
+            "zh-cn": "Miele 云服务",
+            "uk": "Miele CloudService"
         },
         "desc": {
             "en": "Get your Miele appliances (XGW3000 & WiFiConn@ct) connected",
@@ -218,7 +235,8 @@
             "it": "Collega i tuoi elettrodomestici Miele (XGW3000 e WiFiConn@ct).",
             "es": "Conecta tus electrodomésticos Miele (XGW3000 y WiFiConn@ct)",
             "pl": "Podłącz swoje urządzenia Miele (XGW3000 i WiFiConn@ct)",
-            "zh-cn": "连接您的 Miele 电器（XGW3000 和 WiFiConn@ct）"
+            "zh-cn": "连接您的 Miele 电器（XGW3000 和 WiFiConn@ct）",
+            "uk": "Підключіть свої прилади Miele (XGW3000 & WiFiConn@ct)."
         },
         "authors": [
             "grizzelbee <open.source@hingsen.de>"
@@ -267,7 +285,8 @@
                     "it": "L'istanza richiede una nuova configurazione dopo l'aggiornamento",
                     "es": "La instancia requiere una nueva configuración después de la actualización",
                     "pl": "Instancja wymaga nowej konfiguracji po aktualizacji",
-                    "zh-cn": "实例更新后需要新配置"
+                    "zh-cn": "实例更新后需要新配置",
+                    "uk": "Після оновлення екземпляр потребує нової конфігурації"
                 },
                 "text": {
                     "en": "After upgrading to Version 6.4.0 or later you need to reenter your password and client secret due to the change of the admin interface.",
@@ -279,7 +298,8 @@
                     "it": "Dopo l'aggiornamento alla versione 6.4.0 o successiva, è necessario reinserire la password e il segreto client a causa della modifica dell'interfaccia di amministrazione.",
                     "es": "Después de actualizar a la versión 6.4.0 o posterior, debe volver a ingresar su contraseña y el secreto del cliente debido al cambio de la interfaz de administración.",
                     "pl": "Po aktualizacji do wersji 6.4.0 lub nowszej należy ponownie wprowadzić hasło i klucz klienta ze względu na zmianę interfejsu administratora.",
-                    "zh-cn": "升级到 6.4.0 或更高版本后，由于管理界面的更改，您需要重新输入密码和客户端密码。"
+                    "zh-cn": "升级到 6.4.0 或更高版本后，由于管理界面的更改，您需要重新输入密码和客户端密码。",
+                    "uk": "Після оновлення до версії 6.4.0 або новішої вам потрібно буде повторно ввести пароль і секрет клієнта через зміну інтерфейсу адміністратора."
                 },
                 "level": "warn",
                 "buttons": [

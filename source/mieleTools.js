@@ -783,6 +783,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 break;
             case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
                 await createStateBatteryLevel(adapter,  path, currentDeviceState.batteryLevel);
+                // await createGroupRooms(adapter,  path);
                 break;
             case 25: // 25 = DISH WARMER*
                 await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
@@ -794,6 +795,16 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
                 break;
             case 48: // 48 = VACUUM DRAWER
+                break;
+            case 74: // 74 = Hob with vapour extraction
+                // States
+                await createStatePlateStep(adapter,  path, currentDeviceState.plateStep);
+                await createStateSignalFailure(adapter,  path, currentDeviceState.signalFailure);
+                await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
+                await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
+                await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
+                await createVentilationStepSwitch(adapter,  path, currentDeviceState.ventilationStep.value_raw);
+                // colors
                 break;
         }
     } catch(err){
