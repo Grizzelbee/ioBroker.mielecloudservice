@@ -783,6 +783,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 break;
             case 23: // 23 = VACUUM CLEANER, AUTOMATIC ROBOTIC VACUUM CLEANER*
                 await createStateBatteryLevel(adapter,  path, currentDeviceState.batteryLevel);
+                // await createGroupRooms(adapter,  path);
                 break;
             case 25: // 25 = DISH WARMER*
                 await createStateProgramID(adapter,  `${path}.${currentDeviceState.ProgramID.key_localized}`, currentDeviceState.ProgramID.value_localized, currentDeviceState.ProgramID.value_raw );
