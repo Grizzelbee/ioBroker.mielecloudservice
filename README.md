@@ -119,6 +119,7 @@ If you like to get a deeper understanding or need a raw-value translation please
 * (grizzelbee) Chg: Dependencies got Updated
 * (grizzelbee) Chg: Important: Requires at least Node.js 14
 * (grizzelbee) Fix: [343](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/343) GENERIC_BUSINESS_ERORR occured when switching ventilationStep
+* (grizzelbee) Fix: [356](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/356) In some cases the value 0 (zero) is ignored (e.g. at PlateStep)
 
 ### 6.4.0 (2022-09-07) (Dying for an Angel)
 * (grizzelbee) Fix: program names get localized now

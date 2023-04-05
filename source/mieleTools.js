@@ -1861,8 +1861,8 @@ async function createRWState(adapter, path, description, value, type, role, stat
 async function createNumber(adapter, path, description, value, unit, role){
     //adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
     // get back to calling function if there is no valid value given.
-    if ( !value || value === -32768 || value == null) {
-        //adapter.log.debug('[createNumber]: invalid value detected. Skipping...');
+    if ( typeof value==='undefined' || value === -32768 || value == null) {
+        adapter.log.debug(`[createNumber]: invalid value (${value}) detected. Skipping...`);
         return;
     }
     role = role || 'value';
