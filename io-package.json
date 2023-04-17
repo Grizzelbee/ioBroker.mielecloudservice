@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.5.0-beta4",
+        "version": "6.5.0-beta5",
         "news": {
-            "6.5.0-beta4": {
+            "6.5.0-beta5": {
                 "en": "Important: Requires at least Node.js 14*New: added device type 74 = Hob with vapour extraction*Dependencies got updated",
                 "de": "Wichtig: Benötigt mindestens Node.js 14*Neu: Gerätetyp 74 = Kochfeld mit Dunstabzug hinzugefügt*Abhängigkeiten wurden aktualisiert",
                 "ru": "Важно: требуется как минимум Node.js 14 * Новое: добавлен тип устройства 74 = Варочная панель с вытяжкой пара * Обновлены зависимости",

@@ -600,7 +600,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
                 await createStateEstimatedEndTime(adapter,  path, currentDeviceState);
                 await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
-                await createStateSpinningSpeed(adapter,  `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
+                await createStateSpinningSpeed(adapter,  `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed, currentDeviceState.spinningSpeed.unit);
                 await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
                 await createStateEcoFeedbackWater(adapter,  path, currentDeviceState.ecoFeedback);
                 await createStateTargetTemperature(adapter,  path, currentDeviceState.targetTemperature);
@@ -639,7 +639,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateMobileStart(adapter,  path, currentDeviceState.remoteEnable.mobileStart);
                 await createStateEstimatedEndTime(adapter,  path, currentDeviceState);
                 await createStateElapsedTime(adapter,  path, currentDeviceState.elapsedTime);
-                await createStateSpinningSpeed(adapter,  `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed.value_localized, currentDeviceState.spinningSpeed.unit);
+                await createStateSpinningSpeed(adapter,  `${path}.${currentDeviceState.spinningSpeed.key_localized}`, currentDeviceState.spinningSpeed, currentDeviceState.spinningSpeed.unit);
                 await createStateDryingStep(adapter,  `${path}.${currentDeviceState.dryingStep.key_localized}`, currentDeviceState.dryingStep.value_localized, currentDeviceState.dryingStep.value_raw );
                 await createStateEcoFeedbackEnergy(adapter,  path, currentDeviceState.ecoFeedback);
                 await createStateEcoFeedbackWater(adapter,  path, currentDeviceState.ecoFeedback);
@@ -1328,13 +1328,16 @@ async function createStateEcoFeedbackEnergy(adapter, path, ecoFeedback) {
  *
  * create the states that show
  *
- * @param adapter {object} link to the adapter instance
- * @param path {string} path where the data point is going to be created
- * @param value {string} value to set to the data point
- * @param unit {string} unit the value is in
+ * @param adapter               {object} link to the adapter instance
+ * @param path                  {string} path where the data point is going to be created
+ * @param value                 {object} values to set to the data point
+ * @param value.value_localized {string} value to set to the data point
+ * @param value.value_raw       {string} raw number value to set to the data point
+ * @param unit                  {string} unit the value is in
  */
 async function createStateSpinningSpeed(adapter, path, value, unit) {
-    await createNumber(adapter, path, 'Spinning speed of a washing machine.', Number.parseInt(value), unit, 'value');
+    await createROState(adapter, path, 'Spinning speed of a washing machine (localized value).', value.value_localized, 'string', 'value');
+    await createNumber(adapter, path+'_raw', 'Spinning speed of a washing machine (raw value).', Number.parseInt(value.value_raw), unit, 'value');
 }
 
 

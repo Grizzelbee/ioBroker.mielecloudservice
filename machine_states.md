@@ -1,7 +1,6 @@
 ## Documentation
 Please mainly refer to the main API documentation published by Miele
 * [General Documentation](https://www.miele.com/developer/swagger-ui/index.html)
-* [Preconditions to perform an action on a device](https://www.miele.com/developer/swagger-ui/put_additional_info.html)
 
 There are some data points available in 2 kinds. As a human-readable text and as a number.
 These numeric data fields belonging to a text field have the same name, but a "_raw" appended.
