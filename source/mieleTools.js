@@ -1242,7 +1242,8 @@ async function updateStateTargetTemperature(adapter, path, valueObj){
 async function createStatePlateStep(adapter, path, value){
     for (const n in value) {
         const MyPath = `${path}.PlateStepZone-${n}`;
-        await createNumber(adapter, MyPath , 'The plateStep object represents the selected cooking zone levels for a hob.', Number.parseInt(value[n].value_localized), '', 'level');
+        await createROState(adapter, MyPath , 'The plateStep object represents the selected cooking zone levels for a hob (localized value).', value[n].value_localized, 'string', 'level');
+        await createROState(adapter, MyPath+'_raw' , 'The plateStep object represents the selected cooking zone levels for a hob (raw value).', Number.parseInt(value[n].value_raw), 'number', 'level');
     }
 }
 
