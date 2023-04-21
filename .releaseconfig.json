@@ -1,0 +1,10 @@
+{
+	// Boolean, number, string as is:
+	"dry": false,
+	// Arrays:
+	"plugins": ["iobroker"],
+	// Objects
+	// "exec": {
+	// 	"before_commit": "echo Hello World!"
+	// }
+}
