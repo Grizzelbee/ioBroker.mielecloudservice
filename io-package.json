@@ -1,8 +1,21 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.5.1",
+        "version": "6.5.2",
         "news": {
+            "6.5.2": {
+                "en": "Fix: \"oauth is not a function\" error during startup - again!",
+                "de": "Fix: „oauth is not a function“-Fehler beim Start – schon wieder!",
+                "ru": "Исправлено: ошибка «oauth не является функцией» при запуске — снова!",
+                "pt": "Correção: erro \"oauth não é uma função\" durante a inicialização - novamente!",
+                "nl": "Fix: \"oauth is not a function\"-fout tijdens het opstarten - opnieuw!",
+                "fr": "Correction : erreur \"oauth n'est pas une fonction\" au démarrage - encore une fois !",
+                "it": "Correzione: errore \"oauth non è una funzione\" durante l'avvio - di nuovo!",
+                "es": "Solución: error \"oauth no es una función\" durante el inicio, ¡otra vez!",
+                "pl": "Poprawka: błąd „oauth nie jest funkcją” podczas uruchamiania — ponownie!",
+                "uk": "Виправлення: помилка \"oauth не є функцією\" під час запуску - знову!",
+                "zh-cn": "修复：启动期间出现“oauth 不是函数”错误 - 再次出现！"
+            },
             "6.5.1": {
                 "en": "Some minor fixes for ioBroker adapterchecker",
                 "de": "Einige kleinere Korrekturen für den ioBroker Adapterchecker",
