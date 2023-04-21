@@ -113,6 +113,9 @@ If you like to get a deeper understanding or need a raw-value translation please
 ## Changelog
 ### **WORK IN PROGRESS**
 
+### 6.5.1 (2023-04-21) (Dying for an Angel)
+* (grizzelbee) Fix: Some minor fixes for ioBroker adapter checker
+
 ### 6.5.0 (2023-04-18) (Dying for an Angel)
 * (grizzelbee) New: added device type 74 = Hob with vapour extraction (part of Miele API v1.0.6)
 * (grizzelbee) Upd: Updated ReadMe file

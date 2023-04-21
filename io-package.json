@@ -1,8 +1,10 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.5.0",
+        "version": "6.5.1",
         "news": {
+            "6.5.1": {
+                "en": "Some minor fixes for ioBroker adapterchecker"},
             "6.5.0": {
                 "en": "Important: Requires at least Node.js 14\nNew: added device type 74 = Hob with vapour extraction\nDependencies got updated\nchanged SpinningSpeed from number to string\nAdded RAW-Value to SpinningSpeed\nChanged PlateStep-xxx from number to string\nAdded RAW-Value to Platesteps\nFix: GENERIC_BUSINESS_ERORR occured when switching ventilationStep\nIn some cases the value 0 (zero) is ignored (e.g. at PlateStep)\nFix: \"oauth is not a function\" error during startup",
                 "de": "Wichtig: Benötigt mindestens Node.js 14\nNeu: Gerätetyp 74 hinzugefügt = Kochfeld mit Dunstabzug\nAbhängigkeiten wurden aktualisiert\nSpinningSpeed ​​von Zahl zu String geändert\nRAW-Wert zu SpinningSpeed ​​hinzugefügt\nPlateStep-xxx von Zahl zu String geändert\nHinzugefügt RAW-Wert zu Platesteps\nFix: GENERIC_BUSINESS_ERORR beim Umschalten des Ventilationsschritts aufgetreten\nIn einigen Fällen wird der Wert 0 (Null) ignoriert (z. B. bei PlateStep)\nFix: „oauth is not a function“-Fehler beim Start",
