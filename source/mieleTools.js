@@ -1336,7 +1336,7 @@ async function createStateEcoFeedbackEnergy(adapter, path, ecoFeedback) {
  * @param unit                  {string} unit the value is in
  */
 async function createStateSpinningSpeed(adapter, path, value, unit) {
-    await createROState(adapter, path, 'Spinning speed of a washing machine (localized value).', value.value_localized, 'string', 'value');
+    await createROState(adapter, path, 'Spinning speed of a washing machine (localized value).', value.value_localized, 'string', 'text');
     await createNumber(adapter, path+'_raw', 'Spinning speed of a washing machine (raw value).', Number.parseInt(value.value_raw), unit, 'value');
 }
 
@@ -1928,7 +1928,8 @@ async function createTime(adapter, path, description, value, role){
 function createOrExtendObject(adapter, id, objData, value) {
     adapter.getObject(id, function (err, oldObj) {
         if (!err && oldObj) {
-            if ( objData.name === oldObj.common.name ){
+            // todo must be: objData.common.name === oldObj.common.name
+            if ( objData.common.name === oldObj.common.name ){
                 adapter.setState(id, value, true);
             } else{
                 adapter.extendObject(id, objData, () => {adapter.setState(id, value, true);});

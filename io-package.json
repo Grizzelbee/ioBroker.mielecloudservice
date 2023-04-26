@@ -1,8 +1,11 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.5.2",
+        "version": "6.5.3",
         "news": {
+            "6.5.2": {
+                "en": "Fix: two minor bug fixes."
+            },
             "6.5.2": {
                 "en": "Fix: \"oauth is not a function\" error during startup - again!",
                 "de": "Fix: „oauth is not a function“-Fehler beim Start – schon wieder!",
