@@ -1,10 +1,33 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.5.3",
+        "version": "6.5.4",
         "news": {
-            "6.5.2": {
-                "en": "Fix: two minor bug fixes."
+            "6.5.4": {
+                "en": "New: Added file `.ncurc.json` to prevent axios-oauth-client from being automatically updated by `npx npm-check-updates`",
+                "de": "Neu: Datei `.ncurc.json` hinzugefügt, um zu verhindern, dass axios-oauth-client automatisch von `npx npm-check-updates` aktualisiert wird",
+                "ru": "Новое: добавлен файл `.ncurc.json`, чтобы предотвратить автоматическое обновление axios-oauth-client с помощью `npx npm-check-updates`",
+                "pt": "Novo: Adicionado arquivo `.ncurc.json` para evitar que axios-oauth-client seja atualizado automaticamente por `npx npm-check-updates`",
+                "nl": "Nieuw: Bestand `.ncurc.json` toegevoegd om te voorkomen dat axios-oauth-client automatisch wordt bijgewerkt door `npx npm-check-updates`",
+                "fr": "Nouveau : Ajout du fichier `.ncurc.json` pour empêcher axios-oauth-client d'être automatiquement mis à jour par `npx npm-check-updates`",
+                "it": "Novità: Aggiunto file `.ncurc.json` per impedire che axios-oauth-client venga aggiornato automaticamente da `npx npm-check-updates`",
+                "es": "Nuevo: Se agregó el archivo `.ncurc.json` para evitar que axios-oauth-client se actualice automáticamente mediante `npx npm-check-updates`",
+                "pl": "Nowość: Dodano plik `.ncurc.json`, aby zapobiec automatycznej aktualizacji klienta axios-oauth przez `npx npm-check-updates`",
+                "uk": "Нове: додано файл `.ncurc.json`, щоб запобігти автоматичному оновленню axios-oauth-client `npx npm-check-updates`",
+                "zh-cn": "新增内容：添加文件 .ncurc.json 以防止 axios-oauth-client 被 npx npm-check-updates 自动更新"
+            },
+            "6.5.3": {
+                "en": "Fix: two minor bug fixes - including a fix that prevents objects from being updated constantly.",
+                "de": "Fix: zwei kleinere Fehlerkorrekturen - einschließlich einer Korrektur, die verhindert, dass Objekte ständig aktualisiert werden.",
+                "ru": "Исправление: два незначительных исправления ошибок, в том числе исправление, препятствующее постоянному обновлению объектов.",
+                "pt": "Correção: duas pequenas correções de bugs - incluindo uma correção que impede que os objetos sejam atualizados constantemente.",
+                "nl": "Fix: twee kleine bugfixes - waaronder een fix die verhindert dat objecten voortdurend worden bijgewerkt.",
+                "fr": "Correction : deux corrections de bugs mineurs - dont un correctif qui empêche les objets d'être mis à jour en permanence.",
+                "it": "Correzione: due correzioni di bug minori, inclusa una correzione che impedisce agli oggetti di essere aggiornati costantemente.",
+                "es": "Solución: dos correcciones de errores menores, incluida una solución que evita que los objetos se actualicen constantemente.",
+                "pl": "Poprawka: dwie drobne poprawki błędów - w tym poprawka uniemożliwiająca ciągłą aktualizację obiektów.",
+                "uk": "Виправлення: два незначних виправлення помилок, включаючи виправлення, яке запобігає постійному оновленню об’єктів.",
+                "zh-cn": "修复：两个小错误修复 - 包括防止对象不断更新的修复。"
             },
             "6.5.2": {
                 "en": "Fix: \"oauth is not a function\" error during startup - again!",
