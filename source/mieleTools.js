@@ -593,6 +593,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
                 await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
                 await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
                 await createStateStartTime(adapter,  path, currentDeviceState.startTime);
                 await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
                 await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
@@ -614,6 +615,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
                 await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
                 await createStateStartTime(adapter,  path, currentDeviceState.startTime);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
                 await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
                 await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);
                 await createStateSmartGrid(adapter,  path, currentDeviceState.remoteEnable.smartGrid);
@@ -632,6 +634,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
                 await createStateProgramType(adapter,  `${path}.${currentDeviceState.programType.key_localized}`, currentDeviceState.programType.value_localized, currentDeviceState.programType.value_raw );
                 await createStateProgramPhase(adapter,  `${path}.${currentDeviceState.programPhase.key_localized}`, currentDeviceState.programPhase.value_localized, currentDeviceState.programPhase.value_raw );
                 await createStateRemainingTime(adapter,  path, currentDeviceState.remainingTime);
+                await createStateSignalDoor(adapter,  path, currentDeviceState.signalDoor);
                 await createStateStartTime(adapter,  path, currentDeviceState.startTime);
                 await createStateSignalInfo(adapter,  path, currentDeviceState.signalInfo);
                 await createStateFullRemoteControl(adapter,  path, currentDeviceState.remoteEnable.fullRemoteControl);

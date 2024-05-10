@@ -1,8 +1,21 @@
 {
     "common": {
         "name": "mielecloudservice",
-        "version": "6.5.4",
+        "version": "6.5.6",
         "news": {
+            "6.5.6": {
+                "en": "Added signalDoor to Washing machines, Tumble dryer and Washer dryer\nDependencies got updated",
+                "de": "SignalTür zu Waschmaschinen, Wäschetrockner und Waschtrockner hinzugefügt\nAbhängigkeiten wurden aktualisiert",
+                "ru": "Добавлен сигнал «Дверь» к стиральным машинам, сушильным машинам и стирально-сушильным машинам\nЗависимости обновлены.",
+                "pt": "Adicionado sinalPorta para máquinas de lavar, secadoras e lavadoras\nAs dependências foram atualizadas",
+                "nl": "Signaal toegevoegdDeur naar wasmachines, wasdroger en was-droogcombinatie\nAfhankelijkheden zijn bijgewerkt",
+                "fr": "Signal ajoutéPorte vers Machines à laver, Sèche-linge et Lave-linge séchant\nLes dépendances ont été mises à jour",
+                "it": "Aggiunto segnale per Lavatrici, Asciugatrici e Lavasciuga\nLe dipendenze sono state aggiornate",
+                "es": "Se agregó señal de puerta a lavadoras, secadoras y lavadoras secadoras. Se actualizaron las dependencias.",
+                "pl": "Dodano sygnał Drzwi do pralek, suszarki bębnowej i pralko-suszarki. \n Zaktualizowano zależności",
+                "uk": "До пральних машин, сушильної машини та пральної сушильної машини додано сигнал «Дверцята»\nОновлено залежності",
+                "zh-cn": "向洗衣机、滚筒烘干机和洗衣烘干机添加了 signalDoor\n依赖项已更新"
+            },
             "6.5.4": {
                 "en": "New: Added file `.ncurc.json` to prevent axios-oauth-client from being automatically updated by `npx npm-check-updates`",
                 "de": "Neu: Datei `.ncurc.json` hinzugefügt, um zu verhindern, dass axios-oauth-client automatisch von `npx npm-check-updates` aktualisiert wird",
@@ -145,123 +158,6 @@
                 "pl": "Dodano klienta użytkownika do nagłówków http * Dodano wykładnicze wycofywanie w przypadku błędów * Poprawna obsługa niezdefiniowanych urządzeń podczas wykonywania działań * Naprawiono działanie przełącznika światła * zmieniono odpowiedź http z ostrzeżenia na debugowanie",
                 "zh-cn": "在 http-headers 中添加了用户代理*在出现错误时添加了指数退避*在执行操作时正确处理未定义的设备*固定灯开关操作*将 http 响应从警告切换到调试",
                 "uk": "Додано User-Agent до http-заголовків*Додано експоненціальну затримку у разі помилок*Належна обробка невизначених пристроїв під час виконання дій*Виправлена ​​дія перемикача світла*переключено відповідь HTTP з попередження на налагодження"
-            },
-            "6.2.2": {
-                "en": "Starting programs on devices is working now.",
-                "de": "Das Starten von Programmen auf Geräten funktioniert jetzt.",
-                "ru": "Запуск программ на устройствах теперь работает.",
-                "pt": "Iniciar programas em dispositivos está funcionando agora.",
-                "nl": "het starten van programma's op apparaten werkt nu.",
-                "fr": "le démarrage des programmes sur les appareils fonctionne maintenant.",
-                "it": "l'avvio dei programmi sui dispositivi ora funziona.",
-                "es": "ahora funciona el inicio de programas en los dispositivos.",
-                "pl": "Uruchamianie programów na urządzeniach działa teraz.",
-                "zh-cn": "设备上的启动程序现在可以正常工作。",
-                "uk": "Запуск програм на пристроях зараз працює."
-            },
-            "6.2.1": {
-                "en": "VentilationStep needs to be type number but was boolean\nACTIONS.programId is invalid: obj.common.type has an invalid value (integer)",
-                "de": "VentilationStep muss Typ Nummer sein, war aber boolean\nACTIONS.programId ist ungültig: obj.common.type hat einen ungültigen Wert (Ganzzahl)",
-                "ru": "VentilationStep должен быть номером типа, но был логическим\nACTIONS.programId недействителен: obj.common.type имеет недопустимое значение (целое число)",
-                "pt": "VentilationStep precisa ser o número do tipo, mas era booleano\nACTIONS.programId é inválido: obj.common.type tem um valor inválido (inteiro)",
-                "nl": "VentilationStep moet typenummer zijn, maar was boolean\nACTIES.programId is ongeldig: obj.common.type heeft een ongeldige waarde (geheel getal)",
-                "fr": "VentilationStep doit être un numéro de type mais était booléen\nACTIONS.programId n'est pas valide : obj.common.type a une valeur non valide (entier)",
-                "it": "VentilationStep deve essere il numero di tipo ma era booleano\nACTIONS.programId non è valido: obj.common.type ha un valore non valido (intero)",
-                "es": "VentilationStep debe ser un número de tipo pero era booleano\nACTIONS.programId no es válido: obj.common.type tiene un valor no válido (entero)",
-                "pl": "VentilationStep musi być typem number, ale był boolean\nACTIONS.programId jest nieprawidłowy: obj.common.type ma nieprawidłową wartość (liczba całkowita)",
-                "zh-cn": "VentilationStep 需要是类型号，但 boolean\nACTIONS.programId 无效：obj.common.type 的值无效（整数）",
-                "uk": "VentilationStep має бути номером типу, але було логічним\nACTIONS.programId недійсний: obj.common.type має недійсне значення (ціле число)"
-            },
-            "6.2.0": {
-                "en": "Reintroduced data polling as a config option for all who has troubles with Server-Sent Events\nAdded some additional error handling code when Server Send Events report errors\nAdded reconnect delay in case of an error\nImproved handling of adapter traffic light in case of an error\nWaiting for code to complete in case of an occurring event\nChanged watchdog log entry from info to debug",
-                "de": "Wiedereinführung der Datenabfrage als Konfigurationsoption für alle, die Probleme mit vom Server gesendeten Ereignissen haben \n Zusätzlichen Code zur Fehlerbehandlung hinzugefügt, wenn Server-Sendeereignisse Fehler melden\nVerzögerung bei Wiederverbindung im Falle eines Fehlers eingebaut\nAdapter-Ampel verbessert wenn Fehler auftreten\nWatchdog-Eintrag von info auf debug geändert",
-                "ru": "Вновь введен опрос данных в качестве параметра конфигурации для всех, у кого есть проблемы с событиями, отправленными сервером. \n Добавлен дополнительный код обработки ошибок, когда события отправки сервера сообщают об ошибках. \n Добавлена ​​задержка повторного подключения в случае ошибки. ",
-                "pt": "Pesquisa de dados reintroduzida como uma opção de configuração para todos os que têm problemas com eventos enviados pelo servidor\nAdicionado algum código adicional de tratamento de erros quando os eventos de envio do servidor relatam erros\nAdicionado atraso de reconexão em caso de erro\nTratamento aprimorado do semáforo do adaptador em caso de um ",
-                "nl": "Data polling opnieuw geïntroduceerd als een configuratie-optie voor iedereen die problemen heeft met Server-Sent Events\nEr is wat extra foutafhandelingscode toegevoegd wanneer Server Send Events fouten rapporteren\nVertraging voor opnieuw verbinden toegevoegd in geval van een fout\nVerbeterde afhandeling van adapter-verkeerslicht in het geval van een ",
-                "fr": "Réintroduction de l'interrogation des données en tant qu'option de configuration pour tous ceux qui ont des problèmes avec les événements envoyés par le serveur \n Ajout d'un code de gestion d'erreur supplémentaire lorsque les événements d'envoi du serveur signalent des erreurs \n Ajout d'un délai de reconnexion en cas d'erreur \n Amélioration de la gestion du feu de signalisation de l'adaptateur en cas d'un ",
-                "it": "Reintrodotto il polling dei dati come opzione di configurazione per tutti coloro che hanno problemi con gli eventi inviati dal server\nAggiunti alcuni codici di gestione degli errori aggiuntivi quando gli eventi di invio del server segnalano errori\nAggiunto ritardo di riconnessione in caso di errore\nMigliore gestione del semaforo dell'adattatore in caso di ",
-                "es": "Se reintrodujo el sondeo de datos como una opción de configuración para todos los que tienen problemas con los eventos enviados por el servidor. \n Se agregó un código de manejo de errores adicional cuando los eventos de envío del servidor informan errores. ",
-                "pl": "Przywrócono odpytywanie danych jako opcję konfiguracji dla wszystkich, którzy mają problemy ze zdarzeniami wysyłanymi przez serwer \n Dodano dodatkowy kod obsługi błędów, gdy zdarzenia wysłania przez serwer zgłaszają błędy \n Dodano opóźnienie ponownego połączenia w przypadku błędu \n Poprawiono obsługę sygnalizacji świetlnej adaptera w przypadku ",
-                "zh-cn": "重新引入数据轮询作为所有遇到服务器发送事件问题的配置选项\n在服务器发送事件报告错误时添加了一些额外的错误处理代码\n添加了重新连接延迟以防出现错误\n改进了适配器交通灯的处理以防出现错误",
-                "uk": "Знову введено опитування даних як параметр конфігурації для всіх, хто має проблеми з подіями, надісланими сервером\nДодано додатковий код обробки помилок, коли події надсилання сервера повідомляють про помилки\nДодано затримку повторного підключення у разі помилки\nПокращена обробка світлофора адаптера в разі помилки\nОчікування завершення коду в разі виникнення події\nЗапис журналу сторожового таймера змінено з інформації на налагодження"
-            },
-            "6.1.5": {
-                "en": "Changed State-Changed log entry from info to debug\nFixed issue with not initialized auth-ping variable on adapter startup\nFixed issue with not initialized auth-ping variable after token has been refreshed\nFixed error in auth expiry calculation",
-                "de": "Statusänderungs–Protokolleintrag von „info“ auf „debug“ geändert\n Problem mit nicht initialisierter auth.ping-Variable beim Start des Adapters behoben\n Problem mit nicht initialisierter auth.ping-Variable beim Tokenrefresh behoben\nFehler bei der Berechnung ob das Token bald abläuft behoben",
-                "ru": "Изменена запись в журнале State-Change с информации на отладку \n Исправлена ​​проблема с неинициализированной переменной ping-аутентификации при запуске адаптера \n Исправлена ​​проблема с неинициализированной переменной ping-аутентификации после обновления токена \n Исправлена ​​ошибка в расчете срока действия аутентификации",
-                "pt": "Alteração da entrada de log de estado alterado de info para debug\nCorrigido problema com a variável auth-ping não inicializada na inicialização do adaptador\nCorrigido problema com a variável auth-ping não inicializada após a atualização do token\nCorrigido erro no cálculo de expiração de autenticação",
-                "nl": "Status gewijzigde logboekinvoer gewijzigd van info naar debug \n Probleem opgelost met niet-geïnitialiseerde auth-ping-variabele bij het opstarten van adapter",
-                "fr": "Modification de l'entrée de journal d'état-modification de l'information au débogage \n Problème résolu avec la variable auth-ping non initialisée au démarrage de l'adaptateur \n Problème résolu avec la variable auth-ping non initialisée après l'actualisation du jeton \n Erreur fixe dans le calcul de l'expiration de l'authentification",
-                "it": "Modificata la voce del registro con modifica dello stato da info a debug\nRisolto problema con la variabile auth-ping non inizializzata all'avvio dell'adattatore\nRisolto problema con la variabile auth-ping non inizializzata dopo l'aggiornamento del token\nRisolto errore nel calcolo della scadenza dell'autenticazione",
-                "es": "Se modificó la entrada de registro de cambio de estado de información a depuración \n Problema solucionado con la variable de auth-ping no inicializada en el inicio del adaptador \n Problema solucionado con la variable de auth-ping no inicializada después de que se actualizó el token \n Error solucionado en el cálculo de caducidad de autenticación",
-                "pl": "Zmieniono wpis w dzienniku Stan-Zmieniono z informacji na debug\nNaprawiono problem z nie zainicjowaną zmienną auth-ping podczas uruchamiania adaptera\nNaprawiono problem z nie zainicjowaną zmienną auth-ping po odświeżeniu tokenu\nNaprawiono błąd w obliczaniu wygaśnięcia uwierzytelniania",
-                "zh-cn": "将 State-Changed 日志条目从 info 更改为 debug\n修复了适配器启动时未初始化 auth-ping 变量的问题\n修复了刷新令牌后未初始化 auth-ping 变量的问题\n修复了身份验证到期计算中的错误",
-                "uk": "Змінено запис журналу State-Changed з інформації на налагодження\nВиправлена ​​проблема з неініціалізованою змінною auth-ping під час запуску адаптера\nВиправлено проблему з неініціалізованою змінною auth-ping після оновлення маркера\nВиправлена ​​помилка під час розрахунку терміну авторизації"
-            },
-            "6.1.4": {
-                "en": "Fixes error with setting target temperature",
-                "de": "Behebt Fehler beim Einstellen der Zieltemperatur",
-                "ru": "Исправлена ​​ошибка с установкой целевой температуры",
-                "pt": "Corrige o erro ao definir a temperatura alvo",
-                "nl": "Lost fout op bij het instellen van de doeltemperatuur",
-                "fr": "Corrige l'erreur avec le réglage de la température cible",
-                "it": "Risolve l'errore con l'impostazione della temperatura target",
-                "es": "Soluciona el error al establecer la temperatura objetivo",
-                "pl": "Naprawiono błąd z ustawieniem temperatury docelowej",
-                "zh-cn": "修复了设置目标温度的错误",
-                "uk": "Виправляє помилку з налаштуванням цільової температури"
-            },
-            "6.1.3": {
-                "en": "Fixes error with cooling devices\nFixes startup loop when cooling devices are connected\nFixed SuperCooling switch\nFixed SuperFreezing switch\nAdded code to run dry tests with local test data",
-                "de": "Behebt Fehler bei Kühlgeräten \n Behebt Startschleife, wenn Kühlgeräte angeschlossen sind \n SuperCooling-Schalter behoben \n SuperFreezing-Schalter behoben \n Code hinzugefügt, um Trockentests mit lokalen Testdaten auszuführen",
-                "ru": "Исправлена ​​ошибка с охлаждающими устройствами \n Исправлен цикл запуска при подключении охлаждающих устройств \n Исправлен переключатель SuperCooling \n Исправлен переключатель SuperFreezing \n Добавлен код для запуска сухих тестов с локальными тестовыми данными",
-                "pt": "Corrige o erro com os dispositivos de resfriamento\nCorrige o loop de inicialização quando os dispositivos de resfriamento estão conectados\nFixo comutador SuperCooling\nFixo comutador SuperFreezing\nAdicionado código para executar testes secos com dados de teste locais",
-                "nl": "Verhelpt fout met koelapparaten\nVerhelpt opstartlus wanneer koelapparaten zijn aangesloten\nVaste SuperCooling-schakelaar\nFixed SuperFreezing-schakelaar\n Toegevoegde code om droge tests uit te voeren met lokale testgegevens",
-                "fr": "Corrige l'erreur avec les dispositifs de refroidissement\nCorrige la boucle de démarrage lorsque les dispositifs de refroidissement sont connectés\nCommutateur SuperCooling fixe\nCommutateur SuperFreezing fixe\nCode ajouté pour exécuter des tests à sec avec des données de test locales",
-                "it": "Risolve l'errore con i dispositivi di raffreddamento\nRisolve il ciclo di avvio quando i dispositivi di raffreddamento sono collegati\nInterruttore SuperCooling fisso\nInterruttore SuperFreezing fisso\nAggiunto codice per eseguire test a secco con dati di test locali",
-                "es": "Soluciona el error con los dispositivos de enfriamiento \n Soluciona el ciclo de inicio cuando los dispositivos de enfriamiento están conectados \n Se corrigió el interruptor SuperCooling \n Se corrigió el interruptor Super Freezing \n Código agregado para ejecutar pruebas en seco con datos de prueba locales",
-                "pl": "Naprawia błąd z urządzeniami chłodzącymi \n Naprawia pętlę uruchamiania, gdy podłączone są urządzenia chłodzące \n Naprawiono przełącznik SuperCooling \n Naprawiono przełącznik SuperFreezing \n Dodano kod do uruchamiania suchych testów z lokalnymi danymi testowymi",
-                "zh-cn": "修复了冷却设备的错误\n修复了连接冷却设备时的启动循环\n修复了 SuperCooling 开关\n修复了 SuperFreezing 开关\n添加了使用本地测试数据运行干测试的代码",
-                "uk": "Виправляє помилку з охолоджуючими пристроями\nВиправляє цикл запуску при підключенні охолоджуючих пристроїв\nВиправлено перемикач SuperCooling\nВиправлено перемикач SuperFreezing\nДодано код для запуску сухих тестів із локальними тестовими даними"
-            },
-            "6.1.2": {
-                "en": "Some minor bugfixes - see changelog for details",
-                "de": "Einige kleinere Bugfixes - siehe Änderungsprotokoll für Details",
-                "ru": "Некоторые незначительные исправления ошибок — подробности смотрите в журнале изменений.",
-                "pt": "Algumas correções de bugs menores - veja o changelog para detalhes",
-                "nl": "Enkele kleine bugfixes - zie changelog voor details",
-                "fr": "Quelques corrections de bugs mineurs - voir le journal des modifications pour plus de détails",
-                "it": "Alcune correzioni di bug minori: vedere il registro delle modifiche per i dettagli",
-                "es": "Algunas correcciones de errores menores: consulte el registro de cambios para obtener más detalles.",
-                "pl": "Kilka drobnych poprawek - zobacz listę zmian po szczegóły",
-                "zh-cn": "一些小错误修复 - 有关详细信息，请参阅更改日志",
-                "uk": "Деякі незначні виправлення помилок - подробиці дивіться в журналі змін"
-            },
-            "6.1.0": {
-                "en": "Added some error handling\nChanged PlateStep data point name\nRemoved some unused code",
-                "de": "Etwas Fehlerbehandlung hinzugefügt \n Name des PlateStep-Datenpunkts geändert \n Nicht verwendeten Code entfernt",
-                "ru": "Добавлена ​​обработка некоторых ошибок \n Изменено имя точки данных PlateStep \n Удален некоторый неиспользуемый код",
-                "pt": "Adicionado algum tratamento de erros\nAlterado o nome do ponto de dados PlateStep\nRemovido algum código não utilizado",
-                "nl": "Wat foutafhandeling toegevoegd \n PlateStep-gegevenspuntnaam gewijzigd \n Enkele ongebruikte code verwijderd",
-                "fr": "Ajout de la gestion des erreurs \n Modification du nom du point de données PlateStep \n Suppression de certains codes inutilisés",
-                "it": "Aggiunte alcune operazioni di gestione degli errori\nNome del punto dati PlateStep modificato\nRimosso del codice inutilizzato",
-                "es": "Se agregó un manejo de errores \n Se cambió el nombre del punto de datos de PlateStep \n Se eliminó un código no utilizado",
-                "pl": "Dodano obsługę błędów\nZmieniono nazwę punktu danych PlateStep\nUsunięto część nieużywanego kodu",
-                "zh-cn": "添加了一些错误处理\n更改了 PlateStep 数据点名称\n删除了一些未使用的代码",
-                "uk": "Додано деяку обробку помилок\nЗмінено назву точки даних PlateStep\nВидалено деякий невикористаний код"
-            },
-            "6.0.0": {
-                "en": "Adapter entirely rewritten from scratch - the changelog is too long to provide it here - Please take a look into the readme and be careful on updating.",
-                "de": "Adapter komplett von Grund auf neu geschrieben - das Änderungsprotokoll ist zu lang, um es hier bereitzustellen - Bitte werfen Sie einen Blick in die Readme und seien Sie beim Aktualisieren vorsichtig.",
-                "ru": "Адаптер полностью переписан с нуля - журнал изменений слишком длинный, чтобы его здесь приводить - Пожалуйста, загляните в файл readme и будьте осторожны при обновлении.",
-                "pt": "Adaptador totalmente reescrito do zero - o changelog é muito longo para fornecê-lo aqui - Por favor, dê uma olhada no readme e tenha cuidado ao atualizar.",
-                "nl": "Adapter volledig opnieuw geschreven - het changelog is te lang om het hier weer te geven - Neem een ​​kijkje in de readme en wees voorzichtig bij het updaten.",
-                "fr": "Adaptateur entièrement réécrit à partir de zéro - le journal des modifications est trop long pour le fournir ici - Veuillez consulter le fichier Lisez-moi et soyez prudent lors de la mise à jour.",
-                "it": "Adattatore interamente riscritto da zero - il log delle modifiche è troppo lungo per fornirlo qui - Dai un'occhiata al readme e fai attenzione durante l'aggiornamento.",
-                "es": "Adaptador completamente reescrito desde cero: el registro de cambios es demasiado largo para proporcionarlo aquí. Eche un vistazo al archivo Léame y tenga cuidado al actualizar.",
-                "pl": "Adapter całkowicie przepisany od zera - dziennik zmian jest zbyt długi, aby go tutaj podać - zajrzyj do pliku readme i bądź ostrożny przy aktualizacji.",
-                "zh-cn": "适配器完全从头重写 - 更改日志太长，无法在此处提供 - 请查看自述文件并小心更新。",
-                "uk": "Адаптер повністю переписаний з нуля - журнал змін занадто довгий, щоб надати його тут - Будь ласка, перегляньте readme і будьте обережні під час оновлення."
             }
         },
         "titleLang": {
@@ -300,7 +196,10 @@
             "xgw3000",
             "gateway"
         ],
-        "license": "MIT",
+        "licenseInformation": {
+            "type": "free",
+            "license": "MIT"
+        },
         "platform": "Javascript/Node.js",
         "main": "main.js",
         "icon": "mielecloudservice.svg",
