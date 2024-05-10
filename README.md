@@ -114,9 +114,15 @@ If you like to get a deeper understanding or need a raw-value translation please
 ## Changelog
 ### **WORK IN PROGRESS**
 
+### 6.5.6 (2024-05-10) (Dying for an Angel)
+
+- (grizzelbee) New: [402](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/402) Added signalDoor to Washing machines, Tumble dryer and Washer dryer
+- (grizzelbee) Upd: Dependencies got updated
+
 ### 6.5.5 (2024-01-03) (Dying for an Angel)
-* (grizzelbee) Upd: Added year 2024 to licence
-* (grizzelbee) Upd: Dependencies got updated
+
+- (grizzelbee) Upd: Added year 2024 to licence
+- (grizzelbee) Upd: Dependencies got updated
 
 
 ### 6.5.4 (2023-05-03) (Dying for an Angel)
