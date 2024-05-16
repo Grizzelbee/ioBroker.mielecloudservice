@@ -66,7 +66,7 @@
     "main.js"
   ],
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.2"
   },
   "scripts": {
     "test:js": "mocha --config test/mocharc.custom.json \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",

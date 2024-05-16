@@ -201,7 +201,6 @@
             "license": "MIT"
         },
         "platform": "Javascript/Node.js",
-        "main": "main.js",
         "icon": "mielecloudservice.svg",
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.svg",
@@ -213,7 +212,6 @@
         "connectionType": "cloud",
         "dataSource": "push",
         "tier": 2,
-        "materialize": true,
         "adminUI": {
             "config": "json"
         },
