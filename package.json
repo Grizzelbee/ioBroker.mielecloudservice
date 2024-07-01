@@ -25,7 +25,7 @@
     "url": "https://github.com/Grizzelbee/ioBroker.mielecloudservice"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^3.1.4",
+    "@iobroker/adapter-core": "^3.1.6",
     "@iobroker/plugin-sentry": "^1.2.1",
     "axios": "^1.6.8",
     "axios-oauth-client": "^1.5.0",
