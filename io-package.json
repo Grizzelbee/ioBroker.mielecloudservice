@@ -1,191 +1,204 @@
 {
-    "common": {
-        "name": "mielecloudservice",
-        "version": "6.5.6",
-        "news": {
-            "6.5.6": {
-                "en": "Added signalDoor to Washing machines, Tumble dryer and Washer dryer\nDependencies got updated",
-                "de": "SignalTür zu Waschmaschinen, Wäschetrockner und Waschtrockner hinzugefügt\nAbhängigkeiten wurden aktualisiert",
-                "ru": "Добавлен сигнал «Дверь» к стиральным машинам, сушильным машинам и стирально-сушильным машинам\nЗависимости обновлены.",
-                "pt": "Adicionado sinalPorta para máquinas de lavar, secadoras e lavadoras\nAs dependências foram atualizadas",
-                "nl": "Signaal toegevoegdDeur naar wasmachines, wasdroger en was-droogcombinatie\nAfhankelijkheden zijn bijgewerkt",
-                "fr": "Signal ajoutéPorte vers Machines à laver, Sèche-linge et Lave-linge séchant\nLes dépendances ont été mises à jour",
-                "it": "Aggiunto segnale per Lavatrici, Asciugatrici e Lavasciuga\nLe dipendenze sono state aggiornate",
-                "es": "Se agregó señal de puerta a lavadoras, secadoras y lavadoras secadoras. Se actualizaron las dependencias.",
-                "pl": "Dodano sygnał Drzwi do pralek, suszarki bębnowej i pralko-suszarki. \n Zaktualizowano zależności",
-                "uk": "До пральних машин, сушильної машини та пральної сушильної машини додано сигнал «Дверцята»\nОновлено залежності",
-                "zh-cn": "向洗衣机、滚筒烘干机和洗衣烘干机添加了 signalDoor\n依赖项已更新"
-            },
-            "6.5.4": {
-                "en": "New: Added file `.ncurc.json` to prevent axios-oauth-client from being automatically updated by `npx npm-check-updates`",
-                "de": "Neu: Datei `.ncurc.json` hinzugefügt, um zu verhindern, dass axios-oauth-client automatisch von `npx npm-check-updates` aktualisiert wird",
-                "ru": "Новое: добавлен файл `.ncurc.json`, чтобы предотвратить автоматическое обновление axios-oauth-client с помощью `npx npm-check-updates`",
-                "pt": "Novo: Adicionado arquivo `.ncurc.json` para evitar que axios-oauth-client seja atualizado automaticamente por `npx npm-check-updates`",
-                "nl": "Nieuw: Bestand `.ncurc.json` toegevoegd om te voorkomen dat axios-oauth-client automatisch wordt bijgewerkt door `npx npm-check-updates`",
-                "fr": "Nouveau : Ajout du fichier `.ncurc.json` pour empêcher axios-oauth-client d'être automatiquement mis à jour par `npx npm-check-updates`",
-                "it": "Novità: Aggiunto file `.ncurc.json` per impedire che axios-oauth-client venga aggiornato automaticamente da `npx npm-check-updates`",
-                "es": "Nuevo: Se agregó el archivo `.ncurc.json` para evitar que axios-oauth-client se actualice automáticamente mediante `npx npm-check-updates`",
-                "pl": "Nowość: Dodano plik `.ncurc.json`, aby zapobiec automatycznej aktualizacji klienta axios-oauth przez `npx npm-check-updates`",
-                "uk": "Нове: додано файл `.ncurc.json`, щоб запобігти автоматичному оновленню axios-oauth-client `npx npm-check-updates`",
-                "zh-cn": "新增内容：添加文件 .ncurc.json 以防止 axios-oauth-client 被 npx npm-check-updates 自动更新"
-            }
-        },
-        "titleLang": {
-            "en": "Miele CloudService",
-            "de": "Miele CloudService",
-            "ru": "Miele CloudService",
-            "pt": "Miele CloudService",
-            "nl": "Miele CloudService",
-            "fr": "Miele Cloud Service",
-            "it": "Servizio cloud Miele",
-            "es": "Servicio en la nube de Miele",
-            "pl": "Miele CloudService",
-            "zh-cn": "Miele 云服务",
-            "uk": "Miele CloudService"
-        },
-        "desc": {
-            "en": "Get your Miele appliances (XGW3000 & WiFiConn@ct) connected",
-            "de": "Verbinden Sie Ihre Miele Geräte (XGW3000 & WiFiConn@ct).",
-            "ru": "Подключите свою бытовую технику Miele (XGW3000 и WiFiConn@ct) к сети",
-            "pt": "Ligue os seus electrodomésticos Miele (XGW3000 & WiFiConn@ct)",
-            "nl": "Verbind je Miele apparaten (XGW3000 & WiFiConn@ct)",
-            "fr": "Connectez vos appareils Miele (XGW3000 & WiFiConn@ct)",
-            "it": "Collega i tuoi elettrodomestici Miele (XGW3000 e WiFiConn@ct).",
-            "es": "Conecta tus electrodomésticos Miele (XGW3000 y WiFiConn@ct)",
-            "pl": "Podłącz swoje urządzenia Miele (XGW3000 i WiFiConn@ct)",
-            "zh-cn": "连接您的 Miele 电器（XGW3000 和 WiFiConn@ct）",
-            "uk": "Підключіть свої прилади Miele (XGW3000 & WiFiConn@ct)."
-        },
-        "authors": [
-            "grizzelbee <open.source@hingsen.de>"
-        ],
-        "keywords": [
-            "household",
-            "miele",
-            "wificonn@ct",
-            "xgw3000",
-            "gateway"
-        ],
-        "licenseInformation": {
-            "type": "free",
-            "license": "MIT"
-        },
-        "platform": "Javascript/Node.js",
-        "icon": "mielecloudservice.svg",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.svg",
-        "readme": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "household",
-        "compact": true,
-        "connectionType": "cloud",
-        "dataSource": "push",
-        "tier": 2,
-        "adminUI": {
-            "config": "json"
-        },
-        "messages": [
-            {
-                "condition": {
-                    "operand": "and",
-                    "rules": [
-                        "oldVersion<6.4.0",
-                        "newVersion>=6.4.0"
-                    ]
-                },
-                "title": {
-                    "en": "Instance requires new configuration after update",
-                    "de": "Die Instanz erfordert nach dem Update eine neue Konfiguration",
-                    "ru": "Экземпляр требует новой конфигурации после обновления",
-                    "pt": "A instância requer uma nova configuração após a atualização",
-                    "nl": "Instantie vereist nieuwe configuratie na update",
-                    "fr": "L'instance nécessite une nouvelle configuration après la mise à jour",
-                    "it": "L'istanza richiede una nuova configurazione dopo l'aggiornamento",
-                    "es": "La instancia requiere una nueva configuración después de la actualización",
-                    "pl": "Instancja wymaga nowej konfiguracji po aktualizacji",
-                    "zh-cn": "实例更新后需要新配置",
-                    "uk": "Після оновлення екземпляр потребує нової конфігурації"
-                },
-                "text": {
-                    "en": "After upgrading to Version 6.4.0 or later you need to reenter your password and client secret due to the change of the admin interface.",
-                    "de": "Nach dem Upgrade auf Version 6.4.0 oder höher müssen Sie Ihr Kennwort und Ihren geheimen Clientschlüssel aufgrund der Änderung der Verwaltungsoberfläche erneut eingeben.",
-                    "ru": "После обновления до версии 6.4.0 или более поздней вам необходимо повторно ввести пароль и секрет клиента из-за изменения интерфейса администратора.",
-                    "pt": "Após o upgrade para a Versão 6.4.0 ou posterior, você precisa reinserir sua senha e segredo do cliente devido à alteração da interface administrativa.",
-                    "nl": "Na het upgraden naar versie 6.4.0 of hoger moet u uw wachtwoord en clientgeheim opnieuw invoeren vanwege de wijziging van de beheerdersinterface.",
-                    "fr": "Après la mise à niveau vers la version 6.4.0 ou ultérieure, vous devez ressaisir votre mot de passe et votre secret client en raison du changement de l'interface d'administration.",
-                    "it": "Dopo l'aggiornamento alla versione 6.4.0 o successiva, è necessario reinserire la password e il segreto client a causa della modifica dell'interfaccia di amministrazione.",
-                    "es": "Después de actualizar a la versión 6.4.0 o posterior, debe volver a ingresar su contraseña y el secreto del cliente debido al cambio de la interfaz de administración.",
-                    "pl": "Po aktualizacji do wersji 6.4.0 lub nowszej należy ponownie wprowadzić hasło i klucz klienta ze względu na zmianę interfejsu administratora.",
-                    "zh-cn": "升级到 6.4.0 或更高版本后，由于管理界面的更改，您需要重新输入密码和客户端密码。",
-                    "uk": "Після оновлення до версії 6.4.0 або новішої вам потрібно буде повторно ввести пароль і секрет клієнта через зміну інтерфейсу адміністратора."
-                },
-                "level": "warn",
-                "buttons": [
-                    "agree",
-                    "cancel"
-                ]
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=5.1.13"
-            }
-        ],
-        "dependencies": [
-            {
-                "js-controller": ">=5.0.19"
-            }
-        ],
-        "plugins": {
-            "sentry": {
-                "dsn": "https://bb362bebab074bcd8b8f821a070f6662@o505019.ingest.sentry.io/5735758"
-            }
-        }
+  "common": {
+    "name": "mielecloudservice",
+    "version": "6.5.7",
+    "news": {
+      "6.5.7": {
+        "en": "Upd: Dependencies got updated\nFix: Fixed some minor issues found by adapter-checker\nUpd: Added tests for node 22",
+        "de": "Aktualisierung: Abhängigkeiten wurden aktualisiert\nFix: Einige kleinere Probleme durch Adapter-Checker gefunden behoben\nUpd: Tests für Knoten 22 hinzugefügt",
+        "ru": "Upd: зависимости обновили\nИсправлено несколько незначительных проблем, найденных адаптером-проверщиком\nОбновление: Добавленные тесты для узла 22",
+        "pt": "Upd: Dependências foram atualizadas\nFix: Corrigido alguns problemas menores encontrados pelo verificador do adaptador\nUpd: Adicionados testes para node 22",
+        "nl": "Upd: Afhankelijkheden werden bijgewerkt\nFix: Enkele kleine problemen opgelost door adapter-checker\nUpd: Toegevoegde tests voor knooppunt 22",
+        "fr": "Mise à jour : Mise à jour des dépendances\nCorrection: Correction de quelques problèmes mineurs trouvés par adaptateur-vérificateur\nMise à jour: Ajout de tests pour le nœud 22",
+        "it": "Aggiornamento delle dipendenze\nFix: Risolto alcuni problemi minori trovati da adattatore-chicker\nUpd: test aggiunti per nodo 22",
+        "es": "Actualización de las dependencias\nFijación: Arreglar algunos problemas menores encontrados por adaptador\nArriba: Se han añadido pruebas para el nodo 22",
+        "pl": "Upd: Aktualizacja zależności\nFix: Naprawiono kilka drobnych problemów znalezionych przez adapter- checker\nUpd: Dodano testy dla węzła 22",
+        "uk": "Оновлення: Залежності оновлено\nВиправлено: Виправлено деякі незначні проблеми, знайдені адаптером-шейкером\nПопередня: Додано тести для вузла 22",
+        "zh-cn": "Upd: 依赖更新\n修正: 修正适配器检查器发现的一些小问题\nUpd:节点22的加载测试"
+      },
+      "6.5.6": {
+        "en": "Added signalDoor to Washing machines, Tumble dryer and Washer dryer\nDependencies got updated",
+        "de": "SignalTür zu Waschmaschinen, Wäschetrockner und Waschtrockner hinzugefügt\nAbhängigkeiten wurden aktualisiert",
+        "ru": "Добавлен сигнал «Дверь» к стиральным машинам, сушильным машинам и стирально-сушильным машинам\nЗависимости обновлены.",
+        "pt": "Adicionado sinalPorta para máquinas de lavar, secadoras e lavadoras\nAs dependências foram atualizadas",
+        "nl": "Signaal toegevoegdDeur naar wasmachines, wasdroger en was-droogcombinatie\nAfhankelijkheden zijn bijgewerkt",
+        "fr": "Signal ajoutéPorte vers Machines à laver, Sèche-linge et Lave-linge séchant\nLes dépendances ont été mises à jour",
+        "it": "Aggiunto segnale per Lavatrici, Asciugatrici e Lavasciuga\nLe dipendenze sono state aggiornate",
+        "es": "Se agregó señal de puerta a lavadoras, secadoras y lavadoras secadoras. Se actualizaron las dependencias.",
+        "pl": "Dodano sygnał Drzwi do pralek, suszarki bębnowej i pralko-suszarki. \n Zaktualizowano zależności",
+        "uk": "До пральних машин, сушильної машини та пральної сушильної машини додано сигнал «Дверцята»\nОновлено залежності",
+        "zh-cn": "向洗衣机、滚筒烘干机和洗衣烘干机添加了 signalDoor\n依赖项已更新"
+      },
+      "6.5.4": {
+        "en": "New: Added file `.ncurc.json` to prevent axios-oauth-client from being automatically updated by `npx npm-check-updates`",
+        "de": "Neu: Datei `.ncurc.json` hinzugefügt, um zu verhindern, dass axios-oauth-client automatisch von `npx npm-check-updates` aktualisiert wird",
+        "ru": "Новое: добавлен файл `.ncurc.json`, чтобы предотвратить автоматическое обновление axios-oauth-client с помощью `npx npm-check-updates`",
+        "pt": "Novo: Adicionado arquivo `.ncurc.json` para evitar que axios-oauth-client seja atualizado automaticamente por `npx npm-check-updates`",
+        "nl": "Nieuw: Bestand `.ncurc.json` toegevoegd om te voorkomen dat axios-oauth-client automatisch wordt bijgewerkt door `npx npm-check-updates`",
+        "fr": "Nouveau : Ajout du fichier `.ncurc.json` pour empêcher axios-oauth-client d'être automatiquement mis à jour par `npx npm-check-updates`",
+        "it": "Novità: Aggiunto file `.ncurc.json` per impedire che axios-oauth-client venga aggiornato automaticamente da `npx npm-check-updates`",
+        "es": "Nuevo: Se agregó el archivo `.ncurc.json` para evitar que axios-oauth-client se actualice automáticamente mediante `npx npm-check-updates`",
+        "pl": "Nowość: Dodano plik `.ncurc.json`, aby zapobiec automatycznej aktualizacji klienta axios-oauth przez `npx npm-check-updates`",
+        "uk": "Нове: додано файл `.ncurc.json`, щоб запобігти автоматичному оновленню axios-oauth-client `npx npm-check-updates`",
+        "zh-cn": "新增内容：添加文件 .ncurc.json 以防止 axios-oauth-client 被 npx npm-check-updates 自动更新"
+      }
     },
-    "native": {
-        "Client_secret": "",
-        "Miele_pwd": "",
-        "Miele_account": "",
-        "Client_ID": "",
-        "locale": "de",
-        "oauth2_vg": "de-DE",
-        "pollInterval": 120,
-        "pollUnit": 60,
-        "sse": true,
-        "delayedProcessing": false,
-        "messageDelay": 2000
+    "titleLang": {
+      "en": "Miele CloudService",
+      "de": "Miele CloudService",
+      "ru": "Miele CloudService",
+      "pt": "Miele CloudService",
+      "nl": "Miele CloudService",
+      "fr": "Miele Cloud Service",
+      "it": "Servizio cloud Miele",
+      "es": "Servicio en la nube de Miele",
+      "pl": "Miele CloudService",
+      "zh-cn": "Miele 云服务",
+      "uk": "Miele CloudService"
     },
-    "encryptedNative": [
-        "Client_secret",
-        "Miele_pwd"
+    "desc": {
+      "en": "Get your Miele appliances (XGW3000 & WiFiConn@ct) connected",
+      "de": "Verbinden Sie Ihre Miele Geräte (XGW3000 & WiFiConn@ct).",
+      "ru": "Подключите свою бытовую технику Miele (XGW3000 и WiFiConn@ct) к сети",
+      "pt": "Ligue os seus electrodomésticos Miele (XGW3000 & WiFiConn@ct)",
+      "nl": "Verbind je Miele apparaten (XGW3000 & WiFiConn@ct)",
+      "fr": "Connectez vos appareils Miele (XGW3000 & WiFiConn@ct)",
+      "it": "Collega i tuoi elettrodomestici Miele (XGW3000 e WiFiConn@ct).",
+      "es": "Conecta tus electrodomésticos Miele (XGW3000 y WiFiConn@ct)",
+      "pl": "Podłącz swoje urządzenia Miele (XGW3000 i WiFiConn@ct)",
+      "zh-cn": "连接您的 Miele 电器（XGW3000 和 WiFiConn@ct）",
+      "uk": "Підключіть свої прилади Miele (XGW3000 & WiFiConn@ct)."
+    },
+    "authors": [
+      "grizzelbee <open.source@hingsen.de>"
     ],
-    "protectedNative": [
-        "Client_secret",
-        "Miele_pwd"
+    "keywords": [
+      "household",
+      "miele",
+      "wificonn@ct",
+      "xgw3000",
+      "gateway"
     ],
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
+    "platform": "Javascript/Node.js",
+    "icon": "mielecloudservice.svg",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/Grizzelbee/ioBroker.mielecloudservice/master/admin/mielecloudservice.svg",
+    "readme": "https://github.com/Grizzelbee/ioBroker.mielecloudservice/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "household",
+    "compact": true,
+    "connectionType": "cloud",
+    "dataSource": "push",
+    "tier": 2,
+    "adminUI": {
+      "config": "json"
+    },
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": [
+            "oldVersion<6.4.0",
+            "newVersion>=6.4.0"
+          ]
         },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "Device or service connected",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
-    ]
+        "title": {
+          "en": "Instance requires new configuration after update",
+          "de": "Die Instanz erfordert nach dem Update eine neue Konfiguration",
+          "ru": "Экземпляр требует новой конфигурации после обновления",
+          "pt": "A instância requer uma nova configuração após a atualização",
+          "nl": "Instantie vereist nieuwe configuratie na update",
+          "fr": "L'instance nécessite une nouvelle configuration après la mise à jour",
+          "it": "L'istanza richiede una nuova configurazione dopo l'aggiornamento",
+          "es": "La instancia requiere una nueva configuración después de la actualización",
+          "pl": "Instancja wymaga nowej konfiguracji po aktualizacji",
+          "zh-cn": "实例更新后需要新配置",
+          "uk": "Після оновлення екземпляр потребує нової конфігурації"
+        },
+        "text": {
+          "en": "After upgrading to Version 6.4.0 or later you need to reenter your password and client secret due to the change of the admin interface.",
+          "de": "Nach dem Upgrade auf Version 6.4.0 oder höher müssen Sie Ihr Kennwort und Ihren geheimen Clientschlüssel aufgrund der Änderung der Verwaltungsoberfläche erneut eingeben.",
+          "ru": "После обновления до версии 6.4.0 или более поздней вам необходимо повторно ввести пароль и секрет клиента из-за изменения интерфейса администратора.",
+          "pt": "Após o upgrade para a Versão 6.4.0 ou posterior, você precisa reinserir sua senha e segredo do cliente devido à alteração da interface administrativa.",
+          "nl": "Na het upgraden naar versie 6.4.0 of hoger moet u uw wachtwoord en clientgeheim opnieuw invoeren vanwege de wijziging van de beheerdersinterface.",
+          "fr": "Après la mise à niveau vers la version 6.4.0 ou ultérieure, vous devez ressaisir votre mot de passe et votre secret client en raison du changement de l'interface d'administration.",
+          "it": "Dopo l'aggiornamento alla versione 6.4.0 o successiva, è necessario reinserire la password e il segreto client a causa della modifica dell'interfaccia di amministrazione.",
+          "es": "Después de actualizar a la versión 6.4.0 o posterior, debe volver a ingresar su contraseña y el secreto del cliente debido al cambio de la interfaz de administración.",
+          "pl": "Po aktualizacji do wersji 6.4.0 lub nowszej należy ponownie wprowadzić hasło i klucz klienta ze względu na zmianę interfejsu administratora.",
+          "zh-cn": "升级到 6.4.0 或更高版本后，由于管理界面的更改，您需要重新输入密码和客户端密码。",
+          "uk": "Після оновлення до версії 6.4.0 або новішої вам потрібно буде повторно ввести пароль і секрет клієнта через зміну інтерфейсу адміністратора."
+        },
+        "level": "warn",
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=5.1.13"
+      }
+    ],
+    "dependencies": [
+      {
+        "js-controller": ">=5.0.19"
+      }
+    ],
+    "plugins": {
+      "sentry": {
+        "dsn": "https://bb362bebab074bcd8b8f821a070f6662@o505019.ingest.sentry.io/5735758"
+      }
+    }
+  },
+  "native": {
+    "Client_secret": "",
+    "Miele_pwd": "",
+    "Miele_account": "",
+    "Client_ID": "",
+    "locale": "de",
+    "oauth2_vg": "de-DE",
+    "pollInterval": 120,
+    "pollUnit": 60,
+    "sse": true,
+    "delayedProcessing": false,
+    "messageDelay": 2000
+  },
+  "encryptedNative": [
+    "Client_secret",
+    "Miele_pwd"
+  ],
+  "protectedNative": [
+    "Client_secret",
+    "Miele_pwd"
+  ],
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "Device or service connected",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }
