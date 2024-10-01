@@ -113,6 +113,9 @@ If you like to get a deeper understanding or need a raw-value translation please
 
 ## Changelog
 ### **WORK IN PROGRESS**
+- (grizzelbee) Upd: Dependencies got updated
+- (grizzelbee) Fix: Fixed some minor issues found by adapter-checker
+- (grizzelbee) Upd: Added tests for node 22
 
 ### 6.5.6 (2024-05-10) (Dying for an Angel)
 

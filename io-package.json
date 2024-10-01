@@ -28,136 +28,6 @@
                 "pl": "Nowość: Dodano plik `.ncurc.json`, aby zapobiec automatycznej aktualizacji klienta axios-oauth przez `npx npm-check-updates`",
                 "uk": "Нове: додано файл `.ncurc.json`, щоб запобігти автоматичному оновленню axios-oauth-client `npx npm-check-updates`",
                 "zh-cn": "新增内容：添加文件 .ncurc.json 以防止 axios-oauth-client 被 npx npm-check-updates 自动更新"
-            },
-            "6.5.3": {
-                "en": "Fix: two minor bug fixes - including a fix that prevents objects from being updated constantly.",
-                "de": "Fix: zwei kleinere Fehlerkorrekturen - einschließlich einer Korrektur, die verhindert, dass Objekte ständig aktualisiert werden.",
-                "ru": "Исправление: два незначительных исправления ошибок, в том числе исправление, препятствующее постоянному обновлению объектов.",
-                "pt": "Correção: duas pequenas correções de bugs - incluindo uma correção que impede que os objetos sejam atualizados constantemente.",
-                "nl": "Fix: twee kleine bugfixes - waaronder een fix die verhindert dat objecten voortdurend worden bijgewerkt.",
-                "fr": "Correction : deux corrections de bugs mineurs - dont un correctif qui empêche les objets d'être mis à jour en permanence.",
-                "it": "Correzione: due correzioni di bug minori, inclusa una correzione che impedisce agli oggetti di essere aggiornati costantemente.",
-                "es": "Solución: dos correcciones de errores menores, incluida una solución que evita que los objetos se actualicen constantemente.",
-                "pl": "Poprawka: dwie drobne poprawki błędów - w tym poprawka uniemożliwiająca ciągłą aktualizację obiektów.",
-                "uk": "Виправлення: два незначних виправлення помилок, включаючи виправлення, яке запобігає постійному оновленню об’єктів.",
-                "zh-cn": "修复：两个小错误修复 - 包括防止对象不断更新的修复。"
-            },
-            "6.5.2": {
-                "en": "Fix: \"oauth is not a function\" error during startup - again!",
-                "de": "Fix: „oauth is not a function“-Fehler beim Start – schon wieder!",
-                "ru": "Исправлено: ошибка «oauth не является функцией» при запуске — снова!",
-                "pt": "Correção: erro \"oauth não é uma função\" durante a inicialização - novamente!",
-                "nl": "Fix: \"oauth is not a function\"-fout tijdens het opstarten - opnieuw!",
-                "fr": "Correction : erreur \"oauth n'est pas une fonction\" au démarrage - encore une fois !",
-                "it": "Correzione: errore \"oauth non è una funzione\" durante l'avvio - di nuovo!",
-                "es": "Solución: error \"oauth no es una función\" durante el inicio, ¡otra vez!",
-                "pl": "Poprawka: błąd „oauth nie jest funkcją” podczas uruchamiania — ponownie!",
-                "uk": "Виправлення: помилка \"oauth не є функцією\" під час запуску - знову!",
-                "zh-cn": "修复：启动期间出现“oauth 不是函数”错误 - 再次出现！"
-            },
-            "6.5.1": {
-                "en": "Some minor fixes for ioBroker adapterchecker",
-                "de": "Einige kleinere Korrekturen für den ioBroker Adapterchecker",
-                "ru": "Некоторые мелкие исправления для ioBroker adapterchecker",
-                "pt": "Algumas pequenas correções para o adaptadorchecker ioBroker",
-                "nl": "Enkele kleine reparaties voor ioBroker adapterchecker",
-                "fr": "Quelques correctifs mineurs pour ioBroker adapterchecker",
-                "it": "Alcune correzioni minori per ioBroker adapterchecker",
-                "es": "Algunas correcciones menores para ioBroker adapterchecker",
-                "pl": "Kilka drobnych poprawek dla ioBroker adapterchecker",
-                "uk": "Деякі незначні виправлення для ioBroker adapterchecker",
-                "zh-cn": "ioBroker adapterchecker 的一些小修复"
-            },
-            "6.5.0": {
-                "en": "Important: Requires at least Node.js 14\nNew: added device type 74 = Hob with vapour extraction\nDependencies got updated\nchanged SpinningSpeed from number to string\nAdded RAW-Value to SpinningSpeed\nChanged PlateStep-xxx from number to string\nAdded RAW-Value to Platesteps\nFix: GENERIC_BUSINESS_ERORR occured when switching ventilationStep\nIn some cases the value 0 (zero) is ignored (e.g. at PlateStep)\nFix: \"oauth is not a function\" error during startup",
-                "de": "Wichtig: Benötigt mindestens Node.js 14\nNeu: Gerätetyp 74 hinzugefügt = Kochfeld mit Dunstabzug\nAbhängigkeiten wurden aktualisiert\nSpinningSpeed ​​von Zahl zu String geändert\nRAW-Wert zu SpinningSpeed ​​hinzugefügt\nPlateStep-xxx von Zahl zu String geändert\nHinzugefügt RAW-Wert zu Platesteps\nFix: GENERIC_BUSINESS_ERORR beim Umschalten des Ventilationsschritts aufgetreten\nIn einigen Fällen wird der Wert 0 (Null) ignoriert (z. B. bei PlateStep)\nFix: „oauth is not a function“-Fehler beim Start",
-                "ru": "Важно: требуется как минимум Node.js 14 \n Новое: добавлен тип устройства 74 = Варочная панель с вытяжкой пара \n Зависимости обновлены \n SpinningSpeed ​​изменен с числа на строку \n Добавлено RAW-значение для SpinningSpeed ​​\n Изменено PlateStep-xxx с числа на строку \n Добавлено RAW-Value to Platesteps\nИсправлено: GENERIC_BUSINESS_ERORR при переключении вентиляцииStep\nВ некоторых случаях значение 0 (ноль) игнорируется (например, на PlateStep)\nИсправлено: ошибка «oauth is not a function» при запуске",
-                "pt": "Importante: Requer pelo menos Node.js 14\nNovo: tipo de dispositivo adicionado 74 = Fogão com extração de vapor\nDependências atualizadas\nSpinningSpeed ​​alterado de número para string\nAdicionado valor RAW a SpinningSpeed\nPlateStep-xxx alterado de número para string\nAdicionado Valor RAW para Platesteps\nCorreção: GENERIC_BUSINESS_ERORR ocorreu ao alternar a ventilaçãoStep\nEm alguns casos, o valor 0 (zero) é ignorado (por exemplo, em PlateStep)\nCorreção: erro \"oauth não é uma função\" durante a inicialização",
-                "nl": "Belangrijk: Vereist minimaal Node.js 14\nNieuw: apparaattype 74 toegevoegd = Kookplaat met dampafzuiging\nAfhankelijkheden zijn geüpdatet\nSpinsnelheid gewijzigd van nummer naar tekenreeks\nRAW-waarde toegevoegd aan Draaisnelheid\nPlateStep-xxx gewijzigd van nummer naar tekenreeks\nToegevoegd RAW-waarde naar Platesteps\nFix: GENERIC_BUSINESS_ERORR trad op bij het wisselen vanventilatieStep\nIn sommige gevallen wordt de waarde 0 (nul) genegeerd (bijv. bij PlateStep)\nFix: \"oauth is geen functie\"-fout tijdens het opstarten",
-                "fr": "Important : Nécessite au moins Node.js 14\nNouveau : ajout du type d'appareil 74 = Table de cuisson avec extraction de vapeur\nLes dépendances ont été mises à jour\nModification de SpinningSpeed ​​de nombre en chaîne\nAjout de la valeur RAW à SpinningSpeed\nModification de PlateStep-xxx de nombre en chaîne\nAjouté Valeur RAW de Platesteps\nCorrection : GENERIC_BUSINESS_ERORR s'est produit lors du changement de ventilationStep\nDans certains cas, la valeur 0 (zéro) est ignorée (par exemple, à PlateStep)\nCorrection : \"oauth n'est pas une fonction\" erreur lors du démarrage",
-                "it": "Importante: richiede almeno Node.js 14\nNovità: aggiunto il tipo di dispositivo 74 = piano cottura con aspirazione del vapore\nLe dipendenze sono state aggiornate\nSpinningSpeed ​​modificata da numero a stringa\nAggiunto valore RAW a SpinningSpeed\nPlateStep-xxx modificato da numero a stringa\nAggiunto RAW-Value to Platesteps\nCorrezione: GENERIC_BUSINESS_ERORR si è verificato quando si passa alla fase di ventilazione\nIn alcuni casi il valore 0 (zero) viene ignorato (ad es. in PlateStep)\nCorrezione: errore \"oauth non è una funzione\" durante l'avvio",
-                "es": "Importante: Requiere al menos Node.js 14\nNuevo: tipo de dispositivo agregado 74 = Encimera con extracción de vapor\nSe actualizaron las dependencias\nCambió SpinningSpeed ​​de número a cadena\nSe agregó valor RAW a SpinningSpeed\nCambió PlateStep-xxx de número a cadena\nAgregado Valor RAW para Platesteps\nCorrección: GENERIC_BUSINESS_ERORR ocurrió al cambiar el paso de ventilación\nEn algunos casos, el valor 0 (cero) se ignora (por ejemplo, en PlateStep)\nCorrección: error \"oauth no es una función\" durante el inicio",
-                "pl": "Ważne: Wymaga co najmniej Node.js 14\nNowość: dodano typ urządzenia 74 = płyta grzejna z odciągiem pary\nZaktualizowano zależności\nzmieniono Prędkość wirowania z liczby na ciąg znaków\nDodano wartość RAW do prędkości wirowania\nZmieniono PlateStep-xxx z liczby na ciąg znaków\nDodano RAW-Value to Platesteps\nPoprawka: wystąpił błąd GENERIC_BUSINESS_ERORR podczas przełączania stopnia wentylacji\nW niektórych przypadkach wartość 0 (zero) jest ignorowana (np. w PlateStep)\nPoprawka: błąd „oauth nie jest funkcją” podczas uruchamiania",
-                "uk": "Важливо: потрібен принаймні Node.js 14\nНове: додано тип пристрою 74 = Варильна поверхня з відведенням пари\nЗалежності оновлено\nЗмінено SpinningSpeed ​​з числа на рядок\nДодано RAW-Value до SpinningSpeed\nЗмінено PlateStep-xxx з числа на рядок\nДодано RAW-Value для Platesteps\nВиправлення: GENERIC_BUSINESS_ERORR сталася під час перемикання ventilationStep\nУ деяких випадках значення 0 (нуль) ігнорується (наприклад, на PlateStep)\nВиправлення: помилка «oauth не є функцією» під час запуску",
-                "zh-cn": "重要提示：至少需要 Node.js 14\n新：添加设备类型 74 = 带蒸汽抽取的滚刀\n依赖项已更新\n将 SpinningSpeed 从数字更改为字符串\n将 RAW 值添加到 SpinningSpeed\n将 PlateStep-xxx 从数字更改为字符串\n添加Platesteps 的 RAW 值\n修复：切换通风步骤时发生 GENERIC_BUSINESS_ERORR\n在某些情况下，值 0（零）被忽略（例如在 PlateStep）\n修复：启动期间出现“oauth 不是函数”错误"
-            },
-            "6.4.0": {
-                "en": "Fix: Program names get localized now\n New: moved Admin-UI to jsonConfig\n Chg: BREAKING CHANGE: removed duplicate en-/decryption of passwords due to jsonConfig",
-                "de": "Fix: Programmnamen werden jetzt lokalisiert\n Neu: Admin-UI nach jsonConfig verschoben\n Änderung: BREAKING CHANGE: Doppelte Ver-/Entschlüsselung von Passwörtern aufgrund von jsonConfig entfernt",
-                "ru": "Исправлено: Имена программ теперь локализованы. \n Новое: интерфейс администратора перемещен в jsonConfig.",
-                "pt": "Correção: os nomes dos programas são localizados agora \n Novo: Admin-UI movido para jsonConfig \n Chg: BREAKING CHANGE: removido duplicado en-/decryption de senhas devido ao jsonConfig",
-                "nl": "Fix: programmanamen worden nu gelokaliseerd \n Nieuw: Admin-UI verplaatst naar jsonConfig \n Chg: BREAKING CHANGE: dubbele en-/decodering van wachtwoorden verwijderd vanwege jsonConfig",
-                "fr": "Correction : les noms de programme sont désormais localisés \n Nouveau : déplacement de l'interface utilisateur d'administration vers jsonConfig \n Chg : CHANGEMENT BRISANT : suppression du doublon en-/déchiffrement des mots de passe en raison de jsonConfig",
-                "it": "Correzione: i nomi dei programmi vengono ora localizzati\n Novità: spostata Admin-UI in jsonConfig\n Chg: BREAKING CHANGE: rimossa duplicata en-/decrittografia delle password a causa di jsonConfig",
-                "es": "Solución: los nombres de los programas se localizan ahora \n Nuevo: se movió la IU de administración a jsonConfig \n Chg: CAMBIO IMPORTANTE: se eliminó el cifrado/descifrado duplicado de contraseñas debido a jsonConfig",
-                "pl": "Poprawka: Nazwy programów są teraz lokalizowane\n Nowość: przeniesiono Admin-UI do jsonConfig\n Zmiana: NAŁADZAJĄCA ZMIANA: usunięto zduplikowane en-/odszyfrowywanie haseł z powodu jsonConfig",
-                "zh-cn": "修复：程序名称现在本地化\n 新功能：将 Admin-UI 移至 jsonConfig\n Chg：重大更改：删除了由于 jsonConfig 导致的重复密码加密/解密",
-                "uk": "Виправлення: назви програм тепер локалізовано\n Нове: інтерфейс адміністратора перенесено в jsonConfig\n Зміни: ГРУЗОВА ЗМІНА: видалено дублікати шифрування/розшифрування паролів через jsonConfig"
-            },
-            "6.3.4": {
-                "en": "Enabled decryption of passwords again since this issue is a bug in Admin 6.2.0",
-                "de": "Entschlüsselung von Passwörtern wieder aktiviert, da dieses Problem ein Fehler in Admin 6.2.0 ist",
-                "ru": "Снова включена расшифровка паролей, так как эта проблема является ошибкой в ​​Admin 6.2.0.",
-                "pt": "A descriptografia de senhas foi ativada novamente, pois esse problema é um bug no Admin 6.2.0",
-                "nl": "Ontsleuteling van wachtwoorden opnieuw ingeschakeld omdat dit probleem een ​​bug is in Admin 6.2.0",
-                "fr": "Le déchiffrement des mots de passe a de nouveau été activé car ce problème est un bogue dans Admin 6.2.0",
-                "it": "Abilitata nuovamente la decrittografia delle password poiché questo problema è un bug in Admin 6.2.0",
-                "es": "Habilitado el descifrado de contraseñas nuevamente ya que este problema es un error en Admin 6.2.0",
-                "pl": "Ponownie włączono odszyfrowywanie haseł, ponieważ ten problem jest błędem w Admin 6.2.0",
-                "zh-cn": "再次启用密码解密，因为此问题是 Admin 6.2.0 中的错误",
-                "uk": "Знову ввімкнено розшифровку паролів, оскільки ця проблема є помилкою в Admin 6.2.0"
-            },
-            "6.3.3": {
-                "en": "Improved error handling in case of line outages\nRemoved double decryption of passwords\nDependencies got updated",
-                "de": "Verbesserte Fehlerbehandlung bei Leitungsausfällen\n Doppelte Entschlüsselung von Passwörtern entfernt\n Abhängigkeiten aktualisiert",
-                "ru": "Улучшена обработка ошибок при отключении линии\nУдалена двойная расшифровка паролей\nОбновлены зависимости",
-                "pt": "Tratamento de erros aprimorado em caso de interrupções de linha\nRemovida a descriptografia dupla de senhas\nAs dependências foram atualizadas",
-                "nl": "Verbeterde foutafhandeling in het geval van lijnstoringen \n Dubbele decodering van wachtwoorden verwijderd \n Afhankelijkheden zijn bijgewerkt",
-                "fr": "Amélioration de la gestion des erreurs en cas de panne de ligne \n Suppression du double déchiffrement des mots de passe \n Les dépendances ont été mises à jour",
-                "it": "Migliorata la gestione degli errori in caso di interruzioni della linea\nRimossa la doppia decrittazione delle password\nAggiornate le dipendenze",
-                "es": "Manejo de errores mejorado en caso de cortes de línea \n Eliminado el descifrado doble de contraseñas \n Se actualizaron las dependencias",
-                "pl": "Ulepszona obsługa błędów w przypadku awarii linii\nUsunięto podwójne odszyfrowywanie haseł\nZaktualizowano zależności",
-                "zh-cn": "改进了线路中断时的错误处理\n删除了密码的双重解密\n更新了依赖项",
-                "uk": "Покращена обробка помилок у разі збою лінії\nВидалено подвійне розшифрування паролів\nЗалежності оновлено"
-            },
-            "6.3.2": {
-                "en": "New config option \"delayed processing\" to prevent overload on less powerful hardware\nChanged actions info message during polling to log level debug\nFixed german translation bug \"minutes\" -> \"protokoll\" (thanks to rekorboi)",
-                "de": "Neue Konfigurationsoption \"verzögerte Verarbeitung\", um eine Überlastung auf weniger leistungsstarker Hardware zu verhindern \nMeldung während des Pollings von Info auf Debug geändert\n Deutscher Übersetzungsfehler \"Minuten\" -> \"Protokoll\" behoben (danke an rekorboi)",
-                "ru": "Новая опция конфигурации «отложенная обработка» для предотвращения перегрузки на менее мощном оборудовании \n Изменено информационное сообщение о действиях во время опроса для отладки на уровне журнала \n Исправлена ​​​​ошибка перевода на немецкий язык «минуты» -> «протокол» (спасибо rekorboi)",
-                "pt": "Nova opção de configuração \"processamento atrasado\" para evitar sobrecarga em hardware menos poderoso \nMensagem de informações de ações alteradas durante a pesquisa para depuração no nível de log \nCorrigido bug de tradução alemão \"minutos\" -> \"protokoll\" (graças a rekorboi)",
-                "nl": "Nieuwe configuratie-optie \"vertraagde verwerking\" om overbelasting van minder krachtige hardware te voorkomen\nGewijzigd actie-infobericht tijdens polling naar debug op logniveau\nFixed Duitse vertaalfout \"minuten\" -> \"protokoll\" (dankzij rekorboi)",
-                "fr": "Nouvelle option de configuration \"traitement différé\" pour éviter la surcharge sur un matériel moins puissant \n Message d'information sur les actions modifié lors de l'interrogation du débogage au niveau du journal \n Correction du bug de traduction en allemand \"minutes\" -> \"protokoll\" (merci à rekorboi)",
-                "it": "Nuova opzione di configurazione \"elaborazione ritardata\" per prevenire il sovraccarico su hardware meno potente\nMessaggio informativo sulle azioni modificato durante il polling per il debug a livello di log\nCorretto bug di traduzione tedesco \"minuti\" -> \"protokoll\" (grazie a rekorboi)",
-                "es": "Nueva opción de configuración \"procesamiento retrasado\" para evitar la sobrecarga en hardware menos potente \n Se modificó el mensaje de información de acciones durante el sondeo para depurar el nivel de registro \n Se corrigió el error de traducción al alemán \"minutos\" -> \"protokoll\" (gracias a rekorboi)",
-                "pl": "Nowa opcja konfiguracji \"opóźnione przetwarzanie\", aby zapobiec przeciążeniu na mniej wydajnym sprzęcie\n Zmieniono komunikat informacyjny o akcjach podczas odpytywania do debugowania na poziomie dziennika \n Naprawiono błąd w niemieckim tłumaczeniu \"minuty\" -> \"protokoll\" (dzięki rekorboi)",
-                "zh-cn": "新的配置选项“延迟处理”以防止功能较弱的硬件过载\n在轮询期间将操作信息消息更改为日志级别调试\n修复德语翻译错误“分钟”->“protokoll”（感谢 rekorboi）",
-                "uk": "Нова опція конфігурації «відкладена обробка» для запобігання перевантаженню менш потужного обладнання\nІнформаційне повідомлення про дії під час опитування змінено на налагодження рівня журналу\nВиправлено помилку перекладу німецькою мовою «хвилини» -> «протокол» (завдяки rekorboi)"
-            },
-            "6.3.1": {
-                "en": "Fixed bad log entry for error delay\nImproved connection error handling\nFixed Sentry error: MIELECLOUDSERVICE-3K",
-                "de": "Schlechter Protokolleintrag für Fehlerverzögerung behoben \n Verbesserte Behandlung von Verbindungsfehlern \n Sentry-Fehler behoben: MIELECLOUDSERVICE-3K",
-                "ru": "Исправлена ​​неправильная запись в журнале для задержки ошибки \n Улучшена обработка ошибок подключения \n Исправлена ​​ошибка Sentry: MIELECLOUDSERVICE-3K",
-                "pt": "Corrigida entrada de log inválida para atraso de erro\nTratamento de erros de conexão aprimorado\nCorrigido erro de Sentinela: MIELECLOUDSERVICE-3K",
-                "nl": "Vaste foutieve logboekinvoer voor foutvertraging \n Verbeterde verwerking van verbindingsfouten \n Vaste Sentry-fout: MIELECLOUDSERVICE-3K",
-                "fr": "Correction d'une mauvaise entrée de journal pour le délai d'erreur \n Amélioration de la gestion des erreurs de connexion \n Correction de l'erreur Sentry : MIELECLOUDSERVICE-3K",
-                "it": "Risolto il problema con la voce di registro errata per il ritardo dell'errore \n Migliorata la gestione degli errori di connessione \n Risolto l'errore di Sentry: MIELECLOUDSERVICE-3K",
-                "es": "Se corrigió una entrada de registro incorrecta para el retraso del error \n Manejo mejorado de errores de conexión \n Error de Sentry fijo: MIELECLOUDSERVICE-3K",
-                "pl": "Naprawiono zły wpis w dzienniku dla opóźnienia błędu \n Ulepszona obsługa błędów połączenia \n Naprawiono błąd Sentry: MIELECLOUDSERVICE-3K",
-                "zh-cn": "修复了错误延迟的错误日志条目\n改进了连接错误处理\n修复了 Sentry 错误：MIELECLOUDSERVICE-3K",
-                "uk": "Виправлено неправильний запис журналу для затримки помилки\nПокращена обробка помилок підключення\nВиправлена ​​помилка Sentry: MIELECLOUDSERVICE-3K"
-            },
-            "6.3.0": {
-                "en": "Added User-Agent to http-headers*Added exponential backoff in case of errors*Handling undefined devices properly when executing actions*Fixed light switch action*switched http response from warn to debug",
-                "de": "User-Agent zu http-Headern hinzugefügt * Exponentielles Backoff bei Fehlern hinzugefügt * Korrekte Behandlung undefinierter Geräte beim Ausführen von Aktionen * Lichtschalter-Aktion behoben * HTTP-Antwort von Warnen auf Debug umgestellt",
-                "ru": "Добавлен пользовательский агент в http-заголовки * Добавлена ​​экспоненциальная отсрочка в случае ошибок * Правильная обработка неопределенных устройств при выполнении действий * Исправлено действие переключателя света * Переключен HTTP-ответ с предупреждения на отладку",
-                "pt": "Adicionado User-Agent aos cabeçalhos http*Adicionado backoff exponencial em caso de erros*Manuseando dispositivos indefinidos corretamente ao executar ações*Corrigida a ação do interruptor de luz*alterou a resposta http de aviso para depuração",
-                "nl": "User-Agent toegevoegd aan http-headers*Toegevoegd exponentiële back-off in geval van fouten*Omgaan met niet-gedefinieerde apparaten op de juiste manier bij het uitvoeren van acties*Fixed light switch action*switched http-reactie van waarschuwen naar debuggen",
-                "fr": "Ajout de l'agent utilisateur aux en-têtes http*Ajout d'un backoff exponentiel en cas d'erreurs*Gestion correcte des périphériques non définis lors de l'exécution d'actions*Action d'interrupteur d'éclairage fixe*Commutation de la réponse http de l'avertissement au débogage",
-                "it": "Aggiunto User-Agent alle intestazioni http*Aggiunto backoff esponenziale in caso di errori*Gestire correttamente i dispositivi non definiti durante l'esecuzione di azioni*Risolto problema con l'azione dell'interruttore della luce*risposta http commutata da warning a debug",
-                "es": "Se agregó User-Agent a los encabezados http * Se agregó retroceso exponencial en caso de errores * Manejo de dispositivos no definidos correctamente al ejecutar acciones * Acción de interruptor de luz fija * respuesta http cambiada de advertir a depurar",
-                "pl": "Dodano klienta użytkownika do nagłówków http * Dodano wykładnicze wycofywanie w przypadku błędów * Poprawna obsługa niezdefiniowanych urządzeń podczas wykonywania działań * Naprawiono działanie przełącznika światła * zmieniono odpowiedź http z ostrzeżenia na debugowanie",
-                "zh-cn": "在 http-headers 中添加了用户代理*在出现错误时添加了指数退避*在执行操作时正确处理未定义的设备*固定灯开关操作*将 http 响应从警告切换到调试",
-                "uk": "Додано User-Agent до http-заголовків*Додано експоненціальну затримку у разі помилок*Належна обробка невизначених пристроїв під час виконання дій*Виправлена ​​дія перемикача світла*переключено відповідь HTTP з попередження на налагодження"
             }
         },
         "titleLang": {
@@ -264,7 +134,7 @@
         ],
         "dependencies": [
             {
-                "js-controller": ">=3.3.22"
+                "js-controller": ">=5.0.19"
             }
         ],
         "plugins": {

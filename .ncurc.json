@@ -1,6 +1,9 @@
 {
   "upgrade": true,
   "reject": [
-    "axios-oauth-client"
+    "axios-oauth-client",
+    "sinon-chai",
+    "chai",
+    "eslint"
   ]
 }
