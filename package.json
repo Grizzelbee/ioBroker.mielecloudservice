@@ -24,6 +24,16 @@
     "type": "git",
     "url": "https://github.com/Grizzelbee/ioBroker.mielecloudservice"
   },
+  "files": [
+    "admin{,/!(src)/**}/!(tsconfig|tsconfig.*).json",
+    "admin{,/!(src)/**}/*.{html,css,png,svg,jpg,js}",
+    "admin/build/",
+    "lib/",
+    "www/",
+    "io-package.json",
+    "LICENSE",
+    "main.js"
+  ],
   "dependencies": {
     "@iobroker/adapter-core": "^3.2.1",
     "axios": "^1.7.7",
