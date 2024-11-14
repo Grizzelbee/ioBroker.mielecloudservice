@@ -4,70 +4,89 @@
   "items": {
     "donationHelp": {
       "type": "staticText",
-      "text": "donation"
-    },
+      "text": "donation",
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4    },
     "donateButton": {
       "type": "staticImage",
       "src": "adapter/mielecloudservice/admin/paypal-donate-button.png",
-      "href": "https://www.paypal.com/donate/?hosted_button_id=SPUDTXGNG2MYG"
-    },
+      "href": "https://www.paypal.com/donate/?hosted_button_id=SPUDTXGNG2MYG",
+      "style": {
+        "maxWidth": 194
+      }    },
     "_basicSection": {
       "newLine": true,
       "type" : "header",
       "text" : "Basic settings",
       "size": 2,
-      "sm": 24,
-      "md": 8,
-      "lg": 6
-    },
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4    },
     "sse": {
       "newLine": true,
       "type": "checkbox",
       "label": "sse",
       "tooltip": "sse_desc",
       "default": true,
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
-    },
+      "md": 6,
+      "lg": 4,
+      "xl": 4    },
     "API_KeyHelp": {
       "type": "staticLink",
       "text": "Miele_API_link",
-      "href": "https://www.miele.com/f/com/en/register_api.aspx"
-    },
+      "href": "https://www.miele.com/f/com/en/register_api.aspx",
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4    },
     "Miele_account": {
       "newLine": true,
       "type": "text",
       "label": "Miele_Account",
       "tooltip" : "Miele_Account_desc",
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
-    },
+      "md": 6,
+      "lg": 4,
+      "xl": 4    },
     "Client_ID": {
       "type": "text",
       "label": "API Client-ID",
       "tooltip" : "Client_ID_desc",
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "Miele_pwd": {
       "newLine": true,
       "type": "password",
       "label": "Miele_pwd",
       "tooltip": "Miele_pwd_desc",
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "Client_secret": {
       "type": "password",
       "label": "Client_secret",
       "tooltip": "Client_secret_desc",
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "oauth2_vg": {
       "newLine": true,
@@ -128,9 +147,11 @@
         {"label":{"en":"Miele Србија"}, "value":"sr-RS"},
         {"label":{"en":"Miele Україна"}, "value":"ru-UA"}
       ],
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "locale": {
       "type": "select",
@@ -146,18 +167,22 @@
         {"label": {"en":"Norwegian","de":"Norwegisch","ru":"Норвежский","pt":"norueguês","nl":"Noors","fr":"norvégien","it":"norvegese","es":"noruego","pl":"norweski","zh-cn":"挪威"}, "value": "nb"},
         {"label": {"en":"Danish","de":"Dänisch","ru":"датский","pt":"dinamarquês","nl":"Deens","fr":"danois","it":"danese","es":"danés","pl":"duński","zh-cn":"丹麦语"}, "value": "da"},
         {"label": {"en":"Netherlands","de":"Niederländisch","ru":"Нидерланды","pt":"Holanda","nl":"Nederlands","fr":"Pays-Bas","it":"Olanda","es":"PaísesBajos","pl":"Holandia","zh-cn":"荷兰"}, "value": "nl"}],
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "_delaySection": {
       "newLine": true,
       "type" : "header",
       "text" : "Delaying of messages",
       "size": 2,
-      "sm": 24,
-      "md": 8,
-      "lg": 6
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "delayedProcessing": {
       "newLine": true,
@@ -165,9 +190,11 @@
       "label": "delayedProcessing",
       "default": false,
       "tooltip": "delayedProcessing_desc",
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "messageDelay": {
       "type": "number",
@@ -176,18 +203,22 @@
       "label": "messageDelay",
       "default": 2000,
       "tooltip": "messageDelay_desc",
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "_pollingSection": {
       "newLine": true,
       "type" : "header",
       "text" : "Polling specific settings",
       "size": 2,
-      "sm": 24,
-      "md": 8,
-      "lg": 6
+      "xs": 12,
+      "sm": 12,
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "pollInterval": {
       "newLine": true,
@@ -197,9 +228,11 @@
       "label": "pollInterval",
       "default": 120,
       "tooltip": "pollInterval_desc",
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     },
     "pollUnit": {
       "type": "select",
@@ -210,9 +243,11 @@
         {"label": {"en":"Unit:Minutes","de":"Minuten","ru":"Минуты","pt":"Minutos","nl":"Minuten","fr":"Minutes","it":"Minuti","es":"Minutos","pl":"Minuty","zh-cn":"分钟"}, "value": 60}
       ],
       "default": 60,
+      "xs": 12,
       "sm": 12,
-      "md": 4,
-      "lg": 3
+      "md": 6,
+      "lg": 4,
+      "xl": 4
     }
   }
 }
