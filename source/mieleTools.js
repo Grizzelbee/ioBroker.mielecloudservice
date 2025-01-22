@@ -393,7 +393,7 @@ module.exports.APILogOff = async function(adapter, auth, token_type) {
             return result;
         })
         .catch( (error) => {
-            adapter.log.error('[APILogOff] ' + JSON.stringify(error) + ' Stack: '+error.stack);
+            adapter.log.error('[APILogOff] ' + JSON.stringify(error));
             return error;
         });
 };
@@ -988,7 +988,7 @@ async function addPrograms(adapter, auth, device){
                             'role': 'button',
                             'type': 'boolean'
                         },
-                        native: {}
+                        native: {'parameters' : programs.parameters}
                     } , true);
                 }
             } else {
