@@ -988,7 +988,7 @@ async function addPrograms(adapter, auth, device){
                             'role': 'button',
                             'type': 'boolean'
                         },
-                        native: {}
+                        native: {'parameters' : programs.parameters}
                     } , true);
                 }
             } else {

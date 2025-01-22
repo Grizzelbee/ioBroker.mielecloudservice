@@ -337,6 +337,7 @@ class Mielecloudservice extends utils.Adapter {
                 let   endpoint;
                 const action  = id.split('.').pop();
                 const device  = id.split('.', 3).pop();
+                const native = this.getObject(id, null).native;
                 endpoint = mieleConst.ENDPOINT_ACTIONS;
                 switch(action){
                     case 'Nickname': payload.deviceName = state.val;
