@@ -219,4 +219,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ## Copyright
-Copyright (c) 2024 grizzelbee <open.source@hingsen.de>
+Copyright (c) 2025 grizzelbee <open.source@hingsen.de>
