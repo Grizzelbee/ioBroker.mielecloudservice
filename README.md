@@ -112,10 +112,9 @@ Please refer to the general Miele API documentation (below) for more information
 If you like to get a deeper understanding or need a raw-value translation please refer to [this documentation.](machine_states.md)
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 6.5.8 (2025-02-13)
 - (grizzelbee) Upd: Dependencies got updated
 - (grizzelbee) Fix: Fixed some minor issues found by adapter-checker
-
 
 ### 6.5.7 (2024-10-01)
 - (grizzelbee) Upd: Dependencies got updated
