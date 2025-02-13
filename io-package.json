@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mielecloudservice",
-    "version": "6.5.7",
+    "version": "6.5.8",
     "news": {
+      "6.5.8": {
+        "en": "Upd: Dependencies got updated\nFix: Fixed some minor issues found by adapter-checker",
+        "de": "Aktualisierung: Abhängigkeiten wurden aktualisiert\nFix: Einige kleinere Probleme durch Adapter-Checker gefunden behoben",
+        "ru": "Upd: зависимости обновили\nИсправлено несколько незначительных проблем, найденных адаптером-проверщиком",
+        "pt": "Upd: Dependências foram atualizadas\nFix: Corrigido alguns problemas menores encontrados pelo verificador do adaptador",
+        "nl": "Upd: Afhankelijkheden werden bijgewerkt\nFix: Enkele kleine problemen opgelost door adapter-checker",
+        "fr": "Mise à jour : Mise à jour des dépendances\nCorrection: Correction de quelques problèmes mineurs trouvés par adaptateur-vérificateur",
+        "it": "Aggiornamento delle dipendenze\nFix: Risolto alcuni problemi minori trovati da adattatore-chicker",
+        "es": "Actualización de las dependencias\nFijación: Arreglar algunos problemas menores encontrados por adaptador",
+        "pl": "Upd: Aktualizacja zależności\nFix: Naprawiono kilka drobnych problemów znalezionych przez adapter- checker",
+        "uk": "Оновлення: Залежності оновлено\nВиправлено: Виправлено деякі незначні проблеми, знайдені адаптером-шейкером",
+        "zh-cn": "Upd: 依赖更新\n修正: 修正适配器检查器发现的一些小问题"
+      },
       "6.5.7": {
         "en": "Upd: Dependencies got updated\nFix: Fixed some minor issues found by adapter-checker\nUpd: Added tests for node 22",
         "de": "Aktualisierung: Abhängigkeiten wurden aktualisiert\nFix: Einige kleinere Probleme durch Adapter-Checker gefunden behoben\nUpd: Tests für Knoten 22 hinzugefügt",

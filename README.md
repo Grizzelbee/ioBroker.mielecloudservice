@@ -113,7 +113,10 @@ If you like to get a deeper understanding or need a raw-value translation please
 
 ## Changelog
 ### **WORK IN PROGRESS**
+
+### 6.5.8 (2025-02-13)
 - (grizzelbee) Upd: Dependencies got updated
+- (grizzelbee) Fix: Fixed some minor issues found by adapter-checker
 - (grizzelbee) Fix: Added screen size settings in Admin-UI for responsive design
 - (grizzelbee) Fix: Fixed sentry MIELECLOUDSERVICE-5V
 
