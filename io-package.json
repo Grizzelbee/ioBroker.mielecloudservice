@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mielecloudservice",
-    "version": "6.5.8",
+    "version": "6.5.9",
     "news": {
+      "6.5.9": {
+        "en": "\nFix: [482](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/482) Fixed broken SSE connection",
+        "de": "\nFix: [482](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/482) Feste gebrochene SSE-Verbindung",
+        "ru": "\nИсправление: [482] (https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/482) Исправлено сломанное соединение SSE",
+        "pt": "\nFix: [482](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/482) Conexão SSE quebrada fixa",
+        "nl": "\nFix: [482](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/482) Vaste verbroken SSE-verbinding",
+        "fr": "\nCorrection: [482](https://github.com/grizzelbee/ioBroker.mieloudservice/issues/482) Connexion SSE cassée fixe",
+        "it": "\n[482](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/482) Collegamento SSE rotto fisso",
+        "es": "\nFix: [482](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/482) Conexión SSE rota",
+        "pl": "\nFix: [482] (https: / / github.com / Grizzelbee / ioBroker.mielecloudservice / issues / 482) Naprawiono przerwane połączenie SSE",
+        "uk": "\n[482](https://github.com/Grizzelbee/ioBroker.mielecloudservice/products/482) Виправлено зламаний SSE з'єднання",
+        "zh-cn": "\nFix: [482] (https://github.com/Grizzelbee/ioBroker.mialecloudservice/issues/482) (中文(简体) ). 固定断开的SSE连接"
+      },
       "6.5.8": {
         "en": "Upd: Dependencies got updated\nFix: Fixed some minor issues found by adapter-checker",
         "de": "Aktualisierung: Abhängigkeiten wurden aktualisiert\nFix: Einige kleinere Probleme durch Adapter-Checker gefunden behoben",

@@ -7,12 +7,11 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
-const EventSource = require('eventsource');
+const { EventSource } = require('eventsource');
 const mieleTools = require('./source/mieleTools.js');
 const mieleConst = require('./source/mieleConst');
 const timeouts = {};
 const fakeRequests = false; // this switch is used to fake requests against the Miele API and load the JSON-objects from disk
-let adapter;
 let events;
 let auth;
 let connectionErrorHandlingInProgress = false;
@@ -38,15 +37,19 @@ class Mielecloudservice extends utils.Adapter {
      * @returns the new EventSource connection
      */
     getEventSource() {
-        // @ts-expect-error - EventSource is not defined
         const result = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
-            headers: {
-                Authorization: `Bearer ${auth.access_token}`,
-                Accept: 'text/event-stream',
-                'Accept-Language': this.config.locale,
-                'User-Agent': mieleConst.UserAgent,
-            }, //-> an option to test: , https:{rejectUnauthorized: false}
+            fetch: (input, init) =>
+                fetch(input, {
+                    ...init,
+                    headers: {
+                        Authorization: `Bearer ${auth.access_token}`,
+                        Accept: 'text/event-stream',
+                        'Accept-Language': this.config.locale,
+                        'User-Agent': mieleConst.UserAgent,
+                    }, //-> an option to test: , https:{rejectUnauthorized: false}
+                }),
         });
+        // @ts-expect-error Property 'sseErrors' does not exist on type 'EventSource'.
         result.sseErrors = 0;
         return result;
     }
@@ -111,7 +114,7 @@ class Mielecloudservice extends utils.Adapter {
          * Handle message type 'open'.
          * It occurs when an SSE connection has been established
          */
-        events.onopen = function () {
+        events.onopen = () => {
             this.log.info(
                 `Server Sent Events-Connection has been ${events.sseErrors === 0 ? 'established' : 'reestablished'} @Miele-API.`,
             );
@@ -136,7 +139,7 @@ class Mielecloudservice extends utils.Adapter {
          */
         events.addEventListener(mieleConst.ACTIONS, event => {
             this.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(event)}]`);
-            mieleTools.splitMieleActionsMessage(adapter, JSON.parse(event.data)).catch(err => {
+            mieleTools.splitMieleActionsMessage(this, JSON.parse(event.data)).catch(err => {
                 this.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
             });
         });
@@ -168,11 +171,12 @@ class Mielecloudservice extends utils.Adapter {
             );
             timeouts.reconnectDelay = setTimeout(
                 (adapter, events) => {
+                    // @ts-expect-error Property 'reconnectInterval' does not exist on type 'Event'.
                     event.reconnectInterval = randomDelay;
                     this.doSSEErrorHandling(adapter, events);
                 },
                 randomDelay,
-                adapter,
+                this,
                 events,
             );
         });
@@ -360,7 +364,7 @@ class Mielecloudservice extends utils.Adapter {
             if (state.ack) {
                 if (id.split('.').pop() === 'Power' && state.val) {
                     // add programs to device when it's powered on, since querying programs powers devices on or throws errors
-                    await mieleTools.addProgramsToDevice(adapter, auth, id.split('.', 3).pop());
+                    await mieleTools.addProgramsToDevice(this, auth, id.split('.', 3).pop());
                 }
             } else {
                 // manual change / request
