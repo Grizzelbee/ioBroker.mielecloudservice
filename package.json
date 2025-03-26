@@ -36,7 +36,7 @@
   ],
   "dependencies": {
     "@iobroker/adapter-core": "^3.2.3",
-    "axios": "^1.8.1",
+    "axios": "^1.8.3",
     "axios-oauth-client": "^1.5.0",
     "eventsource": "^3.0.5",
     "flatted": "^3.3.3"
