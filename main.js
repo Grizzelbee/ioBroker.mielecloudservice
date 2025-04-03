@@ -373,7 +373,7 @@ class Mielecloudservice extends utils.Adapter {
                 let endpoint;
                 const action = id.split('.').pop();
                 const device = id.split('.', 3).pop();
-                endpoint = mieleConst.ENDPOINT_ACTIONS;
+                endpoint = mieleConst.ENDPOINT_ACTIONS.replace('LANG', this.config.locale);
                 switch (action) {
                     case 'Nickname':
                         payload.deviceName = state.val;
