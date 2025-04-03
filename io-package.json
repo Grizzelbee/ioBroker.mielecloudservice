@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mielecloudservice",
-    "version": "6.5.9",
+    "version": "6.5.10",
     "news": {
+      "6.5.10": {
+        "en": "Upd: Dependencies got updated\nFix: [494](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/494) Fixed some minor issues found by adapter-checker",
+        "de": "Aktualisierung: Abhängigkeiten wurden aktualisiert\nFix: [494](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/494) Behoben einige kleinere Probleme von Adapter-Checker gefunden",
+        "ru": "Вверх: Зависимости обновляются\nИсправление: [494] (https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/494) Исправлены некоторые незначительные проблемы, обнаруженные с помощью адаптеров",
+        "pt": "Upd: Dependências foram atualizadas\nFix: [494] (https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/494) Corrigido alguns problemas menores encontrados pelo verificador do adaptador",
+        "nl": "Upd: Afhankelijkheden werden bijgewerkt\nFix: [494](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/494) Enkele kleine problemen opgelost door adapter-checker",
+        "fr": "Mise à jour : Mise à jour des dépendances\nCorrection : [494](https://github.com/grizzelbee/ioBroker.mieloudservice/issues/494) Correction de quelques problèmes mineurs trouvés par adaptateur-checker",
+        "it": "Aggiornamento delle dipendenze\n[494](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/494) Risolto alcuni problemi minori trovati da adattatore-chicker",
+        "es": "Actualización de las dependencias\nFix: [494](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/494) Arreglado algunos problemas menores encontrados por adaptador-controlador",
+        "pl": "Upd: Aktualizacja zależności\nFix: [494] (https: / / github.com / Grizzelbee / ioBroker.mielecloudservice / issues / 494) Naprawiono kilka drobnych problemów znalezionych przez kontroler adaptera",
+        "uk": "Оновлення: Залежності оновлено\n[494](https://github.com/Grizzelbee/ioBroker.mielecloudservice/products/494) Виправлено деякі незначні питання, знайдені адаптером-чекером",
+        "zh-cn": "Upd: 依赖更新\n菲克斯:[494](https://github.com/Grizzelbee/ioBroker.mialecloudservice/issues/494) 互联网档案馆的存檔,存档日期2013-12-20. 解决适配器检查器发现的一些小问题"
+      },
       "6.5.9": {
         "en": "\nFix: [482](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/482) Fixed broken SSE connection",
         "de": "\nFix: [482](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/482) Feste gebrochene SSE-Verbindung",
