@@ -5,6 +5,7 @@ const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
+// const {error} = require("@iobroker/adapter-dev/build/util");
 const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 const queuedMessage = {};
 let delayTimeOut;
@@ -15,8 +16,8 @@ let delayTimeOut;
  * tests the given adapter config whether it is valid
  *
  * @param adapter link to the adapter instance
- * @param config link to the adapters' configuration
- * @param config.Client_ID Miele API client-ID of the user as given by Miele
+ * @param {object} config link to the adapters' configuration
+ * @param {object} config.Client_ID Miele API client-ID of the user as given by Miele
  * @param config.Client_secret Miele API client-secret of the user as given by Miele
  * @param config.Miele_account Miele-account of the user like used in the Miele-APP usually his eMail
  * @param config.Miele_pwd personal Miele-pwd of the user like used in the Miele-APP
@@ -65,7 +66,7 @@ module.exports.checkConfig = async function (adapter, config) {
  * logs in into Miele Cloud API and requests an OAuth2 Access token
  *
  * @param adapter link to the adapter instance
- * @param config link to the adapters' configuration
+ * @param {object} config link to the adapters' configuration
  * @param config.Client_ID Miele API client-ID of the user as given by Miele
  * @param config.Client_secret Miele API client-secret of the user as given by Miele
  * @param config.Miele_account Miele-account of the user like used in the Miele-APP usually his eMail
@@ -79,7 +80,7 @@ module.exports.getAuth = async function (adapter, config, iteration) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
         adapter.log.info(`Login attempt #${iteration} @Miele-API`);
-        // @ts-ignore
+        //@ts-expect-error - axios.create() is not a function
         const getOwnerCredentials = await oauth.client(axios.create(), {
             url: mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN,
             grant_type: 'password',
@@ -226,7 +227,7 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
             url: mieleConst.BASE_URL + Endpoint,
         };
         adapter.log.debug(`Doing axios request: ${JSON.stringify(options)}`);
-        // @ts-ignore
+        // @ts-expect-error -  axios is not callable
         axios(options)
             .then(response => {
                 if (Object.prototype.hasOwnProperty.call(response, 'data')) {
@@ -308,7 +309,7 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
 /**
  * Test whether the auth token is going to expire within the next 24 hours
  *
- * @param auth the current auth token with all it's values
+ * @param {object} auth the current auth token with all it's values
  * @param auth.expiryDate the current expiry date of the token
  * @returns Returns true if the token is going to expire within the next 24 hours - false if not.
  */
@@ -341,7 +342,7 @@ module.exports.refreshAuthToken = async function (adapter, config, auth) {
             dataType: 'text/plain',
             url: mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN,
         };
-        // @ts-ignore
+        //@ts-expect-error - axios.create() is not a function
         axios(options)
             .then(result => {
                 result = JSON.parse(flatted.stringify(result));
@@ -457,9 +458,9 @@ module.exports.executeAction = async function (adapter, auth, endpoint, device, 
  *
  * @param adapter Link to the adapter instance
  * @param auth Link to the authentication object
- * @param mieleDevices The whole JSON which needs to be split into devices
- * @param mieleDevices.ident Indent Data of the device
- * @param mieleDevices.ident.deviceIdentLabel The whole JSON which needs to be split into devices
+ * @param {object} mieleDevices The whole JSON which needs to be split into devices
+ * @param {object} mieleDevices.ident Indent Data of the device
+ * @param {object} mieleDevices.ident.deviceIdentLabel The whole JSON which needs to be split into devices
  * @param mieleDevices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
  */
 module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) {
@@ -1378,9 +1379,9 @@ async function createStateDryingStep(adapter, path, value, value_raw) {
  *
  * @param adapter  link to the adapter instance
  * @param path path where the data point is going to be created
- * @param currentDeviceState array that contains the remaining time in format [hours, minutes]
+ * @param {object} currentDeviceState array that contains the remaining time in format [hours, minutes]
  * @param currentDeviceState.remainingTime array that contains the remaining time in format [hours, minutes]
- * @param currentDeviceState.status  current state of the device
+ * @param {object} currentDeviceState.status  current state of the device
  * @param currentDeviceState.status.value_raw current state of the device
  */
 async function createStateEstimatedEndTime(adapter, path, currentDeviceState) {
