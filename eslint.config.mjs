@@ -17,7 +17,8 @@ export default [
             'admin/build',
             'admin/words.js',
             'admin/admin.d.ts',
-            '**/adapter-config.d.ts'
+            '**/adapter-config.d.ts',
+            'lib/tools.js'
         ]
     },
 
