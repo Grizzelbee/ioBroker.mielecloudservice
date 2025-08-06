@@ -121,7 +121,15 @@ If you like to get a deeper understanding or need a raw-value translation please
  <!--
    Placeholder for the next version (at the beginning of the line):
    ### **WORK IN PROGRESS**
+* (grizzelbee) Upd: Dependencies got updated
+
  -->
+### **WORK IN PROGRESS**
+* (grizzelbee) Upd: Dependencies got updated
+* (grizzelbee) Fix: Fixed some minor issues found by adapter-checker
+* (grizzelbee) Fix: [515](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/515) made sentry information more visible
+* (grizzelbee) Fix: [514](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/514) Removed Node 18 from Tests and added Node24
+
 ### 6.5.10 (2025-04-03)
 * (grizzelbee) Upd: Dependencies got updated
 * (grizzelbee) Fix: [494](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/494) Fixed some minor issues found by adapter-checker
