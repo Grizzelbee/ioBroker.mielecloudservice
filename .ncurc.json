@@ -3,7 +3,6 @@
   "reject": [
     "axios-oauth-client",
     "sinon-chai",
-    "chai",
-    "eslint"
+    "chai"
   ]
 }
