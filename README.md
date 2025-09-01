@@ -124,6 +124,8 @@ If you like to get a deeper understanding or need a raw-value translation please
 * (grizzelbee) Upd: Dependencies got updated
 
  -->
+### **WORK IN PROGRESS**
+
 ### 6.5.11 (2025-08-06)
 * (grizzelbee) Upd: Dependencies got updated
 * (grizzelbee) Fix: Fixed some minor issues found by adapter-checker
