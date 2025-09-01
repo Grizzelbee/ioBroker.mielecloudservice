@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "mielecloudservice",
-    "version": "6.5.11",
+    "version": "6.5.12",
     "news": {
+      "6.5.12": {
+        "en": "Upd: Dependencies got updated\nUpd: some Dev-Dependencies got removed as told by MCM1957",
+        "de": "Aktualisierung: Abhängigkeiten wurden aktualisiert\nUpd: Einige Dev-Dependencies wurden entfernt, wie von MCM1957 erzählt",
+        "ru": "Вверх: Зависимости обновляются\nВверх: некоторые Dev-зависимости были удалены, как сказал MCM1957",
+        "pt": "Upd: Dependências foram atualizadas\nUpd: algumas Dev-Dependências foram removidas conforme dito pelo MCM1957",
+        "nl": "Upd: Afhankelijkheden werden bijgewerkt\nUpd: sommige Dev-Dependencies werden verwijderd zoals verteld door MCM1957",
+        "fr": "Mise à jour : Mise à jour des dépendances\nMise à jour : certains Dev-Dependences ont été retirés comme indiqué par MCM1957",
+        "it": "Aggiornamento delle dipendenze\nUpd: alcuni Dev-Dependencies sono stati rimossi come detto da MCM1957",
+        "es": "Actualización de las dependencias\nUpd: some Dev-Dependencies got removed as told by MCM1957",
+        "pl": "Upd: Aktualizacja zależności\nUpd: niektóre Dev- Dependendences zostały usunięte zgodnie z MCM1957",
+        "uk": "Оновлення: Залежності оновлено\nОприлюднено: деякі Dev-Depencies були видалені як розповів MCM1957",
+        "zh-cn": "Upd: 依赖更新\nUpd: 一些Dev-Dependency被删除,如MCM1957所述"
+      },
       "6.5.11": {
         "en": "Upd: Dependencies got updated\nFix: Fixed some minor issues found by adapter-checker\nFix: [515](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/515) made sentry information more visible\nFix: [514](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/514) Removed Node 18 from Tests and added Node24",
         "de": "Aktualisierung: Abhängigkeiten wurden aktualisiert\nFix: Einige kleinere Probleme durch Adapter-Checker gefunden behoben\nFix: [515](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/515) Informationen zum Versand mehr sichtbar\nFix: [514](https://github.com/Grizzelbee/ioBroker.mielecloudservice/issues/514) Entfernen Node 18 von Tests und hinzugefügt Node24",
