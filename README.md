@@ -125,6 +125,8 @@ If you like to get a deeper understanding or need a raw-value translation please
 
  -->
 ### **WORK IN PROGRESS**
+* (grizzelbee) Upd: Dependencies got updated
+* (grizzelbee) Upd: some Dev-Dependencies got removed as told by MCM1957
 
 ### 6.5.11 (2025-08-06)
 * (grizzelbee) Upd: Dependencies got updated
