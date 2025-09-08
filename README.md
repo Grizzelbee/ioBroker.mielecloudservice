@@ -124,6 +124,10 @@ If you like to get a deeper understanding or need a raw-value translation please
 * (grizzelbee) Upd: Dependencies got updated
 
  -->
+### 6.5.12 (2025-09-01)
+* (grizzelbee) Upd: Dependencies got updated
+* (grizzelbee) Upd: some Dev-Dependencies got removed as told by MCM1957
+
 ### 6.5.11 (2025-08-06)
 * (grizzelbee) Upd: Dependencies got updated
 * (grizzelbee) Fix: Fixed some minor issues found by adapter-checker
