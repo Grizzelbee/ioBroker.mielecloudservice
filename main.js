@@ -127,7 +127,7 @@ class Mielecloudservice extends utils.Adapter {
          * It occurs when a device changes one of its states and on initialization
          */
         events.addEventListener(mieleConst.DEVICES, event => {
-            this.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event)}]`);
+            this.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event.data)}]`);
             mieleTools.splitMieleDevices(this, auth, JSON.parse(event.data)).catch(err => {
                 this.log.warn(`splitMieleDevices crashed with error: [${err}]`);
             });
@@ -138,7 +138,7 @@ class Mielecloudservice extends utils.Adapter {
          * It occurs when a device changes its available actions and on initialization
          */
         events.addEventListener(mieleConst.ACTIONS, event => {
-            this.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(event)}]`);
+            this.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(event.data)}]`);
             mieleTools.splitMieleActionsMessage(this, JSON.parse(event.data)).catch(err => {
                 this.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
             });
@@ -150,7 +150,7 @@ class Mielecloudservice extends utils.Adapter {
          * It's used to feed the watchdog
          */
         events.addEventListener(mieleConst.PING, event => {
-            this.log.debug(`Received PING message by SSE: ${JSON.stringify(event)}`);
+            this.log.debug(`Received PING message by SSE: ${JSON.stringify(event.data)}`);
             auth.ping = new Date();
         });
 
@@ -196,6 +196,7 @@ class Mielecloudservice extends utils.Adapter {
                 const devices = await mieleTools.refreshMieleDevices(adapter, auth).catch(error => {
                     adapter.log.info(`Devices-Error: ${JSON.stringify(error)}`);
                 });
+                adapter.log.debug(`Devices as received from Miele: ${JSON.stringify(devices)}`);
                 auth.ping = new Date();
                 // processDeviceInfos
                 mieleTools.splitMieleDevices(adapter, auth, devices).catch(err => {

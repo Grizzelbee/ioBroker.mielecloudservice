@@ -5,7 +5,6 @@ const axios = require('axios');
 const oauth = require('axios-oauth-client');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
-// const {error} = require("@iobroker/adapter-dev/build/util");
 const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 const queuedMessage = {};
 let delayTimeOut;
@@ -464,61 +463,77 @@ module.exports.executeAction = async function (adapter, auth, endpoint, device, 
  * @param mieleDevices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
  */
 module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) {
+    adapter.log.silly(`splitMieleDevices - received data type: ${typeof mieleDevices}`);
+    adapter.log.silly(`splitMieleDevices - received data: ${JSON.stringify(mieleDevices)}`);
     // Splits the data-package returned by the API into single devices and iterates over each single device
-    for (const mieleDevice in mieleDevices) {
-        if (typeof mieleDevices === 'undefined' || typeof mieleDevice === 'undefined') {
+    for (const deviceIndex in mieleDevices) {
+        const deviceArray = mieleDevices[deviceIndex];
+        const deviceId = Object.keys(deviceArray)[0];
+        const deviceObject = mieleDevices[deviceIndex][deviceId];
+        const deviceIdent = deviceObject.ident;
+        const deviceState = deviceObject.state;
+        adapter.log.silly(`Current DeviceIndex: ${JSON.stringify(deviceIndex)}`);
+        adapter.log.silly(`Current Device: ${JSON.stringify(deviceObject)}`);
+        adapter.log.silly(`Current DeviceId: ${deviceId}`);
+        adapter.log.silly(`Current DeviceIdent: ${JSON.stringify(deviceIdent)}`);
+        adapter.log.silly(`Current DeviceState: ${JSON.stringify(deviceState)}`);
+        adapter.log.debug(`Processing device: ${deviceId}`);
+        adapter.log.silly(`known devices: ${JSON.stringify(knownDevices)}`);
+        if (
+            typeof mieleDevices === 'undefined' ||
+            typeof deviceIdent === 'undefined' ||
+            typeof deviceState === 'undefined'
+        ) {
             adapter.log.debug(
                 `splitMieleDevices: Given dataset is undefined or not splittable. Returning without action.`,
             );
             return;
-        } else if (typeof knownDevices[mieleDevice] === 'undefined') {
-            adapter.log.debug(`Device ${mieleDevice} isn't already known. Registering now...`);
-            adapter.log.debug(
-                `splitMieleDevices: ${mieleDevice}: [${mieleDevice}] *** Value: [${JSON.stringify(mieleDevices[mieleDevice])}]`,
-            );
-            knownDevices[mieleDevice] = {};
-            knownDevices[mieleDevice].lastMessage = Date.now();
-            knownDevices[mieleDevice].icon = `icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`;
-            knownDevices[mieleDevice].API_ID = mieleDevice;
-            knownDevices[mieleDevice].deviceType = mieleDevices[mieleDevice].ident.type.value_raw;
-            if (mieleDevices[mieleDevice].ident.deviceName === '') {
-                knownDevices[mieleDevice].name = mieleDevices[mieleDevice].ident.type.value_localized;
+        } else if (typeof knownDevices[deviceId] === 'undefined') {
+            adapter.log.debug(`Device ${deviceId} isn't already known. Registering now...`);
+            adapter.log.debug(`splitMieleDevices: ${deviceId}: [Value: [${JSON.stringify(mieleDevices[deviceId])}]`);
+            knownDevices[deviceId] = {};
+            knownDevices[deviceId].lastMessage = Date.now();
+            knownDevices[deviceId].icon = `icons/${deviceIdent.type.value_raw}.svg`;
+            knownDevices[deviceId].API_ID = deviceId;
+            knownDevices[deviceId].deviceType = deviceIdent.type.value_raw;
+            if (deviceIdent.deviceName === '') {
+                knownDevices[deviceId].name = deviceIdent.type.value_localized;
             } else {
-                knownDevices[mieleDevice].name = mieleDevices[mieleDevice].ident.deviceName;
+                knownDevices[deviceId].name = deviceIdent.deviceName;
             }
             const obj = {
                 type: 'device',
                 common: {
-                    name: knownDevices[mieleDevice].name,
+                    name: knownDevices[deviceId].name,
                     read: true,
                     write: false,
-                    icon: `icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`,
+                    icon: knownDevices[deviceId].icon,
                     type: 'object',
                 },
             };
-            await createOrExtendObject(adapter, mieleDevice, obj, null); // create base object
+            createOrExtendObject(adapter, deviceId, obj, null); // create base object
         }
         // device is already known
         if (adapter.config.delayedProcessing) {
-            if (Date.now() - knownDevices[mieleDevice].lastMessage < adapter.config.messageDelay) {
+            if (Date.now() - knownDevices[deviceId].lastMessage < adapter.config.messageDelay) {
                 adapter.log.debug(`Too many messages in a short period. Discarding message.`);
                 // queue message
-                queuedMessage.device = mieleDevice;
-                queuedMessage.ident = mieleDevices[mieleDevice].ident;
-                queuedMessage.state = mieleDevices[mieleDevice].state;
+                queuedMessage.device = deviceId;
+                queuedMessage.deviceObject = deviceObject;
+                queuedMessage.ident = deviceIdent;
+                queuedMessage.state = deviceState;
                 // kill running timeout
                 clearTimeout(delayTimeOut);
                 // start new timeout
                 delayTimeOut = setTimeout(
                     async queuedMessage => {
-                        await createIdentTree(adapter, `${queuedMessage.device}.IDENT`, queuedMessage.ident);
-                        await createStateTree(
-                            adapter,
-                            queuedMessage.device,
-                            mieleDevices[queuedMessage.device],
-                            queuedMessage.state,
+                        await createIdentTree(adapter, `${queuedMessage.device}.IDENT`, queuedMessage.ident).catch(
+                            err => {
+                                adapter.log.warn(`${err} occurred at delayed createIdentTree`);
+                            },
                         );
-                        knownDevices[mieleDevice].lastMessage = Date.now();
+                        await createStateTree(adapter, queuedMessage.device, queuedMessage.ident, queuedMessage.state);
+                        knownDevices[deviceId].lastMessage = Date.now();
                     },
                     adapter.config.messageDelay,
                     queuedMessage,
@@ -526,13 +541,17 @@ module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) 
                 // process queued message if timeout is reached
             } else {
                 adapter.log.debug(`Last Event happened long enough ago. Processing message immediately.`);
-                await createIdentTree(adapter, `${mieleDevice}.IDENT`, mieleDevices[mieleDevice].ident);
-                await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
-                knownDevices[mieleDevice].lastMessage = Date.now();
+                await createIdentTree(adapter, `${deviceId}.IDENT`, deviceIdent).catch(err => {
+                    adapter.log.warn(`${err} occurred at createIdentTree`);
+                });
+                await createStateTree(adapter, deviceId, deviceObject, deviceState);
+                knownDevices[deviceId].lastMessage = Date.now();
             }
         } else {
-            await createIdentTree(adapter, `${mieleDevice}.IDENT`, mieleDevices[mieleDevice].ident);
-            await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
+            await createIdentTree(adapter, `${deviceId}.IDENT`, deviceIdent).catch(err => {
+                adapter.log.warn(`${err} occurred at createIdentTree`);
+            });
+            await createStateTree(adapter, deviceId, deviceObject, deviceState);
         }
     }
 };
@@ -566,51 +585,71 @@ module.exports.addProgramsToDevice = async function (adapter, auth, mieleDevice)
  * @param currentDeviceIdent ident data of the device
  */
 async function createIdentTree(adapter, path, currentDeviceIdent) {
-    await createChannelIdent(adapter, path);
-    await createString(
-        adapter,
-        `${path}.ComModFirmware`,
-        'The release version of the communication module',
-        currentDeviceIdent.xkmIdentLabel.releaseVersion,
-    );
-    await createString(
-        adapter,
-        `${path}.ComModTechType`,
-        'The technical type of the communication module',
-        currentDeviceIdent.xkmIdentLabel.techType,
-    );
-    await createString(
-        adapter,
-        `${path}.DeviceSerial`,
-        'The serial number of the device',
-        currentDeviceIdent.deviceIdentLabel.fabNumber,
-    );
-    await createString(
-        adapter,
-        `${path}.DeviceTechType`,
-        'The technical type of the device',
-        currentDeviceIdent.deviceIdentLabel.techType,
-    );
-    await createString(
-        adapter,
-        `${path}.DeviceType`,
-        currentDeviceIdent.type.key_localized,
-        currentDeviceIdent.type.value_localized,
-    );
-    await createNumber(
-        adapter,
-        `${path}.DeviceType_raw`,
-        'Device type as number',
-        currentDeviceIdent.type.value_raw,
-        '',
-        '',
-    );
-    await createString(
-        adapter,
-        `${path}.DeviceMatNumber`,
-        'The material number of the device',
-        currentDeviceIdent.deviceIdentLabel.matNumber,
-    );
+    adapter.log.debug(`createIdentTree: Input data: ${JSON.stringify(currentDeviceIdent)}`);
+    return new Promise(async (resolve, reject) => {
+        await createChannelIdent(adapter, path);
+        await createString(
+            adapter,
+            `${path}.ComModFirmware`,
+            'The release version of the communication module',
+            currentDeviceIdent.xkmIdentLabel.releaseVersion,
+        ).catch(err => {
+            reject(err);
+        });
+        await createString(
+            adapter,
+            `${path}.ComModTechType`,
+            'The technical type of the communication module',
+            currentDeviceIdent.xkmIdentLabel.techType,
+        ).catch(err => {
+            reject(err);
+        });
+        await createString(
+            adapter,
+            `${path}.DeviceSerial`,
+            'The serial number of the device',
+            currentDeviceIdent.deviceIdentLabel.fabNumber,
+        ).catch(err => {
+            reject(err);
+        });
+        await createString(
+            adapter,
+            `${path}.DeviceTechType`,
+            'The technical type of the device',
+            currentDeviceIdent.deviceIdentLabel.techType,
+        ).catch(err => {
+            reject(err);
+        });
+        await createString(
+            adapter,
+            `${path}.DeviceType`,
+            currentDeviceIdent.type.key_localized,
+            currentDeviceIdent.type.value_localized,
+        ).catch(err => {
+            reject(err);
+        });
+        await createNumber(
+            adapter,
+            `${path}.DeviceType_raw`,
+            'Device type as number',
+            currentDeviceIdent.type.value_raw,
+            '',
+            '',
+        ).catch(err => {
+            reject(err);
+        });
+        await createString(
+            adapter,
+            `${path}.DeviceMatNumber`,
+            'The material number of the device',
+            currentDeviceIdent.deviceIdentLabel.matNumber,
+        ).catch(err => {
+            reject(err);
+        });
+        resolve('OK');
+    }).catch(err => {
+        adapter.log.error(`Failed to create ident-Tree: ${err}`);
+    });
 }
 
 /**
@@ -2114,7 +2153,9 @@ async function createVentilationStepSwitch(adapter, path, currentState) {
         'number',
         'level',
         { 0: 'Off', 1: 'Level 1', 2: 'Level 2', 3: 'Level 3', 4: 'Level 4' },
-    );
+    ).catch(error => {
+        adapter.log.warn(`createVentilationStepSwitch: ${error}`);
+    });
 }
 
 /**
@@ -2133,7 +2174,9 @@ async function addPowerSwitch(adapter, path, currentState) {
         'boolean',
         'switch.power',
         '',
-    );
+    ).catch(error => {
+        adapter.log.warn(`addPowerSwitch: ${error}`);
+    });
 }
 
 async function addStartButton(adapter, path, data) {
@@ -2202,7 +2245,9 @@ async function addLightSwitch(adapter, path, currentState) {
         'boolean',
         'switch',
         '',
-    );
+    ).catch(error => {
+        adapter.log.warn(`addLightSwitch: ${error}`);
+    });
 }
 
 /**
@@ -2214,7 +2259,7 @@ async function addLightSwitch(adapter, path, currentState) {
  * @param path {string} path where the data point is going to be created
  */
 async function createChannelIdent(adapter, path) {
-    await createOrExtendObject(
+    createOrExtendObject(
         adapter,
         path,
         {
@@ -2241,7 +2286,7 @@ async function createChannelIdent(adapter, path) {
  * @param path {string} path where the data point is going to be created
  */
 async function createChannelEcoFeedback(adapter, path) {
-    await createOrExtendObject(
+    createOrExtendObject(
         adapter,
         `${path}.EcoFeedback`,
         {
@@ -2270,7 +2315,9 @@ async function createChannelEcoFeedback(adapter, path) {
  * @param value {string} value to set to the data point
  */
 async function createString(adapter, path, description, value) {
-    await createROState(adapter, path, description, value, 'string', 'text');
+    await createROState(adapter, path, description, value, 'string', 'text').catch(error => {
+        adapter.log.warn(`createString: ${error}`);
+    });
 }
 
 /**
@@ -2286,19 +2333,27 @@ async function createString(adapter, path, description, value) {
  * @param value value to set to the data point
  */
 async function createROState(adapter, path, description, value, type, role) {
-    if (typeof value === 'undefined') {
-        return;
-    }
-    createOrExtendObject(
-        adapter,
-        path,
-        {
-            type: 'state',
-            common: { name: description, read: true, write: false, role: role, type: type },
-            native: {},
-        },
-        value,
-    );
+    return new Promise((resolve, reject) => {
+        if (typeof value === 'undefined') {
+            reject('createROState: no valid value given - skipping...');
+        }
+        try {
+            createOrExtendObject(
+                adapter,
+                path,
+                {
+                    type: 'state',
+                    common: { name: description, read: true, write: false, role: role, type: type },
+                    native: {},
+                },
+                value,
+            );
+            resolve('OK');
+        } catch (err) {
+            adapter.log.warn(`createROState: ${err}`);
+            reject(err);
+        }
+    });
 }
 
 /**
@@ -2315,28 +2370,36 @@ async function createROState(adapter, path, description, value, type, role) {
  * @param value value to set to the data point
  */
 async function createRWState(adapter, path, description, value, type, role, states) {
-    if (typeof value === 'undefined') {
-        return;
-    }
-    const commonObj = {};
-    commonObj.name = description;
-    commonObj.read = true;
-    commonObj.write = true;
-    commonObj.role = role;
-    commonObj.type = type;
-    if (states) {
-        commonObj.states = states;
-    }
-    createOrExtendObject(
-        adapter,
-        path,
-        {
-            type: 'state',
-            common: commonObj,
-            native: {},
-        },
-        value,
-    );
+    return new Promise((resolve, reject) => {
+        if (typeof value === 'undefined') {
+            reject('createRWState: no valid value given - skipping...');
+        }
+        try {
+            const commonObj = {};
+            commonObj.name = description;
+            commonObj.read = true;
+            commonObj.write = true;
+            commonObj.role = role;
+            commonObj.type = type;
+            if (states) {
+                commonObj.states = states;
+            }
+            createOrExtendObject(
+                adapter,
+                path,
+                {
+                    type: 'state',
+                    common: commonObj,
+                    native: {},
+                },
+                value,
+            );
+            resolve('OK');
+        } catch (err) {
+            adapter.log.warn(`createRWState: ${err}`);
+            reject(err);
+        }
+    });
 }
 
 /**
@@ -2392,7 +2455,7 @@ async function createNumber(adapter, path, description, value, unit, role) {
  * @param role {string} role to set to the data point (default: text)
  */
 async function createTime(adapter, path, description, value, role) {
-    await createOrExtendObject(
+    createOrExtendObject(
         adapter,
         path,
         {
