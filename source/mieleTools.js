@@ -586,6 +586,7 @@ module.exports.addProgramsToDevice = async function (adapter, auth, mieleDevice)
  */
 async function createIdentTree(adapter, path, currentDeviceIdent) {
     adapter.log.debug(`createIdentTree: Input data: ${JSON.stringify(currentDeviceIdent)}`);
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
         await createChannelIdent(adapter, path);
         await createString(
