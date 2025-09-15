@@ -1,6 +1,5 @@
-# No dot-directories except github/vscode
+# No dot-directories except github
 .*/
-!.vscode/
 !.github/
 
 *.code-workspace
