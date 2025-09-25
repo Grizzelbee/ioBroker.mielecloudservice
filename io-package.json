@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "mielecloudservice",
-    "version": "6.5.12",
+    "version": "7.0.0",
     "news": {
       "6.5.12": {
         "en": "Upd: Dependencies got updated\nUpd: some Dev-Dependencies got removed as told by MCM1957",
@@ -147,6 +147,7 @@
     "connectionType": "cloud",
     "dataSource": "push",
     "tier": 2,
+    "messagebox": true,
     "adminUI": {
       "config": "json"
     },
@@ -213,6 +214,10 @@
     "Miele_pwd": "",
     "Miele_account": "",
     "Client_ID": "",
+    "access_token": "",
+    "access_token_expiry": "",
+    "refresh_token": "",
+    "refresh_token_expiry": "",
     "locale": "de",
     "oauth2_vg": "de-DE",
     "pollInterval": 120,
@@ -223,11 +228,15 @@
   },
   "encryptedNative": [
     "Client_secret",
-    "Miele_pwd"
+    "Miele_pwd",
+    "access_token",
+    "refresh_token"
   ],
   "protectedNative": [
     "Client_secret",
-    "Miele_pwd"
+    "Miele_pwd",
+    "access_token",
+    "refresh_token"
   ],
   "objects": [],
   "instanceObjects": [

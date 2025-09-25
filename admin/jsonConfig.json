@@ -28,6 +28,22 @@
       "lg": 4,
       "xl": 4
     },
+    "_authenticate": {
+      "newLine": true,
+      "variant": "contained",
+      "color": "primary",
+      "disabled": "!_alive",
+      "type": "sendTo",
+      "error": {
+        "connect timeout": "Connection timeout"
+      },
+      "icon": "auth",
+      "command": "OAuthStepA",
+      "jsonData":  "{ \"clientId\": \"${data.Client_ID}\",\"clientSecret\": \"${data.Client_secret}\",\"redirectUriBase\": \"${data._origin}\" }",
+      "label": "Authenticate with Miele",
+      "openUrl": true,
+      "window": "Login with Miele"
+    },
     "sse": {
       "newLine": true,
       "type": "checkbox",

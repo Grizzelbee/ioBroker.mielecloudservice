@@ -1,10 +1,11 @@
 'use strict';
 
 // required files to load
-const axios = require('axios');
 const oauth = require('axios-oauth-client');
+const axios = require('axios');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
+const {adapter} = require("@iobroker/adapter-core");
 const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 const queuedMessage = {};
 let delayTimeOut;
@@ -60,6 +61,24 @@ module.exports.checkConfig = async function (adapter, config) {
 };
 
 /**
+ * generateRandomString
+ *
+ * generates a random string of given length out of A-Z, a-z, 0-9
+ *
+ * @param digits {number} length of the random string to generate
+ * @returns {Promise<string>}
+ */
+module.exports.generateRandomString = async function (digits) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < digits; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+};
+
+/**
  * Function APIGetAccessToken
  *
  * logs in into Miele Cloud API and requests an OAuth2 Access token
@@ -78,10 +97,12 @@ module.exports.checkConfig = async function (adapter, config) {
 module.exports.getAuth = async function (adapter, config, iteration) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
+        adapter.log.info(`Login attempt #${iteration} @Miele-API using simple-oauth2`);
         adapter.log.info(`Login attempt #${iteration} @Miele-API`);
         //@ts-expect-error - axios.create() is not a function
         const getOwnerCredentials = await oauth.client(axios.create(), {
-            url: mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN,
+            //url: mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN,
+            url: mieleConst.ENDPOINT_TOKEN,
             grant_type: 'password',
             client_id: config.Client_ID,
             client_secret: config.Client_secret,
@@ -108,9 +129,7 @@ module.exports.getAuth = async function (adapter, config, iteration) {
                         reject(`Terminating adapter due to inability to authenticate.`);
                         break;
                     case 429: // endpoint currently not available
-                        adapter.log.warn(
-                            `Error: Endpoint: [${mieleConst.BASE_URL}${mieleConst.ENDPOINT_TOKEN}] is currently not available.`,
-                        );
+                        adapter.log.warn(`Error: Endpoint: [${mieleConst.ENDPOINT_TOKEN}] is currently not available.`);
                         break;
                     default:
                         adapter.log.warn(
@@ -161,9 +180,15 @@ module.exports.getAuth = async function (adapter, config, iteration) {
  * @param adapter {object} link to the adapter instance
  * @param auth {object}  OAuth2 object containing required credentials
  */
-module.exports.refreshMieleDevices = async function (adapter, auth) {
+module.exports.getMieleDevices = async function (adapter, auth) {
     try {
-        return await sendAPIRequest(adapter, auth, `v1/devices/?language=${adapter.config.locale}`, 'GET', '');
+        return await sendAPIRequest(
+            adapter,
+            auth,
+            mieleConst.ENDPOINT_DEVICES.replace('LANG', adapter.config.locale),
+            'GET',
+            '',
+        );
     } catch (error) {
         adapter.log.error(`[refreshMieleDevices] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
     }
@@ -178,13 +203,96 @@ module.exports.refreshMieleDevices = async function (adapter, auth) {
  * @param auth {object}  OAuth2 object containing required credentials
  * @param device {string}
  */
-module.exports.refreshMieleActions = async function (adapter, auth, device) {
+module.exports.getMieleActions = async function (adapter, auth, device) {
     try {
         const result = {};
-        result[device] = await sendAPIRequest(adapter, auth, `v1/devices/${device}/actions/`, 'GET', '');
+        result[device] = await sendAPIRequest(
+            adapter,
+            auth,
+            mieleConst.ENDPOINT_ACTIONS.replace('DEVICEID', device),
+            'GET',
+            '',
+        );
         return result;
     } catch (error) {
         adapter.log.error(`[refreshMieleActions] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
+    }
+};
+
+/**
+ * getMieleFillingLevels
+ *
+ * polls the miele cloud API to refresh the device filling levels
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param auth {object}  OAuth2 object containing required credentials
+ * @param device {string} Id of the device to query the filling levels for
+ */
+module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID = 'dummy') {
+    try {
+        //const result = {};
+        //result[device] = await sendAPIRequest(
+        const result = await sendAPIRequest(
+            adapter,
+            auth,
+            //mieleConst.ENDPOINT_FILLINGLEVELS.replace('DEVICEID', device),
+            mieleConst.ENDPOINT_FILLINGLEVELS.replace('LANG', adapter.config.locale).replace('DEVICEID', DEVICEID),
+            'GET',
+            '',
+        );
+        return result;
+    } catch (error) {
+        adapter.log.error(`[refreshMieleFillingLevels] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
+    }
+};
+
+/**
+ * getMieleFailureDetails
+ *
+ * polls the miele cloud API to refresh the device failure details
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param auth {object}  OAuth2 object containing required credentials
+ * @param device {string} Id of the device to query the failure details for
+ */
+module.exports.getMieleFailureDetails = async function (adapter, auth, device) {
+    try {
+        const result = {};
+        result[device] = await sendAPIRequest(
+            adapter,
+            auth,
+            mieleConst.ENDPOINT_FAILUREDETAILS.replace('DEVICEID', device),
+            'GET',
+            '',
+        );
+        return result;
+    } catch (error) {
+        adapter.log.error(`[refreshMieleFailureDetails] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
+    }
+};
+
+/**
+ * getMieleRooms
+ *
+ * polls the miele cloud API to refresh the device rooms
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param auth {object}  OAuth2 object containing required credentials
+ * @param device {string} Id of the device to query the rooms for
+ */
+module.exports.getMieleRooms = async function (adapter, auth, device) {
+    try {
+        const result = {};
+        result[device] = await sendAPIRequest(
+            adapter,
+            auth,
+            mieleConst.ENDPOINT_ROOMS.replace('DEVICEID', device),
+            'GET',
+            '',
+        );
+        return result;
+    } catch (error) {
+        adapter.log.error(`[refreshMieleRooms] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
     }
 };
 

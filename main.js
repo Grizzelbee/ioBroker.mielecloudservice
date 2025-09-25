@@ -28,7 +28,168 @@ class Mielecloudservice extends utils.Adapter {
         });
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
+        this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
+    }
+
+    /**
+     *
+     * @param {ioBroker.Message} msg
+     * @returns {*}
+     */
+    async onMessage(msg) {
+        this.log.debug(`Received message: ${JSON.stringify(msg)}`);
+        if (typeof msg === 'object' && msg.message) {
+            if (msg.command === 'send') {
+                // e.g. send email or pushover or whatever
+                this.log.info('send command');
+                // Send response in callback if required
+                if (msg.callback) {
+                    this.sendTo(msg.from, msg.command, 'Message received', msg.callback);
+                }
+            }
+            switch (msg.command) {
+                case 'OAuthStepA': {
+                    const args = msg.message;
+                    this.log.debug(`Received OAuth start message: ${JSON.stringify(args)}`);
+                    if (!args || !args.clientId || !args.clientSecret || !args.redirectUriBase) {
+                        this.sendTo(
+                            msg.from,
+                            msg.command,
+                            {
+                                result: null,
+                                error: 'Invalid arguments',
+                            },
+                            msg.callback,
+                        );
+                        return;
+                    }
+                    /*
+                    if (!args.redirectUriBase.startsWith('https://')) {
+                        this.sendTo(
+                            msg.from,
+                            msg.command,
+                            {
+                                result: null,
+                                error: 'Your Admin instance needs to to use HTTPS.',
+                            },
+                            msg.callback,
+                        );
+                        return;
+                    }
+
+                     */
+                    if (!args.redirectUriBase.endsWith('/')) {
+                        args.redirectUriBase += '/';
+                    }
+                    args.redirectUriBase = `${args.redirectUriBase}oauth2_callbacks/${this.namespace}/`;
+                    this.log.debug(`Get OAuth start link data: ${JSON.stringify(args)}`);
+                    const state = await mieleTools.generateRandomString(16);
+                    const authUrl = `${mieleConst.ENDPOINT_AUTH}?client_id=${encodeURIComponent(
+                        args.clientId,
+                    )}&redirect_uri=${encodeURIComponent(args.redirectUriBase)}&response_type=${
+                        mieleConst.RESPONSE_TYPE
+                    }&scope=${encodeURIComponent(
+                        `${mieleConst.SCOPE_OPENID} ${mieleConst.SCOPE_READ} ${mieleConst.SCOPE_WRITE} ${mieleConst.SCOPE_MEDIA}`,
+                    )}&state=${state}`;
+                    // save these data for further use
+                    this._expectedAuthenticationState = state;
+                    this._clientId = args.clientId;
+                    this._clientSecret = args.clientSecret;
+                    this._redirectUriBase = args.redirectUriBase;
+                    this.log.debug(`Get OAuth start link data: ${JSON.stringify(args)}`);
+                    msg.callback &&
+                        this.sendTo(
+                            msg.from,
+                            msg.command,
+                            {
+                                openUrl: authUrl,
+                                window: 'Request Miele Auth Code',
+                                saveConfig: false,
+                                reload: false,
+                            },
+                            msg.callback,
+                        );
+
+                    break;
+                }
+                case 'oauth2Callback': {
+                    const args = msg.message;
+                    this.log.debug(`oauth2Callback: ${JSON.stringify(args)}`);
+                    if (!args.state || !args.code) {
+                        this.log.warn(`Error on OAuth callback: ${JSON.stringify(args)}`);
+                        if (args.error) {
+                            msg.callback &&
+                                this.sendTo(
+                                    msg.from,
+                                    msg.command,
+                                    { error: `Miele Cloud error: ${args.error}. Please try again.` },
+                                    msg.callback,
+                                );
+                        } else {
+                            msg.callback &&
+                                this.sendTo(
+                                    msg.from,
+                                    msg.command,
+                                    {
+                                        error: `Miele Cloud invalid response: ${JSON.stringify(args)}. Please try again.`,
+                                    },
+                                    msg.callback,
+                                );
+                        }
+                        return;
+                    }
+                    if (this._expectedAuthenticationState !== args.state) {
+                        this.log.warn(
+                            `Error on OAuth callback: Invalid state received: ${args.state} (expected: ${this._expectedAuthenticationState})`,
+                        );
+                        msg.callback &&
+                            this.sendTo(
+                                msg.from,
+                                msg.command,
+                                { error: `Miele Cloud returned an invalid state. Please try again.` },
+                                msg.callback,
+                            );
+                        return;
+                    }
+                    // Flow has received an answer from Miele Cloud - now get the tokens
+                    const accessTokenUrl = `${mieleConst.ENDPOINT_AUTHTOKEN
+                        }?client_id=${encodeURIComponent(this._clientId)
+                        }&client_secret=${encodeURIComponent(this._clientSecret)
+                        }&grant_type=${mieleConst.GRANT_TYPE
+                        }&code=${encodeURIComponent(args.code)
+                        }&redirect_uri=${encodeURIComponent(this._redirectUriBase)}`;
+                    this.log.debug(`OAuth-getAccessToken (AccessTokenUrl): ${accessTokenUrl}`);
+                    msg.callback &&
+                        this.sendTo(
+                            msg.from,
+                            msg.command,
+                            { openUrl: accessTokenUrl, window: 'Query access token', saveConfig: true, reload: true },
+                            msg.callback,
+                        );
+                    if (!args.access_token) {
+                        msg.callback &&
+                            this.sendTo(
+                                msg.from,
+                                msg.command,
+                                { error: `Miele Cloud did not return an access_token. Please try again.` },
+                                msg.callback,
+                            );
+                        return;
+                    }
+                    msg.callback &&
+                        this.sendTo(
+                            msg.from,
+                            msg.command,
+                            { result: `Received an access_token. --> Success!` },
+                            msg.callback,
+                        );
+
+                    break;
+                }
+            }
+            return false;
+        }
     }
 
     /**
@@ -154,6 +315,10 @@ class Mielecloudservice extends utils.Adapter {
             auth.ping = new Date();
         });
 
+        events.addEventListener('/devices/fillingLevels', event => {
+            this.log.debug(`Received fillingLevels message by SSE: [${JSON.stringify(event.data)}]`);
+        });
+
         /**
          * Handle message type 'error'.
          * It occurs when the Miele-API detects an error
@@ -193,7 +358,7 @@ class Mielecloudservice extends utils.Adapter {
         timeouts.datapolling = setInterval(
             async function () {
                 // getDeviceInfos
-                const devices = await mieleTools.refreshMieleDevices(adapter, auth).catch(error => {
+                const devices = await mieleTools.getMieleDevices(adapter, auth).catch(error => {
                     adapter.log.info(`Devices-Error: ${JSON.stringify(error)}`);
                 });
                 adapter.log.debug(`Devices as received from Miele: ${JSON.stringify(devices)}`);
@@ -202,6 +367,11 @@ class Mielecloudservice extends utils.Adapter {
                 mieleTools.splitMieleDevices(adapter, auth, devices).catch(err => {
                     adapter.log.warn(`splitMieleDevices crashed with error: [${err}]`);
                 });
+                // getFillingLevels
+                const fillingLevels = await mieleTools.getMieleFillingLevels(adapter, auth).catch(error => {
+                    adapter.log.info(`FillingLevels-Error: ${JSON.stringify(error)}`);
+                });
+                adapter.log.debug(`FillingLevels as received from Miele: ${JSON.stringify(fillingLevels)}`);
                 timeouts.actionsDelay = setTimeout(async function () {
                     const knownDevices = mieleTools.getKnownDevices();
                     const keys = Object.keys(knownDevices);
@@ -214,7 +384,7 @@ class Mielecloudservice extends utils.Adapter {
                         // getActions
                         adapter.log.debug(`Querying device ${knownDevices[keys[n]].name}`);
                         const actions = await mieleTools
-                            .refreshMieleActions(adapter, auth, knownDevices[keys[n]].API_ID)
+                            .getMieleActions(adapter, auth, knownDevices[keys[n]].API_ID)
                             .catch(error => {
                                 adapter.log.info(`Actions-Error: ${JSON.stringify(error)}`);
                             });
@@ -223,6 +393,27 @@ class Mielecloudservice extends utils.Adapter {
                         mieleTools.splitMieleActionsMessage(adapter, actions).catch(err => {
                             adapter.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
                         });
+
+                        const fillingLevels = await mieleTools
+                            .getMieleFillingLevels(adapter, auth, knownDevices[keys[n]].API_ID)
+                            .catch(error => {
+                                adapter.log.info(`FillingLevels-Error: ${JSON.stringify(error)}`);
+                            });
+                        adapter.log.debug(`Actions: ${JSON.stringify(fillingLevels)}`);
+
+                        const failureDetails = await mieleTools
+                            .getMieleFailureDetails(adapter, auth, knownDevices[keys[n]].API_ID)
+                            .catch(error => {
+                                adapter.log.info(`FailureDetails-Error: ${JSON.stringify(error)}`);
+                            });
+                        adapter.log.debug(`Actions: ${JSON.stringify(failureDetails)}`);
+
+                        const rooms = await mieleTools
+                            .getMieleRooms(adapter, auth, knownDevices[keys[n]].API_ID)
+                            .catch(error => {
+                                adapter.log.info(`Rooms-Error: ${JSON.stringify(error)}`);
+                            });
+                        adapter.log.debug(`Actions: ${JSON.stringify(rooms)}`);
                     }
                 }, 1000);
             },
@@ -264,10 +455,9 @@ class Mielecloudservice extends utils.Adapter {
                 await mieleTools
                     .checkConfig(this, this.config)
                     .then(async () => {
-                        auth = await mieleTools.getAuth(this, this.config, 1).catch(err => {
-                            // this.log.error(err);
-                            this.terminate(err, 11);
-                        });
+                        //                        auth = await mieleTools.getAuth(this, this.config, 1).catch(err => {
+                        //                            this.terminate(err, 11);
+                        //                        });
                     })
                     .catch(() => {
                         this.terminate('Terminating adapter due to invalid configuration.', 11);
@@ -341,7 +531,9 @@ class Mielecloudservice extends utils.Adapter {
                 this.log.debug(`Clearing ${key} interval.`);
                 clearInterval(timeouts[key]);
             }
-            events.close();
+            if (events) {
+                events.close();
+            }
             if (auth) {
                 await mieleTools.APILogOff(this, auth, 'access_token');
             }
