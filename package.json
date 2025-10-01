@@ -37,7 +37,6 @@
   "dependencies": {
     "@iobroker/adapter-core": "^3.3.2",
     "axios": "^1.12.2",
-    "axios-oauth-client": "^2.2.0",
     "eventsource": "^4.0.0",
     "flatted": "^3.3.3"
   },
@@ -50,9 +49,9 @@
     "@iobroker/eslint-config": "^2.2.0",
     "@iobroker/testing": "^5.1.1",
     "@snyk/protect": "^1.1299.1",
-    "@types/node": "^24.5.2",
+    "@types/node": "^24.6.1",
     "fs-extra": "^11.3.2",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.3"
   },
   "main": "main.js",
   "engines": {
