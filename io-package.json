@@ -210,16 +210,18 @@
     }
   },
   "native": {
-    "Client_secret": "",
     "Miele_pwd": "",
     "Miele_account": "",
+    "locale": "de",
+    "oauth2_vg": "de-DE",
     "Client_ID": "",
+    "Client_secret": "",
     "access_token": "",
     "access_token_expiry": "",
     "refresh_token": "",
     "refresh_token_expiry": "",
-    "locale": "de",
-    "oauth2_vg": "de-DE",
+    "tokenType": "",
+    "obtained": 0,
     "pollInterval": 120,
     "pollUnit": 60,
     "sse": true,
@@ -228,13 +230,11 @@
   },
   "encryptedNative": [
     "Client_secret",
-    "Miele_pwd",
     "access_token",
     "refresh_token"
   ],
   "protectedNative": [
     "Client_secret",
-    "Miele_pwd",
     "access_token",
     "refresh_token"
   ],

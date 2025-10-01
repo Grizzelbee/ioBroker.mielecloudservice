@@ -17,8 +17,6 @@ module.exports.UserAgent = `ioBroker.MieleCloudService V${AdapterVersion}`;
 module.exports.BASE_URL = 'https://api.mcs3.miele.com/';
 module.exports.ENDPOINT_AUTH = 'https://auth.domestic.miele-iot.com/partner/realms/mcs/protocol/openid-connect/auth';
 module.exports.ENDPOINT_AUTHTOKEN = 'https://auth.domestic.miele-iot.com/partner/realms/mcs/protocol/openid-connect/token';
-module.exports.ENDPOINT_TOKEN = 'thirdparty/token/';
-module.exports.ENDPOINT_LOGOUT = 'thirdparty/logout/';
 module.exports.ENDPOINT_DEVICES = 'v1/devices/?language=LANG';
 module.exports.ENDPOINT_EVENTS = 'v1/devices/all/events/?language=LANG';
 module.exports.ENDPOINT_PROGRAMS = 'v1/devices/DEVICEID/programs/?language=LANG';
@@ -48,7 +46,7 @@ module.exports.MODE_SABBATH = 1;
 module.exports.RESTART_TIMEOUT = 30; // 30 Seconds
 module.exports.WATCHDOG_TIMEOUT = 300000; // 5 Minutes in ms
 module.exports.RECONNECT_TIMEOUT = 60000; // 60 Seconds in ms
-module.exports.AUTH_CHECK_TIMEOUT = 12 * 3600 * 1000; // 12 hours in ms
+module.exports.AUTH_CHECK_TIMEOUT = 5 * 60 * 1000; // 5 minutes in ms
 module.exports.AUTH_CHECK_TIMEOUT_TEST = 30000; // 30 seconds in ms
 module.exports.ALL_ACTIONS_DISABLED = {
     processAction: [],

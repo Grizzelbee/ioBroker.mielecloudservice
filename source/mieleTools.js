@@ -1,11 +1,10 @@
 'use strict';
 
 // required files to load
-const oauth = require('axios-oauth-client');
 const axios = require('axios');
 const mieleConst = require('../source/mieleConst.js');
 const flatted = require('flatted');
-const {adapter} = require("@iobroker/adapter-core");
+const qs = require('querystring');
 const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 const queuedMessage = {};
 let delayTimeOut;
@@ -19,23 +18,12 @@ let delayTimeOut;
  * @param {object} config link to the adapters' configuration
  * @param {object} config.Client_ID Miele API client-ID of the user as given by Miele
  * @param config.Client_secret Miele API client-secret of the user as given by Miele
- * @param config.Miele_account Miele-account of the user like used in the Miele-APP usually his eMail
- * @param config.Miele_pwd personal Miele-pwd of the user like used in the Miele-APP
- * @param config.oauth2_vg Miele oauth2_vg of the user (country of miele account)
  * @param config.locale    locale the API responds in
  * @returns true if config is valid. false if config is invalid
  */
 module.exports.checkConfig = async function (adapter, config) {
     return new Promise((resolve, reject) => {
         let configIsValid = true;
-        if ('' === config.Miele_account) {
-            adapter.log.warn('Miele account is missing.');
-            configIsValid = false;
-        }
-        if ('' === config.Miele_pwd) {
-            adapter.log.warn('Miele password is missing.');
-            configIsValid = false;
-        }
         if ('' === config.Client_ID) {
             adapter.log.warn('Miele API client ID is missing.');
             configIsValid = false;
@@ -46,10 +34,6 @@ module.exports.checkConfig = async function (adapter, config) {
         }
         if ('' === config.locale) {
             adapter.log.warn('Locale is missing.');
-            configIsValid = false;
-        }
-        if ('' === config.oauth2_vg) {
-            adapter.log.warn('OAuth2_vg is missing.');
             configIsValid = false;
         }
         if (configIsValid) {
@@ -79,97 +63,23 @@ module.exports.generateRandomString = async function (digits) {
 };
 
 /**
- * Function APIGetAccessToken
+ * clearTokenSet
  *
- * logs in into Miele Cloud API and requests an OAuth2 Access token
+ * clears the tokenSet of the adapter instance
  *
- * @param adapter link to the adapter instance
- * @param {object} config link to the adapters' configuration
- * @param config.Client_ID Miele API client-ID of the user as given by Miele
- * @param config.Client_secret Miele API client-secret of the user as given by Miele
- * @param config.Miele_account Miele-account of the user like used in the Miele-APP usually his eMail
- * @param config.Miele_pwd personal Miele-pwd of the user like used in the Miele-APP
- * @param config.oauth2_vg Miele oauth2_vg of the user (country of miele account)
- * @param config.locale    locale the API responds in
- * @param iteration    count of API login attempts
- * @returns OAuth2 token
+ * @param adapter {object} link to the adapter instance
+ * @returns {Promise<void>}
  */
-module.exports.getAuth = async function (adapter, config, iteration) {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-        adapter.log.info(`Login attempt #${iteration} @Miele-API using simple-oauth2`);
-        adapter.log.info(`Login attempt #${iteration} @Miele-API`);
-        //@ts-expect-error - axios.create() is not a function
-        const getOwnerCredentials = await oauth.client(axios.create(), {
-            //url: mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN,
-            url: mieleConst.ENDPOINT_TOKEN,
-            grant_type: 'password',
-            client_id: config.Client_ID,
-            client_secret: config.Client_secret,
-            username: config.Miele_account,
-            password: config.Miele_pwd,
-            vg: config.oauth2_vg,
-        });
-        const auth = await getOwnerCredentials().catch(error => {
-            if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                switch (error.response.status) {
-                    case 401: // unauthorized
-                        adapter.log.error(
-                            'Error: Unable to authenticate user! Your credentials seem to be invalid. Please double check and fix them.',
-                        );
-                        adapter.log.warn('Credentials used for login:');
-                        adapter.log.warn(`options Miele_account: [${config.Miele_account}]`);
-                        adapter.log.warn(`options Miele_Password: [${config.Miele_pwd}]`);
-                        adapter.log.warn(`options Client_ID: [${config.Client_ID}]`);
-                        adapter.log.warn(`options Client_Secret: [${config.Client_secret}]`);
-                        adapter.log.warn(`options country: [${config.oauth2_vg}]`);
-                        adapter.log.error('IMPORTANT!! Mask/Delete your credentials when posting your log online!');
-                        reject(`Terminating adapter due to inability to authenticate.`);
-                        break;
-                    case 429: // endpoint currently not available
-                        adapter.log.warn(`Error: Endpoint: [${mieleConst.ENDPOINT_TOKEN}] is currently not available.`);
-                        break;
-                    default:
-                        adapter.log.warn(
-                            `[error.response.data]: ${typeof error.response.data === 'object' ? '' : error.response.data}`,
-                        );
-                        adapter.log.warn(
-                            `[error.response.status]: ${typeof error.response.status === 'object' ? '' : error.response.status}`,
-                        );
-                        adapter.log.warn(
-                            `[error.response.headers]: ${typeof error.response.headers === 'object' ? '' : error.response.headers}`,
-                        );
-                        break;
-                }
-            } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                adapter.log.warn(
-                    `[error.request]: ${typeof error.request === 'object' ? 'The request was made but no response was received' : error.request}`,
-                );
-                adapter.log.warn(error);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                adapter.log.warn(error.message);
-            }
-            const randomDelay = 1000 * mieleConst.RESTART_TIMEOUT + iteration * 1000 + Math.floor(Math.random() * 1000);
-            adapter.log.info(`Login attempt wasn't successful. Connection retry in ${randomDelay / 1000} Seconds.`);
-            setTimeout(function () {
-                resolve(exports.getAuth(adapter, config, iteration + 1));
-            }, randomDelay);
-        });
-        if (auth) {
-            auth.expiryDate = new Date();
-            auth.ping = new Date();
-            auth.expiryDate.setSeconds(auth.expires_in);
-            adapter.log.info(`Access token expires on: ${auth.expiryDate.toLocaleString()}`);
-            adapter.setState('info.connection', true, true);
-            resolve(auth);
-        }
-    });
+module.exports.clearTokenSet = async function (adapter) {
+    adapter.log.debug(`Clearing stored tokenSet due to forced invalidation at logout.`);
+    adapter._tokenSet.access_token = '';
+    adapter._tokenSet.refresh_token = '';
+    adapter._tokenSet.token_type = '';
+    adapter._tokenSet.expires_in = 0;
+    adapter._tokenSet.refresh_expires_in = 0;
+    adapter._tokenSet.obtained = 0;
+    adapter._tokenSet.ping = 0;
+    await adapter.extendObject(adapter.namespace, adapter._tokenSet);
 };
 
 /**
@@ -227,12 +137,13 @@ module.exports.getMieleActions = async function (adapter, auth, device) {
  * @param adapter {object} link to the adapter instance
  * @param auth {object}  OAuth2 object containing required credentials
  * @param device {string} Id of the device to query the filling levels for
+ * @param DEVICEID
  */
 module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID = 'dummy') {
     try {
         //const result = {};
         //result[device] = await sendAPIRequest(
-        const result = await sendAPIRequest(
+        return await sendAPIRequest(
             adapter,
             auth,
             //mieleConst.ENDPOINT_FILLINGLEVELS.replace('DEVICEID', device),
@@ -240,7 +151,6 @@ module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID =
             'GET',
             '',
         );
-        return result;
     } catch (error) {
         adapter.log.error(`[refreshMieleFillingLevels] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
     }
@@ -301,6 +211,55 @@ module.exports.getKnownDevices = function () {
 };
 
 /**
+ * getAccessToken
+ *
+ * requests an OAuth2 Access token
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param clientId {string} Miele API client-ID of the user as given by Miele
+ * @param clientSecret {string} Miele API client-secret of the user as given by Miele
+ * @param Code {string} the code received from the auth request
+ * @param redirectURI {string} the redirect URI used in the auth request
+ * @returns {Promise<any>} OAuth2 token
+ */
+module.exports.getAccessToken = async function (adapter, clientId, clientSecret, Code, redirectURI) {
+    return new Promise((resolve, reject) => {
+        try {
+            const data = qs.stringify({
+                client_id: clientId,
+                client_secret: clientSecret,
+                code: Code,
+                grant_type: mieleConst.GRANT_TYPE,
+                redirect_uri: redirectURI,
+            });
+
+            const options = {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'User-Agent': mieleConst.UserAgent,
+                },
+            };
+
+            axios
+                // @ts-expect-error - axios.post() is not callable
+                .post(mieleConst.ENDPOINT_AUTHTOKEN, data, options)
+                .then(response => {
+                    adapter.log.debug(JSON.stringify(response.data));
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    adapter.log.error(JSON.stringify(error.response ? error.response.data : error));
+                    reject(error);
+                });
+        } catch (error) {
+            adapter.log.error(JSON.stringify(error));
+            reject(error);
+        }
+    });
+};
+
+/**
  * sendAPIRequest
  *
  * build and send a http request to the miele server
@@ -320,6 +279,9 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
             );
         }
         // build options object for axios
+        if (auth.access_token.startsWith('$/aes-192-')) {
+            auth.access_token = adapter.decrypt(auth.access_token);
+        }
         const options = {
             headers: {
                 Authorization: `Bearer ${auth.access_token}`,
@@ -414,16 +376,55 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
 }
 
 /**
- * Test whether the auth token is going to expire within the next 24 hours
+ * Test whether the auth token is going to expire within the next 5 minutes or is already expired
  *
+ * @param {object} adapter link to the adapter instance
  * @param {object} auth the current auth token with all it's values
- * @param auth.expiryDate the current expiry date of the token
- * @returns Returns true if the token is going to expire within the next 24 hours - false if not.
+ * @param {number} auth.expires_in the time in seconds the token is valid
+ * @param {number} auth.obtained the time (in ms since 1970) the token was obtained
+ * @returns Returns true if the token is going to expire within the next 5 Minutes - false if not.
  */
-module.exports.authHasExpired = function (auth) {
-    const testValue = new Date();
-    const diffHours = (new Date(auth.expiryDate).getTime() - testValue.getTime()) / 1000 / 60;
-    return diffHours <= 24;
+module.exports.authHasExpired = function (adapter, auth) {
+    adapter.log.silly(`Time obtained: ${new Date(auth.obtained).toLocaleString()}`);
+    adapter.log.silly(`Access Token expires in: ${auth.expires_in} seconds`);
+    adapter.log.debug(`Access Token expires on: ${new Date(auth.obtained + auth.expires_in * 1000).toLocaleString()}`);
+    adapter.log.silly(`Current time is: ${new Date().toLocaleString()}`);
+    adapter.log.silly(`Diff is: #${new Date(auth.obtained + auth.expires_in * 1000).getTime() - new Date().getTime()}`);
+    const diffSeconds = new Date(auth.obtained + auth.expires_in * 1000).getTime() - new Date().getTime();
+    return diffSeconds <= 5 * 60 * 1000; // = 5 minutes
+};
+
+module.exports.refreshHasExpired = function (adapter, auth) {
+    adapter.log.silly(`Time obtained: ${new Date(auth.obtained).toLocaleString()}`);
+    adapter.log.silly(`Refresh Token expires in: ${auth.refresh_expires_in} seconds`);
+    adapter.log.debug(
+        `Refresh Token expires on: ${new Date(auth.obtained + auth.refresh_expires_in * 1000).toLocaleString()}`,
+    );
+    adapter.log.silly(`Current time is: ${new Date().toLocaleString()}`);
+    adapter.log.silly(
+        `Diff is: #${new Date(auth.obtained + auth.refresh_expires_in * 1000).getTime() - new Date().getTime()}`,
+    );
+    const diffSeconds = new Date(auth.obtained + auth.refresh_expires_in * 1000).getTime() - new Date().getTime();
+    return diffSeconds <= 0; // = 0 seconds - has expired
+};
+
+/**
+ * getEmptyTokenset
+ *
+ * returns an empty tokenSet object
+ *
+ * @returns {Promise<{access_token: string, refresh_token: string, token_type: string, expires_in: number, refresh_expires_in: number, obtained: number, ping: number}>}
+ */
+module.exports.getEmptyTokenset = async function () {
+    return {
+        access_token: '',
+        refresh_token: '',
+        token_type: '',
+        expires_in: 0,
+        refresh_expires_in: 0,
+        obtained: 0,
+        ping: 0,
+    };
 };
 
 /**
@@ -435,11 +436,15 @@ module.exports.authHasExpired = function (auth) {
  * @returns returns a refreshed auth object in case of success; error object if it fails
  */
 module.exports.refreshAuthToken = async function (adapter, config, auth) {
-    adapter.log.info(`Your access token is going to expire within the next 24 hours. Trying to refresh it.`);
+    adapter.log.info(
+        `Your access token is going to expire within the next 5 minutes or has already expired. Trying to refresh it.`,
+    );
     return new Promise((resolve, reject) => {
+        if (auth.refresh_token.startsWith('$/aes-192-')) {
+            auth.refresh_token = adapter.decrypt(auth.refresh_token);
+        }
         const options = {
             headers: {
-                // Authorization: 'Bearer ' + auth.access_token,
                 Accept: 'application/json;charset=utf-8',
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'User-Agent': mieleConst.UserAgent,
@@ -447,40 +452,45 @@ module.exports.refreshAuthToken = async function (adapter, config, auth) {
             method: 'POST',
             data: `grant_type=refresh_token&client_id=${config.Client_ID}&client_secret=${config.Client_secret}&refresh_token=${auth.refresh_token}`,
             dataType: 'text/plain',
-            url: mieleConst.BASE_URL + mieleConst.ENDPOINT_TOKEN,
+            url: mieleConst.ENDPOINT_AUTHTOKEN,
         };
+        adapter.log.debug(`Doing axios request to refresh tokens: ${JSON.stringify(options)}`);
         //@ts-expect-error - axios.create() is not a function
         axios(options)
-            .then(result => {
+            .then(async result => {
                 result = JSON.parse(flatted.stringify(result));
+                adapter.log.silly(`Token refresh message from server: ${JSON.stringify(result)}`);
                 const data = result[result[0].data];
-                const newAuth = {};
+                const newAuth = await this.getEmptyTokenset();
                 newAuth.access_token = result[data.access_token];
                 newAuth.refresh_token = result[data.refresh_token];
                 newAuth.token_type = result[data.token_type];
                 newAuth.expires_in = data.expires_in;
-                newAuth.expiryDate = new Date();
-                newAuth.ping = new Date();
-                newAuth.expiryDate.setSeconds(data.expires_in);
+                newAuth.refresh_expires_in = data.refresh_expires_in;
+                newAuth.obtained = new Date().getTime();
+                newAuth.ping = new Date().getTime();
                 adapter.log.debug(`NewAuth from server: ${JSON.stringify(newAuth)}`);
-                adapter.log.info(`New Access-Token expires on: [${newAuth.expiryDate.toLocaleString()}]`);
+                adapter.log.info(`Successfully refreshed access token.`);
                 resolve(newAuth);
             })
             .catch(error => {
-                adapter.log.error(JSON.stringify(error));
-                if (error.response) {
+                if ('status' in error) {
                     // The request was made and the server responded with a status code
                     // that falls out of the range of 2xx
-                    switch (error.response.status) {
-                        case 401: // unauthorized
-                            adapter.log.error(
-                                'Error: Unable to authenticate user! Your credentials seem to be invalid. Please double check and fix them.',
+                    switch (error.status) {
+                        case 400: // Bad request
+                            reject(
+                                `Bad Request - Your request was unacceptable, often due to missing or outdated refresh tokens.`,
                             );
-                            reject(`Terminating adapter due to inability to authenticate.`);
+                            break;
+                        case 401: // unauthorized
+                            reject(
+                                `Terminating adapter due to inability to authenticate. Your credentials seem to be invalid. Please double check and fix them.`,
+                            );
                             break;
                         case 429: // endpoint currently not available
                             adapter.log.warn(
-                                `Error: Endpoint: [${mieleConst.BASE_URL}${mieleConst.ENDPOINT_TOKEN}] is currently not available.`,
+                                `Error: Endpoint: [${mieleConst.ENDPOINT_AUTHTOKEN}] is currently not available.`,
                             );
                             break;
                         default:
@@ -495,47 +505,17 @@ module.exports.refreshAuthToken = async function (adapter, config, auth) {
                             );
                             break;
                     }
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                    // http.ClientRequest in node.js
-                    adapter.log.warn(
-                        `[error.request]: ${typeof error.request === 'object' ? 'The request was made but no response was received' : error.request}`,
-                    );
-                    adapter.log.warn(error);
                 } else {
                     // Something happened in setting up the request that triggered an Error
+                    adapter.log.warn(
+                        'An error occurred when trying to refresh the access token but dropped no valid error message.',
+                    );
                     adapter.log.warn(error.message);
+                    adapter.log.error(JSON.stringify(error));
+                    reject(error);
                 }
-                adapter.log.info(
-                    `Refresh attempt wasn't successful. Trying again to refresh in ${mieleConst.RESTART_TIMEOUT} Seconds.`,
-                );
-                setTimeout(() => {
-                    exports.refreshAuthToken(adapter, config, auth);
-                }, 1000 * mieleConst.RESTART_TIMEOUT);
             });
     });
-};
-
-/**
- * Function APILogOff
- *
- * performs logoff action to the miele cloud API
- *
- * @param adapter {object} link to the adapter instance
- * @param auth {object} OAuth2 token object
- * @param token_type {string} the type of the token to invalidate
- */
-module.exports.APILogOff = async function (adapter, auth, token_type) {
-    adapter.log.debug(`[APILogOff] Invalidating access tokens.`);
-    sendAPIRequest(adapter, auth, mieleConst.ENDPOINT_LOGOUT, 'POST', { token: `${auth[token_type]}` })
-        .then(result => {
-            return result;
-        })
-        .catch(error => {
-            adapter.log.error(`[APILogOff] ${JSON.stringify(error)}`);
-            return error;
-        });
 };
 
 /**
@@ -571,77 +551,61 @@ module.exports.executeAction = async function (adapter, auth, endpoint, device, 
  * @param mieleDevices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
  */
 module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) {
-    adapter.log.silly(`splitMieleDevices - received data type: ${typeof mieleDevices}`);
-    adapter.log.silly(`splitMieleDevices - received data: ${JSON.stringify(mieleDevices)}`);
     // Splits the data-package returned by the API into single devices and iterates over each single device
-    for (const deviceIndex in mieleDevices) {
-        const deviceArray = mieleDevices[deviceIndex];
-        const deviceId = Object.keys(deviceArray)[0];
-        const deviceObject = mieleDevices[deviceIndex][deviceId];
-        const deviceIdent = deviceObject.ident;
-        const deviceState = deviceObject.state;
-        adapter.log.silly(`Current DeviceIndex: ${JSON.stringify(deviceIndex)}`);
-        adapter.log.silly(`Current Device: ${JSON.stringify(deviceObject)}`);
-        adapter.log.silly(`Current DeviceId: ${deviceId}`);
-        adapter.log.silly(`Current DeviceIdent: ${JSON.stringify(deviceIdent)}`);
-        adapter.log.silly(`Current DeviceState: ${JSON.stringify(deviceState)}`);
-        adapter.log.debug(`Processing device: ${deviceId}`);
-        adapter.log.silly(`known devices: ${JSON.stringify(knownDevices)}`);
-        if (
-            typeof mieleDevices === 'undefined' ||
-            typeof deviceIdent === 'undefined' ||
-            typeof deviceState === 'undefined'
-        ) {
+    for (const mieleDevice in mieleDevices) {
+        if (typeof mieleDevices === 'undefined' || typeof mieleDevice === 'undefined') {
             adapter.log.debug(
                 `splitMieleDevices: Given dataset is undefined or not splittable. Returning without action.`,
             );
             return;
-        } else if (typeof knownDevices[deviceId] === 'undefined') {
-            adapter.log.debug(`Device ${deviceId} isn't already known. Registering now...`);
-            adapter.log.debug(`splitMieleDevices: ${deviceId}: [Value: [${JSON.stringify(mieleDevices[deviceId])}]`);
-            knownDevices[deviceId] = {};
-            knownDevices[deviceId].lastMessage = Date.now();
-            knownDevices[deviceId].icon = `icons/${deviceIdent.type.value_raw}.svg`;
-            knownDevices[deviceId].API_ID = deviceId;
-            knownDevices[deviceId].deviceType = deviceIdent.type.value_raw;
-            if (deviceIdent.deviceName === '') {
-                knownDevices[deviceId].name = deviceIdent.type.value_localized;
+        } else if (typeof knownDevices[mieleDevice] === 'undefined') {
+            adapter.log.debug(`Device ${mieleDevice} isn't already known. Registering now...`);
+            adapter.log.debug(
+                `splitMieleDevices: ${mieleDevice}: [${mieleDevice}] *** Value: [${JSON.stringify(mieleDevices[mieleDevice])}]`,
+            );
+            knownDevices[mieleDevice] = {};
+            knownDevices[mieleDevice].lastMessage = Date.now();
+            knownDevices[mieleDevice].icon = `icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`;
+            knownDevices[mieleDevice].API_ID = mieleDevice;
+            knownDevices[mieleDevice].deviceType = mieleDevices[mieleDevice].ident.type.value_raw;
+            if (mieleDevices[mieleDevice].ident.deviceName === '') {
+                knownDevices[mieleDevice].name = mieleDevices[mieleDevice].ident.type.value_localized;
             } else {
-                knownDevices[deviceId].name = deviceIdent.deviceName;
+                knownDevices[mieleDevice].name = mieleDevices[mieleDevice].ident.deviceName;
             }
             const obj = {
                 type: 'device',
                 common: {
-                    name: knownDevices[deviceId].name,
+                    name: knownDevices[mieleDevice].name,
                     read: true,
                     write: false,
-                    icon: knownDevices[deviceId].icon,
+                    icon: `icons/${mieleDevices[mieleDevice].ident.type.value_raw}.svg`,
                     type: 'object',
                 },
             };
-            createOrExtendObject(adapter, deviceId, obj, null); // create base object
+            await createOrExtendObject(adapter, mieleDevice, obj, null); // create base object
         }
         // device is already known
         if (adapter.config.delayedProcessing) {
-            if (Date.now() - knownDevices[deviceId].lastMessage < adapter.config.messageDelay) {
+            if (Date.now() - knownDevices[mieleDevice].lastMessage < adapter.config.messageDelay) {
                 adapter.log.debug(`Too many messages in a short period. Discarding message.`);
                 // queue message
-                queuedMessage.device = deviceId;
-                queuedMessage.deviceObject = deviceObject;
-                queuedMessage.ident = deviceIdent;
-                queuedMessage.state = deviceState;
+                queuedMessage.device = mieleDevice;
+                queuedMessage.ident = mieleDevices[mieleDevice].ident;
+                queuedMessage.state = mieleDevices[mieleDevice].state;
                 // kill running timeout
                 clearTimeout(delayTimeOut);
                 // start new timeout
                 delayTimeOut = setTimeout(
                     async queuedMessage => {
-                        await createIdentTree(adapter, `${queuedMessage.device}.IDENT`, queuedMessage.ident).catch(
-                            err => {
-                                adapter.log.warn(`${err} occurred at delayed createIdentTree`);
-                            },
+                        await createIdentTree(adapter, `${queuedMessage.device}.IDENT`, queuedMessage.ident);
+                        await createStateTree(
+                            adapter,
+                            queuedMessage.device,
+                            mieleDevices[queuedMessage.device],
+                            queuedMessage.state,
                         );
-                        await createStateTree(adapter, queuedMessage.device, queuedMessage.ident, queuedMessage.state);
-                        knownDevices[deviceId].lastMessage = Date.now();
+                        knownDevices[mieleDevice].lastMessage = Date.now();
                     },
                     adapter.config.messageDelay,
                     queuedMessage,
@@ -649,27 +613,26 @@ module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) 
                 // process queued message if timeout is reached
             } else {
                 adapter.log.debug(`Last Event happened long enough ago. Processing message immediately.`);
-                await createIdentTree(adapter, `${deviceId}.IDENT`, deviceIdent).catch(err => {
-                    adapter.log.warn(`${err} occurred at createIdentTree`);
-                });
-                await createStateTree(adapter, deviceId, deviceObject, deviceState);
-                knownDevices[deviceId].lastMessage = Date.now();
+                await createIdentTree(adapter, `${mieleDevice}.IDENT`, mieleDevices[mieleDevice].ident);
+                await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
+                knownDevices[mieleDevice].lastMessage = Date.now();
             }
         } else {
-            await createIdentTree(adapter, `${deviceId}.IDENT`, deviceIdent).catch(err => {
-                adapter.log.warn(`${err} occurred at createIdentTree`);
-            });
-            await createStateTree(adapter, deviceId, deviceObject, deviceState);
+            await createIdentTree(adapter, `${mieleDevice}.IDENT`, mieleDevices[mieleDevice].ident);
+            await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
         }
     }
 };
 
 /**
+'* addProgramsToDevice
+
+ * queries the supported programs of a device and adds them to the knownDevices structure
  *
- * @param adapter
- * @param auth
- * @param mieleDevice
- * @returns
+ * @param {object} adapter link to the adapter instance
+ * @param {object} auth link to the tokenSet object
+ * @param {object} mieleDevice the device to query the programs for
+ * @returns {Promise<void>}
  */
 module.exports.addProgramsToDevice = async function (adapter, auth, mieleDevice) {
     // query supported programs of this device if needed
@@ -2442,27 +2405,20 @@ async function createString(adapter, path, description, value) {
  * @param value value to set to the data point
  */
 async function createROState(adapter, path, description, value, type, role) {
-    return new Promise((resolve, reject) => {
-        if (typeof value === 'undefined') {
-            reject('createROState: no valid value given - skipping...');
-        }
-        try {
-            createOrExtendObject(
-                adapter,
-                path,
-                {
-                    type: 'state',
-                    common: { name: description, read: true, write: false, role: role, type: type },
-                    native: {},
-                },
-                value,
-            );
-            resolve('OK');
-        } catch (err) {
-            adapter.log.warn(`createROState: ${err}`);
-            reject(err);
-        }
-    });
+    try {
+        createOrExtendObject(
+            adapter,
+            path,
+            {
+                type: 'state',
+                common: { name: description, read: true, write: false, role: role, type: type },
+                native: {},
+            },
+            value,
+        );
+    } catch (err) {
+        adapter.log.warn(`createROState: ${err}`);
+    }
 }
 
 /**
@@ -2479,36 +2435,29 @@ async function createROState(adapter, path, description, value, type, role) {
  * @param value value to set to the data point
  */
 async function createRWState(adapter, path, description, value, type, role, states) {
-    return new Promise((resolve, reject) => {
-        if (typeof value === 'undefined') {
-            reject('createRWState: no valid value given - skipping...');
+    try {
+        const commonObj = {};
+        commonObj.name = description;
+        commonObj.read = true;
+        commonObj.write = true;
+        commonObj.role = role;
+        commonObj.type = type;
+        if (states) {
+            commonObj.states = states;
         }
-        try {
-            const commonObj = {};
-            commonObj.name = description;
-            commonObj.read = true;
-            commonObj.write = true;
-            commonObj.role = role;
-            commonObj.type = type;
-            if (states) {
-                commonObj.states = states;
-            }
-            createOrExtendObject(
-                adapter,
-                path,
-                {
-                    type: 'state',
-                    common: commonObj,
-                    native: {},
-                },
-                value,
-            );
-            resolve('OK');
-        } catch (err) {
-            adapter.log.warn(`createRWState: ${err}`);
-            reject(err);
-        }
-    });
+        createOrExtendObject(
+            adapter,
+            path,
+            {
+                type: 'state',
+                common: commonObj,
+                native: {},
+            },
+            value,
+        );
+    } catch (err) {
+        adapter.log.error(`createRWState: ${err}`);
+    }
 }
 
 /**
@@ -2525,12 +2474,6 @@ async function createRWState(adapter, path, description, value, type, role, stat
  * @param role {string} role to set to the data point (default: text)
  */
 async function createNumber(adapter, path, description, value, unit, role) {
-    //adapter.log.debug('[createNumber]: Path['+ path +'] Value[' + value + '] Unit[' + unit + ']');
-    // get back to calling function if there is no valid value given.
-    if (typeof value === 'undefined' || value === -32768 || value == null) {
-        adapter.log.debug(`[createNumber]: invalid value (${value}) detected. Skipping...`);
-        return;
-    }
     role = role || 'value';
     switch (unit) {
         case 'Celsius':
@@ -2594,9 +2537,12 @@ async function createTime(adapter, path, description, value, role) {
  * @param value value of the datapoint
  */
 function createOrExtendObject(adapter, id, objData, value) {
+    if (typeof value === 'undefined' || value === -32768 || value === null) {
+        adapter.log.debug(`createOrExtendObject: no valid value (${value}) given for [${id}] - skipping...`);
+        return;
+    }
     adapter.getObject(id, function (err, oldObj) {
         if (!err && oldObj) {
-            // todo must be: objData.common.name === oldObj.common.name
             if (objData.common.name === oldObj.common.name) {
                 adapter.setState(id, value, true);
             } else {

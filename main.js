@@ -13,7 +13,6 @@ const mieleConst = require('./source/mieleConst');
 const timeouts = {};
 const fakeRequests = false; // this switch is used to fake requests against the Miele API and load the JSON-objects from disk
 let events;
-let auth;
 let connectionErrorHandlingInProgress = false;
 
 // Load your modules here, e.g.:
@@ -30,12 +29,21 @@ class Mielecloudservice extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
+        this._tokenSet = {};
+    }
+
+    async updateTokenSetForAdapter(tokenSet) {
+        this.log.info('Updating tokens in adapter configuration ...');
+        tokenSet.access_token = this.encrypt(tokenSet.access_token);
+        tokenSet.refresh_token = this.encrypt(tokenSet.refresh_token);
+        tokenSet.obtained = new Date().getTime();
+        this.extendObject(this.namespace, tokenSet);
     }
 
     /**
      *
-     * @param {ioBroker.Message} msg
-     * @returns {*}
+     * @param {ioBroker.Message} msg A message received from config frontend
+     * @returns {Promise<any>}
      */
     async onMessage(msg) {
         this.log.debug(`Received message: ${JSON.stringify(msg)}`);
@@ -64,21 +72,6 @@ class Mielecloudservice extends utils.Adapter {
                         );
                         return;
                     }
-                    /*
-                    if (!args.redirectUriBase.startsWith('https://')) {
-                        this.sendTo(
-                            msg.from,
-                            msg.command,
-                            {
-                                result: null,
-                                error: 'Your Admin instance needs to to use HTTPS.',
-                            },
-                            msg.callback,
-                        );
-                        return;
-                    }
-
-                     */
                     if (!args.redirectUriBase.endsWith('/')) {
                         args.redirectUriBase += '/';
                     }
@@ -97,7 +90,6 @@ class Mielecloudservice extends utils.Adapter {
                     this._clientId = args.clientId;
                     this._clientSecret = args.clientSecret;
                     this._redirectUriBase = args.redirectUriBase;
-                    this.log.debug(`Get OAuth start link data: ${JSON.stringify(args)}`);
                     msg.callback &&
                         this.sendTo(
                             msg.from,
@@ -113,80 +105,80 @@ class Mielecloudservice extends utils.Adapter {
 
                     break;
                 }
-                case 'oauth2Callback': {
-                    const args = msg.message;
-                    this.log.debug(`oauth2Callback: ${JSON.stringify(args)}`);
-                    if (!args.state || !args.code) {
-                        this.log.warn(`Error on OAuth callback: ${JSON.stringify(args)}`);
-                        if (args.error) {
-                            msg.callback &&
-                                this.sendTo(
-                                    msg.from,
-                                    msg.command,
-                                    { error: `Miele Cloud error: ${args.error}. Please try again.` },
-                                    msg.callback,
-                                );
-                        } else {
-                            msg.callback &&
-                                this.sendTo(
-                                    msg.from,
-                                    msg.command,
-                                    {
-                                        error: `Miele Cloud invalid response: ${JSON.stringify(args)}. Please try again.`,
-                                    },
-                                    msg.callback,
-                                );
+                case 'oauth2Callback':
+                    {
+                        const args = msg.message;
+                        this.log.debug(`oauth2Callback: ${JSON.stringify(args)}`);
+                        if (!args.state || !args.code) {
+                            this.log.warn(`Error on OAuth callback: ${JSON.stringify(args)}`);
+                            if (args.error) {
+                                msg.callback &&
+                                    this.sendTo(
+                                        msg.from,
+                                        msg.command,
+                                        { error: `Miele Cloud error: ${args.error}. Please try again.` },
+                                        msg.callback,
+                                    );
+                            } else {
+                                msg.callback &&
+                                    this.sendTo(
+                                        msg.from,
+                                        msg.command,
+                                        {
+                                            error: `Miele Cloud invalid response: ${JSON.stringify(args)}. Please try again.`,
+                                        },
+                                        msg.callback,
+                                    );
+                            }
+                            return;
                         }
-                        return;
-                    }
-                    if (this._expectedAuthenticationState !== args.state) {
-                        this.log.warn(
-                            `Error on OAuth callback: Invalid state received: ${args.state} (expected: ${this._expectedAuthenticationState})`,
-                        );
-                        msg.callback &&
-                            this.sendTo(
-                                msg.from,
-                                msg.command,
-                                { error: `Miele Cloud returned an invalid state. Please try again.` },
-                                msg.callback,
+                        // Flow has received an access-code from Miele Cloud - now get the tokens
+                        if (this._expectedAuthenticationState !== args.state) {
+                            this.log.warn(
+                                `Error on OAuth callback: Invalid state received: ${args.state} (expected: ${this._expectedAuthenticationState})`,
                             );
-                        return;
+                            msg.callback &&
+                                this.sendTo(
+                                    msg.from,
+                                    msg.command,
+                                    { error: `Miele Cloud returned an invalid state. Please try again.` },
+                                    msg.callback,
+                                );
+                            return;
+                        }
+                        mieleTools
+                            .getAccessToken(this, this._clientId, this._clientSecret, args.code, this._redirectUriBase)
+                            .then(newAuth => {
+                                newAuth.obtained = new Date().getTime();
+                                this.log.debug(`Token Message: ${newAuth}`);
+                                msg.callback &&
+                                    this.sendTo(
+                                        msg.from,
+                                        msg.command,
+                                        { result: `Received an access_token. --> Success!` },
+                                        msg.callback,
+                                    );
+                                this.updateTokenSetForAdapter(newAuth).catch(err => {
+                                    this.log.error(`Error updating tokens in adapter config: ${err}`);
+                                });
+                                this.log.info(`Token expires in: ${newAuth.expires_in} seconds`);
+                                this.log.info(`Token type: ${newAuth.token_type}`);
+                                this.log.info(`Token scope: ${newAuth.scope}`);
+                                // now continue as if adapter just started
+                                this.onReady();
+                            })
+                            .catch(err => {
+                                this.log.error(`Token request error: ${err}`);
+                                msg.callback &&
+                                    this.sendTo(
+                                        msg.from,
+                                        msg.command,
+                                        { error: `Miele Cloud did not return an access_token. Please try again.` },
+                                        msg.callback,
+                                    );
+                            });
                     }
-                    // Flow has received an answer from Miele Cloud - now get the tokens
-                    const accessTokenUrl = `${mieleConst.ENDPOINT_AUTHTOKEN
-                        }?client_id=${encodeURIComponent(this._clientId)
-                        }&client_secret=${encodeURIComponent(this._clientSecret)
-                        }&grant_type=${mieleConst.GRANT_TYPE
-                        }&code=${encodeURIComponent(args.code)
-                        }&redirect_uri=${encodeURIComponent(this._redirectUriBase)}`;
-                    this.log.debug(`OAuth-getAccessToken (AccessTokenUrl): ${accessTokenUrl}`);
-                    msg.callback &&
-                        this.sendTo(
-                            msg.from,
-                            msg.command,
-                            { openUrl: accessTokenUrl, window: 'Query access token', saveConfig: true, reload: true },
-                            msg.callback,
-                        );
-                    if (!args.access_token) {
-                        msg.callback &&
-                            this.sendTo(
-                                msg.from,
-                                msg.command,
-                                { error: `Miele Cloud did not return an access_token. Please try again.` },
-                                msg.callback,
-                            );
-                        return;
-                    }
-                    msg.callback &&
-                        this.sendTo(
-                            msg.from,
-                            msg.command,
-                            { result: `Received an access_token. --> Success!` },
-                            msg.callback,
-                        );
-
                     break;
-                }
             }
             return false;
         }
@@ -195,15 +187,16 @@ class Mielecloudservice extends utils.Adapter {
     /**
      * Requests and opens a new EventSource (SSE - Server-Sent-Events) Connection
      *
+     * @param tokenSet
      * @returns the new EventSource connection
      */
-    getEventSource() {
+    getEventSource(tokenSet) {
         const result = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
             fetch: (input, init) =>
                 fetch(input, {
                     ...init,
                     headers: {
-                        Authorization: `Bearer ${auth.access_token}`,
+                        Authorization: `${tokenSet.token_type} ${tokenSet.access_token}`,
                         Accept: 'text/event-stream',
                         'Accept-Language': this.config.locale,
                         'User-Agent': mieleConst.UserAgent,
@@ -266,10 +259,12 @@ class Mielecloudservice extends utils.Adapter {
 
     /**
      * Initialize new EventSource and handle all occurring events
+     *
+     * @param tokenSet
      */
-    initSSE() {
+    initSSE(tokenSet) {
         // Initialize new EventSource
-        events = this.getEventSource();
+        events = this.getEventSource(tokenSet);
 
         /**
          * Handle message type 'open'.
@@ -289,7 +284,7 @@ class Mielecloudservice extends utils.Adapter {
          */
         events.addEventListener(mieleConst.DEVICES, event => {
             this.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event.data)}]`);
-            mieleTools.splitMieleDevices(this, auth, JSON.parse(event.data)).catch(err => {
+            mieleTools.splitMieleDevices(this, tokenSet, JSON.parse(event.data)).catch(err => {
                 this.log.warn(`splitMieleDevices crashed with error: [${err}]`);
             });
         });
@@ -312,13 +307,19 @@ class Mielecloudservice extends utils.Adapter {
          */
         events.addEventListener(mieleConst.PING, event => {
             this.log.debug(`Received PING message by SSE: ${JSON.stringify(event.data)}`);
-            auth.ping = new Date();
+            tokenSet.ping = new Date().getTime();
         });
 
-        events.addEventListener('/devices/fillingLevels', event => {
+        events.addEventListener(mieleConst.ENDPOINT_FILLINGLEVELS, event => {
             this.log.debug(`Received fillingLevels message by SSE: [${JSON.stringify(event.data)}]`);
         });
 
+        events.addEventListener(mieleConst.ENDPOINT_FAILUREDETAILS, event => {
+            this.log.debug(`Received failure details message by SSE: [${JSON.stringify(event.data)}]`);
+        });
+        events.addEventListener(mieleConst.ENDPOINT_ROOMS, event => {
+            this.log.debug(`Received rooms message by SSE: [${JSON.stringify(event.data)}]`);
+        });
         /**
          * Handle message type 'error'.
          * It occurs when the Miele-API detects an error
@@ -422,6 +423,121 @@ class Mielecloudservice extends utils.Adapter {
     }
 
     /**
+     * Gets the token object from the adapter configuration
+     *
+     * @typedef {object} tokenSet the token set to be used
+     * @property {string} access_token  the access token
+     * @property {string} refresh_token  the refresh token
+     * @property {number} expires_in  the access token expiry time in seconds
+     * @property {number} refresh_expires_in  the refresh token expiry time in seconds
+     * @property {string} token_type  the token type (usually "Bearer")
+     * @property {number} obtained  the timestamp when the tokens were obtained
+     * @returns {Promise<object>}
+     */
+    async getTokenObj() {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            let tokenSet = (await this.getObjectAsync(this.namespace)) || (await mieleTools.getEmptyTokenset());
+            if (tokenSet) {
+                if (
+                    'access_token' in tokenSet &&
+                    'refresh_token' in tokenSet &&
+                    'token_type' in tokenSet &&
+                    'expires_in' in tokenSet &&
+                    'refresh_expires_in' in tokenSet &&
+                    'obtained' in tokenSet
+                ) {
+                    // there is a tokenSet in the token store and it seems to be valid
+                    if (
+                        this.config.obtained > tokenSet.obtained ||
+                        tokenSet.access_token === '' ||
+                        tokenSet.refresh_token === ''
+                    ) {
+                        // the tokenSet in the config is newer than the one in the namespace or the tokens are empty
+                        this.log.debug(
+                            `Using tokenSet from adapter config since it's newer than the one in the tokenstore or the tokens are invalid.`,
+                        );
+                    } else if (await !mieleTools.authHasExpired(this, tokenSet)) {
+                        this.log.debug(`Received valid tokenSet from token store.`);
+                        if (tokenSet.access_token.startsWith('$/aes-192-')) {
+                            tokenSet.access_token = this.decrypt(tokenSet.access_token);
+                        }
+                        if (tokenSet.refresh_token.startsWith('$/aes-192-')) {
+                            tokenSet.refresh_token = this.decrypt(tokenSet.refresh_token);
+                        }
+                        this._tokenSet = tokenSet;
+                        resolve(tokenSet);
+                    } else {
+                        this.log.debug(`Received valid tokenSet from token store that needs to be refreshed.`);
+                        await mieleTools
+                            .refreshAuthToken(this, this.config, tokenSet)
+                            .then(newTokenSet => {
+                                // token refresh successful
+                                this.log.debug(`Successfully refreshed tokenSet (1): ${JSON.stringify(newTokenSet)}`);
+                                if (newTokenSet.access_token.startsWith('$/aes-192-')) {
+                                    newTokenSet.access_token = this.decrypt(newTokenSet.access_token);
+                                }
+                                if (newTokenSet.refresh_token.startsWith('$/aes-192-')) {
+                                    newTokenSet.refresh_token = this.decrypt(newTokenSet.refresh_token);
+                                }
+                                this._tokenSet = newTokenSet;
+                                resolve(newTokenSet);
+                            })
+                            .catch(err => {
+                                this.log.error(`Please reauthenticate using the workflow in the admin config UI.`);
+                                reject(err);
+                            });
+                    }
+                }
+            } else {
+                // there is no or an invalid tokenSet in the token store
+                this.log.debug(`No or empty tokenSet received from token store. Using config values.`);
+                tokenSet.access_token = this.config.access_token;
+                tokenSet.refresh_token = this.config.refresh_token;
+                tokenSet.expires_in = this.config.access_token_expiry;
+                tokenSet.refresh_expires_in = this.config.refresh_token_expiry;
+                tokenSet.token_type = this.config.tokenType;
+                tokenSet.obtained = this.config.obtained;
+                if (mieleTools.authHasExpired(this, tokenSet)) {
+                    if (mieleTools.refreshHasExpired(this, tokenSet)) {
+                        reject('TokenSet from config has expired. Please reauthenticate in the adapters config UI.');
+                    } else {
+                        this.log.debug(`TokenSet from config needs to be refreshed.`);
+                        tokenSet = await mieleTools.refreshAuthToken(this, this.config, tokenSet).catch(async err => {
+                            this.log.error(`Error refreshing token: ${err}`);
+                            reject(err);
+                        });
+                        // token refresh successful
+                        this.log.debug(`Successfully refreshed tokenSet (2): ${JSON.stringify(tokenSet)}`);
+                        if (tokenSet.access_token.startsWith('$/aes-192-')) {
+                            tokenSet.access_token = this.decrypt(tokenSet.access_token);
+                        }
+                        if (tokenSet.refresh_token.startsWith('$/aes-192-')) {
+                            tokenSet.refresh_token = this.decrypt(tokenSet.refresh_token);
+                        }
+                        this._tokenSet = tokenSet;
+                        resolve(tokenSet);
+                    }
+                }
+            }
+        });
+    }
+
+    async clearTokenStore() {
+        this.log.info(`Clearing token store ...`);
+        this._tokenSet = {
+            access_token: '',
+            refresh_token: '',
+            expires_in: 0,
+            refresh_expires_in: 0,
+            token_type: '',
+            obtained: 0,
+        };
+        await this.extendObject(this.namespace, this._tokenSet);
+        this.log.info(`Token store cleared.`);
+    }
+
+    /**
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
@@ -452,64 +568,99 @@ class Mielecloudservice extends utils.Adapter {
         } else {
             // test config and get auth token
             try {
-                await mieleTools
-                    .checkConfig(this, this.config)
-                    .then(async () => {
-                        //                        auth = await mieleTools.getAuth(this, this.config, 1).catch(err => {
-                        //                            this.terminate(err, 11);
-                        //                        });
-                    })
-                    .catch(() => {
-                        this.terminate('Terminating adapter due to invalid configuration.', 11);
-                    });
-                if (auth) {
-                    // continue here after config is checked and auth is requested
-                    // check every 12 hours whether the auth token is going to expire in the next 24 hours; If yes refresh token
-                    timeouts.authCheck = setInterval(
-                        async () => {
-                            this.log.debug(`Testing whether auth token is going to expire within the next 24 hours.`);
-                            if (mieleTools.authHasExpired(auth)) {
-                                auth = await mieleTools.refreshAuthToken(this, this.config, auth).catch(err => {
-                                    if (typeof err === 'string') {
-                                        this.terminate(err);
-                                    } else {
-                                        this.log.error(JSON.stringify(err));
-                                        this.terminate('Terminating adapter due to invalid auth token.');
+                await mieleTools.checkConfig(this, this.config).catch(() => {
+                    this.terminate('Terminating adapter due to invalid configuration.', 11);
+                });
+                await this.getTokenObj()
+                    .then(async tokenSet => {
+                        if (!mieleTools.authHasExpired(this, tokenSet)) {
+                            // check every 5 Minutes whether the auth token is going to expire in the next 5 minutes; If yes refresh token
+                            timeouts.authCheck = setInterval(
+                                async () => {
+                                    this.log.debug(
+                                        `Testing whether auth token is going to expire within the next 5 minutes.`,
+                                    );
+                                    if (mieleTools.authHasExpired(this, tokenSet)) {
+                                        await mieleTools.refreshAuthToken(this, this.config, tokenSet)
+                                            .then(async tokenSet => {
+                                                this.log.info(`Successfully refreshed access token.`);
+                                                this.updateTokenSetForAdapter(tokenSet).catch(err => {
+                                                    this.log.error(`Error updating tokens in adapter config: ${err}`);
+                                                });
+                                                return tokenSet;
+                                            })
+                                            .catch(err => {
+                                                this.log.error(`Error refreshing token: ${err}`);
+                                                this.log.info(
+                                                    `Clearing token store and restarting authentication process.`,
+                                                );
+                                                this.clearTokenStore();
+                                                this.onReady();
+                                            });
                                     }
-                                });
-                            }
-                        },
-                        mieleConst.AUTH_CHECK_TIMEOUT,
-                        this,
-                        this.config,
-                    );
-                    // register for events from Miele API
-                    if (this.config.sse) {
-                        this.log.info(`Registering for all appliance events at Miele API.`);
-                        this.initSSE();
-                        /**
-                         * code for watchdog
-                         * -> check every 5 minutes whether pings are missing
-                         */
-                        this.log.info(`Initializing SSE watchdog.`);
-                        timeouts.watchdog = setInterval(() => {
-                            const testValue = new Date();
-                            if (testValue.getTime() - auth.ping.getTime() >= mieleConst.WATCHDOG_TIMEOUT) {
+                                },
+                                mieleConst.AUTH_CHECK_TIMEOUT,
+                                this,
+                                this.config,
+                            );
+                            // register for events from Miele API
+                            if (this.config.sse) {
+                                this.log.info(`Registering for all appliance events at Miele API.`);
+                                this.initSSE(tokenSet);
+                                /**
+                                 * code for watchdog
+                                 * -> check every 5 minutes whether pings are missing
+                                 */
+                                this.log.info(`Initializing SSE watchdog.`);
+                                timeouts.watchdog = setInterval(() => {
+                                    if (
+                                        new Date().getTime() - new Date(tokenSet.ping).getTime() >=
+                                        mieleConst.WATCHDOG_TIMEOUT
+                                    ) {
+                                        this.log.info(
+                                            `Watchdog detected ping failure. Last ping occurred over five minutes ago (${Date(tokenSet.ping).toLocaleString()}). Trying to handle by reinitiating the SSE connection.`,
+                                        );
+                                        this.setState('info.connection', false, true);
+                                        events.close();
+                                        this.initSSE(tokenSet);
+                                    }
+                                }, mieleConst.WATCHDOG_TIMEOUT);
+                            } else {
                                 this.log.info(
-                                    `Watchdog detected ping failure. Last ping occurred over a minute ago. Trying to handle.`,
+                                    `Requesting data from Miele API using time based polling every ${this.config.pollInterval * this.config.pollUnit} Seconds.`,
                                 );
-                                this.setState('info.connection', false, true);
-                                events.close();
-                                this.initSSE();
+                                this.doDataPolling(this, tokenSet);
                             }
-                        }, mieleConst.WATCHDOG_TIMEOUT);
-                    } else {
-                        this.log.info(
-                            `Requesting data from Miele API using time based polling every ${this.config.pollInterval * this.config.pollUnit} Seconds.`,
-                        );
-                        this.doDataPolling(this, auth);
-                    }
-                }
+                        } else {
+                            this.log.debug(`Current tokenSet: ${JSON.stringify(tokenSet)}`);
+                            if (tokenSet.access_token === '') {
+                                this.log.error(
+                                    'Adapter has no access token. Please generate one using the workflow in the admin config UI.',
+                                );
+                            } else {
+                                this.log.warn('Adapter has an expired access token. Trying to refresh it.');
+                                mieleTools
+                                    .refreshAuthToken(this, this.config, tokenSet)
+                                    .then(newAuthToken => {
+                                        this.log.info('Adapter access token has been refreshed successfully.');
+                                        this.updateTokenSetForAdapter(newAuthToken);
+                                    })
+                                    .catch(err => {
+                                        if (typeof err === 'string') {
+                                            this.terminate(err);
+                                        } else {
+                                            this.log.error(JSON.stringify(err));
+                                            this.clearTokenStore();
+                                            this.onReady();
+                                        }
+                                    });
+                                this.onReady();
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        this.log.error(`Error getting token object: ${err}`);
+                });
             } catch (err) {
                 this.log.error(err);
             }
@@ -534,9 +685,6 @@ class Mielecloudservice extends utils.Adapter {
             if (events) {
                 events.close();
             }
-            if (auth) {
-                await mieleTools.APILogOff(this, auth, 'access_token');
-            }
             callback();
         } catch (e) {
             this.log.error(`Error during unload: ${e.message} - ${e.stack}`);
@@ -557,7 +705,7 @@ class Mielecloudservice extends utils.Adapter {
             if (state.ack) {
                 if (id.split('.').pop() === 'Power' && state.val) {
                     // add programs to device when it's powered on, since querying programs powers devices on or throws errors
-                    await mieleTools.addProgramsToDevice(this, auth, id.split('.', 3).pop());
+                    await mieleTools.addProgramsToDevice(this, this._tokenSet, id.split('.', 3).pop());
                 }
             } else {
                 // manual change / request
@@ -621,7 +769,7 @@ class Mielecloudservice extends utils.Adapter {
                         break;
                 }
                 await mieleTools
-                    .executeAction(this, auth, endpoint, device, payload)
+                    .executeAction(this, this._tokenSet, endpoint, device, payload)
                     .then(() => {
                         this.setState(`${device}.ACTIONS.LastActionResult`, 'Okay!', true);
                     })
