@@ -105,28 +105,6 @@
       "lg": 4,
       "xl": 4
     },
-    "access_token_expiry": {
-      "newLine": false,
-      "type": "text",
-      "label": "Access Token Expiry",
-      "tooltip" : "Miele_Account_desc",
-      "xs": 12,
-      "sm": 12,
-      "md": 6,
-      "lg": 4,
-      "xl": 4
-    },
-    "obtained": {
-      "newLine": false,
-      "type": "text",
-      "label": "Access Token Obtained",
-      "tooltip" : "Miele_Account_desc",
-      "xs": 12,
-      "sm": 12,
-      "md": 6,
-      "lg": 4,
-      "xl": 4
-    },
     "_delaySection": {
       "newLine": true,
       "type" : "header",
