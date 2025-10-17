@@ -1,14 +1,17 @@
 //@ts-check
 'use strict';
 
+/**
+ * @typedef {import('./mieleCloudService').tokenSet} tokenSet
+ * @typedef {import('./mieleCloudService').tokenMsg} tokenMsg
+ */
+
 // required files to load
 const axios = require('axios');
 const mieleConst = require('../source/mieleConst.js');
 const qs = require('querystring');
 const tokenTools = require('../source/tokenTools.js');
 const flatted = require('flatted');
-const mieleTools = require("./mieleTools");
-const fs = require("fs");
 
 /**
  * Decrypts the given token
@@ -28,7 +31,7 @@ async function decryptToken(adapter, token){
  * Validate the given tokenSet whether it seems okay
  *
  * @param {object} adapter
- * @param {object} tokenSet
+ * @param {tokenSet} tokenSet
  * @returns {Promise<void>}
  */
 module.exports.validateTokenSet = async (adapter, tokenSet) => {
@@ -41,8 +44,8 @@ module.exports.validateTokenSet = async (adapter, tokenSet) => {
         'refresh_expires_in' in tokenSet &&
         'obtained' in tokenSet
     ) {
-        // there is a tokenSet in the token store and it seems to be valid so far
-        // at least it has all needed fields - Lets test whether it is fully valid
+        // there is a tokenSet in the token store, and it seems valid so far.
+        // at least it has all necessary fields; Let's test whether it is fully valid
         adapter.log.debug(`At least - token fields are existing...`);
         if (tokenSet.access_token.length > 0 &&
             tokenSet.refresh_token.length > 0 &&
@@ -66,11 +69,11 @@ module.exports.validateTokenSet = async (adapter, tokenSet) => {
  * Reads a tokenSet from the adapters config
  *
  * @param {object} adapter
- * @returns {Promise<{access_token: string, refresh_token: string, token_type: string, expires_in: number, refresh_expires_in: number, obtained: number, ping: number, obtained_HR: string}>}
+ * @returns {Promise<tokenSet>}
  */
 module.exports.getTokenSetFromConfig = async (adapter) => {
     adapter.log.debug(`Building new tokenSet from adapters config.`);
-    const configTokenSet = await tokenTools.getEmptyTokenset();
+    const configTokenSet = await tokenTools.getEmptyTokenSet();
     configTokenSet.access_token = adapter.config.access_token;
     configTokenSet.expires_in = adapter.config.access_token_expiry;
     configTokenSet.refresh_token = adapter.config.refresh_token;
@@ -89,8 +92,8 @@ module.exports.getTokenSetFromConfig = async (adapter) => {
  * decrypts a whole tokenSet
  *
  * @param {object} adapter
- * @param {object} tokenSet
- * @returns {Promise<object>}
+ * @param {tokenSet} tokenSet
+ * @returns {Promise<tokenSet>}
  */
 module.exports.decryptTokenSet = async (adapter, tokenSet) => {
     tokenSet.access_token = await decryptToken(adapter, tokenSet.access_token);
@@ -102,7 +105,7 @@ module.exports.decryptTokenSet = async (adapter, tokenSet) => {
  * tests the whole given tokenSet whether it has expired; means it tests access AND refresh token
  *
  * @param {object} adapter
- * @param {object} tokenSet
+ * @param {tokenSet} tokenSet
  * @returns {Promise<boolean>}
  */
 module.exports.tokenSetHasExpired = async function (adapter, tokenSet) {
@@ -134,7 +137,7 @@ module.exports.clearTokenStore = async function (adapter) {
     await adapter.getObjectAsync(adapter.namespace)
         .then(async tokenSet=>{
             if (tokenSet) {
-                tokenSet = tokenTools.getEmptyTokenset();
+                tokenSet = tokenTools.getEmptyTokenSet();
                 await adapter.extendObject(adapter.namespace, tokenSet)
                     .then(() => {
                         adapter.log.info(`Token store cleared.`);
@@ -161,7 +164,7 @@ module.exports.clearTokenStore = async function (adapter) {
  * @param clientSecret {string} Miele API client-secret of the user as given by Miele
  * @param Code {string} the code received from the auth request
  * @param redirectURI {string} the redirect URI used in the auth request
- * @returns {Promise<object>} OAuth2 token
+ * @returns {Promise<tokenMsg>} OAuth2 token
  */
 module.exports.getAccessToken = async function (adapter, clientId, clientSecret, Code, redirectURI) {
     return new Promise((resolve, reject) => {
@@ -204,11 +207,8 @@ module.exports.getAccessToken = async function (adapter, clientId, clientSecret,
  * Test whether the access token has already expired
  *
  * @param {object} adapter link to the adapter instance
- * @param {object} auth the current auth token with all it's values
- * @param {number} auth.expires_in the time in seconds the token is valid
- * @param {number} auth.refresh_expires_in the time in seconds the token is valid
- * @param {number} auth.obtained the time (in ms since 1970) the token was obtained
- * @returns Returns true if the token is going to expire within the next 5 Minutes - false if not.
+ * @param {tokenSet} auth the current auth token with all it's values
+ * @returns {Promise<boolean>} Returns true if the token is going to expire within the next 5 Minutes - false if not.
  */
 module.exports.accessHasExpired = async function (adapter, auth) {
     adapter.log.silly(`Time obtained: ${new Date(auth.obtained).toLocaleString()}`);
@@ -222,12 +222,8 @@ module.exports.accessHasExpired = async function (adapter, auth) {
 * Test whether the refresh token has already expired
 *
 * @param {object} adapter link to the adapter instance
-* @param {object} auth the current auth token with all it's values
-* @param {number} auth.expires_in the time in seconds the token is valid
-* @param {number} auth.refresh_expires_in the time in seconds the token is valid
-* @param {number} auth.obtained the time (in ms since 1970) the token was obtained
-* @param {number} auth.obtained_HR the time (human-readable) the token was obtained
-* @returns Returns true if the token has expired
+* @param {tokenSet} auth the current auth token with all it's values
+* @returns {Promise<boolean>}Returns true if the token has expired
 */
 module.exports.refreshHasExpired = async function (adapter, auth) {
     adapter.log.silly(`Time obtained: ${auth.obtained_HR}`);
@@ -244,10 +240,9 @@ module.exports.refreshHasExpired = async function (adapter, auth) {
  *
  * returns an empty tokenSet object
  *
- * @returns {Promise<{access_token: string, refresh_token: string, token_type: string, expires_in: number, refresh_expires_in: number, obtained: number, ping: number, obtained_HR: string}>}
- * @ returns {Promise<tokenSet>}
+ * @returns {Promise<tokenMsg>}
  */
-module.exports.getEmptyTokenset = async function () {
+module.exports.getEmptyTokenSet = async function () {
     return {
         access_token: '',
         refresh_token: '',
@@ -256,22 +251,17 @@ module.exports.getEmptyTokenset = async function () {
         refresh_expires_in: 0,
         obtained: 0,
         ping: 0,
+        id_token:``,
         obtained_HR:'',
     };
 };
 
 
 /**
- * Gets the token object from the adapter configuration
+ * Gets the token object from the adapters token store
+ *
  *@param {object} adapter link to the adapters instance
- * @param {object} tokenSet the token set to be used
- * @param {string} tokenSet.access_token  the access token
- * @param {string} tokenSet.refresh_token  the refresh token
- * @param {number} tokenSet.expires_in  the access token expiry time in seconds
- * @param {number} tokenSet.refresh_expires_in  the refresh token expiry time in seconds
- * @param {string} tokenSet.token_type  the token type (usually "Bearer")
- * @param {number} tokenSet.obtained  the timestamp when the tokens were obtained
- * @returns {Promise<{access_token: string, refresh_token: string, token_type: string, expires_in: number, refresh_expires_in: number, obtained: number, ping: number, obtained_HR: string}>} A valid and unexpired tokenSet
+ * @returns {Promise<tokenSet>}
  */
 module.exports.getTokenSetObj = async function (adapter) {
     // eslint-disable-next-line no-async-promise-executor
@@ -303,7 +293,7 @@ module.exports.getTokenSetObj = async function (adapter) {
                             .then((configTokenSet) =>{
                                 resolve(configTokenSet);
                             }).catch((err) => {
-                                reject(`Building tokenSet from adapters config failed (1).`);
+                                reject(`Building tokenSet from adapters config failed (1) with ${err}`);
                             })
                         }
                 } else {
@@ -312,7 +302,7 @@ module.exports.getTokenSetObj = async function (adapter) {
                         .then((configTokenSet) =>{
                             resolve(configTokenSet);
                         }).catch((err) => {
-                            reject(`Building tokenSet from adapters config failed (2).`);
+                            reject(`Building tokenSet from adapters config failed (2) with ${err}.`);
                         })
                 }
             })
@@ -323,18 +313,18 @@ module.exports.getTokenSetObj = async function (adapter) {
                 if (configTokenSet) {
                     resolve(configTokenSet);
                 } else {
-                    reject(`Building tokenSet from adapters config failed (3).`);
+                    reject(`Building tokenSet from adapters config failed (3) with ${err}.`);
                 }
             })
     })
 }
 
 /**
- * refreshes the current access token when it is obout to expire
+ * refreshes the current access token when it is about to expire
  *
  * @param {object} adapter link to the adapter instance
- * @param {object} tokenSet link to the auth object
- * @returns {Promise<object>} returns a refreshed auth object in case of success; error object if it fails
+ * @param {tokenSet} tokenSet link to the auth object
+ * @returns {Promise<tokenMsg>} returns a refreshed auth object in case of success; error object if it fails
  */
 module.exports.refreshTokenSet = async function (adapter, tokenSet) {
     const config = adapter.config;
@@ -362,23 +352,27 @@ module.exports.refreshTokenSet = async function (adapter, tokenSet) {
                 result = JSON.parse(flatted.stringify(result));
                 adapter.log.silly(`Token refresh message from server: ${JSON.stringify(result)}`);
                 const data = result[result[0].data];
-                const newAuth = await tokenTools.getEmptyTokenset();
+                await tokenTools.persistTokenSetInTokenStore(adapter, data);
+                /*
+                const newAuth = await tokenTools.getEmptyTokenSet();
                 newAuth.access_token = result[data.access_token];
                 newAuth.refresh_token = result[data.refresh_token];
                 newAuth.token_type = result[data.token_type];
                 newAuth.expires_in = data.expires_in;
                 newAuth.refresh_expires_in = data.refresh_expires_in;
                 newAuth.obtained = data.obtained;
+                newAuth.id_token = data.id_token;
                 newAuth.ping = data.obtained;
                 newAuth.obtained_HR = new Date(data.obtained).toLocaleString();
-                adapter.log.debug(`NewAuth from server: ${JSON.stringify(newAuth)}`);
                 // persist the new token
                 adapter.extendObject(adapter.namespace, newAuth);
-                resolve(newAuth);
+                 */
+                adapter.log.debug(`NewAuth from server: ${JSON.stringify(data)}`);
+                resolve(data);
             })
             .catch(error => {
                 if ('status' in error) {
-                    // The request was made and the server responded with a status code
+                    // The request was made, and the server responded with a status code
                     // that falls out of the range of 2xx
                     switch (error.status) {
                         case 400: // Bad request
@@ -425,10 +419,10 @@ module.exports.refreshTokenSet = async function (adapter, tokenSet) {
  *  Persists the given TokenSet in the adapters tokenStore
  *
  * @param {object} adapter
- * @param {object} tokenSet
+ * @param {tokenMsg} tokenSet
  * @returns {Promise<void>}
  */
-module.exports.updateTokenSetForAdapter = async function (adapter, tokenSet) {
+module.exports.persistTokenSetInTokenStore = async function (adapter, tokenSet) {
     adapter.log.info('Updating tokens in adapters token store ...');
     adapter.log.silly(`Received tokenSet: ${JSON.stringify(tokenSet)}`);
     if (!tokenSet.access_token.startsWith('$/aes-192-')){
@@ -442,7 +436,6 @@ module.exports.updateTokenSetForAdapter = async function (adapter, tokenSet) {
             tokenSet.id_token = adapter.encrypt(tokenSet.id_token);
         }
     }
-    tokenSet.obtained = new Date().getTime();
     tokenSet.obtained_HR = new Date(tokenSet.obtained).toLocaleString();
     await adapter.extendObject(adapter.namespace, tokenSet);
 }

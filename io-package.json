@@ -210,16 +210,13 @@
     }
   },
   "native": {
-    "Miele_pwd": "",
-    "Miele_account": "",
     "locale": "de",
-    "oauth2_vg": "de-DE",
     "Client_ID": "",
     "Client_secret": "",
     "access_token": "",
-    "access_token_expiry": "",
+    "access_token_expiry": 0,
     "refresh_token": "",
-    "refresh_token_expiry": "",
+    "refresh_token_expiry": 0,
     "tokenType": "",
     "obtained": 0,
     "pollInterval": 120,

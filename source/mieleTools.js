@@ -1,13 +1,15 @@
 //@ts-check
 'use strict';
 
+/**
+ * @typedef {import('./mieleCloudService').tokenSet} tokenSet
+ */
+
 // required files to load
 const axios = require('axios');
 const mieleConst = require('./mieleConst.js');
 const mieleTools = require('./mieleTools.js');
 const flatted = require('flatted');
-const qs = require('querystring');
-const fs = require("fs");
 const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 const queuedMessage = {};
 let delayTimeOut;
@@ -17,7 +19,7 @@ let delayTimeOut;
  *
  * tests the given adapter config whether it is valid
  *
- * @param adapter link to the adapter instance
+ * @param {object} adapter link to the adapter instance
  * @param {object} config link to the adapters' configuration
  * @param {object} config.Client_ID Miele API client-ID of the user as given by Miele
  * @param {string} config.Client_secret Miele API client-secret of the user as given by Miele
@@ -70,7 +72,7 @@ module.exports.generateRandomString = async function (digits) {
  * polls the miele cloud API to refresh the device data
  *
  * @param adapter {object} link to the adapter instance
- * @param auth {object}  OAuth2 object containing required credentials
+ * @param auth {tokenSet}  OAuth2 object containing required credentials
  */
 module.exports.getMieleDevices = async function (adapter, auth) {
     try {
@@ -91,7 +93,7 @@ module.exports.getMieleDevices = async function (adapter, auth) {
  * polls the miele cloud API to get the available events on the API
  *
  * @param adapter {object} link to the adapter instance
- * @param auth {object}  OAuth2 object containing required credentials
+ * @param {tokenSet} auth   OAuth2 object containing required credentials
  */
 module.exports.getMieleEvents = async function (adapter, auth) {
     try {
@@ -113,7 +115,7 @@ module.exports.getMieleEvents = async function (adapter, auth) {
  * polls the miele cloud API to refresh the device data
  *
  * @param adapter {object} link to the adapter instance
- * @param auth {object}  OAuth2 object containing required credentials
+ * @param auth {tokenSet}  OAuth2 object containing required credentials
  * @param device {string}
  */
 module.exports.getMieleActions = async function (adapter, auth, device) {
@@ -138,8 +140,8 @@ module.exports.getMieleActions = async function (adapter, auth, device) {
  * polls the miele cloud API to refresh the device filling levels
  *
  * @param adapter {object} link to the adapter instance
- * @param auth {object}  OAuth2 object containing required credentials
- * @param device {string} Id of the device to query the filling levels for
+ * @param auth {tokenSet}  OAuth2 object containing required credentials
+ * param device {string} Id of the device to query the filling levels for
  * @param DEVICEID
  */
 module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID = 'dummy') {
@@ -165,7 +167,7 @@ module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID =
  * polls the miele cloud API to refresh the device failure details
  *
  * @param adapter {object} link to the adapter instance
- * @param auth {object}  OAuth2 object containing required credentials
+ * @param auth {tokenSet}  OAuth2 object containing required credentials
  * @param device {string} Id of the device to query the failure details for
  */
 module.exports.getMieleFailureDetails = async function (adapter, auth, device) {
@@ -190,7 +192,7 @@ module.exports.getMieleFailureDetails = async function (adapter, auth, device) {
  * polls the miele cloud API to refresh the device rooms
  *
  * @param adapter {object} link to the adapter instance
- * @param auth {object}  OAuth2 object containing required credentials
+ * @param auth {tokenSet}  OAuth2 object containing required credentials
  * @param device {string} Id of the device to query the rooms for
  */
 module.exports.getMieleRooms = async function (adapter, auth, device) {
@@ -358,13 +360,14 @@ module.exports.executeAction = async function (adapter, auth, endpoint, device, 
  * splits the json data received from cloud API into separate device
  *
  * @param adapter Link to the adapter instance
- * @param auth Link to the authentication object
+ * param auth Link to the authentication object
  * @param {object} mieleDevices The whole JSON which needs to be split into devices
  * @param {object} mieleDevices.ident Indent Data of the device
  * @param {object} mieleDevices.ident.deviceIdentLabel The whole JSON which needs to be split into devices
- * @param mieleDevices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
+ * @param {string} mieleDevices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
  */
-module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) {
+//module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) {
+module.exports.splitMieleDevices = async function (adapter, mieleDevices) {
     // Splits the data-package returned by the API into single devices and iterates over each single device
     for (const mieleDevice in mieleDevices) {
         if (typeof mieleDevices === 'undefined' || typeof mieleDevice === 'undefined') {
@@ -397,7 +400,7 @@ module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) 
                     type: 'object',
                 },
             };
-            await createOrExtendObject(adapter, mieleDevice, obj, null); // create base object
+            createOrExtendObject(adapter, mieleDevice, obj, null); // create base object
         }
         // device is already known
         if (adapter.config.delayedProcessing) {

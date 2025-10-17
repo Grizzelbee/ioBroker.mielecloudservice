@@ -14,7 +14,18 @@
         "esModuleInterop": true,
         // this is necessary for the automatic typing of the adapter config
         "resolveJsonModule": true,
-
+        // Generate d.ts files
+        "declaration": true,
+        // This compiler run should
+        // only output d.ts files
+        "emitDeclarationOnly": true,
+        // Types should go into this directory.
+        // Removing this would place the .d.ts files
+        // next to the .js files
+        "outDir": "dist",
+        // go to js file when using IDE functions like
+        // "Go to Definition" in VSCode
+        "declarationMap": true,
         // Set this to false if you want to disable the very strict rules (not recommended)
         "strict": true,
         // Or enable some of those features for more fine-grained control,
