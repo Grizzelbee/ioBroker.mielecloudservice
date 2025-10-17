@@ -1,10 +1,13 @@
+//@ts-check
 'use strict';
 
 // required files to load
 const axios = require('axios');
-const mieleConst = require('../source/mieleConst.js');
+const mieleConst = require('./mieleConst.js');
+const mieleTools = require('./mieleTools.js');
 const flatted = require('flatted');
 const qs = require('querystring');
+const fs = require("fs");
 const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 const queuedMessage = {};
 let delayTimeOut;
@@ -17,8 +20,8 @@ let delayTimeOut;
  * @param adapter link to the adapter instance
  * @param {object} config link to the adapters' configuration
  * @param {object} config.Client_ID Miele API client-ID of the user as given by Miele
- * @param config.Client_secret Miele API client-secret of the user as given by Miele
- * @param config.locale    locale the API responds in
+ * @param {string} config.Client_secret Miele API client-secret of the user as given by Miele
+ * @param {string} config.locale    locale the API responds in
  * @returns true if config is valid. false if config is invalid
  */
 module.exports.checkConfig = async function (adapter, config) {
@@ -63,27 +66,6 @@ module.exports.generateRandomString = async function (digits) {
 };
 
 /**
- * clearTokenSet
- *
- * clears the tokenSet of the adapter instance
- *
- * @param adapter {object} link to the adapter instance
- * @returns {Promise<void>}
- */
-module.exports.clearTokenSet = async function (adapter) {
-    adapter.log.debug(`Clearing stored tokenSet due to forced invalidation at logout.`);
-    adapter._tokenSet.access_token = '';
-    adapter._tokenSet.refresh_token = '';
-    adapter._tokenSet.token_type = '';
-    adapter._tokenSet.expires_in = 0;
-    adapter._tokenSet.refresh_expires_in = 0;
-    adapter._tokenSet.obtained = 0;
-    adapter._tokenSet.ping = 0;
-    await adapter.extendObject(adapter.namespace, adapter._tokenSet);
-};
-
-/**
- * refreshMieleData
  *
  * polls the miele cloud API to refresh the device data
  *
@@ -101,6 +83,27 @@ module.exports.getMieleDevices = async function (adapter, auth) {
         );
     } catch (error) {
         adapter.log.error(`[refreshMieleDevices] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
+    }
+};
+
+/**
+ *
+ * polls the miele cloud API to get the available events on the API
+ *
+ * @param adapter {object} link to the adapter instance
+ * @param auth {object}  OAuth2 object containing required credentials
+ */
+module.exports.getMieleEvents = async function (adapter, auth) {
+    try {
+        return await sendAPIRequest(
+            adapter,
+            auth,
+            mieleConst.ENDPOINT_EVENTS.replace('LANG', adapter.config.locale),
+            'GET',
+            '',
+        );
+    } catch (error) {
+        adapter.log.error(`[getMieleEvents] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
     }
 };
 
@@ -210,65 +213,17 @@ module.exports.getKnownDevices = function () {
     return knownDevices;
 };
 
-/**
- * getAccessToken
- *
- * requests an OAuth2 Access token
- *
- * @param adapter {object} link to the adapter instance
- * @param clientId {string} Miele API client-ID of the user as given by Miele
- * @param clientSecret {string} Miele API client-secret of the user as given by Miele
- * @param Code {string} the code received from the auth request
- * @param redirectURI {string} the redirect URI used in the auth request
- * @returns {Promise<any>} OAuth2 token
- */
-module.exports.getAccessToken = async function (adapter, clientId, clientSecret, Code, redirectURI) {
-    return new Promise((resolve, reject) => {
-        try {
-            const data = qs.stringify({
-                client_id: clientId,
-                client_secret: clientSecret,
-                code: Code,
-                grant_type: mieleConst.GRANT_TYPE,
-                redirect_uri: redirectURI,
-            });
-
-            const options = {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'User-Agent': mieleConst.UserAgent,
-                },
-            };
-
-            axios
-                // @ts-expect-error - axios.post() is not callable
-                .post(mieleConst.ENDPOINT_AUTHTOKEN, data, options)
-                .then(response => {
-                    adapter.log.debug(JSON.stringify(response.data));
-                    resolve(response.data);
-                })
-                .catch(error => {
-                    adapter.log.error(JSON.stringify(error.response ? error.response.data : error));
-                    reject(error);
-                });
-        } catch (error) {
-            adapter.log.error(JSON.stringify(error));
-            reject(error);
-        }
-    });
-};
 
 /**
  * sendAPIRequest
  *
  * build and send a http request to the miele server
  *
- * @param adapter link to the adapter instance
- * @param auth OAuth2 token object
- * @param Endpoint the URI endpoint to call
- * @param Method method to use for this request: POST or GET
- * @param payload payload for this request
+ * @param {object} adapter link to the adapter instance
+ * @param {object} auth OAuth2 token object
+ * @param {string} Endpoint the URI endpoint to call
+ * @param {string} Method method to use for this request: POST or GET
+ * @param {object} payload payload for this request
  */
 async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
     return new Promise((resolve, reject) => {
@@ -332,9 +287,9 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
                             break;
                         case 401:
                             adapter.log.error(
-                                "OAuth2 Access token has expired. This shouldn't ever happen.Please open an issue on github for that.",
+                                "OAuth2 Access token has expired. This is okay so far. Trying to refresh it.",
                             );
-                            reject('OAuth2 Access token has expired.');
+                            reject('401 - OAuth2 Access token has expired.');
                             break;
                         case 404:
                             adapter.log.info('Device/fabNumber is unknown. Disabling all actions.');
@@ -375,148 +330,7 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
     });
 }
 
-/**
- * Test whether the auth token is going to expire within the next 5 minutes or is already expired
- *
- * @param {object} adapter link to the adapter instance
- * @param {object} auth the current auth token with all it's values
- * @param {number} auth.expires_in the time in seconds the token is valid
- * @param {number} auth.obtained the time (in ms since 1970) the token was obtained
- * @returns Returns true if the token is going to expire within the next 5 Minutes - false if not.
- */
-module.exports.authHasExpired = function (adapter, auth) {
-    adapter.log.silly(`Time obtained: ${new Date(auth.obtained).toLocaleString()}`);
-    adapter.log.silly(`Access Token expires in: ${auth.expires_in} seconds`);
-    adapter.log.debug(`Access Token expires on: ${new Date(auth.obtained + auth.expires_in * 1000).toLocaleString()}`);
-    adapter.log.silly(`Current time is: ${new Date().toLocaleString()}`);
-    adapter.log.silly(`Diff is: #${new Date(auth.obtained + auth.expires_in * 1000).getTime() - new Date().getTime()}`);
-    const diffSeconds = new Date(auth.obtained + auth.expires_in * 1000).getTime() - new Date().getTime();
-    return diffSeconds <= 5 * 60 * 1000; // = 5 minutes
-};
 
-module.exports.refreshHasExpired = function (adapter, auth) {
-    adapter.log.silly(`Time obtained: ${new Date(auth.obtained).toLocaleString()}`);
-    adapter.log.silly(`Refresh Token expires in: ${auth.refresh_expires_in} seconds`);
-    adapter.log.debug(
-        `Refresh Token expires on: ${new Date(auth.obtained + auth.refresh_expires_in * 1000).toLocaleString()}`,
-    );
-    adapter.log.silly(`Current time is: ${new Date().toLocaleString()}`);
-    adapter.log.silly(
-        `Diff is: #${new Date(auth.obtained + auth.refresh_expires_in * 1000).getTime() - new Date().getTime()}`,
-    );
-    const diffSeconds = new Date(auth.obtained + auth.refresh_expires_in * 1000).getTime() - new Date().getTime();
-    return diffSeconds <= 0; // = 0 seconds - has expired
-};
-
-/**
- * getEmptyTokenset
- *
- * returns an empty tokenSet object
- *
- * @returns {Promise<{access_token: string, refresh_token: string, token_type: string, expires_in: number, refresh_expires_in: number, obtained: number, ping: number}>}
- */
-module.exports.getEmptyTokenset = async function () {
-    return {
-        access_token: '',
-        refresh_token: '',
-        token_type: '',
-        expires_in: 0,
-        refresh_expires_in: 0,
-        obtained: 0,
-        ping: 0,
-    };
-};
-
-/**
- * refreshes the current access token when it is obout to expire
- *
- * @param adapter link to the adapter instance
- * @param config  link to the adapters' config
- * @param auth    link to the auth object
- * @returns returns a refreshed auth object in case of success; error object if it fails
- */
-module.exports.refreshAuthToken = async function (adapter, config, auth) {
-    adapter.log.info(
-        `Your access token is going to expire within the next 5 minutes or has already expired. Trying to refresh it.`,
-    );
-    return new Promise((resolve, reject) => {
-        if (auth.refresh_token.startsWith('$/aes-192-')) {
-            auth.refresh_token = adapter.decrypt(auth.refresh_token);
-        }
-        const options = {
-            headers: {
-                Accept: 'application/json;charset=utf-8',
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'User-Agent': mieleConst.UserAgent,
-            },
-            method: 'POST',
-            data: `grant_type=refresh_token&client_id=${config.Client_ID}&client_secret=${config.Client_secret}&refresh_token=${auth.refresh_token}`,
-            dataType: 'text/plain',
-            url: mieleConst.ENDPOINT_AUTHTOKEN,
-        };
-        adapter.log.debug(`Doing axios request to refresh tokens: ${JSON.stringify(options)}`);
-        //@ts-expect-error - axios.create() is not a function
-        axios(options)
-            .then(async result => {
-                result = JSON.parse(flatted.stringify(result));
-                adapter.log.silly(`Token refresh message from server: ${JSON.stringify(result)}`);
-                const data = result[result[0].data];
-                const newAuth = await this.getEmptyTokenset();
-                newAuth.access_token = result[data.access_token];
-                newAuth.refresh_token = result[data.refresh_token];
-                newAuth.token_type = result[data.token_type];
-                newAuth.expires_in = data.expires_in;
-                newAuth.refresh_expires_in = data.refresh_expires_in;
-                newAuth.obtained = new Date().getTime();
-                newAuth.ping = new Date().getTime();
-                adapter.log.debug(`NewAuth from server: ${JSON.stringify(newAuth)}`);
-                adapter.log.info(`Successfully refreshed access token.`);
-                resolve(newAuth);
-            })
-            .catch(error => {
-                if ('status' in error) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-                    switch (error.status) {
-                        case 400: // Bad request
-                            reject(
-                                `Bad Request - Your request was unacceptable, often due to missing or outdated refresh tokens.`,
-                            );
-                            break;
-                        case 401: // unauthorized
-                            reject(
-                                `Terminating adapter due to inability to authenticate. Your credentials seem to be invalid. Please double check and fix them.`,
-                            );
-                            break;
-                        case 429: // endpoint currently not available
-                            adapter.log.warn(
-                                `Error: Endpoint: [${mieleConst.ENDPOINT_AUTHTOKEN}] is currently not available.`,
-                            );
-                            break;
-                        default:
-                            adapter.log.warn(
-                                `[error.response.data]: ${typeof error.response.data === 'object' ? '' : error.response.data}`,
-                            );
-                            adapter.log.warn(
-                                `[error.response.status]: ${typeof error.response.status === 'object' ? '' : error.response.status}`,
-                            );
-                            adapter.log.warn(
-                                `[error.response.headers]: ${typeof error.response.headers === 'object' ? '' : error.response.headers}`,
-                            );
-                            break;
-                    }
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    adapter.log.warn(
-                        'An error occurred when trying to refresh the access token but dropped no valid error message.',
-                    );
-                    adapter.log.warn(error.message);
-                    adapter.log.error(JSON.stringify(error));
-                    reject(error);
-                }
-            });
-    });
-};
 
 /**
  * send an action to the API to execute it
@@ -651,9 +465,9 @@ module.exports.addProgramsToDevice = async function (adapter, auth, mieleDevice)
  *
  * add selected ident data to the device tree
  *
- * @param adapter link to the adapter instance
- * @param path path where the data point is going to be created
- * @param currentDeviceIdent ident data of the device
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the data point is going to be created
+ * @param {object} currentDeviceIdent ident data of the device
  */
 async function createIdentTree(adapter, path, currentDeviceIdent) {
     adapter.log.debug(`createIdentTree: Input data: ${JSON.stringify(currentDeviceIdent)}`);
@@ -729,7 +543,7 @@ async function createIdentTree(adapter, path, currentDeviceIdent) {
  *
  * adds the current miele device states to the device tree beneath its device type folder (channel) and device Id (device)
  *
- * @param adapter link to the adapter instance
+ * @param {object} adapter link to the adapter instance
  * @param path {string} path where the device is to be created (aka deviceFolder)
  * @param currentDevice {object} the entire JSON for the current device
  * @param currentDeviceState {object} the JSON for a single device
@@ -1194,6 +1008,17 @@ async function createStateSignalFailure(adapter, path, value) {
         'boolean',
         'indicator',
     );
+    if (value){
+        const deviceID = path.split('.').pop() || '';
+        await mieleTools.getMieleFailureDetails(adapter, await adapter.getObjectAsync(adapter.namespace), deviceID)
+            .then(failureDetails => {
+                adapter.log.debug(`Received FailureDetails: ${failureDetails}`);
+            })
+            .catch(err => {
+                adapter.log.warn(`getMieleFailureDetails crashed with error: [${err}]`);
+            })
+
+    }
 }
 
 /**
@@ -1341,9 +1166,9 @@ async function createStateSignalDoor(adapter, path, value) {
  *
  * adds the available programs for the given device to the object tree
  *
- * @param adapter link to the adapter instance
- * @param auth Object with authorization information for Miele API
- * @param device The device to query the programs for
+ * @param {object} adapter link to the adapter instance
+ * @param {object} auth Object with authorization information for Miele API
+ * @param {string} device The device to query the programs for
  */
 async function addPrograms(adapter, auth, device) {
     await sendAPIRequest(
@@ -1488,12 +1313,12 @@ async function createStateDryingStep(adapter, path, value, value_raw) {
  *
  * create the state that shows the estimated ending time of the current running program
  *
- * @param adapter  link to the adapter instance
- * @param path path where the data point is going to be created
+ * @param {object} adapter  link to the adapter instance
+ * @param {string} path path where the data point is going to be created
  * @param {object} currentDeviceState array that contains the remaining time in format [hours, minutes]
- * @param currentDeviceState.remainingTime array that contains the remaining time in format [hours, minutes]
+ * @param {Array} currentDeviceState.remainingTime array that contains the remaining time in format [hours, minutes]
  * @param {object} currentDeviceState.status  current state of the device
- * @param currentDeviceState.status.value_raw current state of the device
+ * @param {string} currentDeviceState.status.value_raw current state of the device
  */
 async function createStateEstimatedEndTime(adapter, path, currentDeviceState) {
     if (
@@ -1853,8 +1678,8 @@ async function createStateSpinningSpeed(adapter, path, value, unit) {
  *
  * create the channel for Actions
  *
- * @param adapter link to the adapter instance
- * @param message the message object as received from miele
+ * @param {object} adapter link to the adapter instance
+ * @param {object} message the message object as received from miele
  */
 module.exports.splitMieleActionsMessage = async function (adapter, message) {
     for (const [device, actions] of Object.entries(message)) {
@@ -1871,9 +1696,9 @@ module.exports.splitMieleActionsMessage = async function (adapter, message) {
 /**
  * processes actions message for each device
  *
- * @param adapter Link to the adapter instance
- * @param device Name (mostly serial) of the current device in the device tree
- * @param actions actions object as received from miele, but splitted into single devices
+ * @param {object} adapter Link to the adapter instance
+ * @param {string} device Name (mostly serial) of the current device in the device tree
+ * @param {object} actions actions object as received from miele, but splitted into single devices
  * @returns
  */
 async function createDeviceActions(adapter, device, actions) {
@@ -2211,9 +2036,9 @@ async function createChannelActions(adapter, path) {
 
 /**
  *
- * @param adapter link to the adapter instance
- * @param path path where the state should be created
- * @param currentState current state of this state
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the state should be created
+ * @param {number} currentState current value of this state
  * @returns
  */
 async function createVentilationStepSwitch(adapter, path, currentState) {
@@ -2232,10 +2057,9 @@ async function createVentilationStepSwitch(adapter, path, currentState) {
 
 /**
  *
- * @param adapter link to the adapter instance
- * @param path path where the state should be created
- * @param currentState current state of this state
- * @returns
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the state should be created
+ * @param {boolean} currentState current value of this state
  */
 async function addPowerSwitch(adapter, path, currentState) {
     await createRWState(
@@ -2251,6 +2075,13 @@ async function addPowerSwitch(adapter, path, currentState) {
     });
 }
 
+/**
+ * Adds a start-button at the given path
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the state should be created
+ * @param {boolean} data current value of this state
+ */
 async function addStartButton(adapter, path, data) {
     createOrExtendObject(
         adapter,
@@ -2270,6 +2101,13 @@ async function addStartButton(adapter, path, data) {
     );
 }
 
+/**
+ * Adds a stop-button at the given path
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the state should be created
+ * @param {boolean} data current value of this state
+ */
 async function addStopButton(adapter, path, data) {
     createOrExtendObject(
         adapter,
@@ -2289,6 +2127,13 @@ async function addStopButton(adapter, path, data) {
     );
 }
 
+/**
+ * Adds a pause-button at the given path
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the state should be created
+ * @param {boolean} data current value of this state
+ */
 async function addPauseButton(adapter, path, data) {
     createOrExtendObject(
         adapter,
@@ -2308,6 +2153,13 @@ async function addPauseButton(adapter, path, data) {
     );
 }
 
+/**
+ * Adds a light-switch at the given path
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path path where the state should be created
+ * @param {boolean} currentState current value of this state
+ */
 async function addLightSwitch(adapter, path, currentState) {
     await createRWState(
         adapter,
@@ -2397,12 +2249,12 @@ async function createString(adapter, path, description, value) {
  *
  * Adds a read only state of various type to the device tree
  *
- * @param adapter link to the adapter instance
- * @param path  path where the data point is going to be created
- * @param description description of the data point
- * @param type valid type of this state
- * @param role valid role of this state
- * @param value value to set to the data point
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path  path where the data point is going to be created
+ * @param {string} description description of the data point
+ * @param {string} type valid type of this state
+ * @param {string} role valid role of this state
+ * @param {any} value value to set to the data point
  */
 async function createROState(adapter, path, description, value, type, role) {
     try {
@@ -2426,13 +2278,13 @@ async function createROState(adapter, path, description, value, type, role) {
  *
  * Adds a read/write state of various type to the device tree
  *
- * @param adapter link to the adapter instance
- * @param path  path where the data point is going to be created
- * @param description description of the data point
- * @param type valid type of this state
- * @param role valid role of this state
- * @param states valid states object for this switch
- * @param value value to set to the data point
+ * @param {object} adapter link to the adapter instance
+ * @param {string} path  path where the data point is going to be created
+ * @param {string} description description of the data point
+ * @param {string} type valid type of this state
+ * @param {string} role valid role of this state
+ * @param {object} states valid states object for this switch
+ * @param {any} value value to set to the data point
  */
 async function createRWState(adapter, path, description, value, type, role, states) {
     try {
@@ -2531,10 +2383,10 @@ async function createTime(adapter, path, description, value, role) {
  * Updates an existing object (id) or creates it if not existing.
  * In case id and name are equal, it will only set it's new state
  *
- * @param adapter link to the adapters instance
- * @param id path/id of datapoint to create
- * @param objData details to the datapoint to be created (Device, channel, state, ...)
- * @param value value of the datapoint
+ * @param {object} adapter link to the adapters instance
+ * @param {string} id path/id of datapoint to create
+ * @param {object} objData details to the datapoint to be created (Device, channel, state, ...)
+ * @param {any} value value of the datapoint
  */
 function createOrExtendObject(adapter, id, objData, value) {
     if (typeof value === 'undefined' || value === -32768 || value === null) {

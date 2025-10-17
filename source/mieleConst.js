@@ -1,7 +1,4 @@
-/* jshint -W097 */
-/* jshint -W030 */
-/* jshint strict:true */
-/* jslint node: true */
+//@ts-check
 'use strict';
 
 const AdapterVersion = require('../io-package.json').common.version;
@@ -66,4 +63,8 @@ module.exports.ACTIONS = 'actions';
 module.exports.DEVICES = 'devices';
 module.exports.PING = 'ping';
 module.exports.ERROR = 'error';
+module.exports.FAILUREDETAILS = 'failureDetails';
+module.exports.FILLINGLEVELS = 'fillingLevels';
+module.exports.ROOMS = "rooms";
+module.exports.CAMERA = 'camera';
 module.exports.MAX_ERROR_THRESHOLD = 20;
