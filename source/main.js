@@ -2,8 +2,8 @@
 'use strict';
 
 /**
- * @typedef {import('./mieleCloudService').tokenSet} tokenSet
- * @typedef {import('./mieleCloudService').tokenMsg} tokenMsg
+ * @typedef {import('./types.mieleCloudService').tokenSet} tokenSet
+ * @typedef {import('./types.mieleCloudService').tokenMsg} tokenMsg
  */
 
 

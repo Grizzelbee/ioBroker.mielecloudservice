@@ -1,7 +1,6 @@
-// This file extends the AdapterConfig type from "@types/iobroker"
-// using the actual properties present in io-package.json
-// in order to provide typings for adapter.config properties
-
+/**
+ *  This file contains all types for the adapter
+ */
 type tokenSet = {
     access_token: string,
     refresh_token: string,
@@ -24,5 +23,7 @@ type tokenMsg = {
     id_token: string,
     obtained_HR: string
 }
+
+
 // this is required so the above AdapterConfig is found by TypeScript / type checking
 export {tokenSet, tokenMsg};

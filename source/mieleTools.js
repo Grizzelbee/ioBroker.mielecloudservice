@@ -2,7 +2,13 @@
 'use strict';
 
 /**
- * @typedef {import('./mieleCloudService').tokenSet} tokenSet
+ * @typedef {import("../lib/adapter-config")._AdapterConfig} AdapterConfig
+ * @typedef {import('./types.mieleCloudService').tokenSet} tokenSet
+ * @typedef {import('./types.miele').actionsMsg} actionsMsg
+ * @typedef {import('./types.miele').identMsg} identMsg
+ * @typedef {import('./types.miele').stateMsg} stateMsg
+ * @typedef {import('./types.miele').deviceMsg} deviceMsg
+ * @typedef {import('./types.miele').deviceMsg} devicesMsg
  */
 
 // required files to load
@@ -20,11 +26,8 @@ let delayTimeOut;
  * tests the given adapter config whether it is valid
  *
  * @param {object} adapter link to the adapter instance
- * @param {object} config link to the adapters' configuration
- * @param {object} config.Client_ID Miele API client-ID of the user as given by Miele
- * @param {string} config.Client_secret Miele API client-secret of the user as given by Miele
- * @param {string} config.locale    locale the API responds in
- * @returns true if config is valid. false if config is invalid
+ * @param {AdapterConfig} config link to the adapters' configuration
+ * @returns {Promise<boolean>} true if config is valid. false if config is invalid
  */
 module.exports.checkConfig = async function (adapter, config) {
     return new Promise((resolve, reject) => {
@@ -141,7 +144,7 @@ module.exports.getMieleActions = async function (adapter, auth, device) {
  *
  * @param adapter {object} link to the adapter instance
  * @param auth {tokenSet}  OAuth2 object containing required credentials
- * param device {string} Id of the device to query the filling levels for
+ * param device {string} ID of the device to query the filling levels for
  * @param DEVICEID
  */
 module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID = 'dummy') {
@@ -219,10 +222,10 @@ module.exports.getKnownDevices = function () {
 /**
  * sendAPIRequest
  *
- * build and send a http request to the miele server
+ * build and send an http request to the miele server
  *
  * @param {object} adapter link to the adapter instance
- * @param {object} auth OAuth2 token object
+ * @param {tokenSet} auth OAuth2 token object
  * @param {string} Endpoint the URI endpoint to call
  * @param {string} Method method to use for this request: POST or GET
  * @param {object} payload payload for this request
@@ -337,12 +340,12 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
 /**
  * send an action to the API to execute it
  *
- * @param adapter link to the adapter instance
- * @param auth the auth object
- * @param endpoint the API endpoint to call
- * @param device API-ID of the current device
- * @param payload payload to send to the API
- * @returns
+ * @param {object} adapter link to the adapter instance
+ * @param {tokenSet} auth the auth object
+ * @param {string} endpoint the API endpoint to call
+ * @param {string} device API-ID of the current device
+ * @param {object} payload payload to send to the API
+ * @returns {Promise<void>}
  */
 module.exports.executeAction = async function (adapter, auth, endpoint, device, payload) {
     return new Promise(function (resolve, reject) {
@@ -359,12 +362,8 @@ module.exports.executeAction = async function (adapter, auth, endpoint, device, 
  *
  * splits the json data received from cloud API into separate device
  *
- * @param adapter Link to the adapter instance
- * param auth Link to the authentication object
- * @param {object} mieleDevices The whole JSON which needs to be split into devices
- * @param {object} mieleDevices.ident Indent Data of the device
- * @param {object} mieleDevices.ident.deviceIdentLabel The whole JSON which needs to be split into devices
- * @param {string} mieleDevices.ident.deviceIdentLabel.fabNumber SerialNumber of the device
+ * @param {object} adapter Link to the adapter instance
+ * @param {devicesMsg} mieleDevices The whole JSON which needs to be split into devices
  */
 //module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) {
 module.exports.splitMieleDevices = async function (adapter, mieleDevices) {
@@ -442,13 +441,12 @@ module.exports.splitMieleDevices = async function (adapter, mieleDevices) {
 };
 
 /**
-'* addProgramsToDevice
-
+ * addProgramsToDevice
  * queries the supported programs of a device and adds them to the knownDevices structure
  *
  * @param {object} adapter link to the adapter instance
- * @param {object} auth link to the tokenSet object
- * @param {object} mieleDevice the device to query the programs for
+ * @param {tokenSet} auth link to the tokenSet object
+ * @param {string} mieleDevice the device to query the programs for
  * @returns {Promise<void>}
  */
 module.exports.addProgramsToDevice = async function (adapter, auth, mieleDevice) {
@@ -470,7 +468,7 @@ module.exports.addProgramsToDevice = async function (adapter, auth, mieleDevice)
  *
  * @param {object} adapter link to the adapter instance
  * @param {string} path path where the data point is going to be created
- * @param {object} currentDeviceIdent ident data of the device
+ * @param {identMsg} currentDeviceIdent ident data of the device
  */
 async function createIdentTree(adapter, path, currentDeviceIdent) {
     adapter.log.debug(`createIdentTree: Input data: ${JSON.stringify(currentDeviceIdent)}`);
@@ -548,36 +546,8 @@ async function createIdentTree(adapter, path, currentDeviceIdent) {
  *
  * @param {object} adapter link to the adapter instance
  * @param path {string} path where the device is to be created (aka deviceFolder)
- * @param currentDevice {object} the entire JSON for the current device
- * @param currentDeviceState {object} the JSON for a single device
- * @param currentDeviceState.status {object} the JSON for the status structure of a single device
- * @param currentDeviceState.status.key_localized {string} the localized name of the key
- * @param currentDeviceState.status.value_localized {string} the localized value
- * @param currentDeviceState.status.value_raw {any} the raw value
- * @param currentDeviceState.signalFailure {boolean} indicator that there is an open failure message for this device
- * @param currentDeviceState.signalInfo {boolean} indicator that there is an open Info message for this device
- * @param currentDeviceState.signalDoor {boolean} indicator that there is an open door message for this device
- * @param currentDeviceState.ProgramID {object} the JSON for the status structure of a single device
- * @param currentDeviceState.programType {object} the JSON for the status structure of a single device
- * @param currentDeviceState.programPhase {object} the JSON for the status structure of a single device
- * @param currentDeviceState.remainingTime {object} the JSON for the status structure of a single device
- * @param currentDeviceState.remoteEnable {object} the JSON for the status structure of a single device
- * @param currentDeviceState.remoteEnable.fullRemoteControl {boolean} the JSON for the status structure of a single device
- * @param currentDeviceState.remoteEnable.smartGrid {boolean} the JSON for the status structure of a single device
- * @param currentDeviceState.remoteEnable.mobileStart {boolean} the JSON for the status structure of a single device
- * @param currentDeviceState.startTime {object} the JSON for the status structure of a single device
- * @param currentDeviceState.elapsedTime {object} the JSON for the status structure of a single device
- * @param currentDeviceState.ecoFeedback {object} the JSON for the status structure of a single device
- * @param currentDeviceState.spinningSpeed {object} the JSON for the status structure of a single device
- * @param currentDeviceState.targetTemperature {object} the JSON for the status structure of a single device
- * @param currentDeviceState.dryingStep {object} the JSON for the status structure of a single device
- * @param currentDeviceState.temperature {object} the JSON for the status structure of a single device
- * @param currentDeviceState.plateStep {object} the JSON for the status structure of a single device
- * @param currentDeviceState.ventilationStep {object} the JSON for the status structure of a single device
- * @param currentDeviceState.batteryLevel {object} the JSON for the status structure of a single device
- * @param currentDeviceState.status {object} the JSON for the status structure of a single device
- * @param currentDeviceState.status {object} the JSON for the status structure of a single device
- * @param currentDeviceState.status {object} the JSON for the status structure of a single device
+ * @param currentDevice {deviceMsg} the entire JSON for the current device
+ * @param currentDeviceState {stateMsg} the JSON for a single device
  */
 async function createStateTree(adapter, path, currentDevice, currentDeviceState) {
     // create for ALL devices
@@ -963,7 +933,7 @@ async function createStateTree(adapter, path, currentDevice, currentDeviceState)
  *
  * @param adapter {object} link to the adapter instance
  * @param path {string} path where the data point is going to be created
- * @param mieleDevice {object} ident data of the device
+ * @param mieleDevice {devicesMsg} ident data of the device
  */
 async function addDeviceNicknameAction(adapter, path, mieleDevice) {
     // addDeviceNicknameAction - suitable for each and every device
@@ -1170,7 +1140,7 @@ async function createStateSignalDoor(adapter, path, value) {
  * adds the available programs for the given device to the object tree
  *
  * @param {object} adapter link to the adapter instance
- * @param {object} auth Object with authorization information for Miele API
+ * @param {tokenSet} auth Object with authorization information for Miele API
  * @param {string} device The device to query the programs for
  */
 async function addPrograms(adapter, auth, device) {
@@ -1318,14 +1288,11 @@ async function createStateDryingStep(adapter, path, value, value_raw) {
  *
  * @param {object} adapter  link to the adapter instance
  * @param {string} path path where the data point is going to be created
- * @param {object} currentDeviceState array that contains the remaining time in format [hours, minutes]
- * @param {Array} currentDeviceState.remainingTime array that contains the remaining time in format [hours, minutes]
- * @param {object} currentDeviceState.status  current state of the device
- * @param {string} currentDeviceState.status.value_raw current state of the device
+ * @param {stateMsg} currentDeviceState array that contains the remaining time in format [hours, minutes]
  */
 async function createStateEstimatedEndTime(adapter, path, currentDeviceState) {
     if (
-        parseInt(currentDeviceState.status.value_raw) < 2 ||
+        currentDeviceState.status.value_raw < 2 ||
         currentDeviceState.remainingTime[0] + currentDeviceState.remainingTime[1] === 0
     ) {
         adapter.log.debug(`No EstimatedEndTime to show for device ${knownDevices[path].name} (${path})!`);
@@ -1341,7 +1308,7 @@ async function createStateEstimatedEndTime(adapter, path, currentDeviceState) {
         const now = new Date();
         const estimatedEndTime = new Date();
         estimatedEndTime.setMinutes(
-            now.getMinutes() + (currentDeviceState.remainingTime[0] * 60 + currentDeviceState.remainingTime[1] * 1),
+            now.getMinutes() + (currentDeviceState.remainingTime[0] * 60 + currentDeviceState.remainingTime[1]),
         );
         const timeToShow = estimatedEndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         await createROState(
@@ -1568,7 +1535,7 @@ async function createStatePlateStep(adapter, path, value) {
 /**
  * createStateBatteryLevel
  *
- * create the state that shows the charging level of a builtin battery as a percentage value between 0 .. 100
+ * create the state that shows the charging level of a builtin battery as a percentage value between 0 - 100
  * NEW API 1.0.4
  *
  * @param adapter {object} link to the adapter instance
@@ -1602,7 +1569,7 @@ async function createStateEcoFeedbackWater(adapter, path, ecoFeedback) {
         adapter,
         `${path}.EcoFeedback.currentWaterConsumption`,
         'The amount of water used by the current running program up to the present moment.',
-        ecoFeedback === null ? 0 : ecoFeedback.currentWaterConsumption.value.valueOf() * 1,
+        ecoFeedback === null ? 0 : ecoFeedback.currentWaterConsumption.value.valueOf(),
         ecoFeedback === null ? 'l' : ecoFeedback.currentWaterConsumption.unit,
         'value',
     );
@@ -1631,7 +1598,7 @@ async function createStateEcoFeedbackEnergy(adapter, path, ecoFeedback) {
         adapter,
         `${path}.EcoFeedback.currentEnergyConsumption`,
         'The amount of energy used by the current running program up to the present moment.',
-        ecoFeedback === null ? 0 : ecoFeedback.currentEnergyConsumption.value.valueOf() * 1,
+        ecoFeedback === null ? 0 : ecoFeedback.currentEnergyConsumption.value.valueOf(),
         ecoFeedback === null ? 'kWh' : ecoFeedback.currentEnergyConsumption.unit,
         'value.power.consumption',
     );
@@ -1654,7 +1621,9 @@ async function createStateEcoFeedbackEnergy(adapter, path, ecoFeedback) {
  * @param path                  {string} path where the data point is going to be created
  * @param value                 {object} values to set to the data point
  * @param value.value_localized {string} value to set to the data point
- * @param value.value_raw       {string} raw number value to set to the data point
+ * @param value.key_localized   {string} value to set to the data point
+ * @param value.value_raw       {any} raw number value to set to the data point
+ * @param value.unit            {string} raw number value to set to the data point
  * @param unit                  {string} unit the value is in
  */
 async function createStateSpinningSpeed(adapter, path, value, unit) {
@@ -1682,7 +1651,7 @@ async function createStateSpinningSpeed(adapter, path, value, unit) {
  * create the channel for Actions
  *
  * @param {object} adapter link to the adapter instance
- * @param {object} message the message object as received from miele
+ * @param {actionsMsg} message the message object as received from miele
  */
 module.exports.splitMieleActionsMessage = async function (adapter, message) {
     for (const [device, actions] of Object.entries(message)) {
@@ -1701,8 +1670,8 @@ module.exports.splitMieleActionsMessage = async function (adapter, message) {
  *
  * @param {object} adapter Link to the adapter instance
  * @param {string} device Name (mostly serial) of the current device in the device tree
- * @param {object} actions actions object as received from miele, but splitted into single devices
- * @returns
+ * @param {object} actions actions object as received from miele, but split into single devices
+ * @returns Promise<void>
  */
 async function createDeviceActions(adapter, device, actions) {
     await createChannelActions(adapter, device);
@@ -2171,7 +2140,7 @@ async function addLightSwitch(adapter, path, currentState) {
         currentState,
         'boolean',
         'switch',
-        '',
+        {},
     ).catch(error => {
         adapter.log.warn(`addLightSwitch: ${error}`);
     });
@@ -2318,7 +2287,7 @@ async function createRWState(adapter, path, description, value, type, role, stat
 /**
  * Function createNumber
  *
- * Adds a number data point to the device tree
+ * Adds a number-type data point to the device tree
  * Unit "Celsius" will be converted to "°C" and "Fahrenheit" to "°F"
  *
  * @param adapter {object} link to the adapter instance

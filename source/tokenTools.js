@@ -2,8 +2,8 @@
 'use strict';
 
 /**
- * @typedef {import('./mieleCloudService').tokenSet} tokenSet
- * @typedef {import('./mieleCloudService').tokenMsg} tokenMsg
+ * @typedef {import('./types.mieleCloudService').tokenSet} tokenSet
+ * @typedef {import('./types.mieleCloudService').tokenMsg} tokenMsg
  */
 
 // required files to load
@@ -423,7 +423,7 @@ module.exports.refreshTokenSet = async function (adapter, tokenSet) {
  * @returns {Promise<void>}
  */
 module.exports.persistTokenSetInTokenStore = async function (adapter, tokenSet) {
-    adapter.log.info('Updating tokens in adapters token store ...');
+    adapter.log.info('Persisting tokens in adapters token store ...');
     adapter.log.silly(`Received tokenSet: ${JSON.stringify(tokenSet)}`);
     if (!tokenSet.access_token.startsWith('$/aes-192-')){
         tokenSet.access_token = adapter.encrypt(tokenSet.access_token);
