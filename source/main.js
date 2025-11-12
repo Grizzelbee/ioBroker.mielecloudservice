@@ -18,6 +18,7 @@ const { EventSource } = require('eventsource');
 const mieleTools = require('./mieleTools.js');
 const mieleConst = require('./mieleConst.js');
 const tokenTools = require('./tokenTools.js');
+const {getTokenSetObj} = require("./tokenTools");
 const timeouts = {};
 const fakeRequests = false; // this switch is used to fake requests against the Miele API and load the JSON-objects from disk
 let events;
@@ -37,6 +38,8 @@ class Mielecloudservice extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
+
+        this._sseErrors = 0;
     }
 
     /**
@@ -148,7 +151,6 @@ class Mielecloudservice extends utils.Adapter {
                         tokenTools
                             .getAccessToken(this, this._clientId, this._clientSecret, args.code, this._redirectUriBase)
                             .then(newAuth => {
-                                newAuth.obtained = new Date().getTime();
                                 this.log.debug(`Token Message: ${JSON.stringify(newAuth)}`);
                                 msg.callback &&
                                     this.sendTo(
@@ -160,7 +162,8 @@ class Mielecloudservice extends utils.Adapter {
                                 tokenTools.persistTokenSetInTokenStore(this, newAuth).catch(err => {
                                     this.log.error(`Error updating tokens in adapters token store: ${err}`);
                                 });
-                                this.log.info(`Token expires on: ${new Date(newAuth.obtained + newAuth.expires_in * 1000).toLocaleString()}`);
+                                this.log.info(`Access-Token expires on: ${new Date(newAuth.obtained + newAuth.expires_in * 1000).toLocaleString()}`);
+                                this.log.info(`Refresh-Token expires on: ${new Date(newAuth.obtained + newAuth.refresh_expires_in * 1000).toLocaleString()}`);
                                 // now continue as if adapter just started
                                 this.onReady();
                             })
@@ -188,8 +191,7 @@ class Mielecloudservice extends utils.Adapter {
      * @returns {EventSource} the new EventSource connection
      */
     getEventSource(tokenSet) {
-        //@TODO check whether base_url+endpoint is still correct
-        const result = new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
+        return new EventSource(mieleConst.BASE_URL + mieleConst.ENDPOINT_EVENTS, {
             fetch: (input, init) =>
                 fetch(input, {
                     ...init,
@@ -201,9 +203,6 @@ class Mielecloudservice extends utils.Adapter {
                     }, //-> an option to test: , https:{rejectUnauthorized: false}
                 }),
         });
-        // @ts-expect-error Property 'sseErrors' does not exist on type 'EventSource'.
-        result.sseErrors = 0;
-        return result;
     }
 
     /**
@@ -227,8 +226,9 @@ class Mielecloudservice extends utils.Adapter {
                             );
                             events.close();
                             while (events.readyState === 0) {
+                                adapter._sseErrors++;
                                 const randomDelay =
-                                    Math.pow(events.sseErrors, 2) * 1000 + Math.floor(Math.random() * 1000);
+                                    Math.pow(adapter._sseErrors, 2) * 1000 + Math.floor(Math.random() * 1000);
                                 timeouts.getEvents = setTimeout(async () => {
                                     await adapter.initSSE(tokenTools.getTokenSetObj(adapter));
                                     adapter.log.info(`Still trying to connect...`);
@@ -271,28 +271,19 @@ class Mielecloudservice extends utils.Adapter {
          */
         events.onopen = async () => {
             this.log.info(
-                `SSE-Connection has been ${events.sseErrors === 0 ? 'established' : 'reestablished'} @Miele-API.`,
+                `SSE-Connection has been ${this._sseErrors === 0 ? 'established' : 'reestablished after error'} @Miele-API.`,
             );
             await this.setState('info.connection', true, true);
-            events.sseErrors = 0;
+            this._sseErrors = 0;
         };
         /**
          * Handle message type 'device'.
          * It occurs when a device changes one of its states and on initialization
          */
         this.log.info(`Registering for 'Devices' events at Miele API.`);
-        events.addEventListener(mieleConst.DEVICES, event => {
+        events.addEventListener(mieleConst.DEVICES, async event => {
             this.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event.data)}]`);
-            mieleTools.splitMieleDevices(this, JSON.parse(event.data))
-            .then(async () => {
-                await mieleTools.getMieleFillingLevels(this, tokenSet)
-                .then(fillingLevels => {
-                    this.log.debug(`Received fillingLevels: ${fillingLevels}`);
-                })
-                .catch(err => {
-                    this.log.warn(`getMieleFillingLevels crashed with error: [${err}]`);
-                })
-            })
+            await mieleTools.splitMieleDevices(this, JSON.parse(event.data), tokenSet)
             .catch(err => {
                 this.log.warn(`splitMieleDevices crashed with error: [${err}]`);
             })
@@ -329,24 +320,23 @@ class Mielecloudservice extends utils.Adapter {
          * It occurs when the Miele-API detects an error
          */
         events.addEventListener(mieleConst.ERROR, event => {
-            events.sseErrors++;
+            this._sseErrors++;
             this.setState('info.connection', false, true)
-                .then()
                 .catch(err => {
                     this.log.error(`Setting the connection-info crashed with error: ${err}`);
                 });
             this.log.debug(`Received error message by SSE: ${JSON.stringify(event)}`);
-            let randomDelay = Math.pow(events.sseErrors, 2) * 1000 + Math.floor(Math.random() * 1000);
+            let randomDelay = Math.pow(this._sseErrors, 2) * 1000 + Math.floor(Math.random() * 1000);
             if (Object.prototype.hasOwnProperty.call(timeouts, 'reconnectDelay')) {
                 clearTimeout(timeouts.reconnectDelay);
             }
             this.log.warn(
-                `An ${typeof event.message != 'undefined' ? `error (#${events.sseErrors}) occurred (${event.message})` : 'undefined error occurred'}. Handling it in ${randomDelay / 1000} seconds to give it a chance to solve itself.`,
+                `An ${typeof event.message != 'undefined' ? `error (#${this._sseErrors}) occurred (${event.message})` : 'undefined error occurred'}. Handling it in ${randomDelay / 1000} seconds to give it a chance to solve itself.`,
             );
             timeouts.reconnectDelay = setTimeout(
                 (adapter, events) => {
-                    events.sseErrors++;
-                    randomDelay = Math.pow(events.sseErrors, 2) * 1000 + Math.floor(Math.random() * 1000);
+                    this._sseErrors++;
+                    randomDelay = Math.pow(adapter._sseErrors, 2) * 1000 + Math.floor(Math.random() * 1000);
                     // @ts-expect-error Property 'reconnectInterval' does not exist on type 'Event'.
                     event.reconnectInterval = randomDelay;
                     this.doSSEErrorHandling(adapter, events).catch(err => {
@@ -377,14 +367,9 @@ class Mielecloudservice extends utils.Adapter {
                 adapter.log.debug(`Devices as received from Miele: ${JSON.stringify(devices)}`);
                 auth.ping = new Date();
                 // processDeviceInfos
-                mieleTools.splitMieleDevices(adapter, devices).catch(err => {
+                mieleTools.splitMieleDevices(adapter, devices, auth).catch(err => {
                     adapter.log.warn(`splitMieleDevices crashed with error: [${err}]`);
                 });
-                // getFillingLevels
-                const fillingLevels = await mieleTools.getMieleFillingLevels(adapter, auth).catch(error => {
-                    adapter.log.info(`FillingLevels-Error: ${JSON.stringify(error)}`);
-                });
-                adapter.log.debug(`FillingLevels as received from Miele: ${JSON.stringify(fillingLevels)}`);
                 timeouts.actionsDelay = setTimeout(async function () {
                     const knownDevices = mieleTools.getKnownDevices();
                     const keys = Object.keys(knownDevices);
@@ -447,7 +432,7 @@ class Mielecloudservice extends utils.Adapter {
                 throw err;
             }
             this.log.info(`Device test data: ${data.toString()}`);
-            mieleTools.splitMieleDevices(this, JSON.parse(data.toString()));
+            mieleTools.splitMieleDevices(this, JSON.parse(data.toString(), tokenTools.getTokenSetObj() ));
         });
         timeouts.fakeRequest = setTimeout(() => {
             fs.readFile('test/testdata.actions.json', 'utf8', (err, data) => {

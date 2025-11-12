@@ -144,26 +144,34 @@ module.exports.getMieleActions = async function (adapter, auth, device) {
  *
  * @param adapter {object} link to the adapter instance
  * @param auth {tokenSet}  OAuth2 object containing required credentials
- * param device {string} ID of the device to query the filling levels for
- * @param DEVICEID
+ * @param DEVICEID {string} ID of the device to query the filling levels for
  */
-module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID = 'dummy') {
+module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID ) {
+    adapter.log.debug(`Received getMieleFillingLevels request...`);
+    const locale = adapter.config && adapter.config.locale ? adapter.config.locale : 'en';
+    const endpoint = mieleConst.ENDPOINT_FILLINGLEVELS.replace('DEVICEID', DEVICEID).replace('LANG', locale);
+        //`v1/devices/${DEVICEID}/fillingLevels?language=${locale}`;
     try {
-        //const result = {};
-        //result[device] = await sendAPIRequest(
-        return await sendAPIRequest(
-            adapter,
-            auth,
-            //mieleConst.ENDPOINT_FILLINGLEVELS.replace('DEVICEID', device),
-            mieleConst.ENDPOINT_FILLINGLEVELS.replace('LANG', adapter.config.locale).replace('DEVICEID', DEVICEID),
-            'GET',
-            '',
-        );
+        const result = await sendAPIRequest(adapter, auth, endpoint, 'GET', '');
+        // sendAPIRequest kann je nach Implementierung direkt response.data oder response zurückgeben
+        return result && result.data ? result.data : result;
     } catch (error) {
-        adapter.log.error(`[refreshMieleFillingLevels] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
+        // detailliertes Logging, speziell für 403
+        if (error.response) {
+            adapter.log.error(
+                `[getMieleFillingLevels] HTTP ${error.response.status} - ${JSON.stringify(error.response.data)}`
+            );
+            if (error.response.status === 403) {
+                adapter.log.warn(
+                    '[getMieleFillingLevels] 403 Forbidden - prüfe Token-Scopes, ob DEVICEID zum Account gehört und ob der Endpoint korrekt ist.'
+                );
+            }
+        } else {
+            adapter.log.error(`[getMieleFillingLevels] Request failed: ${error.message}`);
+        }
+        throw error;
     }
 };
-
 /**
  * getMieleFailureDetails
  *
@@ -364,9 +372,10 @@ module.exports.executeAction = async function (adapter, auth, endpoint, device, 
  *
  * @param {object} adapter Link to the adapter instance
  * @param {devicesMsg} mieleDevices The whole JSON which needs to be split into devices
+ * @param {tokenSet} tokenSet OAuth2 token object
  */
 //module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) {
-module.exports.splitMieleDevices = async function (adapter, mieleDevices) {
+module.exports.splitMieleDevices = async function (adapter, mieleDevices, tokenSet) {
     // Splits the data-package returned by the API into single devices and iterates over each single device
     for (const mieleDevice in mieleDevices) {
         if (typeof mieleDevices === 'undefined' || typeof mieleDevice === 'undefined') {
@@ -436,6 +445,13 @@ module.exports.splitMieleDevices = async function (adapter, mieleDevices) {
         } else {
             await createIdentTree(adapter, `${mieleDevice}.IDENT`, mieleDevices[mieleDevice].ident);
             await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
+            await mieleTools.getMieleFillingLevels(adapter, tokenSet, mieleDevice)
+                .then(fillingLevels => {
+                    adapter.log.debug(`Received fillingLevels: ${fillingLevels}`);
+                })
+                .catch(err => {
+                    adapter.log.warn(`getMieleFillingLevels crashed with error: [${err}]`);
+                })
         }
     }
 };

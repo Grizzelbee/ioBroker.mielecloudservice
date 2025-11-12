@@ -7,12 +7,11 @@
  */
 
 // required files to load
-const axios = require('axios');
+const axios = require('axios').default;
 const mieleConst = require('../source/mieleConst.js');
-const qs = require('querystring');
 const tokenTools = require('../source/tokenTools.js');
-const flatted = require('flatted');
-
+const qs = require('querystring');
+let tokenRefreshInProgress = false;
 /**
  * Decrypts the given token
  *
@@ -28,6 +27,19 @@ async function decryptToken(adapter, token){
 }
 
 /**
+ * decrypts a whole tokenSet
+ *
+ * @param {object} adapter
+ * @param {tokenSet} tokenSet
+ * @returns {Promise<tokenSet>}
+ */
+module.exports.decryptTokenSet = async (adapter, tokenSet) => {
+    tokenSet.access_token = await decryptToken(adapter, tokenSet.access_token);
+    tokenSet.refresh_token = await decryptToken(adapter, tokenSet.refresh_token);
+    return tokenSet;
+}
+
+/**
  * Validate the given tokenSet whether it seems okay
  *
  * @param {object} adapter
@@ -35,7 +47,6 @@ async function decryptToken(adapter, token){
  * @returns {Promise<void>}
  */
 module.exports.validateTokenSet = async (adapter, tokenSet) => {
-    adapter.log.debug(`Validating TokenSet: ${JSON.stringify(tokenSet)}`);
     if (
         'access_token' in tokenSet &&
         'refresh_token' in tokenSet &&
@@ -46,14 +57,12 @@ module.exports.validateTokenSet = async (adapter, tokenSet) => {
     ) {
         // there is a tokenSet in the token store, and it seems valid so far.
         // at least it has all necessary fields; Let's test whether it is fully valid
-        adapter.log.debug(`At least - token fields are existing...`);
         if (tokenSet.access_token.length > 0 &&
             tokenSet.refresh_token.length > 0 &&
             tokenSet.obtained > 0 &&
             tokenSet.refresh_expires_in > 0 &&
             tokenSet.expires_in > 0
         ) {
-            adapter.log.debug(`Token fields are filled with data...`);
             if (await tokenTools.refreshHasExpired(adapter, tokenSet)){
                 throw new Error('Refresh token has expired. Please use the workflow in adapters admin-ui to generate a new one.');
             }
@@ -62,7 +71,6 @@ module.exports.validateTokenSet = async (adapter, tokenSet) => {
         // there is no tokenSet - build one on your own from adapters config
         throw new Error('There is no token set. Please use the workflow in adapters admin-ui to generate a new one.');
     }
-    adapter.log.debug(`Validate finished successfully.`);
 }
 
 /**
@@ -80,7 +88,7 @@ module.exports.getTokenSetFromConfig = async (adapter) => {
     configTokenSet.refresh_expires_in = adapter.config.refresh_token_expiry;
     configTokenSet.obtained = adapter.config.obtained;
     if (await tokenTools.tokenSetHasExpired(adapter, configTokenSet)) {
-        adapter.log.debug(`Building tokenSet finished successfully: ${JSON.stringify(configTokenSet)}`);
+        adapter.log.debug(`Building tokenSet from adapter config finished successfully: ${JSON.stringify(configTokenSet)}`);
         return configTokenSet;
     } else {
         throw new Error('Unable to build token set from config.');
@@ -88,43 +96,7 @@ module.exports.getTokenSetFromConfig = async (adapter) => {
 
 }
 
-/**
- * decrypts a whole tokenSet
- *
- * @param {object} adapter
- * @param {tokenSet} tokenSet
- * @returns {Promise<tokenSet>}
- */
-module.exports.decryptTokenSet = async (adapter, tokenSet) => {
-    tokenSet.access_token = await decryptToken(adapter, tokenSet.access_token);
-    tokenSet.refresh_token = await decryptToken(adapter, tokenSet.refresh_token);
-    return tokenSet;
-}
 
-/**
- * tests the whole given tokenSet whether it has expired; means it tests access AND refresh token
- *
- * @param {object} adapter
- * @param {tokenSet} tokenSet
- * @returns {Promise<boolean>}
- */
-module.exports.tokenSetHasExpired = async function (adapter, tokenSet) {
-    const now = Date.now();
-    const accessDiff = new Date(tokenSet.obtained + tokenSet.expires_in * 1000).getTime() - now;
-    if (accessDiff <= 0){
-        adapter.log.warn(`Access token has expired on ${new Date(tokenSet.obtained + tokenSet.expires_in * 1000).toLocaleString()} and needs to be refreshed.`);
-    } else {
-        adapter.log.info(`Access token is still valid until ${new Date(tokenSet.obtained + tokenSet.expires_in * 1000).toLocaleString()}`);
-    }
-    const refreshDiff = new Date(tokenSet.obtained + tokenSet.refresh_expires_in * 1000).getTime() - now;
-    if (refreshDiff <= 0){
-        adapter.log.warn(`Refresh token has expired on ${new Date(tokenSet.obtained + tokenSet.refresh_expires_in * 1000).toLocaleString()} and needs to be refreshed. Please use the Workflow in Admin-UI to refresh.`);
-    } else {
-        adapter.log.info(`Refresh token is still valid until ${new Date(tokenSet.obtained + tokenSet.refresh_expires_in * 1000).toLocaleString()}`);
-    }
-    adapter.log.debug(`tokenSetHasExpired: result: ${(accessDiff <= 0) && (refreshDiff <= 0)}`);
-    return (accessDiff <= 0) || (refreshDiff <= 0);
-}
 
 /**
  * Clears the token store of the current adapter instance
@@ -186,10 +158,11 @@ module.exports.getAccessToken = async function (adapter, clientId, clientSecret,
             };
 
             axios
-                // @ts-expect-error - axios.post() is not callable
-                .post(mieleConst.ENDPOINT_AUTHTOKEN, data, options)
+                .post(mieleConst.ENDPOINT_TOKEN_NEW, data, options)
                 .then(response => {
                     adapter.log.debug(`Got data from token request: ${JSON.stringify(response.data)}`);
+                    response.data.obtained=new Date().getTime();
+                    response.data.obtained_HR=new Date().toLocaleString();
                     resolve(response.data);
                 })
                 .catch(error => {
@@ -236,6 +209,17 @@ module.exports.refreshHasExpired = async function (adapter, auth) {
 };
 
 /**
+ * tests the whole given tokenSet whether it has expired; means it tests access AND refresh token
+ *
+ * @param {object} adapter
+ * @param {tokenSet} tokenSet
+ * @returns {Promise<boolean>}
+ */
+module.exports.tokenSetHasExpired = async function (adapter, tokenSet) {
+    return await tokenTools.accessHasExpired(adapter, tokenSet) || await tokenTools.refreshHasExpired(adapter, tokenSet);
+}
+
+/**
  * get an empty TokenSet
  *
  * returns an empty tokenSet object
@@ -260,31 +244,32 @@ module.exports.getEmptyTokenSet = async function () {
 /**
  * Gets the token object from the adapters token store
  *
- *@param {object} adapter link to the adapters instance
+ * @param {object} adapter link to the adapters instance
  * @returns {Promise<tokenSet>}
  */
 module.exports.getTokenSetObj = async function (adapter) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
-        adapter.getObjectAsync(adapter.namespace)
+        await adapter.getObjectAsync(adapter.namespace)
             .then(async (tokenSet) => {
                 if (tokenSet) {
                     try {
                         await tokenTools.validateTokenSet(adapter, tokenSet);
                         tokenSet = await tokenTools.decryptTokenSet(adapter, tokenSet);
                         if (await tokenTools.tokenSetHasExpired(adapter, tokenSet)) {
-                            await tokenTools.refreshTokenSet(adapter, tokenSet)
-                                .then(tokenSet =>{
-                                    adapter.log.debug(`All fine with this tokenSet: ${JSON.stringify(tokenSet)}`);
-                                    // @ts-ignore
-                                    resolve(tokenSet);
-                                })
-                                .catch(error => {
-                                    adapter.log.error(`Unable to refreshTokenSet: ${JSON.stringify(error)}`);
-                                    reject(error);
-                                });
+                            if (!tokenRefreshInProgress){
+                                await tokenTools.refreshTokenSet(adapter, tokenSet)
+                                    .then(tokenSet =>{
+                                        adapter.log.debug(`All fine with this refreshed tokenSet: ${JSON.stringify(tokenSet)}`);
+                                        resolve(tokenSet);
+                                    })
+                                    .catch(error => {
+                                        adapter.log.error(`Unable to refreshTokenSet: ${JSON.stringify(error)}`);
+                                        reject(error);
+                                    });
+                            }
                         } else {
-                            adapter.log.debug(`TokenSet is valid - so use is as it is.`);
+                            adapter.log.debug(`TokenSet is valid - so use it as it is.`);
                             resolve (tokenSet);
                         }
                     } catch (error) {
@@ -318,103 +303,6 @@ module.exports.getTokenSetObj = async function (adapter) {
             })
     })
 }
-
-/**
- * refreshes the current access token when it is about to expire
- *
- * @param {object} adapter link to the adapter instance
- * @param {tokenSet} tokenSet link to the auth object
- * @returns {Promise<tokenMsg>} returns a refreshed auth object in case of success; error object if it fails
- */
-module.exports.refreshTokenSet = async function (adapter, tokenSet) {
-    const config = adapter.config;
-    adapter.log.info(
-        `Your access token has expired. Trying to refresh it.`,
-    );
-    //adapter.log.debug(`Access token: ${auth.access_token}`);
-    //adapter.log.debug(`Refresh token: ${auth.refresh_token}`);
-    return new Promise((resolve, reject) => {
-        const options = {
-            headers: {
-                Accept: 'application/json;charset=utf-8',
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'User-Agent': mieleConst.UserAgent,
-            },
-            method: 'POST',
-            data: `grant_type=refresh_token&client_id=${config.Client_ID}&client_secret=${config.Client_secret}&refresh_token=${tokenSet.refresh_token}`,
-            dataType: 'text/plain',
-            url: mieleConst.ENDPOINT_AUTHTOKEN,
-        };
-        adapter.log.debug(`Doing axios request to refresh tokens: ${JSON.stringify(options)}`);
-        //@ts-expect-error - axios.create() is not a function
-        axios(options)
-            .then(async result => {
-                result = JSON.parse(flatted.stringify(result));
-                adapter.log.silly(`Token refresh message from server: ${JSON.stringify(result)}`);
-                const data = result[result[0].data];
-                await tokenTools.persistTokenSetInTokenStore(adapter, data);
-                /*
-                const newAuth = await tokenTools.getEmptyTokenSet();
-                newAuth.access_token = result[data.access_token];
-                newAuth.refresh_token = result[data.refresh_token];
-                newAuth.token_type = result[data.token_type];
-                newAuth.expires_in = data.expires_in;
-                newAuth.refresh_expires_in = data.refresh_expires_in;
-                newAuth.obtained = data.obtained;
-                newAuth.id_token = data.id_token;
-                newAuth.ping = data.obtained;
-                newAuth.obtained_HR = new Date(data.obtained).toLocaleString();
-                // persist the new token
-                adapter.extendObject(adapter.namespace, newAuth);
-                 */
-                adapter.log.debug(`NewAuth from server: ${JSON.stringify(data)}`);
-                resolve(data);
-            })
-            .catch(error => {
-                if ('status' in error) {
-                    // The request was made, and the server responded with a status code
-                    // that falls out of the range of 2xx
-                    switch (error.status) {
-                        case 400: // Bad request
-                            reject(
-                                `Bad Request - Your request was unacceptable, often due to missing or outdated refresh tokens.`,
-                            );
-                            break;
-                        case 401: // unauthorized
-                            reject(
-                                `Unable to authenticate. Your refresh token seem to be outdated. Please refresh it using the adapters Admin-UI workflow .`,
-                            );
-                            break;
-                        case 429: // endpoint currently not available
-                            adapter.log.warn(
-                                `Error: Endpoint: [${mieleConst.ENDPOINT_AUTHTOKEN}] is currently not available.`,
-                            );
-                            break;
-                        default:
-                            adapter.log.warn(
-                                `[error.response.data]: ${typeof error.response.data === 'object' ? '' : error.response.data}`,
-                            );
-                            adapter.log.warn(
-                                `[error.response.status]: ${typeof error.response.status === 'object' ? '' : error.response.status}`,
-                            );
-                            adapter.log.warn(
-                                `[error.response.headers]: ${typeof error.response.headers === 'object' ? '' : error.response.headers}`,
-                            );
-                            break;
-                    }
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    adapter.log.warn(
-                        'An error occurred when trying to refresh the access token but dropped no valid error message.',
-                    );
-                    adapter.log.warn(error.message);
-                    adapter.log.error(JSON.stringify(error));
-                    reject(error);
-                }
-            });
-    });
-};
-
 /**
  *  Persists the given TokenSet in the adapters tokenStore
  *
@@ -439,3 +327,65 @@ module.exports.persistTokenSetInTokenStore = async function (adapter, tokenSet) 
     tokenSet.obtained_HR = new Date(tokenSet.obtained).toLocaleString();
     await adapter.extendObject(adapter.namespace, tokenSet);
 }
+
+/**
+ * refreshes the current access token when it is about to expire
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {tokenSet} tokenSet link to the auth object
+ * @returns {Promise<tokenMsg>} returns a refreshed auth object in case of success; error object if it fails
+ */
+module.exports.refreshTokenSet = async function (adapter, tokenSet) {
+    const CONFIG = adapter.config;
+    tokenRefreshInProgress = true;
+    adapter.log.info(`Your access token has expired. Trying to refresh it.`);
+
+    const postData = qs.stringify({
+        grant_type: 'refresh_token',
+        refresh_token: tokenSet.refresh_token,
+    });
+
+    const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': mieleConst.UserAgent,
+        Authorization: `Basic ${Buffer.from(`${CONFIG.Client_ID}:${CONFIG.Client_secret}`, 'utf8').toString('base64')}`,
+    };
+
+    adapter.log.debug(`Doing axios request to refresh tokens: ${postData}`);
+    try {
+        const result = await axios.post(mieleConst.ENDPOINT_TOKEN_NEW, postData, { headers });
+        adapter.log.debug(`Raw-Token refresh message from server: ${JSON.stringify(result.data)}`);
+
+        const newToken = result.data;
+        if (!newToken || typeof newToken !== 'object') {
+            throw new Error('Invalid token response from server');
+        }
+
+        // set obtained timestamps and persist
+        newToken.obtained = Date.now();
+        newToken.obtained_HR = new Date(newToken.obtained).toLocaleString();
+        await tokenTools.persistTokenSetInTokenStore(adapter, newToken);
+        adapter.log.debug(`NewAuth from server: ${JSON.stringify(newToken)}`);
+        return newToken;
+    } catch (error) {
+        adapter.log.error(`Error refreshing access token: ${JSON.stringify(error.response ? error.response.data : error.message)}`);
+        const status = error.response && error.response.status;
+        if (status) {
+            switch (status) {
+                case 400:
+                    throw new Error('Bad Request - refresh token invalid or malformed.');
+                case 401:
+                    throw new Error('Unauthorized - refresh token expired or client authentication failed.');
+                case 429:
+                    adapter.log.warn(`Endpoint: [${mieleConst.ENDPOINT_TOKEN_NEW}] is currently rate limited.`);
+                    break;
+                default:
+                    adapter.log.warn(`Unexpected status ${status} when refreshing token.`);
+            }
+        }
+        throw error;
+    } finally {
+        tokenRefreshInProgress = false;
+        adapter.log.debug(`Finished RefreshTokenSet function.`);
+    }
+};
