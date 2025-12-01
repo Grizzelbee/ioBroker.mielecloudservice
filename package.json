@@ -38,7 +38,7 @@
     "@iobroker/adapter-core": "^3.3.2",
     "axios": "^1.11.0",
     "axios-oauth-client": "^1.5.0",
-    "eventsource": "^4.0.0",
+    "eventsource": "^4.1.0",
     "flatted": "^3.3.3"
   },
   "devDependencies": {
