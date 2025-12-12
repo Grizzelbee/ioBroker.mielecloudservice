@@ -2420,6 +2420,10 @@ function createOrExtendObject(adapter, id, objData, value) {
         adapter.log.debug(`createOrExtendObject: no valid value (${value}) given for [${id}] - skipping...`);
         return;
     }
+    if (id.endsWith('.')) {
+        adapter.log.debug(`createOrExtendObject: no valid id given for [${id}] - skipping...`);
+        return;
+    }
     adapter.getObject(id, function (err, oldObj) {
         if (!err && oldObj) {
             if (objData.common.name === oldObj.common.name) {
