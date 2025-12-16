@@ -16,7 +16,7 @@ const axios = require('axios');
 const mieleConst = require('./mieleConst.js');
 const mieleTools = require('./mieleTools.js');
 const flatted = require('flatted');
-const {getTokenSetObj} = require("./tokenTools");
+const { getTokenSetObj } = require('./tokenTools');
 const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 const queuedMessage = {};
 let delayTimeOut;
@@ -374,6 +374,11 @@ module.exports.splitMieleDevices = async function (adapter, mieleDevices) {
         if (typeof mieleDevices === 'undefined' || typeof mieleDevice === 'undefined') {
             adapter.log.debug(
                 `splitMieleDevices: Given dataset is undefined or not splittable. Returning without action.`,
+            );
+            return;
+        } else if (mieleDevice.ident.type.key_localized === '') {
+            adapter.log.info(
+                `Given device (${mieleDevice}/${mieleDevice.ident.deviceIdentLabel.techType}) has no type assigned. Skipping device.`,
             );
             return;
         } else if (typeof knownDevices[mieleDevice] === 'undefined') {
