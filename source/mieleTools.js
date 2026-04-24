@@ -120,6 +120,7 @@ module.exports.getMieleEvents = async function (adapter, auth) {
  * @param adapter {object} link to the adapter instance
  * @param auth {tokenSet}  OAuth2 object containing required credentials
  * @param device {string}
+ * @returns {Promise<actionsMsg>}
  */
 module.exports.getMieleActions = async function (adapter, auth, device) {
     try {

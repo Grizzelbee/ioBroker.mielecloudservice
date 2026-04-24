@@ -4,6 +4,7 @@
 /**
  * @typedef {import('./types.mieleCloudService').tokenSet} tokenSet
  * @typedef {import('./types.mieleCloudService').tokenMsg} tokenMsg
+ * @typedef {import('./types.mieleCloudService').actionMessage} actionMessage
  */
 
 
@@ -257,6 +258,15 @@ class Mielecloudservice extends utils.Adapter {
     }
 
     /**
+     *
+     * @param {string} data
+     * @returns {actionMessage}
+     */
+    getActionMessage(data){
+        return JSON.parse(data);
+    }
+
+    /**
      * Initialize new EventSource and handle all occurring events
      *
      * @param {tokenSet} tokenSet
@@ -299,7 +309,7 @@ class Mielecloudservice extends utils.Adapter {
         this.log.info(`Registering for 'Action' events at Miele API.`);
         events.addEventListener(mieleConst.ACTIONS, event => {
             this.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(event.data)}]`);
-            mieleTools.splitMieleActionsMessage(this, JSON.parse(event.data)).catch(err => {
+            mieleTools.splitMieleActionsMessage(this, this.getActionMessage(event.data)).catch(err => {
                 this.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
             });
         });
