@@ -50,6 +50,7 @@
     "@iobroker/eslint-config": "^2.1.0",
     "@iobroker/testing": "^5.1.1",
     "@snyk/protect": "^1.1298.3",
+    "@tsconfig/node20": "^20.1.9",
     "@types/node": "^24.3.0",
     "fs-extra": "^11.3.1",
     "typescript": "~5.9.2"
