@@ -370,6 +370,19 @@ class Mielecloudservice extends utils.Adapter {
     doDataPolling(adapter, auth) {
         timeouts.datapolling = setInterval(
             async function () {
+                // Previously `auth` was only ever set once at adapter startup and then
+                // reused for the entire lifetime of this interval closure. Once the
+                // access token expired, every request below would just fail with 401
+                // (the catch blocks only log, they never trigger a refresh) and polling
+                // would silently keep failing forever. Refreshing via getTokenSetObj()
+                // here ensures a valid token is used every cycle, and it goes through
+                // the same synchronized refresh path as onStateChange/SSE.
+                try {
+                    auth = await tokenTools.getTokenSetObj(adapter);
+                } catch (err) {
+                    adapter.log.error(`Unable to obtain a valid tokenSet for polling: ${err}`);
+                    return;
+                }
                 // getDeviceInfos
                 const devices = await mieleTools.getMieleDevices(adapter, auth).catch(error => {
                     adapter.log.info(`Devices-Error: ${JSON.stringify(error)}`);
@@ -627,9 +640,14 @@ class Mielecloudservice extends utils.Adapter {
                     .catch(async error => {
                         await this.setState(`${device}.ACTIONS.LastActionResult`, error, true);
                         if (error.startsWith('401')){
-                            await tokenTools.refreshTokenSet(this, tokenSet)
-                            .then(async tokenSet => {
-                                await tokenTools.persistTokenSetInTokenStore(this, tokenSet);
+                            // Use the synchronized refresh so this joins any refresh that may
+                            // already be in flight (e.g. triggered by another concurrent
+                            // onStateChange or SSE-init) instead of firing an independent
+                            // refresh request with the same refresh_token.
+                            // refreshTokenSet() already persists the new tokenSet internally,
+                            // so no extra persistTokenSetInTokenStore() call is needed here.
+                            await tokenTools.refreshTokenSetSynchronized(this, tokenSet)
+                            .then(async () => {
                                 await this.onStateChange(id, state);
                             })
                             .catch(err => {

@@ -11,7 +11,10 @@ const axios = require('axios').default;
 const mieleConst = require('../source/mieleConst.js');
 const tokenTools = require('../source/tokenTools.js');
 const qs = require('querystring');
-let tokenRefreshInProgress = false;
+// Holds the in-flight refresh promise (if any). Using a shared promise instead of a
+// boolean flag ensures that concurrent callers all await the SAME refresh result
+// instead of racing each other with the same (soon to be invalidated) refresh_token.
+let refreshPromise = null;
 /**
  * Decrypts the given token
  *
@@ -87,11 +90,13 @@ module.exports.getTokenSetFromConfig = async (adapter) => {
     configTokenSet.refresh_token = adapter.config.refresh_token;
     configTokenSet.refresh_expires_in = adapter.config.refresh_token_expiry;
     configTokenSet.obtained = adapter.config.obtained;
-    if (await tokenTools.tokenSetHasExpired(adapter, configTokenSet)) {
+    // NOTE: this condition was previously inverted - it returned an EXPIRED tokenSet
+    // as "successful" and threw an error for a still VALID one. Fixed here.
+    if (!(await tokenTools.tokenSetHasExpired(adapter, configTokenSet))) {
         adapter.log.debug(`Building tokenSet from adapter config finished successfully: ${JSON.stringify(configTokenSet)}`);
         return configTokenSet;
     } else {
-        throw new Error('Unable to build token set from config.');
+        throw new Error('Unable to build token set from config - it has already expired.');
     }
 
 }
@@ -184,11 +189,15 @@ module.exports.getAccessToken = async function (adapter, clientId, clientSecret,
  * @returns {Promise<boolean>} Returns true if the token is going to expire within the next 5 Minutes - false if not.
  */
 module.exports.accessHasExpired = async function (adapter, auth) {
+    // Safety margin so a token that is about to expire within the next 5 minutes
+    // is already treated as expired - avoids requests starting with a token that
+    // expires mid-flight (latency / clock drift).
+    const SAFETY_MARGIN_MS = 5 * 60 * 1000; // 5 minutes
     adapter.log.silly(`Time obtained: ${new Date(auth.obtained).toLocaleString()}`);
     adapter.log.debug(`Refresh Token expires on: ${new Date(auth.obtained + auth.refresh_expires_in * 1000).toLocaleString()}`);
     adapter.log.debug(`Access Token expires on: ${new Date(auth.obtained + auth.expires_in * 1000).toLocaleString()}`);
-    const diffSeconds = new Date(auth.obtained + auth.expires_in * 1000).getTime() - new Date().getTime();
-    return diffSeconds <= 0; //5 * 60 * 1000; // = 5 minutes
+    const diffMs = new Date(auth.obtained + auth.expires_in * 1000).getTime() - new Date().getTime();
+    return diffMs <= SAFETY_MARGIN_MS;
 };
 
 /**
@@ -257,17 +266,22 @@ module.exports.getTokenSetObj = async function (adapter) {
                         await tokenTools.validateTokenSet(adapter, tokenSet);
                         tokenSet = await tokenTools.decryptTokenSet(adapter, tokenSet);
                         if (await tokenTools.tokenSetHasExpired(adapter, tokenSet)) {
-                            if (!tokenRefreshInProgress){
-                                await tokenTools.refreshTokenSet(adapter, tokenSet)
-                                    .then(tokenSet =>{
-                                        adapter.log.debug(`All fine with this refreshed tokenSet: ${JSON.stringify(tokenSet)}`);
-                                        resolve(tokenSet);
-                                    })
-                                    .catch(error => {
-                                        adapter.log.error(`Unable to refreshTokenSet: ${JSON.stringify(error)}`);
-                                        reject(error);
-                                    });
-                            }
+                            // Always await a result here - regardless of whether a refresh
+                            // is already in progress. refreshTokenSetSynchronized() makes sure
+                            // that concurrent callers share the SAME refresh request instead of
+                            // firing multiple parallel refreshes with the same refresh_token
+                            // (which would cause one of them to be rejected by the server due
+                            // to refresh-token rotation) - and it guarantees this promise is
+                            // always resolved or rejected, never left hanging.
+                            await tokenTools.refreshTokenSetSynchronized(adapter, tokenSet)
+                                .then(refreshedTokenSet => {
+                                    adapter.log.debug(`All fine with this refreshed tokenSet: ${JSON.stringify(refreshedTokenSet)}`);
+                                    resolve(refreshedTokenSet);
+                                })
+                                .catch(error => {
+                                    adapter.log.error(`Unable to refreshTokenSet: ${JSON.stringify(error)}`);
+                                    reject(error);
+                                });
                         } else {
                             adapter.log.debug(`TokenSet is valid - so use it as it is.`);
                             resolve (tokenSet);
@@ -337,7 +351,6 @@ module.exports.persistTokenSetInTokenStore = async function (adapter, tokenSet) 
  */
 module.exports.refreshTokenSet = async function (adapter, tokenSet) {
     const CONFIG = adapter.config;
-    tokenRefreshInProgress = true;
     adapter.log.info(`Your access token has expired. Trying to refresh it.`);
 
     const postData = qs.stringify({
@@ -357,8 +370,23 @@ module.exports.refreshTokenSet = async function (adapter, tokenSet) {
         adapter.log.debug(`Raw-Token refresh message from server: ${JSON.stringify(result.data)}`);
 
         const newToken = result.data;
-        if (!newToken || typeof newToken !== 'object') {
-            throw new Error('Invalid token response from server');
+        if (!newToken || typeof newToken !== 'object' || !newToken.access_token) {
+            throw new Error('Invalid token response from server - missing access_token.');
+        }
+
+        // Some OAuth2 servers don't return a new refresh_token on every refresh call
+        // (rotation is not guaranteed on every response). Previously this silently
+        // overwrote a perfectly valid refresh_token with `undefined`, which then either
+        // crashed persistTokenSetInTokenStore() or bricked the next refresh attempt
+        // permanently since the OLD refresh_token had already been invalidated
+        // server-side by this very call. Falling back to the previous refresh_token
+        // (and refresh_expires_in) avoids losing it.
+        if (!newToken.refresh_token) {
+            adapter.log.debug('Refresh response contained no new refresh_token - keeping the previous one.');
+            newToken.refresh_token = tokenSet.refresh_token;
+        }
+        if (!newToken.refresh_expires_in) {
+            newToken.refresh_expires_in = tokenSet.refresh_expires_in;
         }
 
         // set obtained timestamps and persist
@@ -385,7 +413,31 @@ module.exports.refreshTokenSet = async function (adapter, tokenSet) {
         }
         throw error;
     } finally {
-        tokenRefreshInProgress = false;
         adapter.log.debug(`Finished RefreshTokenSet function.`);
     }
+};
+
+/**
+ * Ensures only ONE token refresh is ever in flight at a time. Concurrent callers
+ * (e.g. multiple onStateChange events firing close together, or SSE-init racing
+ * with a state change, right around the moment the access token expires) all
+ * receive the SAME promise and therefore the SAME result, instead of each firing
+ * an independent refresh request with the same refresh_token - which previously
+ * caused one of them to be rejected by the server (refresh-token rotation /
+ * invalid_grant) after a seemingly random amount of runtime.
+ *
+ * @param {object} adapter link to the adapter instance
+ * @param {tokenSet} tokenSet the current (expired) tokenSet
+ * @returns {Promise<tokenMsg>}
+ */
+module.exports.refreshTokenSetSynchronized = async function (adapter, tokenSet) {
+    if (refreshPromise) {
+        adapter.log.debug('Refresh already in progress - waiting for it instead of starting a new one.');
+        return refreshPromise;
+    }
+    refreshPromise = tokenTools.refreshTokenSet(adapter, tokenSet)
+        .finally(() => {
+            refreshPromise = null;
+        });
+    return refreshPromise;
 };
