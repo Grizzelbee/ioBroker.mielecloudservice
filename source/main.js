@@ -258,12 +258,41 @@ class Mielecloudservice extends utils.Adapter {
     }
 
     /**
+     * Parse the JSON payload of an SSE 'action' event. Returns null if the
+     * payload is not valid JSON so the listener can skip the message instead
+     * of crashing the adapter when the Miele backend sends a truncated or
+     * malformed frame.
      *
-     * @param {string} data
-     * @returns {actionMessage}
+     * @param {string} data raw event.data string from the SSE stream
+     * @returns {actionMessage | null} parsed action message, or null on parse error
      */
-    getActionMessage(data){
-        return JSON.parse(data);
+    getActionMessage(data) {
+        try {
+            return JSON.parse(data);
+        } catch (err) {
+            const sample = typeof data === 'string' ? data.slice(0, 200) : String(data);
+            this.log.warn(`Could not parse SSE ACTIONS payload: [${err}] — payload: [${sample}]`);
+            return null;
+        }
+    }
+
+    /**
+     * Parse the JSON payload of an SSE 'device' event. Returns null if the
+     * payload is not valid JSON so the listener can skip the message instead
+     * of crashing the adapter when the Miele backend sends a truncated or
+     * malformed frame.
+     *
+     * @param {string} data raw event.data string from the SSE stream
+     * @returns {object | null} parsed device payload, or null on parse error
+     */
+    getDeviceMessage(data) {
+        try {
+            return JSON.parse(data);
+        } catch (err) {
+            const sample = typeof data === 'string' ? data.slice(0, 200) : String(data);
+            this.log.warn(`Could not parse SSE DEVICES payload: [${err}] — payload: [${sample}]`);
+            return null;
+        }
     }
 
     /**
@@ -293,7 +322,11 @@ class Mielecloudservice extends utils.Adapter {
         this.log.info(`Registering for 'Devices' events at Miele API.`);
         events.addEventListener(mieleConst.DEVICES, async event => {
             this.log.debug(`Received DEVICES message by SSE: [${JSON.stringify(event.data)}]`);
-            await mieleTools.splitMieleDevices(this, JSON.parse(event.data), tokenSet)
+            const message = this.getDeviceMessage(event.data);
+            if (message === null) {
+                return;
+            }
+            await mieleTools.splitMieleDevices(this, message, tokenSet)
             .catch(err => {
                 this.log.warn(`splitMieleDevices crashed with error: [${err}]`);
             })
@@ -309,7 +342,11 @@ class Mielecloudservice extends utils.Adapter {
         this.log.info(`Registering for 'Action' events at Miele API.`);
         events.addEventListener(mieleConst.ACTIONS, event => {
             this.log.debug(`Received ACTIONS message by SSE: [${JSON.stringify(event.data)}]`);
-            mieleTools.splitMieleActionsMessage(this, this.getActionMessage(event.data)).catch(err => {
+            const message = this.getActionMessage(event.data);
+            if (message === null) {
+                return;
+            }
+            mieleTools.splitMieleActionsMessage(this, message).catch(err => {
                 this.log.warn(`splitMieleActionsMessage crashed with error: [${err}]`);
             });
         });
