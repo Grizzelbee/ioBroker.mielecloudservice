@@ -222,6 +222,8 @@ If you like to get a deeper understanding or need a raw-value translation please
 ### 0.0.1
 * (hash99) initial release
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 The MIT License (MIT)
 
