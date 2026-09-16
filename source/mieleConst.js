@@ -13,14 +13,13 @@ const AdapterVersion = require('../io-package.json').common.version;
 module.exports.UserAgent = `ioBroker.MieleCloudService V${AdapterVersion}`;
 module.exports.BASE_URL = 'https://api.mcs3.miele.com/';
 module.exports.ENDPOINT_AUTH = 'https://auth.domestic.miele-iot.com/partner/realms/mcs/protocol/openid-connect/auth';
-module.exports.ENDPOINT_AUTHTOKEN =
-    'https://auth.domestic.miele-iot.com/partner/realms/mcs/protocol/openid-connect/token';
+module.exports.ENDPOINT_AUTHTOKEN = 'https://auth.domestic.miele-iot.com/partner/realms/mcs/protocol/openid-connect/token';
 module.exports.ENDPOINT_DEVICES = 'v1/devices/?language=LANG';
 module.exports.ENDPOINT_EVENTS = 'v1/devices/all/events/?language=LANG';
 module.exports.ENDPOINT_PROGRAMS = 'v1/devices/DEVICEID/programs/?language=LANG';
 module.exports.ENDPOINT_ACTIONS = 'v1/devices/DEVICEID/actions';
 module.exports.ENDPOINT_ROOMS = 'v1/devices/DEVICEID/rooms/?language=LANG';
-module.exports.ENDPOINT_FILLINGLEVELS = 'v1/devices/DEVICEID/fillingLevels/?language=LANG';
+module.exports.ENDPOINT_FILLINGLEVELS = 'v1/devices/fillingLevels/?language=LANG';
 module.exports.ENDPOINT_FAILUREDETAILS = 'v1/devices/DEVICEID/failureDetails/?language=LANG';
 module.exports.ENDPOINT_CAMERA = 'v1/devices/DEVICEID/camera';
 module.exports.SCOPE_READ = 'mcs_thirdparty_read';
@@ -59,7 +58,6 @@ module.exports.ALL_ACTIONS_DISABLED = {
     powerOff: false,
     colors: [],
     modes: [],
-    runOnTime:[],
 };
 module.exports.ACTIONS = 'actions';
 module.exports.DEVICES = 'devices';

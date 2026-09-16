@@ -16,7 +16,6 @@ const axios = require('axios');
 const mieleConst = require('./mieleConst.js');
 const mieleTools = require('./mieleTools.js');
 const flatted = require('flatted');
-const { getTokenSetObj } = require('./tokenTools');
 const knownDevices = {}; // structure of _knownDevices{deviceId: {name:'', icon:'', deviceFolder:''}, ... }
 const queuedMessage = {};
 let delayTimeOut;
@@ -59,7 +58,7 @@ module.exports.checkConfig = async function (adapter, config) {
  * generates a random string of given length out of A-Z, a-z, 0-9
  *
  * @param digits {number} length of the random string to generate
- * @returns {Promise<string>} A random string with as many digits as requested
+ * @returns {Promise<string>}
  */
 module.exports.generateRandomString = async function (digits) {
     let result = '';
@@ -120,8 +119,8 @@ module.exports.getMieleEvents = async function (adapter, auth) {
  *
  * @param adapter {object} link to the adapter instance
  * @param auth {tokenSet}  OAuth2 object containing required credentials
- * @param device {string} ID (Serial) of the device
- * @returns {Promise<actionsMsg>} The available actions for this device
+ * @param device {string}
+ * @returns {Promise<actionsMsg>}
  */
 module.exports.getMieleActions = async function (adapter, auth, device) {
     try {
@@ -136,7 +135,6 @@ module.exports.getMieleActions = async function (adapter, auth, device) {
         return result;
     } catch (error) {
         adapter.log.error(`[refreshMieleActions] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
-        return mieleConst.ALL_ACTIONS_DISABLED;
     }
 };
 
@@ -149,26 +147,32 @@ module.exports.getMieleActions = async function (adapter, auth, device) {
  * @param auth {tokenSet}  OAuth2 object containing required credentials
  * @param DEVICEID {string} ID of the device to query the filling levels for
  */
-module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID) {
+module.exports.getMieleFillingLevels = async function (adapter, auth, DEVICEID ) {
+    adapter.log.debug(`Received getMieleFillingLevels request...`);
+    const locale = adapter.config && adapter.config.locale ? adapter.config.locale : 'en';
+    const endpoint = mieleConst.ENDPOINT_FILLINGLEVELS.replace('DEVICEID', DEVICEID).replace('LANG', locale);
+        //`v1/devices/${DEVICEID}/fillingLevels?language=${locale}`;
     try {
-        //const result = {};
-        //result[device] = await sendAPIRequest(
-        adapter.log.debug(
-            `getMieleFillingLevels: Querying Endpoint: ${mieleConst.ENDPOINT_FILLINGLEVELS.replace('LANG', adapter.config.locale).replace('DEVICEID', DEVICEID)}`,
-        );
-        return await sendAPIRequest(
-            adapter,
-            auth,
-            //mieleConst.ENDPOINT_FILLINGLEVELS.replace('DEVICEID', device),
-            mieleConst.ENDPOINT_FILLINGLEVELS.replace('LANG', adapter.config.locale).replace('DEVICEID', DEVICEID),
-            'GET',
-            '',
-        );
+        const result = await sendAPIRequest(adapter, auth, endpoint, 'GET', '');
+        // sendAPIRequest kann je nach Implementierung direkt response.data oder response zurückgeben
+        return result && result.data ? result.data : result;
     } catch (error) {
-        adapter.log.error(`[refreshMieleFillingLevels] [${error}] |-> JSON.stringify(error):${JSON.stringify(error)}`);
+        // detailliertes Logging, speziell für 403
+        if (error.response) {
+            adapter.log.error(
+                `[getMieleFillingLevels] HTTP ${error.response.status} - ${JSON.stringify(error.response.data)}`
+            );
+            if (error.response.status === 403) {
+                adapter.log.warn(
+                    '[getMieleFillingLevels] 403 Forbidden - prüfe Token-Scopes, ob DEVICEID zum Account gehört und ob der Endpoint korrekt ist.'
+                );
+            }
+        } else {
+            adapter.log.error(`[getMieleFillingLevels] Request failed: ${error.message}`);
+        }
+        throw error;
     }
 };
-
 /**
  * getMieleFailureDetails
  *
@@ -222,6 +226,7 @@ module.exports.getMieleRooms = async function (adapter, auth, device) {
 module.exports.getKnownDevices = function () {
     return knownDevices;
 };
+
 
 /**
  * sendAPIRequest
@@ -296,7 +301,7 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
                             break;
                         case 401:
                             adapter.log.error(
-                                'OAuth2 Access token has expired. This is okay so far. Trying to refresh it.',
+                                "OAuth2 Access token has expired. This is okay so far. Trying to refresh it.",
                             );
                             reject('401 - OAuth2 Access token has expired.');
                             break;
@@ -339,6 +344,8 @@ async function sendAPIRequest(adapter, auth, Endpoint, Method, payload) {
     });
 }
 
+
+
 /**
  * send an action to the API to execute it
  *
@@ -366,19 +373,15 @@ module.exports.executeAction = async function (adapter, auth, endpoint, device, 
  *
  * @param {object} adapter Link to the adapter instance
  * @param {devicesMsg} mieleDevices The whole JSON which needs to be split into devices
+ * @param {tokenSet} tokenSet OAuth2 token object
  */
 //module.exports.splitMieleDevices = async function (adapter, auth, mieleDevices) {
-module.exports.splitMieleDevices = async function (adapter, mieleDevices) {
+module.exports.splitMieleDevices = async function (adapter, mieleDevices, tokenSet) {
     // Splits the data-package returned by the API into single devices and iterates over each single device
     for (const mieleDevice in mieleDevices) {
         if (typeof mieleDevices === 'undefined' || typeof mieleDevice === 'undefined') {
             adapter.log.debug(
                 `splitMieleDevices: Given dataset is undefined or not splittable. Returning without action.`,
-            );
-            return;
-        } else if (mieleDevice.ident.type.key_localized === '') {
-            adapter.log.info(
-                `Given device (${mieleDevice}/${mieleDevice.ident.deviceIdentLabel.techType}) has no type assigned. Skipping device.`,
             );
             return;
         } else if (typeof knownDevices[mieleDevice] === 'undefined') {
@@ -443,62 +446,15 @@ module.exports.splitMieleDevices = async function (adapter, mieleDevices) {
         } else {
             await createIdentTree(adapter, `${mieleDevice}.IDENT`, mieleDevices[mieleDevice].ident);
             await createStateTree(adapter, mieleDevice, mieleDevices[mieleDevice], mieleDevices[mieleDevice].state);
-            await addFillingLevelsToDevice(adapter, mieleDevice);
+            await mieleTools.getMieleFillingLevels(adapter, tokenSet, mieleDevice)
+                .then(fillingLevels => {
+                    adapter.log.debug(`Received fillingLevels: ${fillingLevels}`);
+                })
+                .catch(err => {
+                    adapter.log.warn(`getMieleFillingLevels crashed with error: [${err}]`);
+                })
         }
     }
-};
-
-async function addFillingLevelsToDevice(adapter, DeviceID) {
-    const tokenSet = await getTokenSetObj(adapter);
-    await mieleTools
-        .getMieleFillingLevels(adapter, tokenSet, DeviceID)
-        .then(fillingLevels => {
-            adapter.log.debug(`Received fillingLevels: ${JSON.stringify(fillingLevels)}`);
-            if (fillingLevels) {
-                for (const [key, value] of Object.entries(fillingLevels)) {
-                    if (value !== null) {
-                        const obj = {
-                            type: 'state',
-                            common: {
-                                name: `${key}`,
-                                read: true,
-                                write: false,
-                                icon: ``,
-                                type: 'number',
-                                unit: '%',
-                                min: 0,
-                                max: 100,
-                            },
-                        };
-                        adapter.log.debug(
-                            `Updating fillingLevel ${key}: ${value} / Path: ${adapter.namespace}.${DeviceID}.FillingLevels.${key}`,
-                        );
-                        createOrExtendObject(
-                            adapter,
-                            `${adapter.namespace}.${DeviceID}.FillingLevels.${key}`,
-                            obj,
-                            value,
-                        ); // create key object
-                    }
-                }
-            } else {
-                adapter.log.warn(`addFillingLevels: No data received.`);
-            }
-        })
-        .catch(err => {
-            adapter.log.warn(`getMieleFillingLevels crashed with error: [${err}]`);
-        });
-}
-
-module.exports.addFailureDetailsToDevice = async function (adapter, tokenSet, DeviceID) {
-    await mieleTools
-        .getMieleFailureDetails(adapter, tokenSet, DeviceID)
-        .then(failureDetails => {
-            adapter.log.debug(`Received failure Details: ${JSON.stringify(failureDetails)}`);
-        })
-        .catch(err => {
-            adapter.log.warn(`getfailureDetails crashed with error: [${err}]`);
-        });
 };
 
 /**
@@ -1042,16 +998,16 @@ async function createStateSignalFailure(adapter, path, value) {
         'boolean',
         'indicator',
     );
-    if (value) {
+    if (value){
         const deviceID = path.split('.').pop() || '';
-        await mieleTools
-            .getMieleFailureDetails(adapter, await adapter.getObjectAsync(adapter.namespace), deviceID)
+        await mieleTools.getMieleFailureDetails(adapter, await adapter.getObjectAsync(adapter.namespace), deviceID)
             .then(failureDetails => {
                 adapter.log.debug(`Received FailureDetails: ${failureDetails}`);
             })
             .catch(err => {
                 adapter.log.warn(`getMieleFailureDetails crashed with error: [${err}]`);
-            });
+            })
+
     }
 }
 
@@ -2072,6 +2028,7 @@ async function createChannelActions(adapter, path) {
  * @param {object} adapter link to the adapter instance
  * @param {string} path path where the state should be created
  * @param {number} currentState current value of this state
+ * @returns
  */
 async function createVentilationStepSwitch(adapter, path, currentState) {
     await createRWState(
@@ -2284,9 +2241,9 @@ async function createString(adapter, path, description, value) {
  * @param {object} adapter link to the adapter instance
  * @param {string} path  path where the data point is going to be created
  * @param {string} description description of the data point
- * @param {string|number|boolean} value value to set to the data point
  * @param {string} type valid type of this state
  * @param {string} role valid role of this state
+ * @param {any} value value to set to the data point
  */
 async function createROState(adapter, path, description, value, type, role) {
     try {
@@ -2313,10 +2270,10 @@ async function createROState(adapter, path, description, value, type, role) {
  * @param {object} adapter link to the adapter instance
  * @param {string} path  path where the data point is going to be created
  * @param {string} description description of the data point
- * @param {string|number|boolean} value value to set to the data point
  * @param {string} type valid type of this state
  * @param {string} role valid role of this state
  * @param {object} states valid states object for this switch
+ * @param {any} value value to set to the data point
  */
 async function createRWState(adapter, path, description, value, type, role, states) {
     try {
@@ -2423,10 +2380,6 @@ async function createTime(adapter, path, description, value, role) {
 function createOrExtendObject(adapter, id, objData, value) {
     if (typeof value === 'undefined' || value === -32768 || value === null) {
         adapter.log.debug(`createOrExtendObject: no valid value (${value}) given for [${id}] - skipping...`);
-        return;
-    }
-    if (id.endsWith('.')) {
-        adapter.log.debug(`createOrExtendObject: no valid id given for [${id}] - skipping...`);
         return;
     }
     adapter.getObject(id, function (err, oldObj) {
