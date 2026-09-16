@@ -58,7 +58,7 @@
     "API_KeyHelp": {
       "type": "staticLink",
       "text": "Miele_API_link",
-      "href": "https://www.miele.com/f/com/en/register_api.aspx",
+      "href": "https://developer.miele.com/get-involved",
       "xs": 12,
       "sm": 12,
       "md": 6,
