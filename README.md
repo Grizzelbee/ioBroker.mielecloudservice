@@ -222,6 +222,9 @@ If you like to get a deeper understanding or need a raw-value translation please
 ### 0.0.1
 * (hash99) initial release
 
+## Copyright
+Copyright (c) 2026 grizzelbee <open.source@hingsen.de>
+
 ## License
 The MIT License (MIT)
 
@@ -243,5 +246,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-## Copyright
-Copyright (c) 2025 grizzelbee <open.source@hingsen.de>

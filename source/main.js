@@ -1,13 +1,6 @@
 //@ts-check
 'use strict';
 
-/**
- * @typedef {import('./types.mieleCloudService').tokenSet} tokenSet
- * @typedef {import('./types.mieleCloudService').tokenMsg} tokenMsg
- * @typedef {import('./types.mieleCloudService').actionMessage} actionMessage
- */
-
-
 /*
  * Created with @iobroker/create-adapter v2.1.0
  */
@@ -19,7 +12,6 @@ const { EventSource } = require('eventsource');
 const mieleTools = require('./mieleTools.js');
 const mieleConst = require('./mieleConst.js');
 const tokenTools = require('./tokenTools.js');
-const {getTokenSetObj} = require("./tokenTools");
 const timeouts = {};
 const fakeRequests = false; // this switch is used to fake requests against the Miele API and load the JSON-objects from disk
 let events;
@@ -163,8 +155,12 @@ class Mielecloudservice extends utils.Adapter {
                                 tokenTools.persistTokenSetInTokenStore(this, newAuth).catch(err => {
                                     this.log.error(`Error updating tokens in adapters token store: ${err}`);
                                 });
-                                this.log.info(`Access-Token expires on: ${new Date(newAuth.obtained + newAuth.expires_in * 1000).toLocaleString()}`);
-                                this.log.info(`Refresh-Token expires on: ${new Date(newAuth.obtained + newAuth.refresh_expires_in * 1000).toLocaleString()}`);
+                                this.log.info(
+                                    `Access-Token expires on: ${new Date(newAuth.obtained + newAuth.expires_in * 1000).toLocaleString()}`,
+                                );
+                                this.log.info(
+                                    `Refresh-Token expires on: ${new Date(newAuth.obtained + newAuth.refresh_expires_in * 1000).toLocaleString()}`,
+                                );
                                 // now continue as if adapter just started
                                 this.onReady();
                             })
@@ -326,13 +322,14 @@ class Mielecloudservice extends utils.Adapter {
             if (message === null) {
                 return;
             }
-            await mieleTools.splitMieleDevices(this, message, tokenSet)
-            .catch(err => {
-                this.log.warn(`splitMieleDevices crashed with error: [${err}]`);
-            })
-            .finally(() => {
-                this.log.debug(`Finished processing of devices.`)
-            })
+            await mieleTools
+                .splitMieleDevices(this, message, tokenSet)
+                .catch(err => {
+                    this.log.warn(`splitMieleDevices crashed with error: [${err}]`);
+                })
+                .finally(() => {
+                    this.log.debug(`Finished processing of devices.`);
+                });
         });
 
         /**
@@ -368,10 +365,9 @@ class Mielecloudservice extends utils.Adapter {
          */
         events.addEventListener(mieleConst.ERROR, event => {
             this._sseErrors++;
-            this.setState('info.connection', false, true)
-                .catch(err => {
-                    this.log.error(`Setting the connection-info crashed with error: ${err}`);
-                });
+            this.setState('info.connection', false, true).catch(err => {
+                this.log.error(`Setting the connection-info crashed with error: ${err}`);
+            });
             this.log.debug(`Received error message by SSE: ${JSON.stringify(event)}`);
             let randomDelay = Math.pow(this._sseErrors, 2) * 1000 + Math.floor(Math.random() * 1000);
             if (Object.prototype.hasOwnProperty.call(timeouts, 'reconnectDelay')) {
@@ -405,7 +401,7 @@ class Mielecloudservice extends utils.Adapter {
      * @param auth    {object} link to the current authentication object
      */
     doDataPolling(adapter, auth) {
-        timeouts.datapolling = setInterval(
+        timeouts.datapolling = adapter.setInterval(
             async function () {
                 // Previously `auth` was only ever set once at adapter startup and then
                 // reused for the entire lifetime of this interval closure. Once the
@@ -479,20 +475,19 @@ class Mielecloudservice extends utils.Adapter {
         );
     }
 
-
     /**
      * performs a test run without connecting to the online API, but reads given test data from HDD
      *
      * @returns {Promise<void>}
      */
-    async performFakeRequest(){
+    async performFakeRequest() {
         const fs = require('fs');
         fs.readFile('test/testdata.devices.json', 'utf8', (err, data) => {
             if (err) {
                 throw err;
             }
             this.log.info(`Device test data: ${data.toString()}`);
-            mieleTools.splitMieleDevices(this, JSON.parse(data.toString(), tokenTools.getTokenSetObj() ));
+            mieleTools.splitMieleDevices(this, JSON.parse(data.toString(), tokenTools.getTokenSetObj()));
         });
         timeouts.fakeRequest = setTimeout(() => {
             fs.readFile('test/testdata.actions.json', 'utf8', (err, data) => {
@@ -514,17 +509,14 @@ class Mielecloudservice extends utils.Adapter {
      * @param {tokenSet} tokenSet
      * @returns {Promise<void>}
      */
-    async SseWatchDog(adapter, tokenSet){
+    async SseWatchDog(adapter, tokenSet) {
         /**
          * code for watchdog
          * -> check every 5 minutes whether pings are missing
          */
         adapter.log.info(`Initializing SSE watchdog.`);
         timeouts.watchdog = setInterval(() => {
-            if (
-                new Date().getTime() - new Date(tokenSet.ping).getTime() >=
-                mieleConst.WATCHDOG_TIMEOUT
-            ) {
+            if (new Date().getTime() - new Date(tokenSet.ping).getTime() >= mieleConst.WATCHDOG_TIMEOUT) {
                 adapter.log.info(
                     `Watchdog detected ping failure. Last ping occurred over five minutes ago (${new Date(tokenSet.ping).toLocaleString()}). Trying to handle by reinitiating the SSE connection.`,
                 );
@@ -533,8 +525,7 @@ class Mielecloudservice extends utils.Adapter {
                 adapter.initSSE(tokenSet);
             }
         }, mieleConst.WATCHDOG_TIMEOUT);
-
-}
+    }
     /**
      * Is called when databases are connected and adapter received configuration.
      */
@@ -548,22 +539,25 @@ class Mielecloudservice extends utils.Adapter {
         if (fakeRequests) {
             await this.performFakeRequest();
         } else {
-            await tokenTools.getTokenSetObj(this)
+            await tokenTools
+                .getTokenSetObj(this)
                 .then(tokenSet => {
-                    if (this.config.sse){
+                    if (this.config.sse) {
                         this.initSSE(tokenSet);
                         this.SseWatchDog(this, tokenSet);
                     } else {
                         this.log.info(
-                        `Requesting data from Miele API using time based polling every ${this.config.pollInterval * this.config.pollUnit} Seconds.`,
+                            `Requesting data from Miele API using time based polling every ${this.config.pollInterval * this.config.pollUnit} Seconds.`,
                         );
                         this.doDataPolling(this, tokenSet);
                     }
                 })
                 .catch(err => {
                     this.log.error(`${err}`);
-                    this.log.error(`Unable to get a tokenSet, please perform the Authentication-with-Miele workflow in the Admin-UI.`);
-                })
+                    this.log.error(
+                        `Unable to get a tokenSet, please perform the Authentication-with-Miele workflow in the Admin-UI.`,
+                    );
+                });
         }
     }
 
@@ -676,20 +670,21 @@ class Mielecloudservice extends utils.Adapter {
                     })
                     .catch(async error => {
                         await this.setState(`${device}.ACTIONS.LastActionResult`, error, true);
-                        if (error.startsWith('401')){
+                        if (error.startsWith('401')) {
                             // Use the synchronized refresh so this joins any refresh that may
                             // already be in flight (e.g. triggered by another concurrent
                             // onStateChange or SSE-init) instead of firing an independent
                             // refresh request with the same refresh_token.
                             // refreshTokenSet() already persists the new tokenSet internally,
                             // so no extra persistTokenSetInTokenStore() call is needed here.
-                            await tokenTools.refreshTokenSetSynchronized(this, tokenSet)
-                            .then(async () => {
-                                await this.onStateChange(id, state);
-                            })
-                            .catch(err => {
-                                this.log.error(`Error during refreshTokenSet: ${err} - Aborting action.`);
-                            });
+                            await tokenTools
+                                .refreshTokenSetSynchronized(this, tokenSet)
+                                .then(async () => {
+                                    await this.onStateChange(id, state);
+                                })
+                                .catch(err => {
+                                    this.log.error(`Error during refreshTokenSet: ${err} - Aborting action.`);
+                                });
                         }
                     });
             }
