@@ -237,7 +237,7 @@ class Mielecloudservice extends utils.Adapter {
         await this.setState('info.connection', false, true);
         // remember the link to the adapter instance
         if (fakeRequests) {
-            const fs = require('fs');
+            const fs = require('node:fs');
             fs.readFile('test/testdata.devices.json', 'utf8', (err, data) => {
                 if (err) {
                     throw err;
