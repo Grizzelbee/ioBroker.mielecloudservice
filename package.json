@@ -51,7 +51,7 @@
     "@iobroker/testing": "^5.1.1",
     "@snyk/protect": "^1.1298.3",
     "@types/node": "^24.3.0",
-    "fs-extra": "^11.3.1",
+    "fs-extra": "^11.3.2",
     "typescript": "~5.9.2"
   },
   "main": "main.js",
