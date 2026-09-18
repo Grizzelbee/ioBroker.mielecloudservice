@@ -124,6 +124,9 @@ If you like to get a deeper understanding or need a raw-value translation please
 * (grizzelbee) Upd: Dependencies got updated
 
  -->
+### **WORK IN PROGRESS**
+- (copilot) Adapter requires node.js >= 22 now
+
 ### 6.5.12 (2025-09-01)
 * (grizzelbee) Upd: Dependencies got updated
 * (grizzelbee) Upd: some Dev-Dependencies got removed as told by MCM1957
